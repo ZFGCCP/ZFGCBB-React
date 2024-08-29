@@ -42,5 +42,6 @@ export type Message = BaseBB & {
 export type MessageHistory = BaseBB& {
     messageId: Number;
 	messageText: String;
+    unparsedText: String;
 	currentFlag?: Boolean;
 };

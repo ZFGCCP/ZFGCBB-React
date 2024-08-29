@@ -1,14 +1,15 @@
-import React, { useMemo, useState, useRef } from "react";
+import React, { useMemo, useState, useRef, useCallback } from "react";
 import { styled } from "@linaria/react";
 import Widget from "../../common/widgets/widget.component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply, faPen, faTrash, faShuffle, faBook, faFlag, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { useBBQuery } from "../../../hooks/useBBQuery";
-import { Thread } from "../../../types/forum";
+import { Message, Thread } from "../../../types/forum";
 import { useParams } from "react-router";
 import parse from 'html-react-parser';
 import FooterButtons from "./footerButtons.component";
-import { Form, Button } from "react-bootstrap";
+import { useMutation } from "@tanstack/react-query";
+import MessageEditor from "./messageEditor.component";
 
 const Style = {
     messageWrapper: styled.div`
@@ -54,14 +55,22 @@ const ForumThread:React.FC = () => {
     const { threadId } = useParams();
     const textAreaRef = useRef();
     let cursorPosition = 0;
-    const [ showReplyBox, setShowReployBox ] = useState(false);
+    const [ showReplyBox, setShowReplyBox ] = useState(false);
+    const [ msgText, setMsgText ] = useState<string | number | readonly string[] | undefined>("");
     const thread = useBBQuery<Thread>(`thread/${threadId}?pageNo=1&numPerPage=10`);
+    const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
+
+    const newPostMutate = useMutation({
+        mutationFn: () => {
+            return BBMutationFn<Message, Message>(`message/${threadId}`, currentMsg);
+        }
+    });
 
     const footer = useMemo(() =>{
         return [
             {
                 label: "Reply",
-                callback: () => setShowReployBox(!showReplyBox)
+                callback: () => setShowReplyBox(!showReplyBox)
             },
             {
                 label: "Add Poll",
@@ -77,6 +86,16 @@ const ForumThread:React.FC = () => {
             },
         ];
     },[thread]);
+
+    const clickModify = (msg: Message) => {
+        setShowReplyBox(true);
+        setMsgText(msg.currentMessage.unparsedText as string | number | readonly string[] | undefined);
+        setCurrentMsg(msg);
+    };
+
+    const submitPost = (msg:Message, threadId: Number) => {
+        
+    };
 
     return (
         <>
@@ -98,7 +117,7 @@ const ForumThread:React.FC = () => {
                                                 <Style.time className="m-2">January 1, 1978 12:00:00PM</Style.time>
                                                 <div className="d-flex justify-content-end">
                                                     <Style.buttonIcon className="m-2"><FontAwesomeIcon icon={faReply} className="me-1"/>Reply</Style.buttonIcon>
-                                                    <Style.buttonIcon className="m-2"><FontAwesomeIcon icon={faPen} className="me-1"/>Modify</Style.buttonIcon>
+                                                    <Style.buttonIcon className="m-2" onClick={() => clickModify(msg)}><FontAwesomeIcon icon={faPen} className="me-1"/>Modify</Style.buttonIcon>
                                                     <Style.buttonIcon className="m-2"><FontAwesomeIcon icon={faTrash} className="me-1"/>Remove</Style.buttonIcon>
                                                     <Style.buttonIcon className="m-2"><FontAwesomeIcon icon={faShuffle} className="me-1"/>Split Thread</Style.buttonIcon>
                                                     <Style.buttonIcon className="m-2"><FontAwesomeIcon icon={faBook} className="me-1"/>View History</Style.buttonIcon>
@@ -121,33 +140,8 @@ const ForumThread:React.FC = () => {
             <FooterButtons options={footer}/>
 
             {showReplyBox && (
-                <div className="mt-3">
-                    <Style.graveDigWarning className="p-4 mb-4">
-                        Warning: this topic has not been posted in for at least 14 days.
-                        Unless you're sure you want to reply, please consider starting a new topic. 
-                    </Style.graveDigWarning>
-
-                    <Form>
-                        <div>
-                            <Button>B</Button>
-                            <Button>I</Button>
-                            <Button>U</Button>
-                            <Button>S</Button>
-                            <span>|</span>
-                        </div>
-                        <Form.Group>
-                            <Form.Control 
-                                as="textarea" 
-                                rows={15}
-                                ref={textAreaRef}
-                                onBlur={() => cursorPosition = textAreaRef?.current?.selectionStart}
-                            />
-                        </Form.Group>
-                    </Form>
-                </div>    
-            )
-
-            }
+                <MessageEditor threadId={Number(threadId)}/>  
+            )}
         </>
     )
 };
