@@ -81,16 +81,9 @@ export type Message = BaseBB & {
   createdUser: User;
 };
 
-export type MessageHistory = BaseBB & {
-  messageId: Number;
-  messageText: String;
-  unparsedText: String;
-  currentFlag?: Boolean;
-  createdTsAsString: string;
-};
-
-export type BBPermissionLabel = {
-  label: string;
-  callback: () => void;
-  permissions: BBPermission[];
+export type MessageHistory = BaseBB& {
+    messageId: Number;
+	messageText: String;
+    unparsedText: String;
+	currentFlag?: Boolean;
 };
