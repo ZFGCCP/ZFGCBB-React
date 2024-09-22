@@ -56,7 +56,7 @@ const MessageEditor:React.FC<{threadId: Number}> = ({threadId}) => {
                         }
                     />
                 </Form.Group>
-                <button onClick={() => newPostMutator.mutate()}>test</button>
+                <div onClick={() => newPostMutator.mutate()}>test</div>
             </Form>
         </div> 
     )
