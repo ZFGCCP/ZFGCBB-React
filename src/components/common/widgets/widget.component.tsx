@@ -5,9 +5,12 @@ import { ThemeContext } from "../../../providers/theme/themeProvider";
 import type { Theme } from "../../../types/theme";
 
 const Style = {
-  widgetMain: styled.div<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.headerColor};
-    border: ${(props) => props.theme.borderWidth} solid black;
+    widgetMain: styled.div`
+        background-color: ${(props) => 
+            props.theme.widgetColor
+        };
+        border: .2rem solid black;
+        height: 100%
 
     .widget-title {
       border-bottom: ${(props) => props.theme.borderWidth} solid black;
@@ -16,19 +19,18 @@ const Style = {
   `,
 };
 
-const Widget: React.FC<{
-  widgetTitle?: String;
-  className?: String;
-  children: React.ReactNode;
-}> = ({ widgetTitle, className = "", children }) => {
-  const { currentTheme } = useContext(ThemeContext);
+const Widget:React.FC<{widgetTitle: String, className: String, children: React.ReactNode}> = ({widgetTitle, className = "", children}) => {
 
-  return (
-    <Style.widgetMain className={`${className}`} theme={currentTheme}>
-      {widgetTitle && <h6 className="p-1 m-0 widget-title">{widgetTitle}</h6>}
-      <div>{children}</div>
-    </Style.widgetMain>
-  );
+    const {currentTheme} = useContext(ThemeContext);
+
+    return (
+            <Style.widgetMain className={`${className}`} theme={currentTheme}>
+                <div className="p-1 widget-title">{widgetTitle}</div>
+                <div>
+                    {children}
+                </div>
+            </Style.widgetMain>
+    )
 };
 
 export default Widget;

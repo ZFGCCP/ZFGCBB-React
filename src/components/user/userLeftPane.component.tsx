@@ -1,45 +1,32 @@
-import type React from "react";
+import React from "react";
+import { User } from "../../types/user";
 import { styled } from "@linaria/react";
-import type { User } from "../../types/user";
 
 const Style = {
-  pane: styled.div`
-    border-right: 0.2rem solid black;
-  `,
+    avatar: styled.img`
+        width: 5rem;
+        height: 5rem;
+        border-radius: 50%;
 
-  userNameHeader: styled.div`
-    border-bottom: 1px solid black;
-    border-right: 0.2rem solid black;
-  `,
+        @media(min-width:768px){
+            width: 10rem;
+            height: 10rem;
+            border: .2rem solid black;
+            border-radius: 0;
+        }
+    `
+}
 
-  avatar: styled.img`
-    width: 5rem;
-    height: 5rem;
-    border-radius: 50%;
-
-    @media (min-width: 992px) {
-      width: 10rem;
-      height: 10rem;
-      border: 0.2rem solid black;
-      border-radius: 0;
-    }
-  `,
-};
-
-const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
-  return (
-    <span className="col-12 col-lg-2">
-      <Style.userNameHeader>
-        <div className="m-2 mt-0">{user?.displayName}</div>
-      </Style.userNameHeader>
-      <Style.pane className="left-pane p-2 d-flex flex-row-reverse flex-md-column align-items-center">
-        <div>{user.avatar && <Style.avatar src={user.avatar.url} />}</div>
-        <div className="d-none d-md-block">
-          <img src="http://localhost:8080/zfgbb/content/image/3" />
+const UserLeftPane:React.FC<{user: User}> = ({user}) => {
+    return (
+        <div className="left-pane p-2 col-12 col-md-3 d-flex flex-row-reverse flex-md-column justify-content-end align-items-center align-items-md-baseline">
+            <h6>{user?.displayName}</h6>
+            <div className="d-none d-md-block">Member</div>
+            <div>
+                <Style.avatar src="http://zfgc.com/forum/index.php?action=dlattach;attach=12126;type=avatar"/>
+            </div>
         </div>
-      </Style.pane>
-    </span>
-  );
+    )
 };
 
 export default UserLeftPane;
