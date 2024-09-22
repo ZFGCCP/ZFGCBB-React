@@ -5,7 +5,9 @@ import { useContext } from "react";
 
 const Style = {
     widgetMain: styled.div`
-        background-color: #1E2B44;
+        background-color: ${(props) => 
+            props.theme.widgetColor
+        };
         border: .2rem solid black;
         height: 100%
 
@@ -16,8 +18,11 @@ const Style = {
 };
 
 const Widget:React.FC<{widgetTitle: String, className: String, children: React.ReactNode}> = ({widgetTitle, className = "", children}) => {
+
+    const {currentTheme} = useContext(ThemeContext);
+
     return (
-            <Style.widgetMain className={`${className}`}>
+            <Style.widgetMain className={`${className}`} theme={currentTheme}>
                 <div className="p-1 widget-title">{widgetTitle}</div>
                 <div>
                     {children}

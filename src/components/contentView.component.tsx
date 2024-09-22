@@ -9,6 +9,7 @@ import ForumMain from "./routes/forum/forumMain.component";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Board from "./routes/forum/board.component";
 import ForumThread from "./routes/forum/thread.component";
+import UserProfileMaster from "./routes/user/userProfileMaster.component";
 
 const Style = {
     MainContent: styled.div`
@@ -44,6 +45,8 @@ const ContentView:React.FC = () => {
                         <Route path="/forum" element={<ForumMain/>}/>
                         <Route path="/forum/board/:boardId" element={<Board/>}/>
                         <Route path="/forum/thread/:threadId" element={<ForumThread/>}/>
+
+                        <Route path="/user-profile/:userId" element={<UserProfileMaster/>}/>
                     </Routes>
                 </BrowserRouter>
             </div>
