@@ -12,7 +12,7 @@ const midnightTheme = {
 const themeMap:Map<String, Theme> = new Map();
 themeMap.set("midnight", midnightTheme);
 
-const ThemeContext = createContext<Theme>(midnightTheme);
+const ThemeContext = createContext<ThemeWrapper>({currentTheme: midnightTheme});
 
 const ThemeContext = createContext<ThemeWrapper>({
   currentTheme: midnightTheme,

@@ -2,10 +2,11 @@ import type React from "react";
 import { useContext } from "react";
 import { styled } from "@linaria/react";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
-import type { Theme } from "../../../types/theme";
+import { useContext } from "react";
+import { Theme } from "../../../types/theme";
 
 const Style = {
-    widgetMain: styled.div`
+    widgetMain: styled.div<{theme: Theme}>`
         background-color: ${(props) => 
             props.theme.widgetColor
         };
@@ -19,11 +20,12 @@ const Style = {
   `,
 };
 
-const Widget:React.FC<{widgetTitle: String, className: String, children: React.ReactNode}> = ({widgetTitle, className = "", children}) => {
+const Widget:React.FC<{widgetTitle: String, className?: String, children: React.ReactNode}> = ({widgetTitle, className = "", children}) => {
 
     const {currentTheme} = useContext(ThemeContext);
 
     return (
+            
             <Style.widgetMain className={`${className}`} theme={currentTheme}>
                 <div className="p-1 widget-title">{widgetTitle}</div>
                 <div>

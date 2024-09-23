@@ -4,9 +4,8 @@ import { useBBQuery } from "../../hooks/useBBQuery";
 import type { User } from "../../types/user";
 
 const emptyUser = {
-  id: 0,
-  displayName: "",
-  permissions: [],
+    id: 0,
+    displayName: ""
 } as User;
 
 const UserContext = createContext<User>(emptyUser);
