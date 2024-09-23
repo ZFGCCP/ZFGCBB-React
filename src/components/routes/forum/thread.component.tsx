@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useCallback } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import { styled } from "@linaria/react";
 import Widget from "../../common/widgets/widget.component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -59,12 +59,6 @@ const ForumThread:React.FC = () => {
     const [ msgText, setMsgText ] = useState<string | number | readonly string[] | undefined>("");
     const thread = useBBQuery<Thread>(`thread/${threadId}?pageNo=1&numPerPage=10`);
     const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
-
-    const newPostMutate = useMutation({
-        mutationFn: () => {
-            return BBMutationFn<Message, Message>(`message/${threadId}`, currentMsg);
-        }
-    });
 
     const footer = useMemo(() =>{
         return [
