@@ -101,7 +101,7 @@ const Board:React.FC = () => {
                     <div>
                         ZFGC &gt;&gt; ZFGC.com &gt;&gt; Updates
                     </div>
-                    <Widget widgetTitle={board?.boardName}>
+                    {board && <Widget widgetTitle={board.boardName}>
                         <Table striped hover responsive>
                             <thead>
                                 <Style.row className="tableRow">
@@ -114,7 +114,7 @@ const Board:React.FC = () => {
                                     <th>Latest Post</th>
                                 </Style.row>
                                 <Style.row className="subRow">
-                                    <th colSpan="7">
+                                    <th colSpan={7}>
                                         MGZero and 1 other guests are using this board
                                     </th>
                                 </Style.row>
@@ -136,7 +136,7 @@ const Board:React.FC = () => {
                         <div>
                             paginator here
                         </div>
-                    </Widget>
+                    </Widget>}
                 </div>
             </div>
             <FooterButtons options={footer}/>

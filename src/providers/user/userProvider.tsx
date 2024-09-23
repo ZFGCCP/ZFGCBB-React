@@ -3,7 +3,7 @@ import { useBBQuery } from "../../hooks/useBBQuery";
 import { User } from "../../types/user";
 
 const emptyUser = {
-    userId: 0,
+    id: 0,
     displayName: ""
 } as User;
 

@@ -15,10 +15,10 @@ const Style = {
 }
 
 const MessageEditor:React.FC<{threadId: Number}> = ({threadId}) => {
-    const textAreaRef = useRef();
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const currentMsg = useBBQuery<Message>(`message/template?threadId=${threadId}`);
 
-    let cursorPosition = 0;
+    const cursorPosition = useRef<number | undefined>(0);
     const buildMessagePost = () => {
         return[
             `message/${threadId}`,
@@ -48,7 +48,7 @@ const MessageEditor:React.FC<{threadId: Number}> = ({threadId}) => {
                         as="textarea" 
                         rows={15}
                         ref={textAreaRef}
-                        onBlur={() => cursorPosition = textAreaRef?.current?.selectionStart}
+                        onBlur={() => cursorPosition.current = textAreaRef?.current?.selectionStart}
                         onChange={(e) => {
                             if(currentMsg){
                                 currentMsg.currentMessage.unparsedText = e.target.value}

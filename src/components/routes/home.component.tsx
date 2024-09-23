@@ -16,14 +16,10 @@ const Home:React.FC = () => {
             <div className="col-12 col-lg-6 my-2">
                 <Widget widgetTitle="Featured Project">
                         <div className="d-flex">
-                            <Style.FeaturedProjectImg src="http://zfgc.com/files/potms/triforceSaga.png"/>
-                            <div className="ms-2 mt-2">
-                                <h4>Triforce Saga</h4>
-                                <h5>Developer: chaoazul1</h5>
-
-                                <div>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                </div>
+                            <Style.FeaturedProjectImg src="http://zfgc.com/files/potms/triforceSaga.png" className="col-12 col-lg-6"/>
+                            <div className="ms-2 mt-2 col-12 col-lg-6">
+                                <h5>Triforce Saga</h5>
+                                <h6>Developer: chaoazul1</h6>
                             </div>
                         </div>
                 </Widget>

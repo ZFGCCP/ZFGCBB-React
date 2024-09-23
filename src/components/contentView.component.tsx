@@ -25,20 +25,20 @@ const ContentView:React.FC = () => {
     const {displayName} = useContext(UserContext);
 
     return (
-        <Style.MainContent className="d-flex flex-column justify-content-center">
+        <Style.MainContent className="d-flex flex-column">
             <Style.header className="d-flex mb-5 justify-content-between">
                 <div>
                     Zelda Fan Game Central
                 </div>
                 <Navigator/>
                 <div>
-                    <div className="d-flex float-end me-2 flex-column">
+                    <div className="d-flex me-2 flex-column">
                         <div>Welcome, {displayName}! Please login or register</div>
                         <div>Did you miss your activation email?</div>
                     </div>
                 </div>
             </Style.header>
-            <div className="container-xl">
+            <div className="container-xxl">
                 <BrowserRouter>
                     <Routes>
                         <Route path="/home" element={<Home/>}/>
