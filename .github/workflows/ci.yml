@@ -14,5 +14,5 @@ jobs:
           with:
             node-version: ${{ matrix.node-version }}
         - run: corepack enable
-        - run: yarn install --immutable --immutable-cache --check-cache
+        - run: yarn install --immutable
         - run: yarn build
