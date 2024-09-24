@@ -37,5 +37,6 @@
     "vite": "^5.3.5"
   },
   "keywords": [],
-  "description": "@vitejs/create-app v2.4.1"
+  "description": "@vitejs/create-app v2.4.1",
+  "packageManager": "yarn@4.5.0+sha256.cc00dce5de4f68d11450519a0f69eadf2a1cbe5cc0d8e740bfac817a31d76874"
 }
