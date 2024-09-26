@@ -32,7 +32,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.14.8, @babel/core@npm:^7.22.15, @babel/core@npm:^7.22.5":
+"@babel/core@npm:^7.14.8, @babel/core@npm:^7.22.15, @babel/core@npm:^7.22.5, @babel/core@npm:^7.23.5":
   version: 7.25.2
   resolution: "@babel/core@npm:7.25.2"
   dependencies:
@@ -872,7 +872,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-modules-commonjs@npm:^7.22.15, @babel/plugin-transform-modules-commonjs@npm:^7.24.7, @babel/plugin-transform-modules-commonjs@npm:^7.24.8":
+"@babel/plugin-transform-modules-commonjs@npm:^7.22.15, @babel/plugin-transform-modules-commonjs@npm:^7.23.3, @babel/plugin-transform-modules-commonjs@npm:^7.24.7, @babel/plugin-transform-modules-commonjs@npm:^7.24.8":
   version: 7.24.8
   resolution: "@babel/plugin-transform-modules-commonjs@npm:7.24.8"
   dependencies:
@@ -1449,7 +1449,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.22.15, @babel/traverse@npm:^7.24.7, @babel/traverse@npm:^7.24.8, @babel/traverse@npm:^7.25.0, @babel/traverse@npm:^7.25.1, @babel/traverse@npm:^7.25.2, @babel/traverse@npm:^7.25.3, @babel/traverse@npm:^7.25.4":
+"@babel/traverse@npm:^7.22.15, @babel/traverse@npm:^7.23.5, @babel/traverse@npm:^7.24.7, @babel/traverse@npm:^7.24.8, @babel/traverse@npm:^7.25.0, @babel/traverse@npm:^7.25.1, @babel/traverse@npm:^7.25.2, @babel/traverse@npm:^7.25.3, @babel/traverse@npm:^7.25.4":
   version: 7.25.6
   resolution: "@babel/traverse@npm:7.25.6"
   dependencies:
@@ -1464,7 +1464,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.22.15, @babel/types@npm:^7.24.7, @babel/types@npm:^7.24.8, @babel/types@npm:^7.25.0, @babel/types@npm:^7.25.2, @babel/types@npm:^7.25.6, @babel/types@npm:^7.4.4":
+"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.22.15, @babel/types@npm:^7.23.5, @babel/types@npm:^7.24.7, @babel/types@npm:^7.24.8, @babel/types@npm:^7.25.0, @babel/types@npm:^7.25.2, @babel/types@npm:^7.25.6, @babel/types@npm:^7.4.4":
   version: 7.25.6
   resolution: "@babel/types@npm:7.25.6"
   dependencies:
@@ -2263,7 +2263,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wyw-in-js/processor-utils@npm:^0.5.3":
+"@wyw-in-js/processor-utils@npm:0.5.4, @wyw-in-js/processor-utils@npm:^0.5.3":
   version: 0.5.4
   resolution: "@wyw-in-js/processor-utils@npm:0.5.4"
   dependencies:
@@ -2281,6 +2281,41 @@ __metadata:
     find-up: "npm:^5.0.0"
     minimatch: "npm:^9.0.3"
   checksum: 10c0/47ec8bf5196679c42bdd1fa0f9831171fd8d8727031bbf7dcafbdbe19ee658660343405249d77ab2b9e7c1004ff30e4e6eaa4790784f223118089812020d0d4b
+  languageName: node
+  linkType: hard
+
+"@wyw-in-js/transform@npm:0.5.4":
+  version: 0.5.4
+  resolution: "@wyw-in-js/transform@npm:0.5.4"
+  dependencies:
+    "@babel/core": "npm:^7.23.5"
+    "@babel/generator": "npm:^7.23.5"
+    "@babel/helper-module-imports": "npm:^7.22.15"
+    "@babel/plugin-transform-modules-commonjs": "npm:^7.23.3"
+    "@babel/template": "npm:^7.22.15"
+    "@babel/traverse": "npm:^7.23.5"
+    "@babel/types": "npm:^7.23.5"
+    "@wyw-in-js/processor-utils": "npm:0.5.4"
+    "@wyw-in-js/shared": "npm:0.5.4"
+    babel-merge: "npm:^3.0.0"
+    cosmiconfig: "npm:^8.0.0"
+    happy-dom: "npm:^12.5.0"
+    source-map: "npm:^0.7.4"
+    stylis: "npm:^4.3.0"
+    ts-invariant: "npm:^0.10.3"
+  checksum: 10c0/ec083911264f0e607f3b29afe3d8b661efa69b4563580786ac47fe425ee32679293930fa0e78dc5269948035fb25dc0c1a4c2c8b0963c5fd396e406b1110f79b
+  languageName: node
+  linkType: hard
+
+"@wyw-in-js/vite@npm:^0.5.4":
+  version: 0.5.4
+  resolution: "@wyw-in-js/vite@npm:0.5.4"
+  dependencies:
+    "@wyw-in-js/shared": "npm:0.5.4"
+    "@wyw-in-js/transform": "npm:0.5.4"
+  peerDependencies:
+    vite: ">=3.2.7"
+  checksum: 10c0/6dfbdef26a8bf1efb837662fe5f3c6f23b3279c8f565f936fe435615a3fb2d5d5b1ff9277e5ab08295918f2ea52539f9bc6df22cb493c059db16bbda7f090732
   languageName: node
   linkType: hard
 
@@ -2307,6 +2342,7 @@ __metadata:
     "@types/react": "npm:^18.3.9"
     "@types/react-dom": "npm:^18.3.0"
     "@vitejs/plugin-react-refresh": "npm:^1.3.1"
+    "@wyw-in-js/vite": "npm:^0.5.4"
     axios: "npm:^1.7.7"
     bootstrap: "npm:^5.3.3"
     html-react-parser: "npm:^5.1.16"
@@ -3065,6 +3101,20 @@ __metadata:
     whatwg-encoding: "npm:^2.0.0"
     whatwg-mimetype: "npm:^3.0.0"
   checksum: 10c0/5b1675d6c15817e730a977aba6be576e9456e58d0641b32c57514bbc4cc0ba4ff575d37fbe5635b996d9648d34616cd8e17fae1bde42f9954b3bc7a829145a27
+  languageName: node
+  linkType: hard
+
+"happy-dom@npm:^12.5.0":
+  version: 12.10.3
+  resolution: "happy-dom@npm:12.10.3"
+  dependencies:
+    css.escape: "npm:^1.5.1"
+    entities: "npm:^4.5.0"
+    iconv-lite: "npm:^0.6.3"
+    webidl-conversions: "npm:^7.0.0"
+    whatwg-encoding: "npm:^2.0.0"
+    whatwg-mimetype: "npm:^3.0.0"
+  checksum: 10c0/fbf8647e17c4af5c166d7c4b6963f4bbc9d1c279e94a4c77234b1fecca98c59989b894c7b186f5107e1062d40ffd84f12350b757f51330a5fc1c5228eb199517
   languageName: node
   linkType: hard
 
@@ -4164,7 +4214,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:^0.7.3":
+"source-map@npm:^0.7.3, source-map@npm:^0.7.4":
   version: 0.7.4
   resolution: "source-map@npm:0.7.4"
   checksum: 10c0/dc0cf3768fe23c345ea8760487f8c97ef6fca8a73c83cd7c9bf2fde8bc2c34adb9c0824d6feb14bc4f9e37fb522e18af621543f1289038a66ac7586da29aa7dc
@@ -4249,6 +4299,13 @@ __metadata:
   version: 3.5.4
   resolution: "stylis@npm:3.5.4"
   checksum: 10c0/5da2f4527d6f3b4877bd575dca068698ddc7882d0f4c3f69178f19328726a2b885e03d759ef82bb06e9bd1a5d47f1f2ce17cc5acbeee2435d42940a261ee11fd
+  languageName: node
+  linkType: hard
+
+"stylis@npm:^4.3.0":
+  version: 4.3.4
+  resolution: "stylis@npm:4.3.4"
+  checksum: 10c0/4899c2674cd2538e314257abd1ba7ea3c2176439659ddac6593c78192cfd4a06f814a0a4fc69bc7f8fcc6b997e13d383dd9b578b71074746a0fb86045a83e42d
   languageName: node
   linkType: hard
 
