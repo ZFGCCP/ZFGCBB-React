@@ -1,6 +1,7 @@
 {
-  "name": "linaria-react",
+  "name": "@zfgccp/zfgcbb-react",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -25,12 +26,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",
-    "@popperjs/core": "^2.11.8",
     "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
     "@linaria/vite": "^5.0.4",
+    "@popperjs/core": "^2.11.8",
     "@types/babel__core": "^7.20.5",
     "@types/babel__traverse": "^7.20.6",
+    "@types/debug": "^4.1.12",
     "@types/node": "^22.7.2",
     "@types/react": "^18.3.9",
     "@types/react-dom": "^18.3.0",
