@@ -4,9 +4,13 @@ import { UserContext } from "../user/userProvider";
 
 
 const midnightTheme = {
+    borderWidth: ".2rem",
     backgroundColor: "#204378",
     widgetColor: "#1E2B44",
-    black: "black"
+    black: "black",
+    tableRow: "#1E2B44",
+    tableRowAlt:"#25334e",
+    textColor: "white"
 } as Theme;
 
 const themeMap:Map<String, Theme> = new Map();

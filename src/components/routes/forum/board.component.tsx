@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { useParams } from "react-router";
 import Widget from "../../common/widgets/widget.component";
 import { styled } from "@linaria/react";
@@ -7,12 +7,14 @@ import { useBBQuery } from "../../../hooks/useBBQuery";
 import { Forum } from "../../../types/forum";
 import { Link } from "react-router-dom";
 import FooterButtons from "./footerButtons.component";
+import { Theme } from "../../../types/theme";
+import { ThemeContext } from "../../../providers/theme/themeProvider";
 
 const Style = {
-    row: styled.tr`
+    row: styled.tr<{theme:Theme}>`
         &.tableRow{
             th{
-                background-color: #1E2B44;
+                background-color: ${(props) => props.theme.widgetColor};
                 color: white;
             }
 
@@ -23,13 +25,13 @@ const Style = {
 
                 &:nth-child(odd){
                     td{
-                        background-color: #25334e;
+                        background-color: ${(props) => props.theme.tableRowAlt};
                     }
                 }
 
                 &:nth-child(even){
                     td{
-                        background-color: #1e2b44;
+                        background-color: ${(props) => props.theme.tableRow};
                     }
                 }
             }
@@ -72,6 +74,7 @@ const Style = {
 const Board:React.FC = () => {
     const {boardId} = useParams();
     const board  = useBBQuery<Forum>(`board/${boardId}`)
+    const {currentTheme} = useContext(ThemeContext);
 
     const footer = useMemo(() =>{
         return [
@@ -104,7 +107,7 @@ const Board:React.FC = () => {
                     {board && <Widget widgetTitle={board.boardName}>
                         <Table striped hover responsive>
                             <thead>
-                                <Style.row className="tableRow">
+                                <Style.row className="tableRow" theme={currentTheme}>
                                     <th></th>
                                     <th></th>
                                     <th>Subject</th>
@@ -113,7 +116,7 @@ const Board:React.FC = () => {
                                     <th>Views</th>
                                     <th>Latest Post</th>
                                 </Style.row>
-                                <Style.row className="subRow">
+                                <Style.row className="subRow" theme={currentTheme}>
                                     <th colSpan={7}>
                                         MGZero and 1 other guests are using this board
                                     </th>
@@ -121,7 +124,7 @@ const Board:React.FC = () => {
                             </thead>
                             <tbody>
                                 {board?.threads?.map(thread => {
-                                    return <Style.row className="tableRow body">
+                                    return <Style.row className="tableRow body" theme={currentTheme}>
                                                 <td>abced</td>
                                                 <td>abcdef</td>
                                                 <td><Link to={`/forum/thread/${thread.id}`}>{thread.threadName}</Link></td>
