@@ -19,7 +19,7 @@ const Style = {
 
 const UserLeftPane:React.FC<{user: User}> = ({user}) => {
     return (
-        <div className="left-pane p-2 col-12 col-md-3 d-flex flex-row-reverse flex-md-column justify-content-end align-items-center align-items-md-baseline">
+        <div className="left-pane p-2 col-12 col-md-3 d-flex flex-row-reverse flex-md-column align-items-center align-items-md-baseline">
             <h6>{user?.displayName}</h6>
             <div className="d-none d-md-block">Member</div>
             <div>
