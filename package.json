@@ -24,6 +24,8 @@
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@popperjs/core": "^2.11.8",
     "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
     "@linaria/vite": "^5.0.4",
