@@ -1,21 +1,21 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { ThemeProvider } from "./providers/theme/themeProvider";
-import ContentView from "./components/contentView.component";
 import { UserProvider } from "./providers/user/userProvider";
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import QueryProvider from "./providers/query/queryProvider";
+import { RouterProvider } from "react-router-dom";
 
-const App:React.FC = () => {
+import routes from "./router.tsx";
+
+const App: React.FC = () => {
   return (
-    <>
-      <QueryProvider>
-        <UserProvider>
-          <ThemeProvider>
-            <ContentView/>
-          </ThemeProvider>
-        </UserProvider>
-      </QueryProvider>
-    </>
+    <QueryProvider>
+      <UserProvider>
+        <ThemeProvider>
+          <RouterProvider router={routes} fallbackElement={<p>Loading...</p>} />
+        </ThemeProvider>
+      </UserProvider>
+    </QueryProvider>
   );
 };
 
