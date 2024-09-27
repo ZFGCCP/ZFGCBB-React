@@ -1,12 +1,14 @@
 import React, { useContext } from "react";
 import ForumThread from "../../../components/forum/boards/thread.component";
+import { useParams } from "react-router-dom";
 
-const UserProfile: React.FC = () => {
+const ForumThreadPage: React.FC = () => {
+  const { threadId } = useParams();
   return (
     <>
-      <ForumThread/>
+      <ForumThread threadId={threadId!} />
     </>
   );
 };
 
-export default UserProfile;
+export default ForumThreadPage;

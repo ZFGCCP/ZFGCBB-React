@@ -22,8 +22,7 @@ const Style = {
   `,
 };
 
-const UserProfileMaster: React.FC = () => {
-  const { userId } = useParams();
+const UserProfileMaster: React.FC<{ userId: string }> = ({ userId }) => {
   const user = useBBQuery<User>(`user-profile/${userId}`);
   const { currentTheme } = useContext(ThemeContext);
 
