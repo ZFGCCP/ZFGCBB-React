@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext} from "react";
 import Widget from "../../components/common/widgets/widget.component";
 import { styled } from "@linaria/react";
 import { Theme } from "../../types/theme";
+import { ThemeContext } from "../../providers/theme/themeProvider";
 
 const Style = {
   accordionWrapper: styled.div`
@@ -16,6 +17,7 @@ const Style = {
 };
 
 const UserRegistration: React.FC = () => {
+  const { currentTheme } = useContext(ThemeContext);
   return (
     <div className="row">
       <div className="col-12 my-2">
