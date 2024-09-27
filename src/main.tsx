@@ -4,7 +4,6 @@ import { css } from "@linaria/core";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 
-
 css`
   :global() {
     :root {
@@ -35,6 +34,6 @@ if (!root) throw new Error("Missing root node");
 
 createRoot(root).render(
   <StrictMode>
-      <App />
-  </StrictMode>
+    <App />
+  </StrictMode>,
 );
