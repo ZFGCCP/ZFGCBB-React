@@ -23,7 +23,7 @@ const ContentView: React.FC = () => {
           <div className="d-flex me-2 flex-column">
             <div>
               Welcome, {displayName}! Please login or{" "}
-              <Link to="/user/userRegistration">register</Link>
+              <Link to="/user/registration">register</Link>
             </div>
             <div>Did you miss your activation email?</div>
           </div>

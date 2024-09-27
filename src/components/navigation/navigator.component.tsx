@@ -36,7 +36,7 @@ const Navigator: React.FC = () => {
   return (
     <div className="d-flex pt-3">
       <NavTab title="Home" path="/" />
-      <NavTab title="Forum" path="/forum/forumMain" />
+      <NavTab title="Forum" path="/forum" />
       <NavTab title="Chat" path="/" />
       <NavTab title="Wiki" path="/" />
       <NavTab title="Projects" path="/" />
