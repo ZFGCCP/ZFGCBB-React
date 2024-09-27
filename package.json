@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "check": "tsc --noEmit  --project tsconfig.json --composite false --skipLibCheck && prettier . --check",
+    "check": "tsc --noEmit  --project tsconfig.json --composite false && prettier . --check",
     "format": "prettier . --write",
-    "build": "tsc --project tsconfig.json && vite build",
+    "build": "tsc && vite build",
     "serve": "vite preview"
   },
   "dependencies": {
