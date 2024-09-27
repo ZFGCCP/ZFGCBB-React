@@ -1,7 +1,6 @@
-import type React from "react";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import ForumThread from "../../../components/forum/boards/thread.component";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 
 const ForumThreadPage: React.FC = () => {
   const { threadId } = useParams();

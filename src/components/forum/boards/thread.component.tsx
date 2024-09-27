@@ -59,8 +59,9 @@ const Style = {
   `,
 };
 
-const ForumThread: React.FC = () => {
-  const { threadId: paramsThreadId } = useParams();
+const ForumThread: React.FC<{ threadId: string }> = ({
+  threadId: paramsThreadId,
+}) => {
   const threadId = parseInt(paramsThreadId!);
 
   const textAreaRef = useRef();
