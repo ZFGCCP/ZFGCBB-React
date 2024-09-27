@@ -1,15 +1,10 @@
 import type React from "react";
 import { styled } from "@linaria/react";
-import BBLink from "../common/bbLink";
+import { Link } from "react-router-dom";
 
 const Style = {
   subTabs: styled.div`
     background-color: #1e2b44;
-  `,
-
-  wrapper: styled.div`
-    position: relative;
-    z-index: 2;
   `,
 };
 
@@ -18,7 +13,6 @@ const NavTabStyle = {
     border: 0.2rem solid black;
     background-color: #1e2b44;
     border-bottom: 0;
-    height: 2rem;
 
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
@@ -30,32 +24,24 @@ const NavTab: React.FC<{ title: String; path: `/${string}` }> = ({
   path,
 }) => {
   return (
-    <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
-      <BBLink to={path} relative="path">
+    <NavTabStyle.tab className="d-flex px-5 mx-1 align-items-center">
+      <Link to={path} relative="path">
         {title}
-      </BBLink>
+      </Link>
     </NavTabStyle.tab>
   );
 };
 
 const Navigator: React.FC = () => {
   return (
-    <Style.wrapper className="d-none d-md-flex pt-3 align-items-end">
+    <div className="d-flex pt-3">
       <NavTab title="Home" path="/" />
       <NavTab title="Forum" path="/forum" />
-      <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
-        <BBLink to={"https://discord.gg/NP2nNKjun6"} relative="path">
-          Chat
-        </BBLink>
-      </NavTabStyle.tab>
-      <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
-        <BBLink to={"http://wiki.zfgc.com"} relative="path">
-          Wiki
-        </BBLink>
-      </NavTabStyle.tab>
+      <NavTab title="Chat" path="/" />
+      <NavTab title="Wiki" path="/" />
       <NavTab title="Projects" path="/" />
       <NavTab title="Resources" path="/" />
-    </Style.wrapper>
+    </div>
   );
 };
 

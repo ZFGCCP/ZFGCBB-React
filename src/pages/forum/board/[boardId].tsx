@@ -1,48 +1,58 @@
-import type React from "react";
-import { Suspense, useContext, useMemo, useState } from "react";
+import React, { useContext, useMemo } from "react";
 import { useParams } from "react-router";
-import { styled } from "@linaria/react";
-import { Button } from "react-bootstrap";
-
 import Widget from "../../../components/common/widgets/widget.component";
+import { styled } from "@linaria/react";
+import { Button, Table } from "react-bootstrap";
 import { useBBQuery } from "../../../hooks/useBBQuery";
-import type { Board } from "../../../types/forum";
-import type { Theme } from "../../../types/theme";
+import { Forum } from "../../../types/forum";
+import { Link } from "react-router-dom";
+import FooterButtons from "../../../components/forum/boards/footerButtons.component";
+import { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
-import BBLink from "../../../components/common/bbLink";
-import { Pagination } from "react-bootstrap";
-import BBPaginator from "../../../components/common/paginator/bbPaginator.component";
-import BBTable from "../../../components/common/tables/bbTable.component";
-import BoardSummaryView from "../../../components/forum/boards/boardSummary.component";
 
 const Style = {
-  forumDesc: styled.div`
-    font-size: 0.8rem;
-  `,
-
-  boardFooter: styled.div<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.footerColor};
-  `,
-
   row: styled.tr<{ theme: Theme }>`
+    &.tableRow {
+      th {
+        background-color: ${(props) => props.theme.widgetColor};
+        color: white;
+      }
+
+      &.body {
+        td {
+          color: white;
+        }
+
+        &:nth-child(odd) {
+          td {
+            background-color: ${(props) => props.theme.tableRowAlt};
+          }
+        }
+
+        &:nth-child(even) {
+          td {
+            background-color: ${(props) => props.theme.tableRow};
+          }
+        }
+      }
+    }
+
     &.subRow {
       th {
-        background-color: ${(props) => props.theme.black};
-        color: ${(props) => props.theme.textColor};
+        background-color: black;
+        color: white;
         font-size: 0.75rem;
-        border: 0;
       }
     }
   `,
 
-  FooterButton: styled(Button)<{ theme: Theme }>`
+  FooterButton: styled(Button)`
     &.footer-btn {
       border-top-left-radius: 0;
       border-top-right-radius: 0;
       background-color: #25334e;
       border-top: 0;
-      border: ${(props) => props.theme.borderWidth} solid
-        ${(props) => props.theme.black};
+      border: 0.2rem solid black;
       padding-right: 0.2rem;
       border-bottom-right-radius: 0;
       border-bottom-left-radius: 0;
@@ -58,37 +68,12 @@ const Style = {
       }
     }
   `,
-
-  pagination: styled(Pagination)<{ theme: Theme }>`
-    &.pagination {
-      margin-bottom: 0;
-
-      li.page-item {
-        &:hover {
-          background-color: ${(props) => props.theme.backgroundColor};
-        }
-
-        a {
-          border: 0;
-        }
-      }
-    }
-  `,
-
-  smallText: styled.div`
-    font-size: 0.8rem;
-  `,
 };
 
-const BoardContainer: React.FC = () => {
+const Board: React.FC = () => {
   const { boardId } = useParams();
+  const board = useBBQuery<Forum>(`board/${boardId}`);
   const { currentTheme } = useContext(ThemeContext);
-  const [currentPage, setCurrentPage] = useState(1);
-  const { data: board } = useBBQuery<Board>(
-    `board/${boardId}?pageNo=${currentPage}`,
-    0,
-    0,
-  );
 
   const footer = useMemo(() => {
     return [
@@ -111,118 +96,58 @@ const BoardContainer: React.FC = () => {
     ];
   }, [board]);
 
-  const loadNewPage = (pageNo: number) => {
-    setCurrentPage(pageNo);
-  };
-
   return (
     <>
       <div className="row">
         <div className="col-12 my-2">
-          {board && board.childBoards && board?.childBoards?.length > 0 && (
-            <Widget widgetTitle={"Child Boards"}>
-              <BoardSummaryView subBoards={board.childBoards} />
-            </Widget>
-          )}
-
-          <div className="my-3">ZFGC &gt;&gt; ZFGC.com &gt;&gt; Updates</div>
-          
-          <Widget widgetTitle={board?.boardName}>
-            <BBTable>
-              <thead>
-                <Style.row className="tableRow" theme={currentTheme}>
-                  <th></th>
-                  <th className="d-none d-sm-table-cell"></th>
-                  <th>Subject</th>
-                  <th className="d-none d-md-table-cell">Author</th>
-                  <th className="d-none d-lg-table-cell">Replies</th>
-                  <th className="d-none d-lg-table-cell">Views</th>
-                  <th className="d-none d-md-table-cell d-lg-none"></th>
-                  <th className="d-none d-md-table-cell">Latest Post</th>
-                </Style.row>
-                <Style.row className="subRow" theme={currentTheme}>
-                  <th colSpan={7}></th>
-                </Style.row>
-              </thead>
-              <tbody>
-                <Suspense>
-                  {board?.unStickyThreads?.map((thread) => {
+          <div>ZFGC &gt;&gt; ZFGC.com &gt;&gt; Updates</div>
+          {board && (
+            <Widget widgetTitle={board.boardName}>
+              <Table striped hover responsive>
+                <thead>
+                  <Style.row className="tableRow" theme={currentTheme}>
+                    <th></th>
+                    <th></th>
+                    <th>Subject</th>
+                    <th>Author</th>
+                    <th>Replies</th>
+                    <th>Views</th>
+                    <th>Latest Post</th>
+                  </Style.row>
+                  <Style.row className="subRow" theme={currentTheme}>
+                    <th colSpan={7}>
+                      MGZero and 1 other guests are using this board
+                    </th>
+                  </Style.row>
+                </thead>
+                <tbody>
+                  {board?.threads?.map((thread) => {
                     return (
                       <Style.row className="tableRow body" theme={currentTheme}>
+                        <td>abced</td>
+                        <td>abcdef</td>
                         <td>
-                          <div>
-                            <img src="http://zfgc.com/forum/Themes/midnight/images/topic/normal_post.gif" />
-                          </div>
-                          <div className="d-block d-sm-none mt-3">
-                            <img src="http://zfgc.com/forum/Themes/midnight/images/post/xx.gif" />
-                          </div>
-                        </td>
-                        <td className="d-none d-sm-table-cell">
-                          <img src="http://zfgc.com/forum/Themes/midnight/images/post/xx.gif" />
-                        </td>
-                        <td>
-                          <BBLink to={`/forum/thread/${thread.id}`}>
+                          <Link to={`/forum/thread/${thread.id}`}>
                             {thread.threadName}
-                          </BBLink>
-                          <Style.smallText className="d-block d-md-none">
-                            Author: {thread.createdUser?.displayName}
-                          </Style.smallText>
-                          <Style.smallText className="d-block d-md-none">
-                            <span>Replies: {thread.postCount.toString()}</span>
-                            <span className="ms-2">
-                              Views: {thread.viewCount.toString()}
-                            </span>
-                          </Style.smallText>
-                          <Style.smallText className="d-block d-md-none">
-                            Latest Post by: {thread.latestMessage?.ownerName}
-                          </Style.smallText>
+                          </Link>
                         </td>
-                        <td className="d-none d-md-table-cell">
-                          {thread.createdUser?.displayName}
-                        </td>
-                        <td className="d-none d-lg-table-cell">
-                          {thread.postCount.toString()}
-                        </td>
-                        <td className="d-none d-lg-table-cell">
-                          {thread.viewCount.toString()}
-                        </td>
-                        <td className="d-none d-md-table-cell d-lg-none">
-                          <Style.smallText>
-                            Replies: {thread.postCount.toString()}
-                          </Style.smallText>
-                          <Style.smallText>
-                            Views: {thread.viewCount.toString()}
-                          </Style.smallText>
-                        </td>
-                        <td className="d-none d-md-table-cell">
-                          <Style.smallText>
-                            by {thread.latestMessage?.ownerName}
-                          </Style.smallText>
-                          <Style.smallText>
-                            on {thread.latestMessage?.lastPostTsAsString}
-                          </Style.smallText>
-                        </td>
+                        <td>{thread.createdUser?.displayName}</td>
+                        <td>100</td>
+                        <td>100</td>
+                        <td>ok hold up I lied</td>
                       </Style.row>
                     );
                   })}
-
-                </Suspense>
-              </tbody>
-            </BBTable>
-            <Style.boardFooter theme={currentTheme}>
-              {board && (
-                <BBPaginator
-                  numPages={board.pageCount}
-                  currentPage={currentPage}
-                  onPageChange={loadNewPage}
-                />
-              )}
-            </Style.boardFooter>
-          </Widget>
+                </tbody>
+              </Table>
+              <div>paginator here</div>
+            </Widget>
+          )}
         </div>
       </div>
+      <FooterButtons options={footer} />
     </>
   );
 };
 
-export default BoardContainer;
+export default Board;

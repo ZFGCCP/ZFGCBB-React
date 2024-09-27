@@ -1,60 +1,36 @@
-import { lazy, Suspense } from "react";
-import { createBrowserRouter } from "react-router";
+import { lazy } from "react";
+import { createBrowserRouter } from "react-router-dom";
 
-export type BBPage = {
-  default: React.FC;
-  layout?: React.FC;
-};
+const ContentView = lazy(() => import("./components/contentView.component"));
 
-// See https://vite.dev/guide/features#glob-import
-const imported_pages = import.meta.glob("./pages/**/*.tsx") as Record<
-  string,
-  () => Promise<BBPage>
->;
-
-async function lazyLoadPage(path: string) {
-  const { default: Component, layout } = await imported_pages[path]();
-  return { Component, layout };
-}
-
-async function lazyLoadPageWithLayout(route_path: string) {
-  const { layout } = await lazyLoadPage(route_path);
-  if (!layout)
-    return import("./components/common/layouts/contentView.component");
-
-  return { default: layout! };
-}
-
-const regexRouteMatchStartPath = /\.\//;
-const regexRouteMatchComponentName =
+const imported_routes = import.meta.glob("./pages/**/*.tsx", {
+  import: "default",
+});
+const regex_home_route_matches = /\.\/pages\/home.tsx$/;
+const regex_route_start_matches = /\.\//;
+const regex_route_path_matches =
   /\/(src|pages|index|home|components|routes)|(\.tsx|\.component.tsx)$/g;
-const regexRouteMatchTripleDotSlug = /\[\.{3}.+\]/;
-const regexRouteMatchSlugName = /\[(.+)\]/;
+const regex_slug_matches = /\[\.{3}.+\]/;
+const regex_slug_value_matches = /\[(.+)\]/;
 
-const routes = Object.keys(imported_pages).map((page) => {
-  const path = page
-    .replace(regexRouteMatchStartPath, "/") // replaces the ./ at the start of the path with a /
-    .replace(regexRouteMatchComponentName, "") // strips the .tsx or .component.tsx, etc from the end of the path
-    .replace(regexRouteMatchTripleDotSlug, "*") // replaces [...] with *
-    .replace(regexRouteMatchSlugName, ":$1"); // replaces [paramName] with :paramName
+async function lazyLoad(path: string) {
+  const Component = (await imported_routes[path]()) as React.FC;
+  return { Component };
+}
 
-  const LayoutElement = lazy(() => lazyLoadPageWithLayout(page));
-  const RouteElement = (
-    <Suspense fallback={<div>Loading...</div>}>
-      <LayoutElement />
-    </Suspense>
-  );
+const routes = Object.keys(imported_routes).map((route) => {
+  if (regex_home_route_matches.test(route))
+    return {
+      element: <ContentView />,
+      children: [{ path: "/", lazy: () => lazyLoad(route) }],
+    };
+  const path = route
+    .replace(regex_route_start_matches, "/")
+    .replace(regex_route_path_matches, "")
+    .replace(regex_slug_matches, "*")
+    .replace(regex_slug_value_matches, ":$1");
 
-  return {
-    hydrateFallbackElement: RouteElement,
-    element: RouteElement,
-    children: [
-      {
-        path,
-        lazy: () => lazyLoadPage(page),
-      },
-    ],
-  };
+  return { path, lazy: () => lazyLoad(route) };
 });
 
-export default createBrowserRouter(routes, {});
+export default createBrowserRouter(routes);

@@ -4,8 +4,8 @@ import { useBBQuery } from "../../hooks/useBBQuery";
 import type { User } from "../../types/user";
 
 const emptyUser = {
-    id: 0,
-    displayName: ""
+  id: 0,
+  displayName: "",
 } as User;
 
 const UserContext = createContext<User>(emptyUser);
@@ -13,7 +13,7 @@ const UserContext = createContext<User>(emptyUser);
 const UserProvider: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
-  const { data: user } = useBBQuery<User>("users/loggedInUser");
+  const user = useBBQuery<User>("users/loggedInUser");
 
   return (
     <UserContext.Provider value={user ? user : emptyUser}>

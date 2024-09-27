@@ -1,6 +1,6 @@
-import type React from "react";
-import { styled } from "@linaria/react";
+import React from "react";
 import Widget from "../components/common/widgets/widget.component";
+import { styled } from "@linaria/react";
 
 const Style = {
   FeaturedProjectImg: styled.img`

@@ -1,4 +1,4 @@
-import type React from "react";
+import React, { useContext } from "react";
 import Widget from "../../../components/common/widgets/widget.component";
 
 const UserLogout: React.FC = () => {

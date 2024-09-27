@@ -1,14 +1,14 @@
-import type React from "react";
-import { useContext } from "react";
-import { styled } from "@linaria/react";
-import { Form } from "react-bootstrap";
+import React, { useContext } from "react";
 import Widget from "../common/widgets/widget.component";
+import { useParams } from "react-router";
 import { useBBQuery } from "../../hooks/useBBQuery";
-import type { User } from "../../types/user";
-import type { Theme } from "../../types/theme";
+import { User } from "../../types/user";
 import UserLeftPane from "./userLeftPane.component";
+import { styled } from "@linaria/react";
 import { ThemeContext } from "../../providers/theme/themeProvider";
+import { Theme } from "../../types/theme";
 import Accordion from "../common/accordion/Accordion.component";
+import { Form } from "react-bootstrap";
 
 const Style = {
   accordionWrapper: styled.div`
@@ -22,8 +22,9 @@ const Style = {
   `,
 };
 
-const UserProfileMaster: React.FC<{ userId: string }> = ({ userId }) => {
-  const { data: user } = useBBQuery<User>(`user-profile/${userId}`);
+const UserProfileMaster: React.FC = () => {
+  const { userId } = useParams();
+  const user = useBBQuery<User>(`user-profile/${userId}`);
   const { currentTheme } = useContext(ThemeContext);
 
   return (
