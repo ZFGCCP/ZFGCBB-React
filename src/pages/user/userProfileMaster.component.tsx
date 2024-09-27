@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
-import Widget from "../../common/widgets/widget.component";
+import Widget from "../../components/common/widgets/widget.component";
 import { useParams } from "react-router";
-import { useBBQuery } from "../../../hooks/useBBQuery";
-import { User } from "../../../types/user";
-import UserLeftPane from "../../user/userLeftPane.component";
+import { useBBQuery } from "../../hooks/useBBQuery";
+import { User } from "../../types/user";
+import UserLeftPane from "../../components/user/userLeftPane.component";
 import { styled } from "@linaria/react";
-import { ThemeContext } from "../../../providers/theme/themeProvider";
-import { Theme } from "../../../types/theme";
-import Accordion from "../../common/accordion/Accordion.component";
+import { ThemeContext } from "../../providers/theme/themeProvider";
+import { Theme } from "../../types/theme";
+import Accordion from "../../components/common/accordion/Accordion.component";
 import { Form } from "react-bootstrap";
 
 const Style = {

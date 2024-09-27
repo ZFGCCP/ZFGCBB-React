@@ -1,14 +1,14 @@
 import React, { useContext, useMemo } from "react";
 import { useParams } from "react-router";
-import Widget from "../../common/widgets/widget.component";
+import Widget from "../../components/common/widgets/widget.component";
 import { styled } from "@linaria/react";
 import { Button, Table } from "react-bootstrap";
-import { useBBQuery } from "../../../hooks/useBBQuery";
-import { Forum } from "../../../types/forum";
+import { useBBQuery } from "../../hooks/useBBQuery";
+import { Forum } from "../../types/forum";
 import { Link } from "react-router-dom";
 import FooterButtons from "./footerButtons.component";
-import { Theme } from "../../../types/theme";
-import { ThemeContext } from "../../../providers/theme/themeProvider";
+import { Theme } from "../../types/theme";
+import { ThemeContext } from "../../providers/theme/themeProvider";
 
 const Style = {
     row: styled.tr<{theme:Theme}>`

@@ -1,5 +1,5 @@
 import React from "react";
-import Widget from "../common/widgets/widget.component";
+import Widget from "../components/common/widgets/widget.component";
 import { styled } from "@linaria/react";
 
 

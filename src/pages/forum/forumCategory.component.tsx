@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "@linaria/react";
-import Widget from "../../common/widgets/widget.component";
-import { Board } from "../../../types/forum";
+import Widget from "../../components/common/widgets/widget.component";
+import { Board } from "../../types/forum";
 import { Link } from "react-router-dom";
 
 const Style = {

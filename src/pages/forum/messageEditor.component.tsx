@@ -1,10 +1,10 @@
 import React, { useRef, useState } from "react";
-import { useBBQuery } from "../../../hooks/useBBQuery";
+import { useBBQuery } from "../../hooks/useBBQuery";
 import { styled } from "@linaria/react";
 import { Button, Form } from "react-bootstrap";
-import { Message } from "../../../types/forum";
-import { useBBMutation } from "../../../providers/query/useBBMutation";
-import { BaseBB } from "../../../types/api";
+import { Message } from "../../types/forum";
+import { useBBMutation } from "../../providers/query/useBBMutation";
+import { BaseBB } from "../../types/api";
 
 const Style = {
     graveDigWarning: styled.div`

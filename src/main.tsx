@@ -1,7 +1,9 @@
-import { StrictMode } from "react";
+import { StrictMode, lazy } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
 import { css } from "@linaria/core";
+import App from "./App";
+import { BrowserRouter } from "react-router-dom";
+
 
 css`
   :global() {
@@ -33,6 +35,6 @@ if (!root) throw new Error("Missing root node");
 
 createRoot(root).render(
   <StrictMode>
-    <App />
+      <App />
   </StrictMode>
 );

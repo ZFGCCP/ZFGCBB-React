@@ -1,7 +1,7 @@
 import React from "react";
 import ForumCategory from "./forumCategory.component";
-import { useBBQuery } from "../../../hooks/useBBQuery";
-import { Forum } from "../../../types/forum";
+import { useBBQuery } from "../../hooks/useBBQuery";
+import { Forum } from "../../types/forum";
 
 
 const ForumMain:React.FC = () => {
