@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "check": "tsc --noEmit  --project tsconfig.json --composite false --skipLibCheck && prettier . --check",
+    "format": "prettier . --write",
     "build": "tsc && vite build",
     "serve": "vite preview"
   },

@@ -1,4 +1,4 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import Widget from "../../components/common/widgets/widget.component";
 import { styled } from "@linaria/react";
 import { Theme } from "../../types/theme";
