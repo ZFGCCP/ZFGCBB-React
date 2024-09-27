@@ -1,15 +1,15 @@
 import React, { useMemo, useState, useRef } from "react";
 import { styled } from "@linaria/react";
-import Widget from "../../components/common/widgets/widget.component";
+import Widget from "../../common/widgets/widget.component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply, faPen, faTrash, faShuffle, faBook, faFlag, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
-import { useBBQuery } from "../../hooks/useBBQuery";
-import { Message, Thread } from "../../types/forum";
+import { useBBQuery } from "../../../hooks/useBBQuery";
+import { Message, Thread } from "../../../types/forum";
 import { useParams } from "react-router";
 import parse from 'html-react-parser';
 import FooterButtons from "./footerButtons.component";
 import { useMutation } from "@tanstack/react-query";
-import MessageEditor from "./messageEditor.component";
+import MessageEditor from "../messageEditor.component";
 
 const Style = {
     messageWrapper: styled.div`

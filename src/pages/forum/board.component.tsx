@@ -6,7 +6,7 @@ import { Button, Table } from "react-bootstrap";
 import { useBBQuery } from "../../hooks/useBBQuery";
 import { Forum } from "../../types/forum";
 import { Link } from "react-router-dom";
-import FooterButtons from "./footerButtons.component";
+import FooterButtons from "../../components/forum/boards/footerButtons.component";
 import { Theme } from "../../types/theme";
 import { ThemeContext } from "../../providers/theme/themeProvider";
 

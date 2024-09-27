@@ -1,5 +1,5 @@
 import React from "react";
-import ForumCategory from "./forumCategory.component";
+import ForumCategory from "../../components/forum/forumCategory.component";
 import { useBBQuery } from "../../hooks/useBBQuery";
 import { Forum } from "../../types/forum";
 
