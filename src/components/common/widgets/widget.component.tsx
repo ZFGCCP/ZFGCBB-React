@@ -7,9 +7,11 @@ import { Theme } from "../../../types/theme";
 const Style = {
   widgetMain: styled.div<{ theme: Theme }>`
     background-color: ${(props) => props.theme.widgetColor};
-    border: 0.2rem solid black;
-    height: 100% .widget-title {
-      border-bottom: 0.2rem solid black;
+    border: ${(props) => props.theme.borderWidth} solid black;
+    height: 100%;
+    
+    .widget-title {
+      border-bottom: ${(props) => props.theme.borderWidth} solid black;
     }
   `,
 };

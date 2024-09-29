@@ -23,7 +23,7 @@ const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
       <h6>{user?.displayName}</h6>
       <div className="d-none d-md-block">Member</div>
       <div>
-        <Style.avatar src="http://zfgc.com/forum/index.php?action=dlattach;attach=12126;type=avatar" />
+        {user.avatar && <Style.avatar src={user.avatar.url} />}
       </div>
     </div>
   );

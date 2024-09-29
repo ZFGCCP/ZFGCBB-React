@@ -18,6 +18,7 @@ import parse from "html-react-parser";
 import FooterButtons from "./footerButtons.component";
 import { useMutation } from "@tanstack/react-query";
 import MessageEditor from "../messageEditor.component";
+import UserLeftPane from "../../user/userLeftPane.component";
 
 const Style = {
   messageWrapper: styled.div`
@@ -118,15 +119,8 @@ const ForumThread: React.FC<{ threadId: string }> = ({
             {thread?.messages?.map((msg) => {
               return (
                 <Style.messageWrapper className="d-flex">
-                  <Style.userInfoWrapper className="col-2">
-                    <div className="m-2">MG-Zero</div>
-                    <div className="d-flex flex-column align-items-center m-2">
-                      <Style.avatar src="http://zfgc.com/forum/index.php?action=dlattach;attach=12126;type=avatar" />
-                      <div>Doesnt afraid of anything</div>
-                      <div>Karma: +1/-1</div>
-                    </div>
-                  </Style.userInfoWrapper>
-                  <div className="col-10">
+                  <UserLeftPane user={msg.createdUser}/>
+                  <div className="col-9">
                     <Style.buttonWrapper className="d-flex justify-content-between">
                       <Style.time className="m-2">
                         January 1, 1978 12:00:00PM
