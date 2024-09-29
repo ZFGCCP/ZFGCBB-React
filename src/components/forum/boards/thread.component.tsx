@@ -119,7 +119,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
             {thread?.messages?.map((msg) => {
               return (
                 <Style.messageWrapper className="d-flex">
-                  <UserLeftPane user={msg.createdUser}/>
+                  <UserLeftPane user={msg.createdUser} />
                   <div className="col-9">
                     <Style.buttonWrapper className="d-flex justify-content-between">
                       <Style.time className="m-2">

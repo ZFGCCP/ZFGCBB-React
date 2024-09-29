@@ -9,7 +9,7 @@ const Style = {
     background-color: ${(props) => props.theme.widgetColor};
     border: ${(props) => props.theme.borderWidth} solid black;
     height: 100%;
-    
+
     .widget-title {
       border-bottom: ${(props) => props.theme.borderWidth} solid black;
     }
