@@ -29,6 +29,7 @@ export type Thread = BaseBB & {
   boardId: Number;
   createdUserId: Number;
   createdUser: User;
+  postCount: Number;
 
   messages: Message[];
 };
@@ -37,6 +38,8 @@ export type Message = BaseBB & {
   ownerId: Number;
   threadId: Number;
   currentMessage: MessageHistory;
+
+  createdUser: User;
 };
 
 export type MessageHistory = BaseBB & {

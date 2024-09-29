@@ -30,7 +30,11 @@ const routes = Object.keys(imported_routes).map((route) => {
     .replace(regex_slug_matches, "*")
     .replace(regex_slug_value_matches, ":$1");
 
-  return { path, lazy: () => lazyLoad(route) };
+  //return { path, lazy: () => lazyLoad(route) };
+  return {
+    element: <ContentView />,
+    children: [{ path: path, lazy: () => lazyLoad(route) }],
+  };
 });
 
 export default createBrowserRouter(routes);
