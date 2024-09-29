@@ -132,7 +132,7 @@ const Board: React.FC = () => {
                           </Link>
                         </td>
                         <td>{thread.createdUser?.displayName}</td>
-                        <td>100</td>
+                        <td>{thread.postCount.toString()}</td>
                         <td>100</td>
                         <td>ok hold up I lied</td>
                       </Style.row>
