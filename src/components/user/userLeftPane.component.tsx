@@ -1,5 +1,5 @@
-import React from "react";
-import { User } from "../../types/user";
+import type React from "react";
+import type { User } from "../../types/user";
 import { styled } from "@linaria/react";
 
 const Style = {

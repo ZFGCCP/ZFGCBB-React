@@ -1,4 +1,5 @@
-import React, { useMemo, useState, useRef } from "react";
+import type React from "react";
+import { useMemo, useState, useRef } from "react";
 import { styled } from "@linaria/react";
 import Widget from "../../common/widgets/widget.component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,7 +13,7 @@ import {
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { useBBQuery } from "../../../hooks/useBBQuery";
-import { Message, Thread } from "../../../types/forum";
+import type { Message, Thread } from "../../../types/forum";
 import { useParams } from "react-router";
 import parse from "html-react-parser";
 import FooterButtons from "./footerButtons.component";

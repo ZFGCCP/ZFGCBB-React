@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import type React from "react";
 import { ThemeProvider } from "./providers/theme/themeProvider";
 import { UserProvider } from "./providers/user/userProvider";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";

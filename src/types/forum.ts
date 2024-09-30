@@ -1,5 +1,5 @@
-import { BaseBB } from "./api";
-import { User } from "./user";
+import type { BaseBB } from "./api";
+import type { User } from "./user";
 
 export type Forum = BaseBB & {
   categories: Category[];

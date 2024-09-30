@@ -1,6 +1,9 @@
 import type React from "react";
-import Widget from "../components/common/widgets/widget.component";
+import { useBBQuery } from "../../hooks/useBBQuery";
+import Widget from "../../components/common/widgets/widget.component";
 import { styled } from "@linaria/react";
+import type { BBPaginationPage } from "../../types/api";
+import { User } from "../../types/user";
 
 const Style = {
   FeaturedProjectImg: styled.img`
@@ -9,6 +12,7 @@ const Style = {
 };
 
 const Home: React.FC = () => {
+  const currentUsersPage = useBBQuery<BBPaginationPage<User>>("users");
   return (
     <div className="row">
       <div className="col-12 col-lg-6 my-2">

@@ -29,14 +29,14 @@ const regexRouteMatchComponentName =
 const regexRouteMatchTripleDotSlug = /\[\.{3}.+\]/;
 const regexRouteMatchSlugName = /\[(.+)\]/;
 
-const routes = Object.keys(imported_pages).map((page) => {
-  const path = page
+const routes = Object.keys(imported_pages).map((pagePath) => {
+  const path = pagePath
     .replace(regexRouteMatchStartPath, "/") // replaces the ./ at the start of the path with a /
     .replace(regexRouteMatchComponentName, "") // strips the .tsx or .component.tsx, etc from the end of the path
     .replace(regexRouteMatchTripleDotSlug, "*") // replaces [...] with *
     .replace(regexRouteMatchSlugName, ":$1"); // replaces [paramName] with :paramName
 
-  const LayoutElement = lazy(() => lazyLoadPageWithLayout(page));
+  const LayoutElement = lazy(() => lazyLoadPageWithLayout(pagePath));
   return {
     element: (
       <Suspense fallback={<div>Loading...</div>}>
@@ -45,8 +45,8 @@ const routes = Object.keys(imported_pages).map((page) => {
     ),
     children: [
       {
-        path: path,
-        lazy: () => lazyLoadPage(page),
+        path,
+        lazy: () => lazyLoadPage(pagePath),
       },
     ],
   };

@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
+import type React from "react";
+import { useContext } from "react";
 import { UserContext } from "../providers/user/userProvider";
 import { styled } from "@linaria/react";
 import Navigator from "./navigation/navigator.component";
 import { Outlet, Link } from "react-router-dom";
+
 const Style = {
   MainContent: styled.div``,
 
