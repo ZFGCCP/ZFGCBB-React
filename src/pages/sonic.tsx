@@ -19,7 +19,9 @@ const Sonic: React.FC = () => {
 export default Sonic;
 
 export const layout: React.FC = () => {
-  return <>
-    <Outlet />
-  </>;
-}
+  return (
+    <>
+      <Outlet />
+    </>
+  );
+};
