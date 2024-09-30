@@ -1,39 +1,54 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-const ContentView = lazy(() => import("./components/contentView.component"));
+export type BBPage = {
+  default: React.FC;
+  layout?: React.FC;
+};
 
-const imported_routes = import.meta.glob("./pages/**/*.tsx", {
-  import: "default",
-});
-const regex_home_route_matches = /\.\/pages\/home.tsx$/;
-const regex_route_start_matches = /\.\//;
-const regex_route_path_matches =
-  /\/(src|pages|index|home|components|routes)|(\.tsx|\.component.tsx)$/g;
-const regex_slug_matches = /\[\.{3}.+\]/;
-const regex_slug_value_matches = /\[(.+)\]/;
+const imported_pages = import.meta.glob("./pages/**/*.tsx") as Record<
+  string,
+  () => Promise<BBPage>
+>;
 
-async function lazyLoad(path: string) {
-  const Component = (await imported_routes[path]()) as React.FC;
-  return { Component };
+async function lazyLoadPage(path: string) {
+  const { default: Component, layout } = await imported_pages[path]();
+  return { Component, layout };
 }
 
-const routes = Object.keys(imported_routes).map((route) => {
-  if (regex_home_route_matches.test(route))
-    return {
-      element: <ContentView />,
-      children: [{ path: "/", lazy: () => lazyLoad(route) }],
-    };
-  const path = route
-    .replace(regex_route_start_matches, "/")
-    .replace(regex_route_path_matches, "")
-    .replace(regex_slug_matches, "*")
-    .replace(regex_slug_value_matches, ":$1");
+async function lazyLoadPageWithLayout(path: string) {
+  const { layout } = await lazyLoadPage(path);
+  if (!layout) return import("./components/contentView.component");
 
-  //return { path, lazy: () => lazyLoad(route) };
+  return { default: layout! };
+}
+
+const regexRouteMatchStartPath = /\.\//;
+const regexRouteMatchComponentName =
+  /\/(src|pages|index|home|components|routes)|(\.tsx|\.component.tsx)$/g;
+const regexRouteMatchTripleDotSlug = /\[\.{3}.+\]/;
+const regexRouteMatchSlugName = /\[(.+)\]/;
+
+const routes = Object.keys(imported_pages).map((page) => {
+  const path = page
+    .replace(regexRouteMatchStartPath, "/") // replaces the ./ at the start of the path with a /
+    .replace(regexRouteMatchComponentName, "") // strips the .tsx or .component.tsx, etc from the end of the path
+    .replace(regexRouteMatchTripleDotSlug, "*") // replaces [...] with *
+    .replace(regexRouteMatchSlugName, ":$1"); // replaces [paramName] with :paramName
+
+  const LayoutElement = lazy(() => lazyLoadPageWithLayout(page));
   return {
-    element: <ContentView />,
-    children: [{ path: path, lazy: () => lazyLoad(route) }],
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <LayoutElement />
+      </Suspense>
+    ),
+    children: [
+      {
+        path: path,
+        lazy: () => lazyLoadPage(page),
+      },
+    ],
   };
 });
 
