@@ -1,5 +1,6 @@
-import React from "react";
+import type React from "react";
 import Widget from "../components/common/widgets/widget.component";
+import { Outlet } from "react-router-dom";
 
 const Sonic: React.FC = () => {
   return (
@@ -16,3 +17,11 @@ const Sonic: React.FC = () => {
 };
 
 export default Sonic;
+
+export const layout: React.FC = () => {
+  return (
+    <>
+      <Outlet />
+    </>
+  );
+};
