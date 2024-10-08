@@ -1,10 +1,8 @@
-import type React from "react";
-import { useContext, useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { UserContext } from "../../../providers/user/userProvider";
-import type { BBPermission } from "../../../types/api";
 
 const HasPermission: React.FC<{
-  perms: BBPermission[];
+  perms: string[];
   children: React.ReactNode;
 }> = ({ perms, children }) => {
   const { permissions } = useContext(UserContext);

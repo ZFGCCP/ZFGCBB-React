@@ -6,6 +6,8 @@ export type User = BaseBB & {
 
   bioInfo?: UserBioInfo;
   avatar?: Avatar;
+
+  permissions?: Permission[];
 };
 
 export type UserBioInfo = BaseBB & {
@@ -19,4 +21,9 @@ export type Avatar = BaseBB & {
   id: number;
   activeFlag: boolean;
   url: string;
+};
+
+export type Permission = BaseBB & {
+  permissionCode: string;
+  permissionName: string;
 };
