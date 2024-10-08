@@ -1,16 +1,16 @@
-import React from "react";
+import React, {useContext} from "react";
 import { styled } from "@linaria/react";
 import { Button } from "react-bootstrap";
-
+import { ThemeContext } from "../../../providers/theme/themeProvider";
+import { Theme } from "../../../types/theme";
 const Style = {
-  FooterButton: styled(Button)`
+  FooterButton: styled(Button)<{ theme: Theme }>`
     &.footer-btn {
       border-top-left-radius: 0;
       border-top-right-radius: 0;
       background-color: #25334e;
+      border: ${(props) => props.theme.borderWidth} solid ${(props) => props.theme.black};
       border-top: 0;
-      border: 0.2rem solid black;
-      padding-right: 0.2rem;
       border-bottom-right-radius: 0;
       border-bottom-left-radius: 0;
       border-right: 0;
@@ -33,13 +33,17 @@ export type FooterConfig = {
 };
 
 const FooterButtons: React.FC<{ options: FooterConfig[] }> = ({ options }) => {
+
+  const { currentTheme } = useContext(ThemeContext);
+
   return (
     <div className="d-flex justify-content-end">
       {options.map((opt) => {
         return (
           <Style.FooterButton
             onClick={() => opt.callback()}
-            className="footer-btn"
+            className="footer-btn px-2"
+            theme={currentTheme}
           >
             {opt.label}
           </Style.FooterButton>

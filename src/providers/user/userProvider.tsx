@@ -5,6 +5,7 @@ import { User } from "../../types/user";
 const emptyUser = {
   id: 0,
   displayName: "",
+  permissions: []
 } as User;
 
 const UserContext = createContext<User>(emptyUser);
