@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { styled } from "@linaria/react";
 import { Button } from "react-bootstrap";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
@@ -9,7 +9,8 @@ const Style = {
       border-top-left-radius: 0;
       border-top-right-radius: 0;
       background-color: #25334e;
-      border: ${(props) => props.theme.borderWidth} solid ${(props) => props.theme.black};
+      border: ${(props) => props.theme.borderWidth} solid
+        ${(props) => props.theme.black};
       border-top: 0;
       border-bottom-right-radius: 0;
       border-bottom-left-radius: 0;
@@ -33,7 +34,6 @@ export type FooterConfig = {
 };
 
 const FooterButtons: React.FC<{ options: FooterConfig[] }> = ({ options }) => {
-
   const { currentTheme } = useContext(ThemeContext);
 
   return (
