@@ -6,12 +6,12 @@ import { Theme } from "../../../types/theme";
 
 const Style = {
   widgetMain: styled.div<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.widgetColor};
+    background-color: ${(props) => props.theme.headerColor};
     border: ${(props) => props.theme.borderWidth} solid black;
-    height: 100%;
 
     .widget-title {
       border-bottom: ${(props) => props.theme.borderWidth} solid black;
+      font-weight: bold;
     }
   `,
 };
@@ -25,7 +25,7 @@ const Widget: React.FC<{
 
   return (
     <Style.widgetMain className={`${className}`} theme={currentTheme}>
-      <div className="p-1 widget-title">{widgetTitle}</div>
+      <h6 className="p-1 m-0 widget-title">{widgetTitle}</h6>
       <div>{children}</div>
     </Style.widgetMain>
   );

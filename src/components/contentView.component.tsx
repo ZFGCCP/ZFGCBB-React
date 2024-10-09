@@ -2,7 +2,8 @@ import React, { useContext } from "react";
 import { UserContext } from "../providers/user/userProvider";
 import { styled } from "@linaria/react";
 import Navigator from "./navigation/navigator.component";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import BBLink from "./common/bbLink";
 const Style = {
   MainContent: styled.div``,
 
@@ -23,7 +24,7 @@ const ContentView: React.FC = () => {
           <div className="d-flex me-2 flex-column">
             <div>
               Welcome, {displayName}! Please login or{" "}
-              <Link to="/user/registration">register</Link>
+              <BBLink to="/user/registration">register</BBLink>
             </div>
             <div>Did you miss your activation email?</div>
           </div>

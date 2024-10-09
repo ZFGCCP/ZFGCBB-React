@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "@linaria/react";
 import Widget from "../common/widgets/widget.component";
 import { Board } from "../../types/forum";
-import { Link } from "react-router-dom";
+import BBLink from "../common/bbLink";
 
 const Style = {
   forumRow: styled.div`
@@ -36,7 +36,7 @@ const ForumCategory: React.FC<{ title: String; subBoards: Board[] }> = ({
             </div>
             <div className="col-2 align-content-center">
               <h6>
-                <Link to={`/forum/board/${sb.id}`}>{sb.boardName}</Link>
+                <BBLink to={`/forum/board/${sb.id}`}>{sb.boardName}</BBLink>
               </h6>
             </div>
             <div className="col-6 align-content-center">
