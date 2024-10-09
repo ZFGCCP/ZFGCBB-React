@@ -4,7 +4,7 @@ import { styled } from "@linaria/react";
 
 const Style = {
   pane: styled.div`
-    border-right: .2rem solid black;
+    border-right: 0.2rem solid black;
   `,
 
   userNameHeader: styled.h6`

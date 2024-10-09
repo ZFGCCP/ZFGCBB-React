@@ -13,7 +13,7 @@ import { css } from "@linaria/core";
 import BBLink from "../../../components/common/bbLink";
 
 const Style = {
-  boardFooter: styled.div<{theme: Theme}>`
+  boardFooter: styled.div<{ theme: Theme }>`
     background-color: ${(props) => props.theme.footerColor};
   `,
 
@@ -56,13 +56,14 @@ const Style = {
     }
   `,
 
-  FooterButton: styled(Button)<{theme:Theme}>`
+  FooterButton: styled(Button)<{ theme: Theme }>`
     &.footer-btn {
       border-top-left-radius: 0;
       border-top-right-radius: 0;
       background-color: #25334e;
       border-top: 0;
-      border: ${(props) => props.theme.borderWidth} solid ${(props) => props.theme.black};
+      border: ${(props) => props.theme.borderWidth} solid
+        ${(props) => props.theme.black};
       padding-right: 0.2rem;
       border-bottom-right-radius: 0;
       border-bottom-left-radius: 0;
@@ -134,8 +135,12 @@ const Board: React.FC = () => {
                   {board?.threads?.map((thread) => {
                     return (
                       <Style.row className="tableRow body" theme={currentTheme}>
-                        <td><img src="http://zfgc.com/forum/Themes/midnight/images/topic/normal_post.gif"/></td>
-                        <td><img src="http://zfgc.com/forum/Themes/midnight/images/post/xx.gif"/></td>
+                        <td>
+                          <img src="http://zfgc.com/forum/Themes/midnight/images/topic/normal_post.gif" />
+                        </td>
+                        <td>
+                          <img src="http://zfgc.com/forum/Themes/midnight/images/post/xx.gif" />
+                        </td>
                         <td>
                           <BBLink to={`/forum/thread/${thread.id}`}>
                             {thread.threadName}
@@ -146,14 +151,18 @@ const Board: React.FC = () => {
                         <td>{thread.viewCount.toString()}</td>
                         <td>
                           <div>by {thread.latestMessage?.ownerName}</div>
-                          <div>on {thread.latestMessage?.createdTsAsString}</div>
+                          <div>
+                            on {thread.latestMessage?.createdTsAsString}
+                          </div>
                         </td>
                       </Style.row>
                     );
                   })}
                 </tbody>
               </Table>
-              <Style.boardFooter theme={currentTheme}>paginator here</Style.boardFooter>
+              <Style.boardFooter theme={currentTheme}>
+                paginator here
+              </Style.boardFooter>
             </Widget>
           )}
         </div>

@@ -36,7 +36,7 @@ export type Thread = BaseBB & {
   latestMessage?: LatestMessage;
 };
 
-export type LatestMessage {
+export type LatestMessage = {
   threadId: Number;
   threadName: String;
   messageId: Number;

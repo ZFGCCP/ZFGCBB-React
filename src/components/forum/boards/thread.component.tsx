@@ -24,15 +24,15 @@ import { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 
 const Style = {
-  messageWrapper: styled.div<{theme: Theme}>`
+  messageWrapper: styled.div<{ theme: Theme }>`
     min-height: 14rem;
     border-bottom: 0.1rem solid black;
-    
-    &:nth-child(odd){
+
+    &:nth-child(odd) {
       background-color: ${(props) => props.theme.tableRow};
     }
 
-    &:nth-child(even){
+    &:nth-child(even) {
       background-color: ${(props) => props.theme.tableRowAlt};
     }
   `,
