@@ -6,10 +6,15 @@ const midnightTheme = {
   borderWidth: ".2rem",
   backgroundColor: "#204378",
   widgetColor: "#1E2B44",
+  footerColor: "#132241",
+  headerColor: "#132241",
   black: "black",
+  white: "white",
   tableRow: "#1E2B44",
   tableRowAlt: "#25334e",
   textColor: "white",
+  linkColor: "white",
+  linkColorVisited: "white",
 } as Theme;
 
 const themeMap: Map<String, Theme> = new Map();

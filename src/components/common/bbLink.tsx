@@ -1,12 +1,11 @@
 import { styled } from "@linaria/react";
-import type React from "react";
-import { useContext } from "react";
-import { Link, type RelativeRoutingType } from "react-router";
-import type { Theme } from "../../types/theme";
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import { Theme } from "../../types/theme";
 import { ThemeContext } from "../../providers/theme/themeProvider";
 
 const Style = {
-  link: styled.span<{ theme: Theme }>`
+  link: styled.div<{ theme: Theme }>`
     a {
       &:visited {
         color: ${(props) => props.theme.linkColorVisited};
@@ -19,18 +18,15 @@ const Style = {
   `,
 };
 
-const BBLink: React.FC<{
-  to: string;
-  children: React.ReactNode;
-  relative?: RelativeRoutingType | undefined;
-}> = ({ to, children, relative }) => {
+const BBLink: React.FC<{ to: string; children: React.ReactNode }> = ({
+  to,
+  children,
+}) => {
   const { currentTheme } = useContext(ThemeContext);
 
   return (
     <Style.link theme={currentTheme}>
-      <Link to={to} relative={relative}>
-        {children}
-      </Link>
+      <Link to={to}>{children}</Link>
     </Style.link>
   );
 };
