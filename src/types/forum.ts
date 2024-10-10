@@ -30,8 +30,19 @@ export type Thread = BaseBB & {
   createdUserId: Number;
   createdUser: User;
   postCount: Number;
+  viewCount: Number;
 
   messages: Message[];
+  latestMessage?: LatestMessage;
+};
+
+export type LatestMessage = {
+  threadId: Number;
+  threadName: String;
+  messageId: Number;
+  messageHistoryId: Number;
+  createdTsAsString: String;
+  ownerName: String;
 };
 
 export type Message = BaseBB & {

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, Suspense } from "react";
+import React, { useMemo, useState, useRef, Suspense, useContext } from "react";
 import { styled } from "@linaria/react";
 import Widget from "../../common/widgets/widget.component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,11 +20,21 @@ import { useMutation } from "@tanstack/react-query";
 import MessageEditor from "../messageEditor.component";
 import UserLeftPane from "../../user/userLeftPane.component";
 import HasPermission from "../../common/security/HasPermission.component";
+import { Theme } from "../../../types/theme";
+import { ThemeContext } from "../../../providers/theme/themeProvider";
 
 const Style = {
-  messageWrapper: styled.div`
+  messageWrapper: styled.div<{ theme: Theme }>`
     min-height: 14rem;
     border-bottom: 0.1rem solid black;
+
+    &:nth-child(odd) {
+      background-color: ${(props) => props.theme.tableRow};
+    }
+
+    &:nth-child(even) {
+      background-color: ${(props) => props.theme.tableRowAlt};
+    }
   `,
 
   userInfoWrapper: styled.div`
@@ -76,6 +86,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
     `thread/${threadId}?pageNo=1&numPerPage=10`,
   );
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
+  const { currentTheme } = useContext(ThemeContext);
 
   const footer = useMemo(() => {
     return [
@@ -131,9 +142,9 @@ const ForumThread: React.FC<{ threadId: string }> = ({
           <Widget widgetTitle={thread ? thread.threadName : ""}>
             {thread?.messages?.map((msg) => {
               return (
-                <Style.messageWrapper className="d-flex">
+                <Style.messageWrapper className="d-flex" theme={currentTheme}>
                   <UserLeftPane user={msg.createdUser} />
-                  <div className="col-9">
+                  <div className="col-12 col-lg-10">
                     <Style.buttonWrapper className="d-flex justify-content-between">
                       <Style.time className="m-2">
                         {msg.currentMessage.createdTsAsString}
