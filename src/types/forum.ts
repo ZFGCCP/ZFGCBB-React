@@ -7,6 +7,8 @@ export type Forum = BaseBB & {
   //private List<Thread> stickyThreads = new ArrayList<>();
   threads: Thread[];
   categoryId: Number;
+  pageCount: number;
+  childBoards?: Board[];
 };
 export type Board = BaseBB & {
   boardName: String;
