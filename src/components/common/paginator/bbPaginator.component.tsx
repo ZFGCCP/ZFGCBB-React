@@ -1,8 +1,7 @@
 import { styled } from "@linaria/react";
-import type React from "react";
-import { useCallback, useContext, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import { Pagination } from "react-bootstrap";
-import type { Theme } from "../../../types/theme";
+import { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 
 const Style = {
@@ -25,11 +24,11 @@ const Style = {
 
 const BBPaginator: React.FC<{
   numPages: number;
-  currentPage: number;
   onPageChange: (pageNo: number) => void;
-}> = ({ numPages, currentPage, onPageChange }) => {
+}> = ({ numPages, onPageChange }) => {
   const { currentTheme } = useContext(ThemeContext);
   const maxPages = 10;
+  const [currentPage, setCurrentPage] = useState(1);
   const maxToRender = useMemo(() => {
     return numPages <= maxPages ? numPages : maxPages;
   }, [numPages, maxPages]);
@@ -41,6 +40,7 @@ const BBPaginator: React.FC<{
       pages.push(
         <Pagination.Item
           onClick={() => {
+            setCurrentPage(i + 1);
             onPageChange(i + 1);
           }}
         >
@@ -50,13 +50,16 @@ const BBPaginator: React.FC<{
     }
 
     return pages;
-  }, [numPages, currentPage, onPageChange]);
+  }, [numPages, currentPage, setCurrentPage, onPageChange]);
 
   const shiftPage = useCallback(
     (inc: number) => {
       onPageChange(currentPage + inc);
+      setCurrentPage((prev) => {
+        return prev + inc;
+      });
     },
-    [currentPage, onPageChange],
+    [currentPage, setCurrentPage, onPageChange],
   );
 
   return (
@@ -64,6 +67,7 @@ const BBPaginator: React.FC<{
       <Style.pagination theme={currentTheme}>
         <Pagination.First
           onClick={() => {
+            setCurrentPage(1);
             onPageChange(1);
           }}
         />
@@ -74,6 +78,7 @@ const BBPaginator: React.FC<{
         )}
         <Pagination.Last
           onClick={() => {
+            setCurrentPage(numPages);
             onPageChange(numPages);
           }}
         />

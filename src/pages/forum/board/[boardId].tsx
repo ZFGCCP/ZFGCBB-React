@@ -1,16 +1,15 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import Widget from "../../../components/common/widgets/widget.component";
 import { styled } from "@linaria/react";
 import { Button, Table } from "react-bootstrap";
 import { useBBQuery } from "../../../hooks/useBBQuery";
 import { Forum } from "../../../types/forum";
-import { Link } from "react-router-dom";
-import FooterButtons from "../../../components/forum/boards/footerButtons.component";
 import { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
-import { css } from "@linaria/core";
 import BBLink from "../../../components/common/bbLink";
+import { Pagination } from "react-bootstrap";
+import BBPaginator from "../../../components/common/paginator/bbPaginator.component";
 
 const Style = {
   boardFooter: styled.div<{ theme: Theme }>`
@@ -79,12 +78,29 @@ const Style = {
       }
     }
   `,
+
+  pagination: styled(Pagination)<{ theme: Theme }>`
+    &.pagination {
+      margin-bottom: 0;
+
+      li.page-item {
+        &:hover {
+          background-color: ${(props) => props.theme.backgroundColor};
+        }
+
+        a {
+          border: 0;
+        }
+      }
+    }
+  `,
 };
 
 const Board: React.FC = () => {
   const { boardId } = useParams();
-  const board = useBBQuery<Forum>(`board/${boardId}`);
   const { currentTheme } = useContext(ThemeContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const board = useBBQuery<Forum>(`board/${boardId}?pageNo=${currentPage}`);
 
   const footer = useMemo(() => {
     return [
@@ -107,11 +123,21 @@ const Board: React.FC = () => {
     ];
   }, [board]);
 
+  const loadNewPage = (pageNo: number) => {
+    setCurrentPage(pageNo);
+  };
+
   return (
     <>
       <div className="row">
         <div className="col-12 my-2">
           <div>ZFGC &gt;&gt; ZFGC.com &gt;&gt; Updates</div>
+          {board?.childBoards?.length && board?.childBoards?.length > 0 && (
+            <Widget widgetTitle={"Child Boards"}>
+              <></>
+            </Widget>
+          )}
+
           {board && (
             <Widget widgetTitle={board.boardName}>
               <Table className="my-0" striped hover responsive>
@@ -126,9 +152,7 @@ const Board: React.FC = () => {
                     <th>Latest Post</th>
                   </Style.row>
                   <Style.row className="subRow" theme={currentTheme}>
-                    <th colSpan={7}>
-                      MGZero and 1 other guests are using this board
-                    </th>
+                    <th colSpan={7}></th>
                   </Style.row>
                 </thead>
                 <tbody>
@@ -161,7 +185,10 @@ const Board: React.FC = () => {
                 </tbody>
               </Table>
               <Style.boardFooter theme={currentTheme}>
-                paginator here
+                <BBPaginator
+                  numPages={board.pageCount}
+                  onPageChange={loadNewPage}
+                />
               </Style.boardFooter>
             </Widget>
           )}

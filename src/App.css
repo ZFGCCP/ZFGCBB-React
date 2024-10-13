@@ -3,3 +3,10 @@
     max-width: 1900px;
   }
 }
+
+:root {
+  --bs-body-bg: none;
+  --bs-link-hover-color: none;
+  --bs-tertiary-bg: none;
+  --bs-link-color: none;
+}
