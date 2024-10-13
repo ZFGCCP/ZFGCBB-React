@@ -79,23 +79,21 @@ const Style = {
     }
   `,
 
-  pagination: styled(Pagination)<{theme: Theme}>`
-    &.pagination{
+  pagination: styled(Pagination)<{ theme: Theme }>`
+    &.pagination {
       margin-bottom: 0;
 
-      li.page-item{
-        
-        &:hover{
+      li.page-item {
+        &:hover {
           background-color: ${(props) => props.theme.backgroundColor};
         }
 
-        a{
+        a {
           border: 0;
         }
       }
     }
-    
-  `
+  `,
 };
 
 const Board: React.FC = () => {
@@ -140,7 +138,6 @@ const Board: React.FC = () => {
             </Widget>
           )}
 
-
           {board && (
             <Widget widgetTitle={board.boardName}>
               <Table className="my-0" striped hover responsive>
@@ -155,9 +152,7 @@ const Board: React.FC = () => {
                     <th>Latest Post</th>
                   </Style.row>
                   <Style.row className="subRow" theme={currentTheme}>
-                    <th colSpan={7}>
-                      
-                    </th>
+                    <th colSpan={7}></th>
                   </Style.row>
                 </thead>
                 <tbody>
@@ -190,7 +185,10 @@ const Board: React.FC = () => {
                 </tbody>
               </Table>
               <Style.boardFooter theme={currentTheme}>
-                <BBPaginator numPages={board.pageCount} onPageChange={loadNewPage}/>
+                <BBPaginator
+                  numPages={board.pageCount}
+                  onPageChange={loadNewPage}
+                />
               </Style.boardFooter>
             </Widget>
           )}
