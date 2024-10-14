@@ -1,116 +1,75 @@
-import type React from "react";
-import { useContext } from "react";
-import { styled } from "@linaria/react";
-import type { BoardSummary } from "../../../types/forum";
+import React, { useContext } from "react";
+import { Board } from "../../../types/forum";
 import BBTable from "../../common/tables/bbTable.component";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBLink from "../../common/bbLink";
-import type { Theme } from "../../../types/theme";
+import { Theme } from "../../../types/theme";
+import { styled } from "@linaria/react";
 
 const Style = {
-  forumRow: styled.tr`
-    min-height: 4rem;
-  `,
-
-  forumText: styled.div`
-    font-size: 0.8rem;
+  row: styled.tr<{ theme: Theme }>`
+    &.subRow {
+      th {
+        background-color: ${(props) => props.theme.black};
+        color: ${(props) => props.theme.textColor};
+        font-size: 0.75rem;
+        border: 0;
+      }
+    }
   `,
 
   forumDesc: styled.div`
     font-size: 0.8rem;
   `,
-
-  latestPostLink: styled.span`
-    font-size: 0.8rem;
-  `,
 };
 
-const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
-  subBoards,
-}) => {
+const BoardSummary: React.FC<{ board: Board }> = ({ board }) => {
   const { currentTheme } = useContext(ThemeContext);
 
   return (
     <BBTable>
       <tbody>
-        {subBoards?.map((sb) => {
+        {board?.childBoards?.map((board) => {
           return (
-            <Style.forumRow className="d-flex">
-              <td className="col-2 col-md-1">
+            <Style.row className="tableRow body" theme={currentTheme}>
+              <td className="col-1">
                 <img src="http://zfgc.com/forum/Themes/midnight/images/off.gif" />
               </td>
-
-              <td className="col-10 col-md-7 col-lg-2 align-content-center">
-                <h6>
-                  <BBLink to={`/forum/board/${sb.boardId}`}>
-                    {sb.boardName}
-                  </BBLink>
-                  <Style.latestPostLink className="d-inline-block d-md-none ms-4">
-                    Latest Post
-                  </Style.latestPostLink>
-                </h6>
-                <Style.forumDesc className="d-block d-lg-none">
-                  {sb.description}
-                </Style.forumDesc>
-                {sb.childBoards && (
-                  <Style.forumText className="d-block d-lg-none">
-                    Child boards:{" "}
-                    {sb.childBoards.map((cb) => {
-                      return (
-                        <BBLink to={`/forum/board/${cb.boardId}`}>
-                          {cb.boardName}
-                        </BBLink>
-                      );
-                    })}
-                  </Style.forumText>
-                )}
-                <Style.forumText className="d-inline-block d-md-none">
-                  Threads: {sb.threadCount}
-                </Style.forumText>
-                <Style.forumText className="ms-2 d-inline-block d-md-none">
-                  Posts: {sb.postCount}
-                </Style.forumText>
+              <td className="col-2">
+                <BBLink to={`/forum/board/${board.id}`}>
+                  {board.boardName}
+                </BBLink>
               </td>
-
-              <td className="d-none d-lg-table-cell col-6 align-content-center">
+              <td className="col-6">
                 <div className="d-flex flex-column">
-                  <Style.forumDesc>{sb.description}</Style.forumDesc>
-                  {sb.childBoards && (
-                    <Style.forumText>
-                      Child boards:{" "}
-                      {sb.childBoards.map((cb) => {
-                        return (
-                          <BBLink to={`/forum/board/${cb.boardId}`}>
-                            {cb.boardName}
-                          </BBLink>
-                        );
-                      })}
-                    </Style.forumText>
-                  )}
+                  <Style.forumDesc>{board.description}</Style.forumDesc>
+                  <Style.forumDesc>Moderators: me, me and me</Style.forumDesc>
+                  <Style.forumDesc>
+                    Child board: hello, hello, hello
+                  </Style.forumDesc>
                 </div>
               </td>
 
-              <td className="d-none d-md-table-cell col-2 col-lg-1 align-content-center">
-                <div className="d-flex flex-column">
-                  <Style.forumText>Threads: {sb.threadCount}</Style.forumText>
-                  <Style.forumText>Posts: {sb.postCount}</Style.forumText>
+              <td className="col-1">
+                <div className="align-content-center">
+                  <div className="d-flex flex-column">
+                    <Style.forumDesc>
+                      Threads: {board.threadCount}
+                    </Style.forumDesc>
+                    <Style.forumDesc>Posts: 9001</Style.forumDesc>
+                  </div>
                 </div>
               </td>
-
-              <td className="d-none d-md-table-cell col-4 col-md-2 col-lg-2 align-content-center">
-                <div className="d-flex flex-column">
-                  <Style.forumText>
-                    Last Post by: {sb.latestMessageUserName}
-                  </Style.forumText>
-                  <Style.forumText>
-                    in <span>{sb.threadName}</span>
-                  </Style.forumText>
-                  <Style.forumText>
-                    on {sb.latestMessageCreatedTsAsString}
-                  </Style.forumText>
+              <td className="col-2">
+                <div className="align-content-center">
+                  <div className="d-flex flex-column">
+                    <Style.forumDesc>Last Post by: MG-Zero</Style.forumDesc>
+                    <Style.forumDesc>in Email Issues</Style.forumDesc>
+                    <Style.forumDesc>on 07/31/2024 12:00:00PM</Style.forumDesc>
+                  </div>
                 </div>
               </td>
-            </Style.forumRow>
+            </Style.row>
           );
         })}
       </tbody>
@@ -118,4 +77,4 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
   );
 };
 
-export default BoardSummaryView;
+export default BoardSummary;

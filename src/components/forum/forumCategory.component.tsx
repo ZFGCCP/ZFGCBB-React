@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "@linaria/react";
 import Widget from "../common/widgets/widget.component";
-import { Board } from "../../types/forum";
+import { BoardSummary } from "../../types/forum";
 import BBLink from "../common/bbLink";
 
 const Style = {
@@ -22,7 +22,7 @@ const Style = {
   `,
 };
 
-const ForumCategory: React.FC<{ title: String; subBoards: Board[] }> = ({
+const ForumCategory: React.FC<{ title: String; subBoards: BoardSummary[] }> = ({
   title,
   subBoards,
 }) => {
@@ -36,7 +36,9 @@ const ForumCategory: React.FC<{ title: String; subBoards: Board[] }> = ({
             </div>
             <div className="col-2 align-content-center">
               <h6>
-                <BBLink to={`/forum/board/${sb.id}`}>{sb.boardName}</BBLink>
+                <BBLink to={`/forum/board/${sb.boardId}`}>
+                  {sb.boardName}
+                </BBLink>
               </h6>
             </div>
             <div className="col-6 align-content-center">

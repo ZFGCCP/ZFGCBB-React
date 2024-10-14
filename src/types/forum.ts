@@ -4,24 +4,38 @@ import type { User } from "./user";
 export type Forum = BaseBB & {
   categories: Category[];
   boardName: String;
-  //private List<Thread> stickyThreads = new ArrayList<>();
-  threads: Thread[];
-  categoryId: Number;
-  pageCount: number;
-  childBoards?: Board[];
 };
 export type Board = BaseBB & {
   boardName: String;
   description: String;
   categoryId: Number;
-  forumId: Number;
+  threadCount: number;
+  parentBoardId: number;
+  stickyThreads: Thread[];
+  unStickyThreads: Thread[];
+  pageCount: number;
+  childBoards?: BoardSummary[];
+};
+
+export type BoardSummary = BaseBB & {
+  boardId: number;
+  description: string;
+  boardName: string;
+  threadCount: number;
+  postCount: number;
+  latestMessageId: number;
+  latestThreadId: number;
+  latestMessageOwnerId: number;
+  latestMessageUserName: string;
+  categoryId: number;
+  parentBoardId: number;
 };
 
 export type Category = BaseBB & {
   categoryName: String;
   description: String;
   parentCategoryId: Number;
-  boards: Board[];
+  boards: BoardSummary[];
 };
 
 export type Thread = BaseBB & {
