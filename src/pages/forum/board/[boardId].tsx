@@ -4,47 +4,25 @@ import Widget from "../../../components/common/widgets/widget.component";
 import { styled } from "@linaria/react";
 import { Button, Table } from "react-bootstrap";
 import { useBBQuery } from "../../../hooks/useBBQuery";
-import { Forum } from "../../../types/forum";
+import { Board } from "../../../types/forum";
 import { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBLink from "../../../components/common/bbLink";
 import { Pagination } from "react-bootstrap";
 import BBPaginator from "../../../components/common/paginator/bbPaginator.component";
+import BBTable from "../../../components/common/tables/bbTable.component";
+import BoardSummary from "../../../components/forum/boards/boardSummary.component";
 
 const Style = {
+  forumDesc: styled.div`
+    font-size: 0.8rem;
+  `,
+
   boardFooter: styled.div<{ theme: Theme }>`
     background-color: ${(props) => props.theme.footerColor};
   `,
 
   row: styled.tr<{ theme: Theme }>`
-    &.tableRow {
-      th {
-        background-color: ${(props) => props.theme.widgetColor};
-        color: white;
-        border: 0;
-      }
-
-      &.body {
-        td {
-          color: ${(props) => props.theme.textColor};
-          vertical-align: middle;
-          border: 0;
-        }
-
-        &:nth-child(odd) {
-          td {
-            background-color: ${(props) => props.theme.tableRowAlt};
-          }
-        }
-
-        &:nth-child(even) {
-          td {
-            background-color: ${(props) => props.theme.tableRow};
-          }
-        }
-      }
-    }
-
     &.subRow {
       th {
         background-color: ${(props) => props.theme.black};
@@ -96,11 +74,11 @@ const Style = {
   `,
 };
 
-const Board: React.FC = () => {
+const BoardContainer: React.FC = () => {
   const { boardId } = useParams();
   const { currentTheme } = useContext(ThemeContext);
   const [currentPage, setCurrentPage] = useState(1);
-  const board = useBBQuery<Forum>(`board/${boardId}?pageNo=${currentPage}`);
+  const board = useBBQuery<Board>(`board/${boardId}?pageNo=${currentPage}`);
 
   const footer = useMemo(() => {
     return [
@@ -131,16 +109,17 @@ const Board: React.FC = () => {
     <>
       <div className="row">
         <div className="col-12 my-2">
-          <div>ZFGC &gt;&gt; ZFGC.com &gt;&gt; Updates</div>
           {board?.childBoards?.length && board?.childBoards?.length > 0 && (
             <Widget widgetTitle={"Child Boards"}>
-              <></>
+              <BoardSummary board={board} />
             </Widget>
           )}
 
+          <div className="my-3">ZFGC &gt;&gt; ZFGC.com &gt;&gt; Updates</div>
+
           {board && (
             <Widget widgetTitle={board.boardName}>
-              <Table className="my-0" striped hover responsive>
+              <BBTable>
                 <thead>
                   <Style.row className="tableRow" theme={currentTheme}>
                     <th></th>
@@ -156,7 +135,7 @@ const Board: React.FC = () => {
                   </Style.row>
                 </thead>
                 <tbody>
-                  {board?.threads?.map((thread) => {
+                  {board?.unStickyThreads?.map((thread) => {
                     return (
                       <Style.row className="tableRow body" theme={currentTheme}>
                         <td>
@@ -183,7 +162,7 @@ const Board: React.FC = () => {
                     );
                   })}
                 </tbody>
-              </Table>
+              </BBTable>
               <Style.boardFooter theme={currentTheme}>
                 <BBPaginator
                   numPages={board.pageCount}
@@ -198,4 +177,4 @@ const Board: React.FC = () => {
   );
 };
 
-export default Board;
+export default BoardContainer;
