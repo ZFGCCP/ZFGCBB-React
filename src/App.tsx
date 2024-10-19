@@ -1,12 +1,11 @@
-import React, { Fragment } from "react";
+import type React from "react";
+import { RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "./providers/theme/themeProvider";
 import { UserProvider } from "./providers/user/userProvider";
-import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
 import QueryProvider from "./providers/query/queryProvider";
-import { RouterProvider } from "react-router-dom";
 
 import routes from "./router.tsx";
+import "./App.css";
 
 const App: React.FC = () => {
   return (

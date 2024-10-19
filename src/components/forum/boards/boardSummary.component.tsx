@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
-import { Board } from "../../../types/forum";
+import type React from "react";
+import { useContext } from "react";
+import { styled } from "@linaria/react";
+import type { Board } from "../../../types/forum";
 import BBTable from "../../common/tables/bbTable.component";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBLink from "../../common/bbLink";
-import { Theme } from "../../../types/theme";
-import { styled } from "@linaria/react";
+import type { Theme } from "../../../types/theme";
 
 const Style = {
   row: styled.tr<{ theme: Theme }>`

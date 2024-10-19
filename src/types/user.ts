@@ -1,4 +1,4 @@
-import { BaseBB } from "./api";
+import type { BaseBB, BBPermission } from "./api";
 
 export type User = BaseBB & {
   displayName: string;
@@ -25,5 +25,5 @@ export type Avatar = BaseBB & {
 
 export type Permission = BaseBB & {
   permissionCode: string;
-  permissionName: string;
+  permissionName: BBPermission;
 };

@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import type React from "react";
+import { useContext } from "react";
 import { Table } from "react-bootstrap";
-import { Theme } from "../../../types/theme";
 import { styled } from "@linaria/react";
+import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 
 const Style = {

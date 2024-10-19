@@ -1,6 +1,7 @@
-import React, { createContext, useState } from "react";
+import type React from "react";
+import { createContext } from "react";
 import { useBBQuery } from "../../hooks/useBBQuery";
-import { User } from "../../types/user";
+import type { User } from "../../types/user";
 
 const emptyUser = {
   id: 0,
