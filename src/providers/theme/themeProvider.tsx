@@ -1,5 +1,6 @@
-import React, { useState, createContext, useContext } from "react";
-import { Theme, ThemeWrapper } from "../../types/theme";
+import type React from "react";
+import { useState, createContext, useContext } from "react";
+import type { Theme, ThemeWrapper } from "../../types/theme";
 import { UserContext } from "../user/userProvider";
 
 const midnightTheme = {

@@ -1,7 +1,7 @@
-import React from "react";
+import type React from "react";
 import { styled } from "@linaria/react";
 import Widget from "../common/widgets/widget.component";
-import { BoardSummary } from "../../types/forum";
+import type { BoardSummary } from "../../types/forum";
 import BBLink from "../common/bbLink";
 
 const Style = {

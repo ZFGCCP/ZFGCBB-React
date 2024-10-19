@@ -1,4 +1,4 @@
-import { BaseBB } from "./api";
+import type { BaseBB } from "./api";
 
 export type User = BaseBB & {
   displayName: string;

@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
+import type React from "react";
+import { useContext } from "react";
 import { styled } from "@linaria/react";
 import { Button } from "react-bootstrap";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
-import { Theme } from "../../../types/theme";
+import type { Theme } from "../../../types/theme";
+
 const Style = {
   FooterButton: styled(Button)<{ theme: Theme }>`
     &.footer-btn {
