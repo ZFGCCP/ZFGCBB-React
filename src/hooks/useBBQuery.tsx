@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import type { BaseBB } from "../types/api";
 
-export const useBBQuery = <T extends BaseBB>(
+export const useBBQuery = <T extends BaseBB | BaseBB[]>(
   url: string,
   queryKey?: string,
   retry: number = 0,
