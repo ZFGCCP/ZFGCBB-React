@@ -1,4 +1,4 @@
-import type { BaseBB } from "./api";
+import type { BaseBB, BBPermission } from "./api";
 import type { User } from "./user";
 
 export type Forum = BaseBB & {
@@ -75,4 +75,10 @@ export type MessageHistory = BaseBB & {
   unparsedText: String;
   currentFlag?: Boolean;
   createdTsAsString: string;
+};
+
+export type BBPermissionLabel = {
+  label: string;
+  callback: () => void;
+  permissions: BBPermission[];
 };

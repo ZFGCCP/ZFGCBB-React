@@ -14,7 +14,7 @@ import {
 import parse from "html-react-parser/lib/index";
 import Widget from "../../common/widgets/widget.component";
 import { useBBQuery } from "../../../hooks/useBBQuery";
-import type { Message, Thread } from "../../../types/forum";
+import type { BBPermissionLabel, Message, Thread } from "../../../types/forum";
 import FooterButtons from "./footerButtons.component";
 import MessageEditor from "../messageEditor.component";
 import UserLeftPane from "../../user/userLeftPane.component";
@@ -117,7 +117,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
           "ZFGC_MESSAGE_ADMIN",
         ],
       },
-    ];
+    ] satisfies BBPermissionLabel[];
   }, [thread]);
 
   const clickModify = (msg: Message) => {
