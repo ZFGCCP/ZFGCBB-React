@@ -1,10 +1,15 @@
 import type React from "react";
 import { styled } from "@linaria/react";
-import { Link } from "react-router-dom";
+import BBLink from "../common/bbLink";
 
 const Style = {
   subTabs: styled.div`
     background-color: #1e2b44;
+  `,
+
+  wrapper: styled.div`
+    position: relative;
+    z-index: 2;
   `,
 };
 
@@ -13,6 +18,7 @@ const NavTabStyle = {
     border: 0.2rem solid black;
     background-color: #1e2b44;
     border-bottom: 0;
+    height: 2rem;
 
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
@@ -24,24 +30,24 @@ const NavTab: React.FC<{ title: String; path: `/${string}` }> = ({
   path,
 }) => {
   return (
-    <NavTabStyle.tab className="d-flex px-5 mx-1 align-items-center">
-      <Link to={path} relative="path">
+    <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
+      <BBLink to={path} relative="path">
         {title}
-      </Link>
+      </BBLink>
     </NavTabStyle.tab>
   );
 };
 
 const Navigator: React.FC = () => {
   return (
-    <div className="d-flex pt-3">
+    <Style.wrapper className="d-flex pt-3 align-items-end">
       <NavTab title="Home" path="/" />
       <NavTab title="Forum" path="/forum" />
       <NavTab title="Chat" path="/" />
       <NavTab title="Wiki" path="/" />
       <NavTab title="Projects" path="/" />
       <NavTab title="Resources" path="/" />
-    </div>
+    </Style.wrapper>
   );
 };
 
