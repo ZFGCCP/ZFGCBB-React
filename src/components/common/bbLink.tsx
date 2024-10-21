@@ -18,16 +18,18 @@ const Style = {
   `,
 };
 
-const BBLink: React.FC<{ to: string; children: React.ReactNode, relative?: RelativeRoutingType | undefined }> = ({
-  to,
-  children,
-  relative
-}) => {
+const BBLink: React.FC<{
+  to: string;
+  children: React.ReactNode;
+  relative?: RelativeRoutingType | undefined;
+}> = ({ to, children, relative }) => {
   const { currentTheme } = useContext(ThemeContext);
 
   return (
     <Style.link theme={currentTheme}>
-      <Link to={to} relative={relative}>{children}</Link>
+      <Link to={to} relative={relative}>
+        {children}
+      </Link>
     </Style.link>
   );
 };

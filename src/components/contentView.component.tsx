@@ -23,7 +23,7 @@ const Style = {
   navWrapper: styled.div`
     position: relative;
     top: -2rem;
-  `
+  `,
 };
 
 const ContentView: React.FC = () => {
@@ -33,12 +33,13 @@ const ContentView: React.FC = () => {
     <Style.MainContent className="d-flex flex-column">
       <Style.header className="d-flex mb-5 px-3 justify-content-between">
         <Style.navWrapper>
-          <Style.headerImg src="http://zfgc.com/forum/Themes/midnight/images/midnight/logo.png"/>
+          <Style.headerImg src="http://zfgc.com/forum/Themes/midnight/images/midnight/logo.png" />
           <Navigator />
         </Style.navWrapper>
         <div className="d-none d-lg-flex flex-column justify-content-center">
           <div>
-            Welcome, {displayName}! Please login or <BBLink to="/user/registration">register</BBLink>
+            Welcome, {displayName}! Please login or{" "}
+            <BBLink to="/user/registration">register</BBLink>
           </div>
           <div>Did you miss your activation email?</div>
         </div>

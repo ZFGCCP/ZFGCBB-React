@@ -10,7 +10,7 @@ const Style = {
   wrapper: styled.div`
     position: relative;
     z-index: 2;
-  `
+  `,
 };
 
 const NavTabStyle = {
