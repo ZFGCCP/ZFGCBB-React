@@ -11,9 +11,11 @@ export const useBBQuery = <T extends BaseBB | BaseBB[]>(
   const resp = useQuery({
     queryKey: [bbKey],
     queryFn: async () => {
-      const response = await axios.get<T>(`http://localhost:8080/zfgbb/${url}`);
+      const response = await axios.get<T>(
+        `${import.meta.env.REACT_ZFGBB_API_URL}${url}`,
+      );
       const data = await response.data;
-      return data;
+      return data as T;
     },
     retry: retry,
   });
