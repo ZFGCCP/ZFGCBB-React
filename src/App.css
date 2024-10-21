@@ -1,6 +1,6 @@
 .container-xxl {
   @media (min-width: 1400px) {
-    max-width: 1900px;
+    max-width: 145rem;
   }
 }
 
