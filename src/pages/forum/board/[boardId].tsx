@@ -80,7 +80,9 @@ const BoardContainer: React.FC = () => {
   const { boardId } = useParams();
   const { currentTheme } = useContext(ThemeContext);
   const [currentPage, setCurrentPage] = useState(1);
-  const board = useBBQuery<Board>(`board/${boardId}?pageNo=${currentPage}`);
+  const { data: board } = useBBQuery<Board>(
+    `board/${boardId}?pageNo=${currentPage}`,
+  );
 
   const footer = useMemo(() => {
     return [

@@ -81,7 +81,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
   const [msgText, setMsgText] = useState<
     string | number | readonly string[] | undefined
   >("");
-  const thread = useBBQuery<Thread>(
+  const { data: thread } = useBBQuery<Thread>(
     `thread/${threadId}?pageNo=1&numPerPage=10`,
   );
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);

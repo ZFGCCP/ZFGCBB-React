@@ -80,7 +80,7 @@ const MemberListContainer: React.FC = () => {
   const { currentTheme } = useContext(ThemeContext);
   const { currentPage: initialCurrentPage } = useParams();
   const [currentPage, setCurrentPage] = useState(initialCurrentPage ?? 1);
-  const memberList = useBBQuery<User[]>(
+  const { data: memberList } = useBBQuery<User[]>(
     `user/memberList?pageNo=${currentPage}`,
   );
 
@@ -92,33 +92,47 @@ const MemberListContainer: React.FC = () => {
     <>
       <div className="row">
         <div className="col-12 my-2">
-          {memberList && memberList.length > 0 && (
-            <BBTable>
-              <thead>
-                <Style.row className="tableRow" theme={currentTheme}>
-                  <th></th>
-                  <th></th>
-                  <th>Username</th>
-                  <th>Email</th>
-                  <th>Joined</th>
-                  <th>Last Seen</th>
-                </Style.row>
-                <Style.row className="subRow" theme={currentTheme}>
-                  <th colSpan={7}></th>
-                </Style.row>
-              </thead>
-              <tbody>
-                {memberList?.map((user) => {
+          <BBTable>
+            <thead>
+              <Style.row className="tableRow" theme={currentTheme}>
+                <th></th>
+                <th></th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Joined</th>
+                <th>Last Seen</th>
+              </Style.row>
+              <Style.row className="subRow" theme={currentTheme}>
+                <th colSpan={7}></th>
+              </Style.row>
+            </thead>
+            <tbody>
+              {(memberList &&
+                memberList.length > 0 &&
+                memberList?.map((user) => {
                   return (
                     <Style.row
                       className="tableRow body"
                       theme={currentTheme}
-                    ></Style.row>
+                      key={`${user.id}`}
+                    >
+                      <td></td>
+                      <td></td>
+                      <td>{user.displayName}</td>
+                      <td>email</td>
+                      <td>joined</td>
+                      <td>last seen</td>
+                    </Style.row>
                   );
-                })}
-              </tbody>
-            </BBTable>
-          )}
+                })) || (
+                <Style.row className="tableRow body" theme={currentTheme}>
+                  <td colSpan={7}>
+                    <div>Sure looks like a ghost town hahahahaha! 👻</div>
+                  </td>
+                </Style.row>
+              )}
+            </tbody>
+          </BBTable>
         </div>
       </div>
     </>

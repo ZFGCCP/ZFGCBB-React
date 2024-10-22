@@ -1,7 +1,7 @@
 import { styled } from "@linaria/react";
 import type React from "react";
 import { useContext } from "react";
-import { Link, RelativeRoutingType } from "react-router-dom";
+import { Link, type RelativeRoutingType } from "react-router-dom";
 import type { Theme } from "../../types/theme";
 import { ThemeContext } from "../../providers/theme/themeProvider";
 

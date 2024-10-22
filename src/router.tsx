@@ -6,6 +6,7 @@ export type BBPage = {
   layout?: React.FC;
 };
 
+// See https://vite.dev/guide/features#glob-import
 const imported_pages = import.meta.glob("./pages/**/*.tsx") as Record<
   string,
   () => Promise<BBPage>

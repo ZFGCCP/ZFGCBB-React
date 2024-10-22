@@ -4,7 +4,7 @@ import { useBBQuery } from "../../hooks/useBBQuery";
 import type { Forum } from "../../types/forum";
 
 const ForumMain: React.FC = () => {
-  const forumIndex = useBBQuery<Forum>("board/forum");
+  const { data: forumIndex } = useBBQuery<Forum>("board/forum");
 
   return (
     <div className="row">
