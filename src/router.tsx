@@ -18,7 +18,8 @@ async function lazyLoadPage(path: string) {
 
 async function lazyLoadPageWithLayout(path: string) {
   const { layout } = await lazyLoadPage(path);
-  if (!layout) return import("./components/contentView.component");
+  if (!layout)
+    return import("./components/common/layouts/contentView.component");
 
   return { default: layout! };
 }

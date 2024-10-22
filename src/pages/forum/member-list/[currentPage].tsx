@@ -124,3 +124,5 @@ const MemberListContainer: React.FC = () => {
     </>
   );
 };
+
+export default MemberListContainer;

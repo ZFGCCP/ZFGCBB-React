@@ -1,10 +1,10 @@
 import type React from "react";
 import { useContext } from "react";
-import { UserContext } from "../providers/user/userProvider";
+import { UserContext } from "../../../providers/user/userProvider";
 import { styled } from "@linaria/react";
 import { Outlet } from "react-router-dom";
-import Navigator from "./navigation/navigator.component";
-import BBLink from "./common/bbLink";
+import Navigator from "../../navigation/navigator.component";
+import BBLink from "../bbLink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurger } from "@fortawesome/free-solid-svg-icons";
 
