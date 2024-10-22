@@ -1,6 +1,6 @@
-import React from "react";
-import { User } from "../../types/user";
+import type React from "react";
 import { styled } from "@linaria/react";
+import type { User } from "../../types/user";
 
 const Style = {
   pane: styled.div`

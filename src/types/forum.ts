@@ -76,3 +76,9 @@ export type MessageHistory = BaseBB & {
   currentFlag?: Boolean;
   createdTsAsString: string;
 };
+
+export type BBPermissionLabel = {
+  label: string;
+  callback: () => void;
+  permissions: BBPermission[];
+};

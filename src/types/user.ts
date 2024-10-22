@@ -25,5 +25,5 @@ export type Avatar = BaseBB & {
 
 export type Permission = BaseBB & {
   permissionCode: string;
-  permissionName: string;
+  permissionName: BBPermission;
 };

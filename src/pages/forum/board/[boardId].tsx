@@ -1,11 +1,13 @@
-import React, { useContext, useMemo, useState } from "react";
+import type React from "react";
+import { useContext, useMemo, useState } from "react";
 import { useParams } from "react-router";
-import Widget from "../../../components/common/widgets/widget.component";
 import { styled } from "@linaria/react";
-import { Button, Table } from "react-bootstrap";
+import { Button } from "react-bootstrap";
+
+import Widget from "../../../components/common/widgets/widget.component";
 import { useBBQuery } from "../../../hooks/useBBQuery";
-import { Board } from "../../../types/forum";
-import { Theme } from "../../../types/theme";
+import type { Board } from "../../../types/forum";
+import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBLink from "../../../components/common/bbLink";
 import { Pagination } from "react-bootstrap";
@@ -78,7 +80,9 @@ const BoardContainer: React.FC = () => {
   const { boardId } = useParams();
   const { currentTheme } = useContext(ThemeContext);
   const [currentPage, setCurrentPage] = useState(1);
-  const board = useBBQuery<Board>(`board/${boardId}?pageNo=${currentPage}`);
+  const { data: board } = useBBQuery<Board>(
+    `board/${boardId}?pageNo=${currentPage}`,
+  );
 
   const footer = useMemo(() => {
     return [

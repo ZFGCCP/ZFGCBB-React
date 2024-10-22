@@ -1,10 +1,11 @@
-import React, { useRef, useState } from "react";
+import type React from "react";
+import { useRef } from "react";
 import { useBBQuery } from "../../hooks/useBBQuery";
 import { styled } from "@linaria/react";
 import { Button, Form } from "react-bootstrap";
-import { Message } from "../../types/forum";
+import type { Message } from "../../types/forum";
 import { useBBMutation } from "../../providers/query/useBBMutation";
-import { BaseBB } from "../../types/api";
+import type { BaseBB } from "../../types/api";
 
 const Style = {
   graveDigWarning: styled.div`
@@ -16,7 +17,7 @@ const Style = {
 
 const MessageEditor: React.FC<{ threadId: Number }> = ({ threadId }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const currentMsg = useBBQuery<Message>(
+  const { data: currentMsg } = useBBQuery<Message>(
     `message/template?threadId=${threadId}`,
   );
 
