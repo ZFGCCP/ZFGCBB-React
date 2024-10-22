@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import Widget from "../../../components/common/widgets/widget.component";
+import type React from "react";
 import UserProfileMaster from "../../../components/user/userProfileMaster.component";
 import { useParams } from "react-router-dom";
 

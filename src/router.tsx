@@ -6,6 +6,7 @@ export type BBPage = {
   layout?: React.FC;
 };
 
+// See https://vite.dev/guide/features#glob-import
 const imported_pages = import.meta.glob("./pages/**/*.tsx") as Record<
   string,
   () => Promise<BBPage>
@@ -18,7 +19,8 @@ async function lazyLoadPage(path: string) {
 
 async function lazyLoadPageWithLayout(path: string) {
   const { layout } = await lazyLoadPage(path);
-  if (!layout) return import("./components/contentView.component");
+  if (!layout)
+    return import("./components/common/layouts/contentView.component");
 
   return { default: layout! };
 }

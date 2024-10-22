@@ -1,10 +1,10 @@
-import React from "react";
+import type React from "react";
 import ForumCategory from "../../components/forum/forumCategory.component";
 import { useBBQuery } from "../../hooks/useBBQuery";
-import { Forum } from "../../types/forum";
+import type { Forum } from "../../types/forum";
 
 const ForumMain: React.FC = () => {
-  const forumIndex = useBBQuery<Forum>("board/forum");
+  const { data: forumIndex } = useBBQuery<Forum>("board/forum");
 
   return (
     <div className="row">

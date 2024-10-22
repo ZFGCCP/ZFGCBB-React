@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { styled } from "@linaria/react";
 import BBLink from "../common/bbLink";
 

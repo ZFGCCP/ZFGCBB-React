@@ -1,6 +1,6 @@
-import React, { useMemo, useState, useRef, Suspense, useContext } from "react";
+import type React from "react";
+import { useMemo, useState, useRef, Suspense, useContext } from "react";
 import { styled } from "@linaria/react";
-import Widget from "../../common/widgets/widget.component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faReply,
@@ -11,16 +11,15 @@ import {
   faFlag,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
+import parse from "html-react-parser/lib/index";
+import Widget from "../../common/widgets/widget.component";
 import { useBBQuery } from "../../../hooks/useBBQuery";
-import { Message, Thread } from "../../../types/forum";
-import { useParams } from "react-router";
-import parse from "html-react-parser";
+import type { BBPermissionLabel, Message, Thread } from "../../../types/forum";
 import FooterButtons from "./footerButtons.component";
-import { useMutation } from "@tanstack/react-query";
 import MessageEditor from "../messageEditor.component";
 import UserLeftPane from "../../user/userLeftPane.component";
 import HasPermission from "../../common/security/HasPermission.component";
-import { Theme } from "../../../types/theme";
+import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 
 const Style = {
@@ -82,7 +81,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
   const [msgText, setMsgText] = useState<
     string | number | readonly string[] | undefined
   >("");
-  const thread = useBBQuery<Thread>(
+  const { data: thread } = useBBQuery<Thread>(
     `thread/${threadId}?pageNo=1&numPerPage=10`,
   );
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
@@ -118,7 +117,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
           "ZFGC_MESSAGE_ADMIN",
         ],
       },
-    ];
+    ] satisfies BBPermissionLabel[];
   }, [thread]);
 
   const clickModify = (msg: Message) => {

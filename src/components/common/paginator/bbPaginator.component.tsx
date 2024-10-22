@@ -1,7 +1,8 @@
 import { styled } from "@linaria/react";
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import type React from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { Pagination } from "react-bootstrap";
-import { Theme } from "../../../types/theme";
+import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 
 const Style = {
