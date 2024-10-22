@@ -18,7 +18,6 @@ export default defineConfig({
   },
   build: {
     target: "esnext",
-    emptyOutDir: true,
     rollupOptions: {
       output: {
         manualChunks(id) {
