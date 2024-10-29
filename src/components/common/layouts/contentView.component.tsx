@@ -19,7 +19,7 @@ const Style = {
     top: 2.3rem;
     z-index: 1;
 
-    @media(max-width: 767px){
+    @media (max-width: 767px) {
       top: 3rem;
     }
   `,
@@ -37,8 +37,14 @@ const ContentView: React.FC = () => {
     <Style.MainContent className="d-flex flex-column">
       <Style.header className="d-flex mb-5 px-3 justify-content-between">
         <Style.navWrapper>
-          <Style.headerImg src="http://zfgc.com/forum/Themes/midnight/images/midnight/logo.png" className="d-none d-sm-block"/>
-          <Style.headerImg src="http://localhost:8080/zfgbb/content/image/4" className="d-block d-sm-none"/>
+          <Style.headerImg
+            src="http://zfgc.com/forum/Themes/midnight/images/midnight/logo.png"
+            className="d-none d-sm-block"
+          />
+          <Style.headerImg
+            src="http://localhost:8080/zfgbb/content/image/4"
+            className="d-block d-sm-none"
+          />
           <Navigator />
         </Style.navWrapper>
         <div className="d-none d-lg-flex flex-column justify-content-center">
