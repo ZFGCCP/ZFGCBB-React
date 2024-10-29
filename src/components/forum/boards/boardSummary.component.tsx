@@ -37,17 +37,24 @@ const BoardSummary: React.FC<{ board: Board }> = ({ board }) => {
                 <img src="http://zfgc.com/forum/Themes/midnight/images/off.gif" />
               </td>
               <td className="col-2">
-                <BBLink to={`/forum/board/${board.id}`}>
+                <BBLink to={`/forum/board/${board.boardId}`}>
                   {board.boardName}
                 </BBLink>
               </td>
               <td className="col-6">
                 <div className="d-flex flex-column">
                   <Style.forumDesc>{board.description}</Style.forumDesc>
-                  <Style.forumDesc>Moderators: me, me and me</Style.forumDesc>
-                  <Style.forumDesc>
-                    Child board: hello, hello, hello
-                  </Style.forumDesc>
+                  <Style.forumDesc>Moderators: No one yet :)</Style.forumDesc>
+                  {board.childBoards && (
+                    <Style.forumDesc>
+                      Child boards:{" "}
+                      {board.childBoards.map((cb) => (
+                        <BBLink to={`/forum/board/${cb.boardId}`}>
+                          {cb.boardName},
+                        </BBLink>
+                      ))}
+                    </Style.forumDesc>
+                  )}
                 </div>
               </td>
 
@@ -57,17 +64,24 @@ const BoardSummary: React.FC<{ board: Board }> = ({ board }) => {
                     <Style.forumDesc>
                       Threads: {board.threadCount}
                     </Style.forumDesc>
-                    <Style.forumDesc>Posts: 9001</Style.forumDesc>
+                    <Style.forumDesc>Posts: {board.postCount}</Style.forumDesc>
                   </div>
                 </div>
               </td>
               <td className="col-2">
                 <div className="align-content-center">
-                  <div className="d-flex flex-column">
-                    <Style.forumDesc>Last Post by: MG-Zero</Style.forumDesc>
-                    <Style.forumDesc>in Email Issues</Style.forumDesc>
-                    <Style.forumDesc>on 07/31/2024 12:00:00PM</Style.forumDesc>
-                  </div>
+                  {board.latestThreadId && (
+                    <div className="d-flex flex-column">
+                      <Style.forumDesc>
+                        Last Post by: {board.latestMessageUserName}
+                      </Style.forumDesc>
+                      <Style.forumDesc>in Email Issues</Style.forumDesc>
+                      <Style.forumDesc>
+                        on 07/31/2024 12:00:00PM
+                      </Style.forumDesc>
+                    </div>
+                  )}
+                  {!board.latestThreadId && <span>No recent posts</span>}
                 </div>
               </td>
             </Style.row>

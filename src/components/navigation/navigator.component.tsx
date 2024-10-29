@@ -40,7 +40,7 @@ const NavTab: React.FC<{ title: String; path: `/${string}` }> = ({
 
 const Navigator: React.FC = () => {
   return (
-    <Style.wrapper className="d-flex pt-3 align-items-end">
+    <Style.wrapper className="d-none d-md-flex pt-3 align-items-end">
       <NavTab title="Home" path="/" />
       <NavTab title="Forum" path="/forum" />
       <NavTab title="Chat" path="/" />

@@ -5,8 +5,6 @@ import { styled } from "@linaria/react";
 import { Outlet } from "react-router-dom";
 import Navigator from "../../navigation/navigator.component";
 import BBLink from "../bbLink";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurger } from "@fortawesome/free-solid-svg-icons";
 
 const Style = {
   MainContent: styled.div``,
@@ -20,6 +18,10 @@ const Style = {
     position: relative;
     top: 2.3rem;
     z-index: 1;
+
+    @media (max-width: 767px) {
+      top: 3rem;
+    }
   `,
 
   navWrapper: styled.div`
@@ -35,7 +37,14 @@ const ContentView: React.FC = () => {
     <Style.MainContent className="d-flex flex-column">
       <Style.header className="d-flex mb-5 px-3 justify-content-between">
         <Style.navWrapper>
-          <Style.headerImg src="http://zfgc.com/forum/Themes/midnight/images/midnight/logo.png" />
+          <Style.headerImg
+            src="http://zfgc.com/forum/Themes/midnight/images/midnight/logo.png"
+            className="d-none d-sm-block"
+          />
+          <Style.headerImg
+            src="http://localhost:8080/zfgbb/content/image/4"
+            className="d-block d-sm-none"
+          />
           <Navigator />
         </Style.navWrapper>
         <div className="d-none d-lg-flex flex-column justify-content-center">
@@ -44,9 +53,6 @@ const ContentView: React.FC = () => {
             <BBLink to="/user/registration">register</BBLink>
           </div>
           <div>Did you miss your activation email?</div>
-        </div>
-        <div className="d-flex d-lg-none">
-          <FontAwesomeIcon icon={faBurger} />
         </div>
       </Style.header>
       <div className="container-xxl">
