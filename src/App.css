@@ -12,3 +12,8 @@
   --bs-tertiary-bg: none;
   --bs-link-color: none;
 }
+
+
+.bb-code-b{
+  font-weight: bold;
+}

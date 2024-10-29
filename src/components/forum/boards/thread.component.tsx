@@ -36,18 +36,8 @@ const Style = {
     }
   `,
 
-  userInfoWrapper: styled.div`
-    border-right: 0.2rem solid black;
-  `,
-
   messageBody: styled.div`
     overflow-wrap: anywhere;
-  `,
-
-  avatar: styled.img`
-    max-width: 150px;
-    max-height: 150px;
-    border: 0.1rem solid black;
   `,
 
   buttonWrapper: styled.div`
@@ -59,9 +49,7 @@ const Style = {
     font-size: 0.8rem;
   `,
 
-  time: styled.div`
-    font-size: 0.8rem;
-  `,
+  time: styled.div``,
 
   graveDigWarning: styled.div`
     border: 0.1rem solid red;
@@ -141,11 +129,14 @@ const ForumThread: React.FC<{ threadId: string }> = ({
           <Widget widgetTitle={thread ? thread.threadName : ""}>
             {thread?.messages?.map((msg) => {
               return (
-                <Style.messageWrapper className="d-flex" theme={currentTheme}>
+                <Style.messageWrapper
+                  className="d-flex flex-column flex-lg-row"
+                  theme={currentTheme}
+                >
                   <UserLeftPane user={msg.createdUser} />
                   <div className="col-12 col-lg-10">
                     <Style.buttonWrapper className="d-flex justify-content-between">
-                      <Style.time className="m-2">
+                      <Style.time className="m-2 mt-0">
                         {msg.currentMessage.createdTsAsString}
                         <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
                           {<span> - 192.168.1.1</span>}
