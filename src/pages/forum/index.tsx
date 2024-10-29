@@ -7,7 +7,7 @@ const ForumMain: React.FC = () => {
   const { data: forumIndex } = useBBQuery<Forum>("board/forum");
 
   return (
-    <div className="row">
+    <div>
       {forumIndex?.categories?.map((cat) => {
         return (
           <div className="col-12 my-2">

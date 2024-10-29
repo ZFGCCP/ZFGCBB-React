@@ -23,11 +23,19 @@ export type BoardSummary = BaseBB & {
   boardName: string;
   threadCount: number;
   postCount: number;
-  latestMessageId: number;
-  latestThreadId: number;
-  latestMessageOwnerId: number;
-  latestMessageUserName: string;
+  latestMessageId?: number;
+  latestThreadId?: number;
+  latestMessageOwnerId?: number;
+  latestMessageUserName?: string;
   categoryId: number;
+  parentBoardId: number;
+
+  childBoards?: ChildBoard[];
+};
+
+export type ChildBoard = {
+  boardId: number;
+  boardName: string;
   parentBoardId: number;
 };
 
