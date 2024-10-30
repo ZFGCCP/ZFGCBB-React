@@ -6,12 +6,11 @@ import Widget from "../../components/common/widgets/widget.component";
 import { styled } from "@linaria/react";
 import BBLink from "../../components/common/bbLink";
 
-
 const Style = {
   newsFaderText: styled.div`
     text-align: center;
-  `
-}
+  `,
+};
 
 const ForumMain: React.FC = () => {
   const { data: forumIndex } = useBBQuery<Forum>("board/forum");
@@ -20,7 +19,8 @@ const ForumMain: React.FC = () => {
     <div>
       <Widget className="mb-5">
         <Style.newsFaderText className="m-4">
-          Hi! We're read-only for now, but make sure to join us on <BBLink to="https://discord.gg/JvnrcJ7U">Discord!</BBLink>
+          Hi! We're read-only for now, but make sure to join us on{" "}
+          <BBLink to="https://discord.gg/JvnrcJ7U">Discord!</BBLink>
         </Style.newsFaderText>
       </Widget>
 

@@ -50,12 +50,17 @@ const ForumCategory: React.FC<{ title: String; subBoards: BoardSummary[] }> = ({
                   <Style.forumDesc className="d-block d-lg-none">
                     {sb.description}
                   </Style.forumDesc>
-                  {sb.childBoards && 
-                  (<Style.forumText className="d-block d-lg-none">
-                    Child boards: {sb.childBoards.map((cb) => {
-                      return <BBLink to={`/forum/board/${cb.boardId}`}>{cb.boardName}</BBLink>
-                    })}
-                  </Style.forumText>
+                  {sb.childBoards && (
+                    <Style.forumText className="d-block d-lg-none">
+                      Child boards:{" "}
+                      {sb.childBoards.map((cb) => {
+                        return (
+                          <BBLink to={`/forum/board/${cb.boardId}`}>
+                            {cb.boardName}
+                          </BBLink>
+                        );
+                      })}
+                    </Style.forumText>
                   )}
                   <Style.forumText className="d-inline-block d-md-none">
                     Threads: {sb.threadCount}
@@ -68,12 +73,17 @@ const ForumCategory: React.FC<{ title: String; subBoards: BoardSummary[] }> = ({
                 <td className="d-none d-lg-table-cell col-6 align-content-center">
                   <div className="d-flex flex-column">
                     <Style.forumDesc>{sb.description}</Style.forumDesc>
-                    {sb.childBoards && 
-                    (<Style.forumText>
-                      Child boards: {sb.childBoards.map((cb) => {
-                        return <BBLink to={`/forum/board/${cb.boardId}`}>{cb.boardName}</BBLink>
-                      })}
-                    </Style.forumText>
+                    {sb.childBoards && (
+                      <Style.forumText>
+                        Child boards:{" "}
+                        {sb.childBoards.map((cb) => {
+                          return (
+                            <BBLink to={`/forum/board/${cb.boardId}`}>
+                              {cb.boardName}
+                            </BBLink>
+                          );
+                        })}
+                      </Style.forumText>
                     )}
                   </div>
                 </td>

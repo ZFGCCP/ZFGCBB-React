@@ -25,7 +25,7 @@ const Widget: React.FC<{
 
   return (
     <Style.widgetMain className={`${className}`} theme={currentTheme}>
-      {widgetTitle && (<h6 className="p-1 m-0 widget-title">{widgetTitle}</h6>)}
+      {widgetTitle && <h6 className="p-1 m-0 widget-title">{widgetTitle}</h6>}
       <div>{children}</div>
     </Style.widgetMain>
   );
