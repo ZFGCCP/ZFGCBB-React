@@ -44,7 +44,6 @@ const BoardSummary: React.FC<{ board: Board }> = ({ board }) => {
               <td className="col-6">
                 <div className="d-flex flex-column">
                   <Style.forumDesc>{board.description}</Style.forumDesc>
-                  <Style.forumDesc>Moderators: No one yet :)</Style.forumDesc>
                   {board.childBoards && (
                     <Style.forumDesc>
                       Child boards:{" "}
