@@ -50,30 +50,48 @@ const ForumCategory: React.FC<{ title: String; subBoards: BoardSummary[] }> = ({
                   <Style.forumDesc className="d-block d-lg-none">
                     {sb.description}
                   </Style.forumDesc>
-                  <Style.forumText className="d-block d-lg-none">
-                    Child board: hello, hello, hello
-                  </Style.forumText>
+                  {sb.childBoards && (
+                    <Style.forumText className="d-block d-lg-none">
+                      Child boards:{" "}
+                      {sb.childBoards.map((cb) => {
+                        return (
+                          <BBLink to={`/forum/board/${cb.boardId}`}>
+                            {cb.boardName}
+                          </BBLink>
+                        );
+                      })}
+                    </Style.forumText>
+                  )}
                   <Style.forumText className="d-inline-block d-md-none">
-                    Threads: 9001
+                    Threads: {sb.threadCount}
                   </Style.forumText>
                   <Style.forumText className="ms-2 d-inline-block d-md-none">
-                    Posts: 9001
+                    Posts: {sb.postCount}
                   </Style.forumText>
                 </td>
 
                 <td className="d-none d-lg-table-cell col-6 align-content-center">
                   <div className="d-flex flex-column">
                     <Style.forumDesc>{sb.description}</Style.forumDesc>
-                    <Style.forumText>
-                      Child board: hello, hello, hello
-                    </Style.forumText>
+                    {sb.childBoards && (
+                      <Style.forumText>
+                        Child boards:{" "}
+                        {sb.childBoards.map((cb) => {
+                          return (
+                            <BBLink to={`/forum/board/${cb.boardId}`}>
+                              {cb.boardName}
+                            </BBLink>
+                          );
+                        })}
+                      </Style.forumText>
+                    )}
                   </div>
                 </td>
 
                 <td className="d-none d-md-table-cell col-2 col-lg-1 align-content-center">
                   <div className="d-flex flex-column">
-                    <Style.forumText>Threads: 9001</Style.forumText>
-                    <Style.forumText>Posts: 9001</Style.forumText>
+                    <Style.forumText>Threads: {sb.threadCount}</Style.forumText>
+                    <Style.forumText>Posts: {sb.postCount}</Style.forumText>
                   </div>
                 </td>
 
