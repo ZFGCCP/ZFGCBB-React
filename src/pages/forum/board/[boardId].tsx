@@ -13,7 +13,8 @@ import BBLink from "../../../components/common/bbLink";
 import { Pagination } from "react-bootstrap";
 import BBPaginator from "../../../components/common/paginator/bbPaginator.component";
 import BBTable from "../../../components/common/tables/bbTable.component";
-import BoardSummary from "../../../components/forum/boards/boardSummary.component";
+import BoardSummaryView from "../../../components/forum/boards/boardSummary.component";
+import { css } from "@linaria/core";
 
 const Style = {
   forumDesc: styled.div`
@@ -74,6 +75,10 @@ const Style = {
       }
     }
   `,
+
+  smallText: styled.div`
+    font-size: 0.8rem;
+  `,
 };
 
 const BoardContainer: React.FC = () => {
@@ -113,9 +118,9 @@ const BoardContainer: React.FC = () => {
     <>
       <div className="row">
         <div className="col-12 my-2">
-          {board?.childBoards?.length && board?.childBoards?.length > 0 && (
+          {board && board.childBoards && board?.childBoards?.length > 0 && (
             <Widget widgetTitle={"Child Boards"}>
-              <BoardSummary board={board} />
+              <BoardSummaryView subBoards={board.childBoards} />
             </Widget>
           )}
 
@@ -127,12 +132,13 @@ const BoardContainer: React.FC = () => {
                 <thead>
                   <Style.row className="tableRow" theme={currentTheme}>
                     <th></th>
-                    <th></th>
+                    <th className="d-none d-sm-table-cell"></th>
                     <th>Subject</th>
-                    <th>Author</th>
-                    <th>Replies</th>
-                    <th>Views</th>
-                    <th>Latest Post</th>
+                    <th className="d-none d-md-table-cell">Author</th>
+                    <th className="d-none d-lg-table-cell">Replies</th>
+                    <th className="d-none d-lg-table-cell">Views</th>
+                    <th className="d-none d-md-table-cell d-lg-none"></th>
+                    <th className="d-none d-md-table-cell">Latest Post</th>
                   </Style.row>
                   <Style.row className="subRow" theme={currentTheme}>
                     <th colSpan={7}></th>
@@ -143,24 +149,57 @@ const BoardContainer: React.FC = () => {
                     return (
                       <Style.row className="tableRow body" theme={currentTheme}>
                         <td>
-                          <img src="http://zfgc.com/forum/Themes/midnight/images/topic/normal_post.gif" />
+                          <div>
+                            <img src="http://zfgc.com/forum/Themes/midnight/images/topic/normal_post.gif" />
+                          </div>
+                          <div className="d-block d-sm-none mt-3">
+                            <img src="http://zfgc.com/forum/Themes/midnight/images/post/xx.gif" />
+                          </div>
                         </td>
-                        <td>
+                        <td className="d-none d-sm-table-cell">
                           <img src="http://zfgc.com/forum/Themes/midnight/images/post/xx.gif" />
                         </td>
                         <td>
                           <BBLink to={`/forum/thread/${thread.id}`}>
                             {thread.threadName}
                           </BBLink>
+                          <Style.smallText className="d-block d-md-none">
+                            Author: {thread.createdUser?.displayName}
+                          </Style.smallText>
+                          <Style.smallText className="d-block d-md-none">
+                            <span>Replies: {thread.postCount.toString()}</span>
+                            <span className="ms-2">
+                              Views: {thread.viewCount.toString()}
+                            </span>
+                          </Style.smallText>
+                          <Style.smallText className="d-block d-md-none">
+                            Latest Post by: {thread.latestMessage?.ownerName}
+                          </Style.smallText>
                         </td>
-                        <td>{thread.createdUser?.displayName}</td>
-                        <td>{thread.postCount.toString()}</td>
-                        <td>{thread.viewCount.toString()}</td>
-                        <td>
-                          <div>by {thread.latestMessage?.ownerName}</div>
-                          <div>
+                        <td className="d-none d-md-table-cell">
+                          {thread.createdUser?.displayName}
+                        </td>
+                        <td className="d-none d-lg-table-cell">
+                          {thread.postCount.toString()}
+                        </td>
+                        <td className="d-none d-lg-table-cell">
+                          {thread.viewCount.toString()}
+                        </td>
+                        <td className="d-none d-md-table-cell d-lg-none">
+                          <Style.smallText>
+                            Replies: {thread.postCount.toString()}
+                          </Style.smallText>
+                          <Style.smallText>
+                            Views: {thread.viewCount.toString()}
+                          </Style.smallText>
+                        </td>
+                        <td className="d-none d-md-table-cell">
+                          <Style.smallText>
+                            by {thread.latestMessage?.ownerName}
+                          </Style.smallText>
+                          <Style.smallText>
                             on {thread.latestMessage?.createdTsAsString}
-                          </div>
+                          </Style.smallText>
                         </td>
                       </Style.row>
                     );
