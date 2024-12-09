@@ -42,7 +42,7 @@
     "@wyw-in-js/vite": "^0.5.4",
     "prettier": "3.3.3",
     "typescript": "^5.6.3",
-    "vite": "^5.4.9"
+    "vite": "^6.0.3"
   },
   "keywords": [],
   "description": "@vitejs/create-app v2.4.1",
