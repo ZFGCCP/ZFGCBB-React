@@ -17,10 +17,3 @@
 .bb-code-b {
   font-weight: bold;
 }
-
-.bb-code-quote {
-  .bb-code-quote-body {
-    border: 0.2rem solid black;
-    padding: 1rem;
-  }
-}

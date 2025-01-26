@@ -1,18 +1,19 @@
 import type React from "react";
-import { RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router/dom";
 import { ThemeProvider } from "./providers/theme/themeProvider";
 import { UserProvider } from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
 
 import routes from "./router.tsx";
-import "./App.css";
+import "./assets/App.css";
+import "./assets/snow-effect.css";
 
 const App: React.FC = () => {
   return (
     <QueryProvider>
       <UserProvider>
         <ThemeProvider>
-          <RouterProvider router={routes} fallbackElement={<p>Loading...</p>} />
+          <RouterProvider router={routes} />
         </ThemeProvider>
       </UserProvider>
     </QueryProvider>

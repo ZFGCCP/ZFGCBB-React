@@ -1,9 +1,9 @@
-/*..steve-calandra {
+.steve-calandra {
   position: fixed;
   inset: 0;
 }
 
-snowflake {
+.snowflake {
   position: absolute;
   --small: 3px;
   --medium: 7px;
@@ -80,4 +80,4 @@ snowflake {
   50% {
     transform: translate3d(120px, 0, 0);
   }
-}*/
+}

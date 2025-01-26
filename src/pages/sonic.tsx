@@ -1,6 +1,6 @@
 import type React from "react";
 import Widget from "../components/common/widgets/widget.component";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 
 const Sonic: React.FC = () => {
   return (
