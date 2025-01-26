@@ -16,7 +16,17 @@ css`
     html,
     body,
     #root {
-      height: 100%;
+      height: 100dvh;
+      width: 100dvw;
+    }
+
+    html,
+    body {
+      overflow: hidden;
+    }
+
+    #root {
+      overflow: auto;
       background-color: var(--bg);
       color: var(--text);
     }
