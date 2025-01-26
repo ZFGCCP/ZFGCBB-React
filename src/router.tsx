@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router";
 
 export type BBPage = {
   default: React.FC;
@@ -17,8 +17,8 @@ async function lazyLoadPage(path: string) {
   return { Component, layout };
 }
 
-async function lazyLoadPageWithLayout(path: string) {
-  const { layout } = await lazyLoadPage(path);
+async function lazyLoadPageWithLayout(route_path: string) {
+  const { layout } = await lazyLoadPage(route_path);
   if (!layout)
     return import("./components/common/layouts/contentView.component");
 
@@ -39,19 +39,22 @@ const routes = Object.keys(imported_pages).map((page) => {
     .replace(regexRouteMatchSlugName, ":$1"); // replaces [paramName] with :paramName
 
   const LayoutElement = lazy(() => lazyLoadPageWithLayout(page));
+  const RouteElement = (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LayoutElement />
+    </Suspense>
+  );
+
   return {
-    element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <LayoutElement />
-      </Suspense>
-    ),
+    hydrateFallbackElement: RouteElement,
+    element: RouteElement,
     children: [
       {
-        path: path,
+        path,
         lazy: () => lazyLoadPage(page),
       },
     ],
   };
 });
 
-export default createBrowserRouter(routes);
+export default createBrowserRouter(routes, {});

@@ -63,7 +63,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
 }) => {
   const threadId = parseInt(paramsThreadId!);
 
-  const textAreaRef = useRef();
+  const textAreaRef = useRef("");
   let cursorPosition = 0;
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [msgText, setMsgText] = useState<
