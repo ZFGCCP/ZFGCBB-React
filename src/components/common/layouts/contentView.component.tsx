@@ -2,7 +2,7 @@ import type React from "react";
 import { useContext } from "react";
 import { UserContext } from "../../../providers/user/userProvider";
 import { styled } from "@linaria/react";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import Navigator from "../../navigation/navigator.component";
 import BBLink from "../bbLink";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
