@@ -39,12 +39,15 @@ const routes = Object.keys(imported_pages).map((page) => {
     .replace(regexRouteMatchSlugName, ":$1"); // replaces [paramName] with :paramName
 
   const LayoutElement = lazy(() => lazyLoadPageWithLayout(page));
+  const RouteElement = (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LayoutElement />
+    </Suspense>
+  );
+
   return {
-    element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <LayoutElement />
-      </Suspense>
-    ),
+    hydrateFallbackElement: RouteElement,
+    element: RouteElement,
     children: [
       {
         path,

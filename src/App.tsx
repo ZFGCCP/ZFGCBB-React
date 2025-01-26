@@ -6,6 +6,7 @@ import QueryProvider from "./providers/query/queryProvider";
 
 import routes from "./router.tsx";
 import "./assets/App.css";
+import "./assets/snow-effect.css";
 
 const App: React.FC = () => {
   return (
