@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
 import { css } from "@linaria/core";
+import App from "./App";
 
 css`
   :global() {
@@ -34,5 +34,5 @@ if (!root) throw new Error("Missing root node");
 createRoot(root).render(
   <StrictMode>
     <App />
-  </StrictMode>
+  </StrictMode>,
 );

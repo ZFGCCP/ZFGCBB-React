@@ -1,0 +1,19 @@
+@import url("../../node_modules/bootstrap/dist/css/bootstrap.min.css");
+/* @import "./index.css"; FIXME: #77 This should either be removed or added. */
+
+.container-xxl {
+  @media (min-width: 1400px) {
+    max-width: 145rem;
+  }
+}
+
+:root {
+  --bs-body-bg: none;
+  --bs-link-hover-color: none;
+  --bs-tertiary-bg: none;
+  --bs-link-color: none;
+}
+
+.bb-code-b {
+  font-weight: bold;
+}

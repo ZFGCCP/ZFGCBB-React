@@ -1,21 +1,22 @@
-import React from "react";
+import type React from "react";
+import { RouterProvider } from "react-router/dom";
 import { ThemeProvider } from "./providers/theme/themeProvider";
-import ContentView from "./components/contentView.component";
 import { UserProvider } from "./providers/user/userProvider";
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import QueryProvider from "./providers/query/queryProvider";
 
-const App:React.FC = () => {
+import routes from "./router.tsx";
+import "./assets/App.css";
+import "./assets/snow-effect.css";
+
+const App: React.FC = () => {
   return (
-    <>
-      <QueryProvider>
-        <UserProvider>
-          <ThemeProvider>
-            <ContentView/>
-          </ThemeProvider>
-        </UserProvider>
-      </QueryProvider>
-    </>
+    <QueryProvider>
+      <UserProvider>
+        <ThemeProvider>
+          <RouterProvider router={routes} />
+        </ThemeProvider>
+      </UserProvider>
+    </QueryProvider>
   );
 };
 

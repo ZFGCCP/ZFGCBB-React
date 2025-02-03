@@ -1,11 +1,12 @@
 import { defineConfig } from "vite";
-import reactRefresh from "@vitejs/plugin-react-refresh";
-import linaria from "@linaria/vite";
+import react from "@vitejs/plugin-react";
+import linaria from "@wyw-in-js/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "./",
   plugins: [
-    reactRefresh(),
+    react(),
     linaria({
       include: ["**/*.{ts,tsx}"],
       babelOptions: {
@@ -13,4 +14,10 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    host: true,
+  },
+  build: {
+    target: "esnext",
+  },
 });
