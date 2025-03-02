@@ -1,5 +1,12 @@
 import type React from "react";
-import { useMemo, useState, useRef, Suspense, useContext, useCallback } from "react";
+import {
+  useMemo,
+  useState,
+  useRef,
+  Suspense,
+  useContext,
+  useCallback,
+} from "react";
 import { styled } from "@linaria/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -81,9 +88,12 @@ const ForumThread: React.FC<{ threadId: string }> = ({
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
   const { currentTheme } = useContext(ThemeContext);
 
-  const loadNewPage = useCallback((pageNo: number) => {
-    setCurrentPage(pageNo);
-  },[setCurrentPage]);
+  const loadNewPage = useCallback(
+    (pageNo: number) => {
+      setCurrentPage(pageNo);
+    },
+    [setCurrentPage],
+  );
 
   const footer = useMemo(() => {
     return [

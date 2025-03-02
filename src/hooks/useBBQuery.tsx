@@ -13,9 +13,7 @@ export const useBBQuery = <T extends BaseBB | BaseBB[]>(
   return useQuery({
     queryKey: [bbKey],
     queryFn: async () => {
-      const response = await axios.get<T>(
-        `http://zfgc.com:28080/zfgbb/${url}`,
-      );
+      const response = await axios.get<T>(`http://zfgc.com:28080/zfgbb/${url}`);
       const statusIs200 = response.status === 200;
       const responseIsJson =
         response.headers["content-type"] === "application/json";
@@ -33,6 +31,6 @@ export const useBBQuery = <T extends BaseBB | BaseBB[]>(
       return data as T;
     },
     retry: retry,
-    gcTime: gcTime
+    gcTime: gcTime,
   });
 };

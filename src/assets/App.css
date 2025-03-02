@@ -20,8 +20,7 @@
 
 .bb-code-quote {
   .bb-code-quote-body {
-    border: .2rem solid black;
+    border: 0.2rem solid black;
     padding: 1rem;
   }
-
 }
