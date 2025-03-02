@@ -43,8 +43,8 @@ const Navigator: React.FC = () => {
     <Style.wrapper className="d-none d-md-flex pt-3 align-items-end">
       <NavTab title="Home" path="/" />
       <NavTab title="Forum" path="/forum" />
-      <NavTab title="Chat" path="/" />
-      <NavTab title="Wiki" path="/" />
+      <NavTab title="Chat" path="https://discord.gg/NP2nNKjun6" />
+      <NavTab title="Wiki" path="http://wiki.zfgc.com" />
       <NavTab title="Projects" path="/" />
       <NavTab title="Resources" path="/" />
     </Style.wrapper>

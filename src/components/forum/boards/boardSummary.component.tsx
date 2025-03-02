@@ -99,9 +99,9 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
 
               <td className="d-none d-md-table-cell col-4 col-md-2 col-lg-2 align-content-center">
                 <div className="d-flex flex-column">
-                  <Style.forumText>Last Post by: MG-Zero</Style.forumText>
-                  <Style.forumText>in Email Issues</Style.forumText>
-                  <Style.forumText>on 07/31/2024 12:00:00PM</Style.forumText>
+                  <Style.forumText>Last Post by: {sb.latestMessageUserName}</Style.forumText>
+                  <Style.forumText>in <span>{sb.threadName}</span></Style.forumText>
+                  <Style.forumText>on {sb.latestMessageCreatedTsAsString}</Style.forumText>
                 </div>
               </td>
             </Style.forumRow>

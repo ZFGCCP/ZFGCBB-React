@@ -4,8 +4,9 @@ import type { BaseBB } from "../types/api";
 
 export const useBBQuery = <T extends BaseBB | BaseBB[]>(
   url: string,
-  queryKey?: string,
   retry: number = 0,
+  gcTime: number = 300000,
+  queryKey?: string,
 ) => {
   const bbKey = queryKey ? queryKey : url;
 
@@ -13,7 +14,7 @@ export const useBBQuery = <T extends BaseBB | BaseBB[]>(
     queryKey: [bbKey],
     queryFn: async () => {
       const response = await axios.get<T>(
-        `${import.meta.env.REACT_ZFGBB_API_URL}${url}`,
+        `http://localhost:8080/zfgbb/${url}`,
       );
       const statusIs200 = response.status === 200;
       const responseIsJson =
@@ -32,5 +33,6 @@ export const useBBQuery = <T extends BaseBB | BaseBB[]>(
       return data as T;
     },
     retry: retry,
+    gcTime: gcTime
   });
 };

@@ -1,9 +1,10 @@
-.steve-calandra {
+/*..steve-calandra {
+  position: fixed;
   inset: 0;
 }
 
-.snowflake {
-  position: fixed;
+snowflake {
+  position: absolute;
   --small: 3px;
   --medium: 7px;
   width: var(--small);
@@ -79,4 +80,4 @@
   50% {
     transform: translate3d(120px, 0, 0);
   }
-}
+}*/
