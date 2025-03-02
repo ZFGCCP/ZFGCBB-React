@@ -14,7 +14,7 @@ export const useBBQuery = <T extends BaseBB | BaseBB[]>(
     queryKey: [bbKey],
     queryFn: async () => {
       const response = await axios.get<T>(
-        `http://localhost:8080/zfgbb/${url}`,
+        `http://zfgc.com:28080/zfgbb/${url}`,
       );
       const statusIs200 = response.status === 200;
       const responseIsJson =
