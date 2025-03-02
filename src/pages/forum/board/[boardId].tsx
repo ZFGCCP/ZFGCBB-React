@@ -1,5 +1,5 @@
 import type React from "react";
-import { useContext, useMemo, useState } from "react";
+import { Suspense, useContext, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { styled } from "@linaria/react";
 import { Button } from "react-bootstrap";
@@ -14,7 +14,6 @@ import { Pagination } from "react-bootstrap";
 import BBPaginator from "../../../components/common/paginator/bbPaginator.component";
 import BBTable from "../../../components/common/tables/bbTable.component";
 import BoardSummaryView from "../../../components/forum/boards/boardSummary.component";
-import { css } from "@linaria/core";
 
 const Style = {
   forumDesc: styled.div`
@@ -87,6 +86,7 @@ const BoardContainer: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: board } = useBBQuery<Board>(
     `board/${boardId}?pageNo=${currentPage}`,
+    0, 0
   );
 
   const footer = useMemo(() => {
@@ -126,8 +126,8 @@ const BoardContainer: React.FC = () => {
 
           <div className="my-3">ZFGC &gt;&gt; ZFGC.com &gt;&gt; Updates</div>
 
-          {board && (
-            <Widget widgetTitle={board.boardName}>
+          
+            <Widget widgetTitle={board?.boardName}>
               <BBTable>
                 <thead>
                   <Style.row className="tableRow" theme={currentTheme}>
@@ -145,6 +145,7 @@ const BoardContainer: React.FC = () => {
                   </Style.row>
                 </thead>
                 <tbody>
+                  <Suspense>
                   {board?.unStickyThreads?.map((thread) => {
                     return (
                       <Style.row className="tableRow body" theme={currentTheme}>
@@ -198,22 +199,25 @@ const BoardContainer: React.FC = () => {
                             by {thread.latestMessage?.ownerName}
                           </Style.smallText>
                           <Style.smallText>
-                            on {thread.latestMessage?.createdTsAsString}
+                            on {thread.latestMessage?.lastPostTsAsString}
                           </Style.smallText>
                         </td>
                       </Style.row>
                     );
                   })}
+                  </Suspense>
                 </tbody>
               </BBTable>
               <Style.boardFooter theme={currentTheme}>
+                {board && (
                 <BBPaginator
                   numPages={board.pageCount}
+                  currentPage={currentPage}
                   onPageChange={loadNewPage}
-                />
+                />)}
               </Style.boardFooter>
             </Widget>
-          )}
+          
         </div>
       </div>
     </>

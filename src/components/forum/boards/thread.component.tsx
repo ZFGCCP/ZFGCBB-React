@@ -1,5 +1,5 @@
 import type React from "react";
-import { useMemo, useState, useRef, Suspense, useContext } from "react";
+import { useMemo, useState, useRef, Suspense, useContext, useCallback } from "react";
 import { styled } from "@linaria/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -21,6 +21,7 @@ import UserLeftPane from "../../user/userLeftPane.component";
 import HasPermission from "../../common/security/HasPermission.component";
 import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
+import BBPaginator from "../../common/paginator/bbPaginator.component";
 
 const Style = {
   messageWrapper: styled.div<{ theme: Theme }>`
@@ -56,6 +57,10 @@ const Style = {
     color: red;
     background-color: #ffe0e0;
   `,
+
+  threadFooter: styled.div<{ theme: Theme }>`
+    background-color: ${(props) => props.theme.footerColor};
+  `,
 };
 
 const ForumThread: React.FC<{ threadId: string }> = ({
@@ -66,14 +71,19 @@ const ForumThread: React.FC<{ threadId: string }> = ({
   const textAreaRef = useRef("");
   let cursorPosition = 0;
   const [showReplyBox, setShowReplyBox] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [msgText, setMsgText] = useState<
     string | number | readonly string[] | undefined
   >("");
   const { data: thread } = useBBQuery<Thread>(
-    `thread/${threadId}?pageNo=1&numPerPage=10`,
+    `thread/${threadId}?pageNo=${currentPage}&numPerPage=10`,
   );
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
   const { currentTheme } = useContext(ThemeContext);
+
+  const loadNewPage = useCallback((pageNo: number) => {
+    setCurrentPage(pageNo);
+  },[setCurrentPage]);
 
   const footer = useMemo(() => {
     return [
@@ -123,7 +133,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
   const submitPost = (msg: Message, threadId: Number) => {};
 
   return (
-    <Suspense>
+    <>
       <div className="row">
         <div className="col-12 mt-2">
           <Widget widgetTitle={thread ? thread.threadName : ""}>
@@ -203,13 +213,21 @@ const ForumThread: React.FC<{ threadId: string }> = ({
                 </Style.messageWrapper>
               );
             })}
+            <Style.threadFooter theme={currentTheme}>
+              {thread && (
+                <BBPaginator
+                  numPages={thread.pageCount}
+                  currentPage={currentPage}
+                  onPageChange={loadNewPage}
+                />
+              )}
+            </Style.threadFooter>
           </Widget>
         </div>
       </div>
-      <FooterButtons options={footer} />
 
       {showReplyBox && <MessageEditor threadId={threadId} />}
-    </Suspense>
+    </>
   );
 };
 
