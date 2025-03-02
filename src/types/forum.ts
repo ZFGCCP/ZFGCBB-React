@@ -29,6 +29,8 @@ export type BoardSummary = BaseBB & {
   latestMessageUserName?: string;
   categoryId: number;
   parentBoardId: number;
+  latestMessageCreatedTsAsString: string;
+  threadName: string;
 
   childBoards?: ChildBoard[];
 };
@@ -50,11 +52,12 @@ export type Thread = BaseBB & {
   threadName: String;
   lockedFlag: Boolean;
   pinnedFlag: Boolean;
-  boardId: Number;
-  createdUserId: Number;
+  boardId: number;
+  createdUserId: number;
   createdUser: User;
-  postCount: Number;
-  viewCount: Number;
+  postCount: number;
+  viewCount: number;
+  pageCount: number;
 
   messages: Message[];
   latestMessage?: LatestMessage;
@@ -67,6 +70,7 @@ export type LatestMessage = {
   messageHistoryId: Number;
   createdTsAsString: String;
   ownerName: String;
+  lastPostTsAsString: String;
 };
 
 export type Message = BaseBB & {

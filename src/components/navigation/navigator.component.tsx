@@ -43,8 +43,16 @@ const Navigator: React.FC = () => {
     <Style.wrapper className="d-none d-md-flex pt-3 align-items-end">
       <NavTab title="Home" path="/" />
       <NavTab title="Forum" path="/forum" />
-      <NavTab title="Chat" path="/" />
-      <NavTab title="Wiki" path="/" />
+      <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
+        <BBLink to={"https://discord.gg/NP2nNKjun6"} relative="path">
+          Chat
+        </BBLink>
+      </NavTabStyle.tab>
+      <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
+        <BBLink to={"http://wiki.zfgc.com"} relative="path">
+          Wiki
+        </BBLink>
+      </NavTabStyle.tab>
       <NavTab title="Projects" path="/" />
       <NavTab title="Resources" path="/" />
     </Style.wrapper>
