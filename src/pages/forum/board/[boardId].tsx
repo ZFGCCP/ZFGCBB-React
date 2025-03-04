@@ -86,7 +86,8 @@ const BoardContainer: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: board } = useBBQuery<Board>(
     `board/${boardId}?pageNo=${currentPage}`,
-    0, 0
+    0,
+    0,
   );
 
   const footer = useMemo(() => {
@@ -125,27 +126,26 @@ const BoardContainer: React.FC = () => {
           )}
 
           <div className="my-3">ZFGC &gt;&gt; ZFGC.com &gt;&gt; Updates</div>
-
           
-            <Widget widgetTitle={board?.boardName}>
-              <BBTable>
-                <thead>
-                  <Style.row className="tableRow" theme={currentTheme}>
-                    <th></th>
-                    <th className="d-none d-sm-table-cell"></th>
-                    <th>Subject</th>
-                    <th className="d-none d-md-table-cell">Author</th>
-                    <th className="d-none d-lg-table-cell">Replies</th>
-                    <th className="d-none d-lg-table-cell">Views</th>
-                    <th className="d-none d-md-table-cell d-lg-none"></th>
-                    <th className="d-none d-md-table-cell">Latest Post</th>
-                  </Style.row>
-                  <Style.row className="subRow" theme={currentTheme}>
-                    <th colSpan={7}></th>
-                  </Style.row>
-                </thead>
-                <tbody>
-                  <Suspense>
+          <Widget widgetTitle={board?.boardName}>
+            <BBTable>
+              <thead>
+                <Style.row className="tableRow" theme={currentTheme}>
+                  <th></th>
+                  <th className="d-none d-sm-table-cell"></th>
+                  <th>Subject</th>
+                  <th className="d-none d-md-table-cell">Author</th>
+                  <th className="d-none d-lg-table-cell">Replies</th>
+                  <th className="d-none d-lg-table-cell">Views</th>
+                  <th className="d-none d-md-table-cell d-lg-none"></th>
+                  <th className="d-none d-md-table-cell">Latest Post</th>
+                </Style.row>
+                <Style.row className="subRow" theme={currentTheme}>
+                  <th colSpan={7}></th>
+                </Style.row>
+              </thead>
+              <tbody>
+                <Suspense>
                   {board?.unStickyThreads?.map((thread) => {
                     return (
                       <Style.row className="tableRow body" theme={currentTheme}>
@@ -205,19 +205,20 @@ const BoardContainer: React.FC = () => {
                       </Style.row>
                     );
                   })}
-                  </Suspense>
-                </tbody>
-              </BBTable>
-              <Style.boardFooter theme={currentTheme}>
-                {board && (
+
+                </Suspense>
+              </tbody>
+            </BBTable>
+            <Style.boardFooter theme={currentTheme}>
+              {board && (
                 <BBPaginator
                   numPages={board.pageCount}
                   currentPage={currentPage}
                   onPageChange={loadNewPage}
-                />)}
-              </Style.boardFooter>
-            </Widget>
-          
+                />
+              )}
+            </Style.boardFooter>
+          </Widget>
         </div>
       </div>
     </>
