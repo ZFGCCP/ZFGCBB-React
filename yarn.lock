@@ -2223,6 +2223,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@wyw-in-js/babel-preset@npm:^0.5.5":
+  version: 0.5.5
+  resolution: "@wyw-in-js/babel-preset@npm:0.5.5"
+  dependencies:
+    "@babel/core": "npm:^7.23.5"
+    "@wyw-in-js/transform": "npm:0.5.5"
+  checksum: 10c0/f9e8451c89e4943a44d901afc247c254254199be1524c401471fa8cd5cf1c0587c70040c25fc4c928dc594dfa68743c4e326cd589231ea799733820455998ae7
+  languageName: node
+  linkType: hard
+
 "@wyw-in-js/processor-utils@npm:0.5.5, @wyw-in-js/processor-utils@npm:^0.5.3":
   version: 0.5.5
   resolution: "@wyw-in-js/processor-utils@npm:0.5.5"
@@ -2305,6 +2315,7 @@ __metadata:
     "@types/react": "npm:^19.0.10"
     "@types/react-dom": "npm:^19.0.4"
     "@vitejs/plugin-react": "npm:^4.3.4"
+    "@wyw-in-js/babel-preset": "npm:^0.5.5"
     "@wyw-in-js/vite": "npm:^0.5.5"
     axios: "npm:^1.8.3"
     bootstrap: "npm:^5.3.3"

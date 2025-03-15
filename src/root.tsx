@@ -1,11 +1,11 @@
-import { RouterProvider } from "react-router/dom";
+import { css } from "@linaria/core";
+
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import { ThemeProvider } from "./providers/theme/themeProvider";
 import { UserProvider } from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
-import { css } from "@linaria/core";
+import ContentView from "./rootLayout.component";
 
-import "./assets/App.css";
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 css`
   :global() {
     :root {
@@ -40,12 +40,19 @@ css`
   }
 `;
 
+import "./assets/App.css";
+
+export function HydrateFallback() {
+  return (
+    <img src="https://pa1.aminoapps.com/7508/074c64ca038d1e4a61d03fede5555ef1fbc047c5r1-640-640_hq.gif" />
+  );
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/src/favicon.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <Meta />
         <Links />
@@ -64,9 +71,11 @@ export default function App() {
     <QueryProvider>
       <UserProvider>
         <ThemeProvider>
-          <Outlet />
+          <ContentView />
         </ThemeProvider>
       </UserProvider>
     </QueryProvider>
   );
 }
+
+export function ErrorBoundary() {}

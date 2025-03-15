@@ -1,12 +1,12 @@
 import type React from "react";
 import { useContext } from "react";
-import { UserContext } from "../../../providers/user/userProvider";
+import { UserContext } from "./providers/user/userProvider";
 import { styled } from "@linaria/react";
 import { Outlet } from "react-router";
-import Navigator from "../../navigation/navigator.component";
-import BBLink from "../bbLink";
-import { ThemeContext } from "../../../providers/theme/themeProvider";
-import type { Theme } from "../../../types/theme";
+import Navigator from "./components/navigation/navigator.component";
+import BBLink from "./components/common/bbLink";
+import { ThemeContext } from "./providers/theme/themeProvider";
+import type { Theme } from "./types/theme";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
