@@ -1,5 +1,8 @@
 {
   "name": "@zfgccp/zfgcbb-react",
+  "author": "ZFGC.com",
+  "keywords": [],
+  "description": "Putting the drama back into the Llama! Sponsored by Infini's Pizza!",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -15,14 +18,17 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@linaria/core": "^6.2.0",
     "@linaria/react": "^6.2.1",
+    "@react-router/dev": "^7.3.0",
+    "@react-router/fs-routes": "^7.3.0",
+    "@react-router/node": "^7.3.0",
     "@tanstack/react-query": "^5.68.0",
     "axios": "^1.8.3",
     "bootstrap": "^5.3.3",
+    "isbot": "^5",
     "react": "19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "19.0.0",
-    "react-router": "^7.3.0",
-    "react-router-dom": "^7.3.0"
+    "react-router": "^7.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
@@ -44,7 +50,5 @@
     "typescript": "^5.8.2",
     "vite": "^6.2.2"
   },
-  "keywords": [],
-  "description": "@vitejs/create-app v2.4.1",
   "packageManager": "yarn@4.7.0+sha512.5a0afa1d4c1d844b3447ee3319633797bcd6385d9a44be07993ae52ff4facabccafb4af5dcd1c2f9a94ac113e5e9ff56f6130431905884414229e284e37bb7c9"
 }
