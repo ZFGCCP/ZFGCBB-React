@@ -25,5 +25,7 @@ jobs:
 
       - run: yarn install --frozen-lockfile --immutable
       - run: yarn format
-      - run: yarn check # FIXME: remove me, just sanity checking
+      - run: git diff --exit-code
+
+      - run: yarn check
       - run: yarn build
