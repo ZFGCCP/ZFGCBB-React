@@ -24,5 +24,6 @@ jobs:
           cache: yarn
 
       - run: yarn install --frozen-lockfile --immutable
-      - run: yarn check
+      - run: yarn format
+      - run: yarn check # FIXME: remove me, just sanity checking
       - run: yarn build
