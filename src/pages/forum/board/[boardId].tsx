@@ -126,7 +126,6 @@ const BoardContainer: React.FC = () => {
           )}
 
           <div className="my-3">ZFGC &gt;&gt; ZFGC.com &gt;&gt; Updates</div>
-
           <Widget widgetTitle={board?.boardName}>
             <BBTable>
               <thead>
