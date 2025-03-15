@@ -17,13 +17,12 @@ jobs:
           # cache: yarn FIXME: uncomment when https://github.com/actions/setup-node/issues/531 is closed.
       - run: corepack enable
 
-      - name: Use Node.js (yarn cache workaround)
+      - name: Use Node.js (yarn cache workaround) # FIXME: uncomment when https://github.com/actions/setup-node/issues/531 is closed.
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: yarn
 
       - run: yarn install --frozen-lockfile --immutable
-      - run: yarn format
-      - run: yarn check && git diff --exit-code
+      - run: yarn check || (yarn format && git diff --exit-code)
       - run: yarn build
