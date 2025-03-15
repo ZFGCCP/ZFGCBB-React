@@ -1,12 +1,12 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { reactRouter } from "@react-router/dev/vite";
 import linaria from "@wyw-in-js/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: "./",
   plugins: [
-    react(),
+    reactRouter(),
     linaria({
       include: ["**/*.{ts,tsx}"],
       babelOptions: {
@@ -14,9 +14,6 @@ export default defineConfig({
       },
     }),
   ],
-  server: {
-    host: true,
-  },
   build: {
     target: "esnext",
   },
