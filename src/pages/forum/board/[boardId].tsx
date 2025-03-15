@@ -204,7 +204,6 @@ const BoardContainer: React.FC = () => {
                       </Style.row>
                     );
                   })}
-
                 </Suspense>
               </tbody>
             </BBTable>
