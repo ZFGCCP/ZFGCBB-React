@@ -42,7 +42,7 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
 
               <td className="col-10 col-md-7 col-lg-2 align-content-center">
                 <h6>
-                  <BBLink to={`/forum/board/${sb.boardId}`}>
+                  <BBLink to={`/forum/board/${sb.boardId}?pageNo=1`}>
                     {sb.boardName}
                   </BBLink>
                   <Style.latestPostLink className="d-inline-block d-md-none ms-4">

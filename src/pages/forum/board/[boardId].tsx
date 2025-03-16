@@ -1,6 +1,6 @@
 import type React from "react";
 import { Suspense, useContext, useMemo, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import { styled } from "@linaria/react";
 import { Button } from "react-bootstrap";
 
@@ -82,8 +82,10 @@ const Style = {
 
 const BoardContainer: React.FC = () => {
   const { boardId } = useParams();
+  const [urlParams, setUrlParams] = useSearchParams();
+  const pageNo = Number(urlParams.get("pageNo"));
   const { currentTheme } = useContext(ThemeContext);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(pageNo);
   const { data: board } = useBBQuery<Board>(
     `board/${boardId}?pageNo=${currentPage}`,
     0,
@@ -112,6 +114,10 @@ const BoardContainer: React.FC = () => {
   }, [board]);
 
   const loadNewPage = (pageNo: number) => {
+    setUrlParams((prev) => {
+      prev.set("pageNo", pageNo.toString());
+      return prev;
+    });
     setCurrentPage(pageNo);
   };
 
@@ -160,7 +166,7 @@ const BoardContainer: React.FC = () => {
                           <img src="http://zfgc.com/forum/Themes/midnight/images/post/xx.gif" />
                         </td>
                         <td>
-                          <BBLink to={`/forum/thread/${thread.id}`}>
+                          <BBLink to={`/forum/thread/${thread.id}?pageNo=1`}>
                             {thread.threadName}
                           </BBLink>
                           <Style.smallText className="d-block d-md-none">
