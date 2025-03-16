@@ -46,7 +46,9 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
                     {sb.boardName}
                   </BBLink>
                   <Style.latestPostLink className="d-inline-block d-md-none ms-4">
-                    Latest Post
+                    <BBLink to={`/forum/thread/${sb.latestThreadId}?pageNo=1`}>
+                      Latest Post
+                    </BBLink>
                   </Style.latestPostLink>
                 </h6>
                 <Style.forumDesc className="d-block d-lg-none">
@@ -103,7 +105,10 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
                     Last Post by: {sb.latestMessageUserName}
                   </Style.forumText>
                   <Style.forumText>
-                    in <span>{sb.threadName}</span>
+                    in{" "}
+                    <BBLink to={`/forum/thread/${sb.latestThreadId}?pageNo=1`}>
+                      {sb.threadName}
+                    </BBLink>
                   </Style.forumText>
                   <Style.forumText>
                     on {sb.latestMessageCreatedTsAsString}
