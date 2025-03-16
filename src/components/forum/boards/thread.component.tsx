@@ -29,6 +29,7 @@ import HasPermission from "../../common/security/HasPermission.component";
 import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBPaginator from "../../common/paginator/bbPaginator.component";
+import { useSearchParams } from "react-router";
 
 const Style = {
   messageWrapper: styled.div<{ theme: Theme }>`
@@ -78,11 +79,13 @@ const ForumThread: React.FC<{ threadId: string }> = ({
   threadId: paramsThreadId,
 }) => {
   const threadId = parseInt(paramsThreadId!);
+  const [urlParams, setUrlParams] = useSearchParams();
+  const pageNo = Number(urlParams.get("pageNo"));
 
   const textAreaRef = useRef("");
   let cursorPosition = 0;
   const [showReplyBox, setShowReplyBox] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(pageNo);
   const [msgText, setMsgText] = useState<
     string | number | readonly string[] | undefined
   >("");
@@ -94,6 +97,10 @@ const ForumThread: React.FC<{ threadId: string }> = ({
 
   const loadNewPage = useCallback(
     (pageNo: number) => {
+      setUrlParams((prev) => {
+        prev.set("pageNo",pageNo.toString());
+        return prev;
+      })
       setCurrentPage(pageNo);
     },
     [setCurrentPage],
