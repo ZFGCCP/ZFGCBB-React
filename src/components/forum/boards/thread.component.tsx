@@ -44,6 +44,10 @@ const Style = {
     }
   `,
 
+  signatureWrapper: styled.div`
+    flex-grow: 1;
+  `,
+
   messageBody: styled.div`
     overflow-wrap: anywhere;
   `,
@@ -154,7 +158,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
                   theme={currentTheme}
                 >
                   <UserLeftPane user={msg.createdUser} />
-                  <div className="col-12 col-lg-10">
+                  <div className="d-flex flex-column col-12 col-lg-10">
                     <Style.buttonWrapper className="d-flex justify-content-between">
                       <Style.time className="m-2 mt-0">
                         {msg.currentMessage.createdTsAsString}
@@ -219,6 +223,11 @@ const ForumThread: React.FC<{ threadId: string }> = ({
                     <Style.messageBody className="m-2">
                       {parse(msg.currentMessage.messageText.toString())}
                     </Style.messageBody>
+                    <Style.signatureWrapper className="d-flex align-items-end p-2 mt-2">
+                      <div>
+                        {msg.createdUser.bioInfo?.signature && parse(msg.createdUser.bioInfo?.signature)}
+                      </div>
+                    </Style.signatureWrapper>
                   </div>
                 </Style.messageWrapper>
               );

@@ -14,6 +14,7 @@ export type UserBioInfo = BaseBB & {
   personalText?: string;
   customTitle?: string;
   userId: number;
+  signature?: string;
 };
 
 export type Avatar = BaseBB & {

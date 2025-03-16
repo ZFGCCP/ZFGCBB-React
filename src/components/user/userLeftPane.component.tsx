@@ -9,7 +9,6 @@ const Style = {
 
   userNameHeader: styled.div`
     border-bottom: 1px solid black;
-    border-right: 0.2rem solid black;
   `,
 
   avatar: styled.img`
@@ -28,17 +27,17 @@ const Style = {
 
 const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
   return (
-    <span className="col-12 col-lg-2">
+    <Style.pane className="col-12 col-lg-2">
       <Style.userNameHeader>
         <div className="m-2 mt-0">{user?.displayName}</div>
       </Style.userNameHeader>
-      <Style.pane className="left-pane p-2 d-flex flex-row-reverse flex-md-column align-items-center">
+      <div className="p-2 d-flex flex-row-reverse flex-md-column align-items-center">
         <div>{user.avatar && <Style.avatar src={user.avatar.url} />}</div>
         <div className="d-none d-md-block">
           <img src="http://localhost:8080/zfgbb/content/image/3" />
         </div>
-      </Style.pane>
-    </span>
+      </div>
+    </Style.pane>
   );
 };
 
