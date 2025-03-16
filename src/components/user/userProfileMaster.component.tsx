@@ -1,6 +1,6 @@
 import type React from "react";
 import { useContext } from "react";
-import { styled } from "@linaria/react";
+import { styled } from "@pigment-css/react";
 import { Form } from "react-bootstrap";
 import Widget from "../common/widgets/widget.component";
 import { useBBQuery } from "../../hooks/useBBQuery";
@@ -11,15 +11,14 @@ import { ThemeContext } from "../../providers/theme/themeProvider";
 import Accordion from "../common/accordion/Accordion.component";
 
 const Style = {
-  accordionWrapper: styled.div`
-    margin: 2rem;
-  `,
+  accordionWrapper: styled("div")({
+    margin: "2rem",
+  }),
 
-  accordionHeader: styled.div<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.backgroundColor};
-    border: ${(props) => props.theme.borderWidth} solid
-      ${(props) => props.theme.black};
-  `,
+  accordionHeader: styled("div")<{ theme: Theme }>({
+    backgroundColor: (props) => props.theme.backgroundColor,
+    border: (props) => props.theme.borderWidth + " solid " + props.theme.black,
+  }),
 };
 
 const UserProfileMaster: React.FC<{ userId: string }> = ({ userId }) => {

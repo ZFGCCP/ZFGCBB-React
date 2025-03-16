@@ -7,7 +7,7 @@ import {
   useContext,
   useCallback,
 } from "react";
-import { styled } from "@linaria/react";
+import { styled } from "@pigment-css/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faReply,
@@ -32,47 +32,29 @@ import BBPaginator from "../../common/paginator/bbPaginator.component";
 import { useSearchParams } from "react-router";
 
 const Style = {
-  messageWrapper: styled.div<{ theme: Theme }>`
-    min-height: 14rem;
-    border-bottom: 0.1rem solid black;
-
-    &:nth-child(odd) {
-      background-color: ${(props) => props.theme.tableRow};
-    }
-
-    &:nth-child(even) {
-      background-color: ${(props) => props.theme.tableRowAlt};
-    }
-  `,
-
-  signatureWrapper: styled.div`
-    flex-grow: 1;
-  `,
-
-  messageBody: styled.div`
-    overflow-wrap: anywhere;
-  `,
-
-  buttonWrapper: styled.div`
-    border-bottom: 0.1rem solid black;
-  `,
-
-  buttonIcon: styled.div`
-    cursor: pointer;
-    font-size: 0.8rem;
-  `,
-
-  time: styled.div``,
-
-  graveDigWarning: styled.div`
-    border: 0.1rem solid red;
-    color: red;
-    background-color: #ffe0e0;
-  `,
-
-  threadFooter: styled.div<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.footerColor};
-  `,
+  messageWrapper: styled("div")<{ theme: Theme }>({
+    minHeight: "14rem",
+    borderBottom: (props) => props.theme.borderWidth + " solid black",
+  }),
+  messageBody: styled("div")({
+    overflowWrap: "anywhere",
+  }),
+  buttonWrapper: styled("div")<{ theme: Theme }>({
+    borderBottom: (props) => props.theme.borderWidth + " solid black",
+  }),
+  buttonIcon: styled("div")({
+    cursor: "pointer",
+    fontSize: "0.8rem",
+  }),
+  time: styled("div")({}),
+  graveDigWarning: styled("div")<{ theme: Theme }>({
+    border: (props) => props.theme.borderWidth + " solid red",
+    color: "red",
+    backgroundColor: "#ffe0e0",
+  }),
+  threadFooter: styled("div")<{ theme: Theme }>({
+    backgroundColor: (props) => props.theme.footerColor,
+  }),
 };
 
 const ForumThread: React.FC<{ threadId: string }> = ({

@@ -1,7 +1,7 @@
 import type React from "react";
 import { useContext } from "react";
 import { UserContext } from "./providers/user/userProvider";
-import { styled } from "@linaria/react";
+import { styled } from "@pigment-css/react";
 import { Outlet } from "react-router";
 import Navigator from "./components/navigation/navigator.component";
 import BBLink from "./components/common/bbLink";
@@ -11,35 +11,35 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Style = {
-  MainContent: styled.div``,
+  MainContent: styled("div")({}),
 
-  header: styled.div`
-    border-bottom: 0.2rem solid black;
-    height: 7.45rem;
-  `,
+  header: styled("div")({
+    borderBottom: "0.2rem solid black",
+    height: "7.45rem",
+  }),
 
-  headerImg: styled.img`
-    position: relative;
-    top: 2.3rem;
-    z-index: 1;
+  headerImg: styled("img")({
+    position: "relative",
+    top: "2.3rem",
+    zIndex: "1",
 
-    @media (max-width: 767px) {
-      top: 3rem;
-    }
-  `,
+    "@media (max-width: 767px)": {
+      top: "3rem",
+    },
+  }),
 
-  navWrapper: styled.div`
-    position: relative;
-    top: -2rem;
-  `,
+  navWrapper: styled("div")({
+    position: "relative",
+    top: "-2rem",
+  }),
 
-  mobileNavWrapper: styled.div<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.black};
-    height: 2.5rem;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-  `,
+  mobileNavWrapper: styled("div")<{ theme: Theme }>({
+    backgroundColor: (props) => props.theme.black,
+    height: "2.5rem",
+    position: "fixed",
+    width: "100%",
+    bottom: "0",
+  }),
 };
 
 const ContentView: React.FC = () => {

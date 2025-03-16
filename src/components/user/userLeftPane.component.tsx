@@ -1,28 +1,26 @@
 import type React from "react";
-import { styled } from "@linaria/react";
+import { styled } from "@pigment-css/react";
 import type { User } from "../../types/user";
 
 const Style = {
-  pane: styled.div`
-    border-right: 0.2rem solid black;
-  `,
-
-  userNameHeader: styled.div`
-    border-bottom: 1px solid black;
-  `,
-
-  avatar: styled.img`
-    width: 5rem;
-    height: 5rem;
-    border-radius: 50%;
-
-    @media (min-width: 992px) {
-      width: 10rem;
-      height: 10rem;
-      border: 0.2rem solid black;
-      border-radius: 0;
-    }
-  `,
+  pane: styled("div")({
+    borderRight: "0.2rem solid black",
+  }),
+  userNameHeader: styled("div")({
+    borderBottom: "1px solid black",
+    borderRight: "0.2rem solid black",
+  }),
+  avatar: styled("img")({
+    width: "5rem",
+    height: "5rem",
+    borderRadius: "50%",
+    "@media (min-width: 992px)": {
+      width: "10rem",
+      height: "10rem",
+      border: "0.2rem solid black",
+      borderRadius: "0",
+    },
+  }),
 };
 
 const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {

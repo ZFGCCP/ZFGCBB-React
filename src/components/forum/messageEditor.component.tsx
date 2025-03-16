@@ -1,18 +1,18 @@
 import type React from "react";
 import { useRef } from "react";
 import { useBBQuery } from "../../hooks/useBBQuery";
-import { styled } from "@linaria/react";
+import { styled } from "@pigment-css/react";
 import { Button, Form } from "react-bootstrap";
 import type { Message } from "../../types/forum";
 import { useBBMutation } from "../../providers/query/useBBMutation";
 import type { BaseBB } from "../../types/api";
 
 const Style = {
-  graveDigWarning: styled.div`
-    border: 0.1rem solid red;
-    color: red;
-    background-color: #ffe0e0;
-  `,
+  graveDigWarning: styled("div")({
+    border: "0.1rem solid red",
+    color: "red",
+    backgroundColor: "#ffe0e0",
+  }),
 };
 
 const MessageEditor: React.FC<{ threadId: Number }> = ({ threadId }) => {
