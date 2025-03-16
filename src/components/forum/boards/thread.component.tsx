@@ -98,9 +98,9 @@ const ForumThread: React.FC<{ threadId: string }> = ({
   const loadNewPage = useCallback(
     (pageNo: number) => {
       setUrlParams((prev) => {
-        prev.set("pageNo",pageNo.toString());
+        prev.set("pageNo", pageNo.toString());
         return prev;
-      })
+      });
       setCurrentPage(pageNo);
     },
     [setCurrentPage],
@@ -232,7 +232,8 @@ const ForumThread: React.FC<{ threadId: string }> = ({
                     </Style.messageBody>
                     <Style.signatureWrapper className="d-flex align-items-end p-2 mt-2">
                       <div>
-                        {msg.createdUser.bioInfo?.signature && parse(msg.createdUser.bioInfo?.signature)}
+                        {msg.createdUser.bioInfo?.signature &&
+                          parse(msg.createdUser.bioInfo?.signature)}
                       </div>
                     </Style.signatureWrapper>
                   </div>
