@@ -5,18 +5,13 @@ import linaria from "@wyw-in-js/vite";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    reactRouter(),
     linaria({
-      include: ["src/**/*.{ts,tsx}"],
-      babelOptions: {
-        presets: [
-          "@babel/preset-typescript",
-          "@babel/preset-react",
-          "@wyw-in-js",
-        ],
-      },
-      sourceMap: false,
+      // include: ["src/**/*.{ts,tsx}"],
+      // babelOptions: {
+      //   presets: ["@babel/preset-typescript", "@babel/preset-react"],
+      // },
     }),
+    reactRouter(),
   ],
   build: {
     target: "esnext",
