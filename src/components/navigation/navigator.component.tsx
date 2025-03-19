@@ -1,5 +1,5 @@
 import type React from "react";
-import { styled } from "@pigment-css/react";
+import { styled } from "@linaria/react";
 import BBLink from "../common/bbLink";
 
 const Style = {
@@ -14,14 +14,15 @@ const Style = {
 };
 
 const NavTabStyle = {
-  tab: styled("div")({
-    border: "0.2rem solid black",
-    backgroundColor: "#1e2b44",
-    borderBottom: "0",
-    height: "2rem",
-    borderTopLeftRadius: "0.5rem",
-    borderTopRightRadius: "0.5rem",
-  }),
+  tab: styled.div`
+    border: 0.2rem solid black;
+    background-color: #1e2b44;
+    border-bottom: 0;
+    height: 2rem;
+
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  `,
 };
 
 const NavTab: React.FC<{ title: String; path: `/${string}` }> = ({

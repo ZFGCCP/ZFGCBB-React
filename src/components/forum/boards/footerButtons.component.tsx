@@ -1,30 +1,33 @@
 import type React from "react";
 import { useContext } from "react";
-import { styled } from "@pigment-css/react";
+import { styled } from "@linaria/react";
 import { Button } from "react-bootstrap";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import type { Theme } from "../../../types/theme";
 
 const Style = {
-  FooterButton: styled(Button)<{ theme: Theme }>({
-    borderTopLeftRadius: "0",
-    borderTopRightRadius: "0",
-    backgroundColor: (props) => props.theme.black,
-    border: (props) => props.theme.borderWidth + " solid " + props.theme.black,
-    borderTop: "0",
-    borderBottomRightRadius: "0",
-    borderBottomLeftRadius: "0",
-    borderRight: "0",
+  FooterButton: styled(Button)<{ theme: Theme }>`
+    &.footer-btn {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      background-color: #25334e;
+      border: ${(props) => props.theme.borderWidth} solid
+        ${(props) => props.theme.black};
+      border-top: 0;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+      border-right: 0;
 
-    "&:first-child": {
-      borderBottomLeftRadius: "0.5rem",
-    },
+      &:first-child {
+        border-bottom-left-radius: 0.5rem;
+      }
 
-    "&:last-child": {
-      borderBottomRightRadius: "0.5rem",
-      borderRight: "0.2rem solid black",
-    },
-  }),
+      &:last-child {
+        border-bottom-right-radius: 0.5rem;
+        border-right: 0.2rem solid black;
+      }
+    }
+  `,
 };
 
 export type FooterConfig = {

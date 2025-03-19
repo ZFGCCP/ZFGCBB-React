@@ -1,11 +1,12 @@
-import { css } from "@pigment-css/react";
+import { css } from "@linaria/core";
+
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import { ThemeProvider } from "./providers/theme/themeProvider";
 import { UserProvider } from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
 import ContentView from "./rootLayout.component";
 
-const globalSteves = css`
+css`
   :global() {
     :root {
       box-sizing: border-box;
@@ -38,7 +39,7 @@ const globalSteves = css`
     }
   }
 `;
-import "@pigment-css/react/styles.css";
+
 import "./assets/App.css";
 
 export function HydrateFallback() {
@@ -49,7 +50,7 @@ export function HydrateFallback() {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={globalSteves}>
+    <html lang="en">
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

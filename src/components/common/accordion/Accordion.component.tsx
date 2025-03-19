@@ -1,24 +1,25 @@
 import type React from "react";
 import { useContext, useState } from "react";
-import { styled } from "@pigment-css/react";
+import { styled } from "@linaria/react";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare, faMinusSquare } from "@fortawesome/free-solid-svg-icons";
 import type { Theme } from "../../../types/theme";
 
 const Style = {
-  accordionWrapper: styled("div")({
-    margin: "2rem",
-  }),
+  accordionWrapper: styled.div`
+    margin: 2rem;
+  `,
 
-  accordionHeader: styled("div")<{ theme: Theme }>({
-    backgroundColor: (props) => props.theme.backgroundColor,
-    border: (props) => props.theme.borderWidth + " solid " + props.theme.black,
-  }),
+  accordionHeader: styled.div<{ theme: Theme }>`
+    background-color: ${(props) => props.theme.backgroundColor};
+    border: ${(props) => props.theme.borderWidth} solid
+      ${(props) => props.theme.black};
+  `,
 
-  headerText: styled("h5")({
-    cursor: "pointer",
-  }),
+  headerText: styled.h5`
+    cursor: pointer;
+  `,
 };
 
 const Accordion: React.FC<{ title: string; children: React.ReactNode }> = ({

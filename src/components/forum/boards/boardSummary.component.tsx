@@ -1,24 +1,28 @@
 import type React from "react";
 import { useContext } from "react";
-import { styled } from "@pigment-css/react";
+import { styled } from "@linaria/react";
 import type { BoardSummary } from "../../../types/forum";
 import BBTable from "../../common/tables/bbTable.component";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBLink from "../../common/bbLink";
+import type { Theme } from "../../../types/theme";
 
 const Style = {
-  forumRow: styled("tr")({
-    minHeight: "4rem",
-  }),
-  forumText: styled("div")({
-    fontSize: "0.8rem",
-  }),
-  forumDesc: styled("div")({
-    fontSize: "0.8rem",
-  }),
-  latestPostLink: styled("span")({
-    fontSize: "0.8rem",
-  }),
+  forumRow: styled.tr`
+    min-height: 4rem;
+  `,
+
+  forumText: styled.div`
+    font-size: 0.8rem;
+  `,
+
+  forumDesc: styled.div`
+    font-size: 0.8rem;
+  `,
+
+  latestPostLink: styled.span`
+    font-size: 0.8rem;
+  `,
 };
 
 const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({

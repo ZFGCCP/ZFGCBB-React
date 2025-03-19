@@ -1,7 +1,7 @@
 import type React from "react";
 import { Suspense, useContext, useMemo, useState } from "react";
 import { useParams } from "react-router";
-import { styled } from "@pigment-css/react";
+import { styled } from "@linaria/react";
 import { Button } from "react-bootstrap";
 
 import Widget from "../../../components/common/widgets/widget.component";
@@ -16,69 +16,68 @@ import BBTable from "../../../components/common/tables/bbTable.component";
 import BoardSummaryView from "../../../components/forum/boards/boardSummary.component";
 
 const Style = {
-  forumDesc: styled("div")({
-    fontSize: "0.8rem",
-  }),
-  boardFooter: styled("div")<{ theme: Theme }>({
-    backgroundColor: (props) => props.theme.footerColor,
-  }),
-  row: styled("tr")<{ theme: Theme }>({
-    "&.subRow": {
-      th: {
-        backgroundColor: (props) => props.theme.black,
-        color: (props) => props.theme.textColor,
-        fontSize: "0.75rem",
-        border: "0",
-      },
-    },
-    ".tableRow": {
-      borderBottom: (props) =>
-        props.theme.borderWidth + " solid " + props.theme.black,
-    },
-  }),
-  FooterButton: styled(Button)<{ theme: Theme }>({
-    borderTopLeftRadius: "0",
-    borderTopRightRadius: "0",
-    backgroundColor: (props) => props.theme.black,
-    border: (props) => props.theme.borderWidth + " solid " + props.theme.black,
-    borderTop: "0",
-    borderBottomRightRadius: "0",
-    borderBottomLeftRadius: "0",
-    borderRight: "0",
-    "&:first-child": {
-      borderBottomLeftRadius: "0.5rem",
-    },
-    "&:last-child": {
-      borderBottomRightRadius: "0.5rem",
-      borderRight: "0.2rem solid black",
-    },
-  }),
-  pagination: styled(Pagination)<{ theme: Theme }>({
-    marginBottom: "0",
-    "&.pagination": {
-      li: {
-        "&.page-item": {
-          "&:hover": {
-            backgroundColor: (props) => props.theme.backgroundColor,
-          },
-          a: {
-            border: "0",
-          },
-        },
-      },
-      "li.page-item": {
-        ":hover": {
-          backgroundColor: (props) => props.theme.backgroundColor,
-        },
-        a: {
-          border: "0",
-        },
-      },
-    },
-  }),
-  smallText: styled("div")({
-    fontSize: "0.8rem",
-  }),
+  forumDesc: styled.div`
+    font-size: 0.8rem;
+  `,
+
+  boardFooter: styled.div<{ theme: Theme }>`
+    background-color: ${(props) => props.theme.footerColor};
+  `,
+
+  row: styled.tr<{ theme: Theme }>`
+    &.subRow {
+      th {
+        background-color: ${(props) => props.theme.black};
+        color: ${(props) => props.theme.textColor};
+        font-size: 0.75rem;
+        border: 0;
+      }
+    }
+  `,
+
+  FooterButton: styled(Button)<{ theme: Theme }>`
+    &.footer-btn {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      background-color: #25334e;
+      border-top: 0;
+      border: ${(props) => props.theme.borderWidth} solid
+        ${(props) => props.theme.black};
+      padding-right: 0.2rem;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+      border-right: 0;
+
+      &:first-child {
+        border-bottom-left-radius: 0.5rem;
+      }
+
+      &:last-child {
+        border-bottom-right-radius: 0.5rem;
+        border-right: 0.2rem solid black;
+      }
+    }
+  `,
+
+  pagination: styled(Pagination)<{ theme: Theme }>`
+    &.pagination {
+      margin-bottom: 0;
+
+      li.page-item {
+        &:hover {
+          background-color: ${(props) => props.theme.backgroundColor};
+        }
+
+        a {
+          border: 0;
+        }
+      }
+    }
+  `,
+
+  smallText: styled.div`
+    font-size: 0.8rem;
+  `,
 };
 
 const BoardContainer: React.FC = () => {

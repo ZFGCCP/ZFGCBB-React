@@ -1,20 +1,19 @@
 import type React from "react";
 import { useContext } from "react";
-import { styled } from "@pigment-css/react";
+import { styled } from "@linaria/react";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import type { Theme } from "../../../types/theme";
 
 const Style = {
-  widgetMain: styled("div")<{ theme: Theme }>({
-    backgroundColor: (props) => props.theme.widgetColor,
-    border: (props) => props.theme.borderWidth + " solid " + props.theme.black,
+  widgetMain: styled.div<{ theme: Theme }>`
+    background-color: ${(props) => props.theme.headerColor};
+    border: ${(props) => props.theme.borderWidth} solid black;
 
-    ".widget-title": {
-      borderBottom: (props) =>
-        props.theme.borderWidth + " solid " + props.theme.black,
-      fontWeight: "bold",
-    },
-  }),
+    .widget-title {
+      border-bottom: ${(props) => props.theme.borderWidth} solid black;
+      font-weight: bold;
+    }
+  `,
 };
 
 const Widget: React.FC<{

@@ -37,7 +37,6 @@
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
     "@linaria/vite": "^5.0.4",
-    "@pigment-css/vite-plugin": "^0.0.30",
     "@popperjs/core": "^2.11.8",
     "@rollup/pluginutils": "^5.1.4",
     "@types/babel__core": "^7.20.5",

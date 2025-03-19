@@ -1,28 +1,20 @@
 import type React from "react";
 import { useContext } from "react";
 import Widget from "../../components/common/widgets/widget.component";
-import { styled } from "@pigment-css/react";
+import { styled } from "@linaria/react";
 import type { Theme } from "../../types/theme";
 import { ThemeContext } from "../../providers/theme/themeProvider";
 
 const Style = {
-  accordionWrapper: styled("div")({
-    margin: "2rem",
-  }),
+  accordionWrapper: styled.div`
+    margin: 2rem;
+  `,
 
-  accordionHeader: styled("div")<{ theme: Theme }>({
-    backgroundColor: (props) => props.theme.backgroundColor,
-    border: (props) => props.theme.borderWidth + " solid " + props.theme.black,
-  }),
-  // accordionWrapper: styled.div`
-  //   margin: 2rem;
-  // `,
-
-  // accordionHeader: styled.div<{ theme: Theme }>`
-  //   background-color: ${(props) => props.theme.backgroundColor};
-  //   border: ${(props) => props.theme.borderWidth} solid
-  //     ${(props) => props.theme.black};
-  // `,
+  accordionHeader: styled.div<{ theme: Theme }>`
+    background-color: ${(props) => props.theme.backgroundColor};
+    border: ${(props) => props.theme.borderWidth} solid
+      ${(props) => props.theme.black};
+  `,
 };
 
 const UserRegistration: React.FC = () => {

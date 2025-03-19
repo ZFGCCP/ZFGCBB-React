@@ -1,11 +1,11 @@
 import type React from "react";
-import { styled } from "@pigment-css/react";
+import { styled } from "@linaria/react";
 import Widget from "../components/common/widgets/widget.component";
 
 const Style = {
-  FeaturedProjectImg: styled("img")({
-    borderRight: "0.1rem solid black",
-  }),
+  FeaturedProjectImg: styled.img`
+    border-right: 0.1rem solid black;
+  `,
 };
 
 const Home: React.FC = () => {

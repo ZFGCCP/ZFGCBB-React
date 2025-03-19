@@ -1,25 +1,26 @@
-import { styled } from "@pigment-css/react";
+import { styled } from "@linaria/react";
 import type React from "react";
-import { useCallback, useContext, useMemo } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { Pagination } from "react-bootstrap";
 import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 
 const Style = {
-  pagination: styled(Pagination)<{ theme: Theme }>({
-    "&.pagination": {
-      marginBottom: "0",
-      "li.page-item": {
-        "&:hover": {
-          backgroundColor: (props) => props.theme.backgroundColor,
-        },
+  pagination: styled(Pagination)<{ theme: Theme }>`
+    &.pagination {
+      margin-bottom: 0;
 
-        a: {
-          border: "0",
-        },
-      },
-    },
-  }),
+      li.page-item {
+        &:hover {
+          background-color: ${(props) => props.theme.backgroundColor};
+        }
+
+        a {
+          border: 0;
+        }
+      }
+    }
+  `,
 };
 
 const BBPaginator: React.FC<{
