@@ -6,11 +6,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "check": "tsc --noEmit  --project tsconfig.json --composite false && prettier . --check",
+    "check": "react-router typegen  && tsc --noEmit  --project tsconfig.json --composite false && prettier . --check",
     "format": "prettier . --write",
-    "build": "tsc && vite build",
-    "serve": "vite preview"
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "preview": "vite preview",
+    "preview:ssr": "react-router-serve ./build/server/index.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -22,6 +23,7 @@
     "@react-router/dev": "^7.4.0",
     "@react-router/fs-routes": "^7.4.0",
     "@react-router/node": "^7.4.0",
+    "@react-router/serve": "^7.4.0",
     "@tanstack/react-query": "^5.69.0",
     "axios": "^1.8.4",
     "bootstrap": "^5.3.3",
@@ -48,6 +50,7 @@
     "@wyw-in-js/vite": "^0.6.0",
     "html-react-parser": "^5.2.2",
     "prettier": "3.5.3",
+    "react-router-devtools": "^1.1.6",
     "typescript": "^5.8.2",
     "vite": "^6.2.2"
   },

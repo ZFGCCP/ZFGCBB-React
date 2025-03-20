@@ -1,5 +1,6 @@
 /node_modules/*
 /dist/*
+/build/*
 .yarn/*
 !.yarn/cache
 !.yarn/patches

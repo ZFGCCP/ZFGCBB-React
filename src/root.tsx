@@ -1,5 +1,3 @@
-import { css } from "@linaria/core";
-
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import { ThemeProvider } from "./providers/theme/themeProvider";
 import { UserProvider } from "./providers/user/userProvider";
