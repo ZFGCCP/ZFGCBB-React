@@ -45,6 +45,10 @@ const Style = {
     }
   `,
 
+  signatureWrapper: styled.div`
+    flex-grow: 1;
+  `,
+
   messageBody: styled.div`
     overflow-wrap: anywhere;
   `,
