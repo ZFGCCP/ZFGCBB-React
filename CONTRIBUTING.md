@@ -14,6 +14,7 @@ TBD. We could use some help writing this out.
   - [Development](#development)
     - [Provided package.json scripts](#provided-packagejson-scripts)
       - [Setting up the project](#setting-up-the-project)
+        - [Configuring .env.local file](#configuring-envlocal-file)
   - [Pull Request Process](#pull-request-process)
 
 ## Development
@@ -55,6 +56,10 @@ TBD. We could use some help writing this out.
    ```
 
 5. Open your browser and navigate to <http://localhost:3000>.
+
+##### Configuring [.env.local](./.env.local) file
+
+The default value is pointing to your local machine. While we do have dockerfiles for the backend, we haven't gotten around to streamlining using the backend in a development setting for the frontend. Setting the .env.local value to `http://zfgc.com:28080/zfgbb` will allow you to run the frontend against the production backend.
 
 ## Pull Request Process
 
