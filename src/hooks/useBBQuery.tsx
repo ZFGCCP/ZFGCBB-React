@@ -17,15 +17,15 @@ export const useBBQuery = <T extends BaseBB | BaseBB[]>(
         `${import.meta.env.REACT_ZFGBB_API_URL}${url ?? "/"}`,
       );
       const statusIs200 = response.status === 200;
-      const responseIsJson =
+      const responseIsJasonOnPs3 =
         response.headers["content-type"] === "application/json";
 
-      if (!statusIs200 || !responseIsJson)
+      if (!statusIs200 || !responseIsJasonOnPs3)
         throw new Error("Failed to fetch data from server", {
           cause: {
             response,
             statusIs200,
-            responseIsJson,
+            responseIsJson: responseIsJasonOnPs3,
           },
         });
 
