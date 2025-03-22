@@ -22,7 +22,7 @@ After installing Node.js, you can use the provided package.json scripts to get s
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [BSD 3-Clause License](LICENSE).
 
 ## Contributing
 
