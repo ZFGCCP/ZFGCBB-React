@@ -2195,6 +2195,7 @@ __metadata:
     "@react-router/fs-routes": "npm:^7.4.0"
     "@react-router/node": "npm:^7.4.0"
     "@react-router/serve": "npm:^7.4.0"
+    "@rollup/rollup-linux-x64-gnu": "npm:4.36.0"
     "@tanstack/react-query": "npm:^5.69.0"
     "@types/node": "npm:^22.13.10"
     "@types/react": "npm:^19.0.12"
@@ -2214,6 +2215,9 @@ __metadata:
     react-router-devtools: "npm:^1.1.6"
     typescript: "npm:^5.8.2"
     vite: "npm:^6.2.2"
+  dependenciesMeta:
+    "@rollup/rollup-linux-x64-gnu":
+      optional: true
   languageName: unknown
   linkType: soft
 
