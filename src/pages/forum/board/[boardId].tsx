@@ -87,7 +87,7 @@ const BoardContainer: React.FC = () => {
   const { currentTheme } = useContext(ThemeContext);
   const [currentPage, setCurrentPage] = useState(pageNo);
   const { data: board } = useBBQuery<Board>(
-    `board/${boardId}?pageNo=${currentPage}`,
+    `/board/${boardId}?pageNo=${currentPage}`,
     0,
     0,
   );

@@ -20,7 +20,6 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@linaria/core": "^6.3.0",
     "@linaria/react": "^6.3.0",
-    "@pigment-css/react": "^0.0.30",
     "@react-router/dev": "^7.4.0",
     "@react-router/fs-routes": "^7.4.0",
     "@react-router/node": "^7.4.0",
@@ -36,7 +35,7 @@
   },
   "devDependencies": {
     "@popperjs/core": "^2.11.8",
-    "@types/node": "^22.13.10",
+    "@types/node": "^22.13.11",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",

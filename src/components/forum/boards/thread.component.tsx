@@ -90,7 +90,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
     string | number | readonly string[] | undefined
   >("");
   const { data: thread } = useBBQuery<Thread>(
-    `thread/${threadId}?pageNo=${currentPage}&numPerPage=10`,
+    `/thread/${threadId}?pageNo=${currentPage}&numPerPage=10`,
   );
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
   const { currentTheme } = useContext(ThemeContext);

@@ -81,7 +81,7 @@ const MemberListContainer: React.FC = () => {
   const { currentPage: initialCurrentPage } = useParams();
   const [currentPage, setCurrentPage] = useState(initialCurrentPage ?? 1);
   const { data: memberList } = useBBQuery<User[]>(
-    `user/memberList?pageNo=${currentPage}`,
+    `/user/memberList?pageNo=${currentPage}`,
   );
 
   const loadNewPage = (pageNo: number) => {

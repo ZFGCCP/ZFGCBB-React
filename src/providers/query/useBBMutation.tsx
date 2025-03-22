@@ -10,7 +10,7 @@ export const useBBMutation = <T extends BaseBB, U extends BaseBB>(
     mutationFn: async () => {
       const [url, postBody] = config();
       const resp = axios.post<U>(
-        `http://localhost:8080/zfgbb/${url}`,
+        `${import.meta.env.REACT_ZFGBB_API_URL}${url ?? "/"}`,
         postBody,
       );
       return (await resp).data;

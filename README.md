@@ -1,18 +1,15 @@
 # ZFGCBB-React
 
+This is the front-end for the [ZFGC.com](https://zfgc.com) forum, a community-driven open source project. Do you want to bomb some dodongos? Then you're in the right place!
+
 ## Table of Contents
 
 - [ZFGCBB-React](#zfgcbb-react)
   - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
   - [License](#license)
   - [Contributing](#contributing)
-
-## Introduction
-
-This is the front-end for the [ZFGC.com](https://zfgc.com) forum, a community-driven open source project. Do you want to bomb some dodongos? Then you're in the right place!
 
 ## Getting Started
 

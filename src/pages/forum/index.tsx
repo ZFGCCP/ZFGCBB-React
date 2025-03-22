@@ -13,7 +13,7 @@ const Style = {
 };
 
 const ForumMain: React.FC = () => {
-  const { data: forumIndex } = useBBQuery<Forum>("board/forum");
+  const { data: forumIndex } = useBBQuery<Forum>("/board/forum");
 
   return (
     <div>

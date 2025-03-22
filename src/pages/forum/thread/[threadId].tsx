@@ -1,5 +1,4 @@
 import type React from "react";
-import { useContext } from "react";
 import ForumThread from "../../../components/forum/boards/thread.component";
 import { useParams } from "react-router";
 

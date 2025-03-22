@@ -2,9 +2,9 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import { ThemeProvider } from "./providers/theme/themeProvider";
 import { UserProvider } from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
-import ContentView from "./rootLayout.component";
 
 import "./assets/App.css";
+import ContentView from "./components/common/contentView";
 
 export function HydrateFallback() {
   return (
@@ -22,7 +22,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body id="root">
-        {children}
+        <ContentView children={children} />
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -35,7 +35,7 @@ export default function App() {
     <QueryProvider>
       <UserProvider>
         <ThemeProvider>
-          <ContentView />
+          <Outlet />
         </ThemeProvider>
       </UserProvider>
     </QueryProvider>
