@@ -8,5 +8,4 @@ const routes = flatRoutes({
   //   ignoredRouteFiles: ["home.tsx"],
 }) satisfies RouteConfig;
 
-console.log(routes);
 export default routes;
