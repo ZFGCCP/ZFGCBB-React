@@ -23,7 +23,7 @@ const Style = {
 };
 
 const UserProfileMaster: React.FC<{ userId: string }> = ({ userId }) => {
-  const { data: user } = useBBQuery<User>(`user-profile/${userId}`);
+  const { data: user } = useBBQuery<User>(`/user-profile/${userId}`);
   const { currentTheme } = useContext(ThemeContext);
 
   return (
