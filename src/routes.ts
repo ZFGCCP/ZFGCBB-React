@@ -3,7 +3,10 @@ import { flatRoutes } from "@react-router/fs-routes";
 
 // Reference: https://reactrouter.com/how-to/file-route-conventions for how to use routes.
 // https://reactrouter.com/start/framework/route-module
-export default flatRoutes({
+const routes = flatRoutes({
   rootDirectory: "./pages",
   //   ignoredRouteFiles: ["home.tsx"],
 }) satisfies RouteConfig;
+
+console.log(routes);
+export default routes;

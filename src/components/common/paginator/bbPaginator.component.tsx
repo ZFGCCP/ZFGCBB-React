@@ -40,6 +40,8 @@ const BBPaginator: React.FC<{
     for (let i: number = 0; i < maxToRender; i++) {
       pages.push(
         <Pagination.Item
+          key={`${i}`}
+          active={currentPage === i + 1}
           onClick={() => {
             onPageChange(i + 1);
           }}

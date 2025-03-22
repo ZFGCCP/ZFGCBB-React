@@ -2,18 +2,12 @@ import type React from "react";
 import { useContext, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { styled } from "@linaria/react";
-import { Button } from "react-bootstrap";
-
-import Widget from "../../../components/common/widgets/widget.component";
-import { useBBQuery } from "../../../hooks/useBBQuery";
-import type { Board } from "../../../types/forum";
-import type { Theme } from "../../../types/theme";
-import { ThemeContext } from "../../../providers/theme/themeProvider";
-import BBLink from "../../../components/common/bbLink";
-import { Pagination } from "react-bootstrap";
-import BBPaginator from "../../../components/common/paginator/bbPaginator.component";
-import BBTable from "../../../components/common/tables/bbTable.component";
-import type { User } from "../../../types/user";
+import { Button, Pagination } from "react-bootstrap";
+import BBTable from "../../components/common/tables/bbTable.component";
+import { useBBQuery } from "../../hooks/useBBQuery";
+import { ThemeContext } from "../../providers/theme/themeProvider";
+import type { Theme } from "../../types/theme";
+import type { User } from "../../types/user";
 
 const Style = {
   forumDesc: styled.div`

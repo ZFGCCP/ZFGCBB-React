@@ -35,7 +35,7 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
       <tbody>
         {subBoards?.map((sb) => {
           return (
-            <Style.forumRow className="d-flex">
+            <Style.forumRow key={`${sb.boardId}`} className="d-flex">
               <td className="col-2 col-md-1">
                 <img src="http://zfgc.com/forum/Themes/midnight/images/off.gif" />
               </td>

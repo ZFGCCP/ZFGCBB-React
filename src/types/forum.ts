@@ -17,6 +17,7 @@ export type Board = BaseBB & {
   childBoards?: BoardSummary[];
 };
 
+// FIXME: #98 Id is undefined on some responses, so the types are wrong for BaseBB.
 export type BoardSummary = BaseBB & {
   boardId: number;
   description: string;

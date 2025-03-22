@@ -162,6 +162,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
               return (
                 <Style.messageWrapper
                   className="d-flex flex-column flex-lg-row"
+                  key={`${msg.id}`}
                   theme={currentTheme}
                 >
                   <UserLeftPane user={msg.createdUser} />

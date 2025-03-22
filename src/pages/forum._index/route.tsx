@@ -26,7 +26,7 @@ const ForumMain: React.FC = () => {
 
       {forumIndex?.categories?.map((cat) => {
         return (
-          <div className="col-12 my-2">
+          <div key={`${cat.id}`} className="col-12 my-2">
             <ForumCategory title={cat.categoryName} subBoards={cat.boards} />
           </div>
         );
