@@ -1,6 +1,6 @@
 import type React from "react";
 import { Suspense, useContext, useMemo, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import { styled } from "@linaria/react";
 import { Button } from "react-bootstrap";
 
