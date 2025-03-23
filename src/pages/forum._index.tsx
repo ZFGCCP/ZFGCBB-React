@@ -20,7 +20,7 @@ const ForumMain: React.FC = () => {
       <Widget className="mb-5">
         <Style.newsFaderText className="m-4">
           Hi! We're read-only for now, but make sure to join us on{" "}
-          <BBLink to="https://discord.gg/JvnrcJ7U">Discord!</BBLink>
+          <BBLink to="https://discord.gg/NP2nNKjun6">Discord!</BBLink>
         </Style.newsFaderText>
       </Widget>
 

@@ -151,7 +151,11 @@ const BoardContainer: React.FC = () => {
                 <Suspense>
                   {board?.unStickyThreads?.map((thread) => {
                     return (
-                      <Style.row className="tableRow body" theme={currentTheme}>
+                      <Style.row
+                        key={`${thread.id}`}
+                        className="tableRow body"
+                        theme={currentTheme}
+                      >
                         <td>
                           <div>
                             <img src="http://zfgc.com/forum/Themes/midnight/images/topic/normal_post.gif" />
