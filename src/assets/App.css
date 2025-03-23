@@ -1,5 +1,4 @@
 @import url("../../node_modules/bootstrap/dist/css/bootstrap.min.css");
-/* @import "./index.css"; FIXME: #77 This should either be removed or added. */
 
 .container-xxl {
   @media (min-width: 1400px) {
