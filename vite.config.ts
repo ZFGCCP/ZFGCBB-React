@@ -21,4 +21,7 @@ export default defineConfig({
   build: {
     target: "esnext",
   },
+  server: {
+    allowedHosts: ["zfgc.com:28080", "localhost:8080"],
+  },
 });
