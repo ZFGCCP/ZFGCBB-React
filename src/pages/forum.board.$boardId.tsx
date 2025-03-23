@@ -1,7 +1,7 @@
 import type React from "react";
 import { Suspense, useContext, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import { Button, Pagination } from "react-bootstrap";
 import BBLink from "../components/common/bbLink";
 import BBPaginator from "../components/common/paginator/bbPaginator.component";

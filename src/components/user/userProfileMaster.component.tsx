@@ -1,6 +1,6 @@
 import type React from "react";
 import { useContext } from "react";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import { Form } from "react-bootstrap";
 import Widget from "../common/widgets/widget.component";
 import { useBBQuery } from "../../hooks/useBBQuery";

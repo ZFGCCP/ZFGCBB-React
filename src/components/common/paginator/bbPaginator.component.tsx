@@ -1,4 +1,4 @@
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import type React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { Pagination } from "react-bootstrap";

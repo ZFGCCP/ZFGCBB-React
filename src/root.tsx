@@ -2,7 +2,7 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import { ThemeProvider } from "./providers/theme/themeProvider";
 import { UserProvider } from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
-
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./assets/App.css";
 import ContentView from "./components/common/contentView";
 
@@ -38,6 +38,7 @@ export default function App() {
           <Outlet />
         </ThemeProvider>
       </UserProvider>
+      <ReactQueryDevtools />
     </QueryProvider>
   );
 }

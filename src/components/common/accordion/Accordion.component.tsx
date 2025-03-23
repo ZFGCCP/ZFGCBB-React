@@ -1,6 +1,6 @@
 import type React from "react";
 import { useContext, useState } from "react";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare, faMinusSquare } from "@fortawesome/free-solid-svg-icons";

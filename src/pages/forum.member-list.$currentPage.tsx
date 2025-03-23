@@ -1,7 +1,7 @@
 import type React from "react";
 import { useContext, useMemo, useState } from "react";
 import { useParams } from "react-router";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import { Button, Pagination } from "react-bootstrap";
 import BBTable from "../components/common/tables/bbTable.component";
 import { useBBQuery } from "../hooks/useBBQuery";

@@ -7,7 +7,7 @@ import {
   useContext,
   useCallback,
 } from "react";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faReply,
