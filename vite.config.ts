@@ -1,23 +1,31 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import linaria from "@wyw-in-js/vite";
+import { reactRouter } from "@react-router/dev/vite";
+import react from "@vitejs/plugin-react-swc";
+// import react from "@vitejs/plugin-react";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "./",
   plugins: [
-    react(),
-    linaria({
-      include: ["**/*.{ts,tsx}"],
-      babelOptions: {
-        presets: ["@babel/preset-typescript", "@babel/preset-react"],
-      },
+    react({
+      plugins: [["@swc/plugin-styled-components", {}]],
     }),
+    reactRouter(),
   ],
-  server: {
-    host: true,
-  },
+  envPrefix: ["REACT_", "VITE_"],
   build: {
     target: "esnext",
+  },
+  server: {
+    allowedHosts: ["zfgc.com:28080", "localhost:8080"],
+  },
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "src"),
+      "~": resolve(__dirname, "src"),
+    },
   },
 });

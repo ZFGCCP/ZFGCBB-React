@@ -1,5 +1,5 @@
 import type React from "react";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import type { User } from "../../types/user";
 
 const Style = {
@@ -9,6 +9,7 @@ const Style = {
 
   userNameHeader: styled.div`
     border-bottom: 1px solid black;
+    border-right: 0.2rem solid black;
   `,
 
   avatar: styled.img`

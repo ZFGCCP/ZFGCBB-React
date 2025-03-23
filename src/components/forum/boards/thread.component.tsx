@@ -7,7 +7,7 @@ import {
   useContext,
   useCallback,
 } from "react";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faReply,
@@ -90,7 +90,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
     string | number | readonly string[] | undefined
   >("");
   const { data: thread } = useBBQuery<Thread>(
-    `thread/${threadId}?pageNo=${currentPage}&numPerPage=10`,
+    `/thread/${threadId}?pageNo=${currentPage}&numPerPage=10`,
   );
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
   const { currentTheme } = useContext(ThemeContext);
@@ -162,6 +162,7 @@ const ForumThread: React.FC<{ threadId: string }> = ({
               return (
                 <Style.messageWrapper
                   className="d-flex flex-column flex-lg-row"
+                  key={`${msg.id}`}
                   theme={currentTheme}
                 >
                   <UserLeftPane user={msg.createdUser} />

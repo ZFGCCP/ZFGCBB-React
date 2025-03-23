@@ -1,12 +1,12 @@
 import type React from "react";
 import { useContext } from "react";
-import { UserContext } from "../../../providers/user/userProvider";
-import { styled } from "@linaria/react";
+import { UserContext } from "../../providers/user/userProvider";
+import { styled } from "styled-components";
 import { Outlet } from "react-router";
-import Navigator from "../../navigation/navigator.component";
-import BBLink from "../bbLink";
-import { ThemeContext } from "../../../providers/theme/themeProvider";
-import type { Theme } from "../../../types/theme";
+import Navigator from "../navigation/navigator.component";
+import BBLink from "./bbLink";
+import { ThemeContext } from "../../providers/theme/themeProvider";
+import type { Theme } from "../../types/theme";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -42,7 +42,7 @@ const Style = {
   `,
 };
 
-const ContentView: React.FC = () => {
+const ContentView = ({ children }: { children: React.ReactNode }) => {
   const { displayName } = useContext(UserContext);
   const { currentTheme } = useContext(ThemeContext);
 
@@ -68,9 +68,7 @@ const ContentView: React.FC = () => {
           <div>Did you miss your activation email?</div>
         </div>
       </Style.header>
-      <div className="container-xxl">
-        <Outlet />
-      </div>
+      <div className="container-xxl">{children}</div>
       <Style.mobileNavWrapper
         theme={currentTheme}
         className="d-flex d-md-none justify-content-around align-items-center"

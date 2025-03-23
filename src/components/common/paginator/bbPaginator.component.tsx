@@ -1,4 +1,4 @@
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import type React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { Pagination } from "react-bootstrap";
@@ -40,6 +40,8 @@ const BBPaginator: React.FC<{
     for (let i: number = 0; i < maxToRender; i++) {
       pages.push(
         <Pagination.Item
+          key={`${i}`}
+          active={currentPage === i + 1}
           onClick={() => {
             onPageChange(i + 1);
           }}
