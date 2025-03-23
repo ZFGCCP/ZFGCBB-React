@@ -1,11 +1,11 @@
 import type React from "react";
-import Widget from "../../components/common/widgets/widget.component";
+import Widget from "../components/common/widgets/widget.component";
 
-const UserLogout: React.FC = () => {
+const UserLogin: React.FC = () => {
   return (
     <div className="row">
       <div className="col-12 my-2">
-        <Widget widgetTitle={"Logout"}>
+        <Widget widgetTitle={"Login"}>
           <div className="d-flex flex-column flex-md-row"></div>
         </Widget>
       </div>
@@ -13,4 +13,4 @@ const UserLogout: React.FC = () => {
   );
 };
 
-export default UserLogout;
+export default UserLogin;

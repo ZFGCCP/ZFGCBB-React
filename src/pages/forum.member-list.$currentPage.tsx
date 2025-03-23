@@ -3,11 +3,11 @@ import { useContext, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { styled } from "@linaria/react";
 import { Button, Pagination } from "react-bootstrap";
-import BBTable from "../../components/common/tables/bbTable.component";
-import { useBBQuery } from "../../hooks/useBBQuery";
-import { ThemeContext } from "../../providers/theme/themeProvider";
-import type { Theme } from "../../types/theme";
-import type { User } from "../../types/user";
+import BBTable from "../components/common/tables/bbTable.component";
+import { useBBQuery } from "../hooks/useBBQuery";
+import { ThemeContext } from "../providers/theme/themeProvider";
+import type { Theme } from "../types/theme";
+import type { User } from "../types/user";
 
 const Style = {
   forumDesc: styled.div`

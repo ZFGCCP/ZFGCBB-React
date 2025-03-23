@@ -1,9 +1,9 @@
 import type React from "react";
 import { useContext } from "react";
-import Widget from "../../components/common/widgets/widget.component";
+import Widget from "../components/common/widgets/widget.component";
 import { styled } from "@linaria/react";
-import type { Theme } from "../../types/theme";
-import { ThemeContext } from "../../providers/theme/themeProvider";
+import type { Theme } from "../types/theme";
+import { ThemeContext } from "../providers/theme/themeProvider";
 
 const Style = {
   accordionWrapper: styled.div`

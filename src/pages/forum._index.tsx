@@ -1,10 +1,10 @@
 import type React from "react";
-import ForumCategory from "../../components/forum/forumCategory.component";
-import { useBBQuery } from "../../hooks/useBBQuery";
-import type { Forum } from "../../types/forum";
-import Widget from "../../components/common/widgets/widget.component";
+import ForumCategory from "../components/forum/forumCategory.component";
+import { useBBQuery } from "../hooks/useBBQuery";
+import type { Forum } from "../types/forum";
+import Widget from "../components/common/widgets/widget.component";
 import { styled } from "@linaria/react";
-import BBLink from "../../components/common/bbLink";
+import BBLink from "../components/common/bbLink";
 
 const Style = {
   newsFaderText: styled.div`

@@ -3,15 +3,15 @@ import { Suspense, useContext, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router";
 import { styled } from "@linaria/react";
 import { Button, Pagination } from "react-bootstrap";
-import BBLink from "../../components/common/bbLink";
-import BBPaginator from "../../components/common/paginator/bbPaginator.component";
-import BBTable from "../../components/common/tables/bbTable.component";
-import Widget from "../../components/common/widgets/widget.component";
-import BoardSummaryView from "../../components/forum/boards/boardSummary.component";
-import { useBBQuery } from "../../hooks/useBBQuery";
-import { ThemeContext } from "../../providers/theme/themeProvider";
-import type { Board } from "../../types/forum";
-import type { Theme } from "../../types/theme";
+import BBLink from "../components/common/bbLink";
+import BBPaginator from "../components/common/paginator/bbPaginator.component";
+import BBTable from "../components/common/tables/bbTable.component";
+import Widget from "../components/common/widgets/widget.component";
+import BoardSummaryView from "../components/forum/boards/boardSummary.component";
+import { useBBQuery } from "../hooks/useBBQuery";
+import { ThemeContext } from "../providers/theme/themeProvider";
+import type { Board } from "../types/forum";
+import type { Theme } from "../types/theme";
 
 const Style = {
   forumDesc: styled.div`
