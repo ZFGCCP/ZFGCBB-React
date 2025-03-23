@@ -15,7 +15,10 @@ TBD. We could use some help writing this out.
     - [Provided package.json scripts](#provided-packagejson-scripts)
       - [Setting up the project](#setting-up-the-project)
         - [Configuring .env.local file](#configuring-envlocal-file)
-  - [Pull Request Process](#pull-request-process)
+        - [Using the VSCode devcontainer](#using-the-vscode-devcontainer)
+  - [Pull Request Process \[WIP\]](#pull-request-process-wip)
+  - [CI/CD \[WIP\]](#cicd-wip)
+    - [.github/workflows/ci.yml](#githubworkflowsciyml)
 
 ## Development
 
@@ -55,13 +58,32 @@ TBD. We could use some help writing this out.
    yarn dev
    ```
 
-5. Open your browser and navigate to <http://localhost:3000>.
+5. Open your browser and navigate to <http://localhost:5173>.
 
 ##### Configuring [.env.local](./.env.local) file
 
 The default value is pointing to your local machine. While we do have dockerfiles for the backend, we haven't gotten around to streamlining using the backend in a development setting for the frontend. Setting the .env.local value to `http://zfgc.com:28080/zfgbb` will allow you to run the frontend against the production backend.
 
-## Pull Request Process
+##### Using the VSCode devcontainer
+
+The `.devcontainer` folder contains a `devcontainer.json` file that can be used to run the project in a container.
+
+1. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) in VSCode.
+2. Open the project in VSCode.
+3. Press `CRTL + P` and type `Remote-Containers: Reopen in Container`.
+4. Wait for the container to start.
+5. Open your browser and navigate to <http://localhost:5173>.
+
+## Pull Request Process [WIP]
 
 1. Ensure any install or build dependencies are removed before the end of the layer when doing a
    build.
+2. TBD.
+
+## CI/CD [WIP]
+
+We use GitHub Actions to run the CI/CD pipeline.
+
+### [.github/workflows/ci.yml](.github/workflows/ci.yml)
+
+This workflow builds and tests the project on each pull request.
