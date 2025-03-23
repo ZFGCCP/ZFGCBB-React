@@ -1,7 +1,6 @@
 import type React from "react";
 import { useState, createContext, useContext } from "react";
 import type { Theme, ThemeWrapper } from "../../types/theme";
-import { UserContext } from "../user/userProvider";
 
 const midnightTheme = {
   borderWidth: ".2rem",
@@ -28,17 +27,9 @@ const ThemeContext = createContext<ThemeWrapper>({
 const ThemeProvider: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
-  const { theme } = useContext(UserContext);
-  const [currentTheme, setCurrentTheme] = useState<ThemeWrapper>({
+  const [currentTheme] = useState<ThemeWrapper>({
     currentTheme: midnightTheme,
   });
-
-  if (theme) {
-    const loadedTheme = themeMap.get(theme);
-    if (loadedTheme) {
-      setCurrentTheme({ currentTheme: loadedTheme });
-    }
-  }
 
   return (
     <ThemeContext.Provider value={currentTheme}>

@@ -1,8 +1,6 @@
 import type React from "react";
 import { useContext } from "react";
-import { UserContext } from "../../providers/user/userProvider";
-import { styled } from "styled-components";
-import { Outlet } from "react-router";
+import { styled } from "@linaria/react";
 import Navigator from "../navigation/navigator.component";
 import BBLink from "./bbLink";
 import { ThemeContext } from "../../providers/theme/themeProvider";
@@ -43,7 +41,6 @@ const Style = {
 };
 
 const ContentView = ({ children }: { children: React.ReactNode }) => {
-  const { displayName } = useContext(UserContext);
   const { currentTheme } = useContext(ThemeContext);
 
   return (
@@ -62,7 +59,7 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
         </Style.navWrapper>
         <div className="d-none d-lg-flex flex-column justify-content-center">
           <div>
-            Welcome, {displayName}! Please login or{" "}
+            Welcome, ! Please login or{" "}
             <BBLink to="/user/registration">register</BBLink>
           </div>
           <div>Did you miss your activation email?</div>

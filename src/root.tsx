@@ -1,8 +1,5 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import { ThemeProvider } from "./providers/theme/themeProvider";
-import { UserProvider } from "./providers/user/userProvider";
-import QueryProvider from "./providers/query/queryProvider";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./assets/App.css";
 import ContentView from "./components/common/contentView";
 
@@ -32,14 +29,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <QueryProvider>
-      <UserProvider>
-        <ThemeProvider>
-          <Outlet />
-        </ThemeProvider>
-      </UserProvider>
-      <ReactQueryDevtools />
-    </QueryProvider>
+    <ThemeProvider>
+      <Outlet />
+    </ThemeProvider>
   );
 }
 

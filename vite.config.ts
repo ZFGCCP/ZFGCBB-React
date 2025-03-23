@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import { reactRouter } from "@react-router/dev/vite";
-import react from "@vitejs/plugin-react-swc";
-// import react from "@vitejs/plugin-react";
+import wyw from "@wyw-in-js/vite";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -10,9 +9,13 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react({
-      plugins: [["@swc/plugin-styled-components", {}]],
+    wyw({
+      include: ["**/*.{ts,tsx}"],
+      babelOptions: {
+        presets: ["@babel/preset-typescript", "@babel/preset-react"],
+      },
     }),
+    ,
     reactRouter(),
   ],
   envPrefix: ["REACT_", "VITE_"],

@@ -1,5 +1,5 @@
 import type React from "react";
-import { styled } from "styled-components";
+import { styled } from "@linaria/react";
 import BBLink from "../common/bbLink";
 
 const Style = {
