@@ -1,5 +1,5 @@
 import type React from "react";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import Widget from "../components/common/widgets/widget.component";
 
 const Style = {
@@ -40,7 +40,7 @@ const Home: React.FC = () => {
       <div className="col-12 my-2">
         <Widget widgetTitle="Announcements">
           <>
-            <div>Test content</div>
+            <div>Test content s</div>
           </>
         </Widget>
       </div>

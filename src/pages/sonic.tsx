@@ -1,27 +1,15 @@
 import type React from "react";
-import Widget from "../components/common/widgets/widget.component";
 import { Outlet } from "react-router";
 
+// Reference: https://reactrouter.com/how-to/file-route-conventions for how to use routes.
+// https://reactrouter.com/start/framework/route-module
 const Sonic: React.FC = () => {
   return (
-    <div className="row">
-      <div className="col-12 my-2">
-        <Widget widgetTitle="Sonic">
-          <div className="d-flex flex-column flex-md-row justify-content-center">
-            <img src="https://pa1.aminoapps.com/7508/074c64ca038d1e4a61d03fede5555ef1fbc047c5r1-640-640_hq.gif" />
-          </div>
-        </Widget>
-      </div>
+    <div>
+      <p>Sonic Custom Layout Example</p>
+      <Outlet />
     </div>
   );
 };
 
 export default Sonic;
-
-export const layout: React.FC = () => {
-  return (
-    <>
-      <Outlet />
-    </>
-  );
-};

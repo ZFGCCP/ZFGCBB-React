@@ -1,6 +1,6 @@
 import type React from "react";
 import { useContext } from "react";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import type { BoardSummary } from "../../../types/forum";
 import BBTable from "../../common/tables/bbTable.component";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
@@ -35,7 +35,7 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
       <tbody>
         {subBoards?.map((sb) => {
           return (
-            <Style.forumRow className="d-flex">
+            <Style.forumRow key={`${sb.boardId}`} className="d-flex">
               <td className="col-2 col-md-1">
                 <img src="http://zfgc.com/forum/Themes/midnight/images/off.gif" />
               </td>

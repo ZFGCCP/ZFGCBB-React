@@ -1,5 +1,3 @@
-/node_modules/*
-/dist/*
 .yarn/*
 !.yarn/cache
 !.yarn/patches
@@ -7,3 +5,8 @@
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+.react-router
+.swc
+node_modules
+dist
+build

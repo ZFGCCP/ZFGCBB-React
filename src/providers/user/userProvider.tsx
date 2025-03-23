@@ -14,7 +14,7 @@ const UserContext = createContext<User>(emptyUser);
 const UserProvider: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
-  const { data: user } = useBBQuery<User>("users/loggedInUser");
+  const { data: user } = useBBQuery<User>("/users/loggedInUser");
 
   return (
     <UserContext.Provider value={user ? user : emptyUser}>

@@ -1,0 +1,26 @@
+diff --git a/index.cjs b/index.cjs
+index ebd45613091a8cf98a706179e25b8a2048fbba45..f5b966121b80f815a5b1f269b3c291270321340a 100644
+--- a/index.cjs
++++ b/index.cjs
+@@ -68,7 +68,7 @@ var react = (_options) => {
+       ],
+       async transform(code, _id, transformOptions) {
+         const id = _id.split("?")[0];
+-        const refresh = !(transformOptions == null ? void 0 : transformOptions.ssr) && !hmrDisabled;
++        const refresh = false; // !(transformOptions == null ? void 0 : transformOptions.ssr) && !hmrDisabled;
+         const result = await transformWithOptions(
+           id,
+           code,
+diff --git a/index.mjs b/index.mjs
+index c908f2d562f09c4fea102740b2f11ddcf8a95d06..84e3cf0da43947afbe773ecafa80b889ef0cb701 100644
+--- a/index.mjs
++++ b/index.mjs
+@@ -69,7 +69,7 @@ var react = (_options) => {
+       ],
+       async transform(code, _id, transformOptions) {
+         const id = _id.split("?")[0];
+-        const refresh = !(transformOptions == null ? void 0 : transformOptions.ssr) && !hmrDisabled;
++        const refresh = false; // !(transformOptions == null ? void 0 : transformOptions.ssr) && !hmrDisabled;
+         const result = await transformWithOptions(
+           id,
+           code,

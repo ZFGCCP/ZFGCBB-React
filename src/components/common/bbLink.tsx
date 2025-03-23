@@ -1,4 +1,4 @@
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import type React from "react";
 import { useContext } from "react";
 import { Link, type RelativeRoutingType } from "react-router";

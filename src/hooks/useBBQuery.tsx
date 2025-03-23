@@ -3,7 +3,7 @@ import axios from "axios";
 import type { BaseBB } from "../types/api";
 
 export const useBBQuery = <T extends BaseBB | BaseBB[]>(
-  url: string,
+  url: `/${string}`,
   retry: number = 0,
   gcTime: number = 300000,
   queryKey?: string,
@@ -13,17 +13,19 @@ export const useBBQuery = <T extends BaseBB | BaseBB[]>(
   return useQuery({
     queryKey: [bbKey],
     queryFn: async () => {
-      const response = await axios.get<T>(`http://localhost:8080/zfgbb/${url}`);
+      const response = await axios.get<T>(
+        `${import.meta.env.REACT_ZFGBB_API_URL}${url ?? "/"}`,
+      );
       const statusIs200 = response.status === 200;
-      const responseIsJson =
+      const responseIsJasonOnPs3 =
         response.headers["content-type"] === "application/json";
 
-      if (!statusIs200 || !responseIsJson)
+      if (!statusIs200 || !responseIsJasonOnPs3)
         throw new Error("Failed to fetch data from server", {
           cause: {
             response,
             statusIs200,
-            responseIsJson,
+            responseIsJson: responseIsJasonOnPs3,
           },
         });
 

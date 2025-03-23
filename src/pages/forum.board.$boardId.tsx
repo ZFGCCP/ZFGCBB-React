@@ -1,19 +1,17 @@
 import type React from "react";
 import { Suspense, useContext, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router";
-import { styled } from "@linaria/react";
-import { Button } from "react-bootstrap";
-
-import Widget from "../../../components/common/widgets/widget.component";
-import { useBBQuery } from "../../../hooks/useBBQuery";
-import type { Board } from "../../../types/forum";
-import type { Theme } from "../../../types/theme";
-import { ThemeContext } from "../../../providers/theme/themeProvider";
-import BBLink from "../../../components/common/bbLink";
-import { Pagination } from "react-bootstrap";
-import BBPaginator from "../../../components/common/paginator/bbPaginator.component";
-import BBTable from "../../../components/common/tables/bbTable.component";
-import BoardSummaryView from "../../../components/forum/boards/boardSummary.component";
+import { styled } from "styled-components";
+import { Button, Pagination } from "react-bootstrap";
+import BBLink from "../components/common/bbLink";
+import BBPaginator from "../components/common/paginator/bbPaginator.component";
+import BBTable from "../components/common/tables/bbTable.component";
+import Widget from "../components/common/widgets/widget.component";
+import BoardSummaryView from "../components/forum/boards/boardSummary.component";
+import { useBBQuery } from "../hooks/useBBQuery";
+import { ThemeContext } from "../providers/theme/themeProvider";
+import type { Board } from "../types/forum";
+import type { Theme } from "../types/theme";
 
 const Style = {
   forumDesc: styled.div`
@@ -87,7 +85,7 @@ const BoardContainer: React.FC = () => {
   const { currentTheme } = useContext(ThemeContext);
   const [currentPage, setCurrentPage] = useState(pageNo);
   const { data: board } = useBBQuery<Board>(
-    `board/${boardId}?pageNo=${currentPage}`,
+    `/board/${boardId}?pageNo=${currentPage}`,
     0,
     0,
   );
@@ -153,7 +151,11 @@ const BoardContainer: React.FC = () => {
                 <Suspense>
                   {board?.unStickyThreads?.map((thread) => {
                     return (
-                      <Style.row className="tableRow body" theme={currentTheme}>
+                      <Style.row
+                        key={`${thread.id}`}
+                        className="tableRow body"
+                        theme={currentTheme}
+                      >
                         <td>
                           <div>
                             <img src="http://zfgc.com/forum/Themes/midnight/images/topic/normal_post.gif" />
