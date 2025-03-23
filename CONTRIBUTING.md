@@ -66,7 +66,7 @@ The default value is pointing to your local machine. While we do have dockerfile
 
 ##### Using the VSCode devcontainer
 
-The `.devcontainer` folder contains a `devcontainer.json` file that can be used to run the project in a container.
+If you would like to avoid having to setup a development environment on your actual machine. This repository implements a VS Code Dev Container, which can give you a simple way to get started developing! To learn more about the VS Code Dev Containers, check out the [documentation](https://code.visualstudio.com/docs/devcontainers/containers).
 
 1. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) in VSCode.
 2. Open the project in VSCode.
