@@ -8,6 +8,9 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  CI: 1
+
 jobs:
   build:
     runs-on: ubuntu-latest
