@@ -36,7 +36,7 @@
     "@popperjs/core": "^2.11.8",
     "@swc/plugin-styled-components": "^7.1.0",
     "@tanstack/react-query-devtools": "^5.69.0",
-    "@types/node": "^22.13.11",
+    "@types/node": "^22.13.12",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@types/styled-components": "^5.1.34",
