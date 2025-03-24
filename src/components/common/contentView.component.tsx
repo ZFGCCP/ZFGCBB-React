@@ -2,13 +2,14 @@ import type React from "react";
 import { useContext } from "react";
 import { UserContext } from "../../providers/user/userProvider";
 import { styled } from "styled-components";
-import { Outlet } from "react-router";
 import Navigator from "../navigation/navigator.component";
 import BBLink from "./bbLink.component";
 import { ThemeContext } from "../../providers/theme/themeProvider";
 import type { Theme } from "../../types/theme";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import midnightLogo from "../../assets/logo.png";
 
 const Style = {
   MainContent: styled.div``,
@@ -50,12 +51,9 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
     <Style.MainContent className="d-flex flex-column mb-5">
       <Style.header className="d-flex mb-5 px-3 justify-content-between">
         <Style.navWrapper>
+          <Style.headerImg src={midnightLogo} className="d-none d-sm-block" />
           <Style.headerImg
-            src="http://zfgc.com/forum/Themes/midnight/images/midnight/logo.png"
-            className="d-none d-sm-block"
-          />
-          <Style.headerImg
-            src="http://localhost:8080/zfgbb/content/image/4"
+            src={`${import.meta.env.REACT_ZFGBB_API_URL}/content/image/4`}
             className="d-block d-sm-none"
           />
           <Navigator />
