@@ -2,109 +2,132 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Player } from "./entities/player.component";
 import { Alien } from "./entities/alien.component";
 import { Bullet } from "./entities/bullet.component";
-
-interface Alien {
-  x: number;
-  y: number;
-  isAlive: boolean;
-}
-
-interface Bullet {
-  x: number;
-  y: number;
-}
+import type { GameObject, GameState } from "@/types/game/game";
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
-const PLAYER_SPEED = 8;
-const BULLET_SPEED = 7;
 const ALIEN_ROWS = 3;
 const ALIENS_PER_ROW = 8;
-const ALIEN_SPEED = 1;
-const ALIEN_DROP_DISTANCE = 30;
-const PLAYER_WIDTH = 48;
-const PLAYER_HEIGHT = 32;
 const FPS = 60;
 const FRAME_TIME = 1000 / FPS;
+const ALIEN_SPEED = 1;
+const ALIEN_DROP_DISTANCE = 30;
 
 export const Game: React.FC = () => {
-  const [playerPosition, setPlayerPosition] = useState(GAME_WIDTH / 2);
-  const [bullets, setBullets] = useState<Bullet[]>([]);
-  const [alienDirection, setAlienDirection] = useState(1);
+  const gameStateRef = useRef<GameState>({
+    playerPosition: GAME_WIDTH / 2,
+    alienDirection: 1,
+    score: 0,
+    gameOver: false,
+    keysPressed: new Set(),
+  });
+
+  const [gameState, setGameState] = useState<GameState>(gameStateRef.current);
   const [spacePressed, setSpacePressed] = useState(false);
-  const [aliens, setAliens] = useState<Alien[]>(() => {
-    const initAliens: Alien[] = [];
+
+  const aliensRef = useRef<GameObject[]>([]);
+  const bulletsRef = useRef<GameObject[]>([]);
+  const lastFrameTimeRef = useRef<number>(0);
+  const animationFrameRef = useRef<number>(0);
+  const lastAlienUpdateRef = useRef<number>(0);
+  const ALIEN_UPDATE_INTERVAL = 16; // Update aliens every 16ms
+
+  const updateGameState = useCallback(() => {
+    setGameState({ ...gameStateRef.current });
+  }, []);
+
+  const initializeGame = useCallback(() => {
+    aliensRef.current = [];
     for (let row = 0; row < ALIEN_ROWS; row++) {
       for (let col = 0; col < ALIENS_PER_ROW; col++) {
-        initAliens.push({
+        aliensRef.current.push({
           x: col * 80 + 100,
           y: row * 60 + 50,
           isAlive: true,
         });
       }
     }
-    return initAliens;
-  });
-  const [gameOver, setGameOver] = useState(false);
-  const [score, setScore] = useState(0);
-  const [keysPressed, setKeysPressed] = useState<Set<string>>(new Set());
 
-  const lastFrameTimeRef = useRef<number>(0);
-  const animationFrameRef = useRef<number | undefined>(undefined);
-
-  const initializeGame = useCallback(() => {
-    setPlayerPosition(GAME_WIDTH / 2);
-    setBullets([]);
-    setAlienDirection(1);
+    bulletsRef.current = [];
+    gameStateRef.current = {
+      playerPosition: GAME_WIDTH / 2,
+      alienDirection: 1,
+      score: 0,
+      gameOver: false,
+      keysPressed: new Set(),
+    };
     setSpacePressed(false);
-    setGameOver(false);
-    setScore(0);
-    setKeysPressed(new Set());
-    setAliens(() => {
-      const initAliens: Alien[] = [];
-      for (let row = 0; row < ALIEN_ROWS; row++) {
-        for (let col = 0; col < ALIENS_PER_ROW; col++) {
-          initAliens.push({
-            x: col * 80 + 100,
-            y: row * 60 + 50,
-            isAlive: true,
-          });
-        }
-      }
-      return initAliens;
-    });
-  }, []);
+    updateGameState();
+  }, [updateGameState]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (gameOver) return;
-      setKeysPressed((prev) => new Set(prev).add(e.key));
+      if (gameStateRef.current.gameOver) return;
+      gameStateRef.current.keysPressed.add(e.key);
 
       if (e.code === "Space" && !spacePressed) {
         e.preventDefault();
         setSpacePressed(true);
-        setBullets((prev) => [
-          ...prev,
-          {
-            x: playerPosition + PLAYER_WIDTH / 2 - 1,
-            y: GAME_HEIGHT - PLAYER_HEIGHT - 8,
-          },
-        ]);
+        bulletsRef.current.push({
+          x: gameStateRef.current.playerPosition + 23,
+          y: GAME_HEIGHT - 40,
+        });
       }
+      updateGameState();
     },
-    [gameOver, playerPosition, spacePressed],
+    [spacePressed, updateGameState],
   );
 
-  const handleKeyUp = useCallback((e: KeyboardEvent) => {
-    setKeysPressed((prev) => {
-      const newKeys = new Set(prev);
-      newKeys.delete(e.key);
-      return newKeys;
+  const handleKeyUp = useCallback(
+    (e: KeyboardEvent) => {
+      gameStateRef.current.keysPressed.delete(e.key);
+      if (e.code === "Space") {
+        setSpacePressed(false);
+      }
+      updateGameState();
+    },
+    [updateGameState],
+  );
+
+  const updateAliens = useCallback((timestamp: number) => {
+    if (timestamp - lastAlienUpdateRef.current < ALIEN_UPDATE_INTERVAL) {
+      return;
+    }
+
+    let shouldChangeDirection = false;
+    let needToDropDown = false;
+
+    // Check boundaries for all aliens first
+    for (const alien of aliensRef.current) {
+      if (!alien.isAlive) continue;
+      const nextX = alien.x + ALIEN_SPEED * gameStateRef.current.alienDirection;
+      if (nextX <= 0 || nextX >= GAME_WIDTH - 32) {
+        shouldChangeDirection = true;
+        needToDropDown = true;
+        break;
+      }
+    }
+
+    // Update all aliens
+    aliensRef.current = aliensRef.current.map((alien) => {
+      if (!alien.isAlive) return alien;
+      return {
+        ...alien,
+        x:
+          alien.x +
+          (shouldChangeDirection
+            ? 0
+            : ALIEN_SPEED * gameStateRef.current.alienDirection),
+        y: alien.y + (needToDropDown ? ALIEN_DROP_DISTANCE : 0),
+        isAlive: alien.isAlive,
+      };
     });
 
-    if (e.code === "Space") {
-      setSpacePressed(false);
+    if (shouldChangeDirection) {
+      gameStateRef.current.alienDirection *= -1;
     }
+
+    lastAlienUpdateRef.current = timestamp;
   }, []);
 
   const updateGame = useCallback(
@@ -116,106 +139,55 @@ export const Game: React.FC = () => {
       const deltaTime = timestamp - lastFrameTimeRef.current;
 
       if (deltaTime >= FRAME_TIME) {
-        setPlayerPosition((prev) => {
-          let newPosition = prev;
-          if (keysPressed.has("ArrowLeft")) {
-            newPosition -= PLAYER_SPEED;
-          }
-          if (keysPressed.has("ArrowRight")) {
-            newPosition += PLAYER_SPEED;
-          }
-          return Math.max(0, Math.min(GAME_WIDTH - PLAYER_WIDTH, newPosition));
-        });
+        updateAliens(timestamp);
 
-        setBullets((prev) => {
-          return prev
-            .map((bullet) => ({ ...bullet, y: bullet.y - BULLET_SPEED }))
-            .filter((bullet) => bullet.y > 0);
-        });
-
-        setAliens((prevAliens) => {
-          let shouldChangeDirection = false;
-          let needToDropDown = false;
-
-          prevAliens.forEach((alien) => {
+        // Check collisions
+        bulletsRef.current.forEach((bullet, bulletIndex) => {
+          aliensRef.current.forEach((alien, alienIndex) => {
             if (!alien.isAlive) return;
-            const nextX = alien.x + ALIEN_SPEED * alienDirection;
-            if (nextX <= 0 || nextX >= GAME_WIDTH - 32) {
-              shouldChangeDirection = true;
+
+            if (
+              bullet.x >= alien.x &&
+              bullet.x <= alien.x + 32 &&
+              bullet.y >= alien.y &&
+              bullet.y <= alien.y + 32
+            ) {
+              aliensRef.current[alienIndex] = { ...alien, isAlive: false };
+              bulletsRef.current.splice(bulletIndex, 1);
+              gameStateRef.current.score += 100;
             }
           });
-
-          if (shouldChangeDirection) {
-            needToDropDown = true;
-          }
-
-          const newAliens = prevAliens.map((alien) => {
-            if (!alien.isAlive) return alien;
-            return {
-              ...alien,
-              x: alien.x + ALIEN_SPEED * alienDirection,
-              y: needToDropDown ? alien.y + ALIEN_DROP_DISTANCE : alien.y,
-            };
-          });
-
-          if (shouldChangeDirection) {
-            setAlienDirection((prev) => prev * -1);
-          }
-
-          const aliensReachedBottom = newAliens.some(
-            (alien) => alien.isAlive && alien.y + 32 >= GAME_HEIGHT - 60,
-          );
-
-          if (aliensReachedBottom) {
-            setGameOver(true);
-          }
-
-          return newAliens;
         });
 
-        setBullets((prev) => {
-          const remainingBullets = [...prev];
-          setAliens((prevAliens) => {
-            return prevAliens.map((alien) => {
-              if (!alien.isAlive) return alien;
+        // Check if any alien reached the bottom
+        const aliensReachedBottom = aliensRef.current.some(
+          (alien) => alien.isAlive && alien.y + 32 >= GAME_HEIGHT - 60,
+        );
 
-              const hitByBullet = remainingBullets.findIndex(
-                (bullet) =>
-                  bullet.x >= alien.x &&
-                  bullet.x <= alien.x + 32 &&
-                  bullet.y >= alien.y &&
-                  bullet.y <= alien.y + 32,
-              );
+        if (aliensReachedBottom) {
+          gameStateRef.current.gameOver = true;
+        }
 
-              if (hitByBullet !== -1) {
-                remainingBullets.splice(hitByBullet, 1);
-                setScore((prev) => prev + 100);
-                return { ...alien, isAlive: false };
-              }
-
-              return alien;
-            });
-          });
-          return remainingBullets;
-        });
-
-        setAliens((prev) => {
-          const anyAliveAliens = prev.some((alien) => alien.isAlive);
-          if (!anyAliveAliens) {
-            setGameOver(true);
-          }
-          return prev;
-        });
+        // Check if all aliens are destroyed
+        const anyAliveAliens = aliensRef.current.some((alien) => alien.isAlive);
+        if (!anyAliveAliens) {
+          gameStateRef.current.gameOver = true;
+        }
 
         lastFrameTimeRef.current = timestamp;
+        updateGameState();
       }
 
-      if (!gameOver) {
+      if (!gameStateRef.current.gameOver) {
         animationFrameRef.current = requestAnimationFrame(updateGame);
       }
     },
-    [gameOver, keysPressed, alienDirection],
+    [updateAliens, updateGameState],
   );
+
+  useEffect(() => {
+    initializeGame();
+  }, [initializeGame]);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
@@ -227,8 +199,9 @@ export const Game: React.FC = () => {
   }, [handleKeyDown, handleKeyUp]);
 
   useEffect(() => {
-    if (!gameOver) {
+    if (!gameStateRef.current.gameOver) {
       lastFrameTimeRef.current = 0;
+      lastAlienUpdateRef.current = 0;
       animationFrameRef.current = requestAnimationFrame(updateGame);
     }
     return () => {
@@ -236,7 +209,7 @@ export const Game: React.FC = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [gameOver, updateGame]);
+  }, [gameState.gameOver, updateGame]);
 
   return (
     <div
@@ -248,11 +221,13 @@ export const Game: React.FC = () => {
         overflow: "hidden",
       }}
     >
-      {gameOver ? (
+      {gameState.gameOver ? (
         <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
           <div className="text-center">
             <h2 className="display-5 text-white mb-3">Game Over!</h2>
-            <p className="text-white fs-3 mb-4">Final Score: {score}</p>
+            <p className="text-white fs-3 mb-4">
+              Final Score: {gameState.score}
+            </p>
             <button
               onClick={initializeGame}
               className="btn btn-success btn-lg px-4 py-2"
@@ -264,14 +239,30 @@ export const Game: React.FC = () => {
       ) : (
         <>
           <div className="position-absolute top-0 start-0 p-3 text-white fs-4">
-            Score: {score}
+            Score: {gameState.score}
           </div>
-          <Player position={playerPosition} />
-          {aliens.map((alien, index) => (
+          <Player
+            gameState={gameStateRef.current}
+            onUpdate={(position) => {
+              gameStateRef.current.playerPosition = position;
+            }}
+          />
+          {aliensRef.current.map((alien, index) => (
             <Alien key={index} {...alien} />
           ))}
-          {bullets.map((bullet, index) => (
-            <Bullet key={index} {...bullet} />
+          {bulletsRef.current.map((bullet, index) => (
+            <Bullet
+              key={index}
+              {...bullet}
+              gameState={gameStateRef.current}
+              onUpdate={(updatedBullet) => {
+                if (updatedBullet.y <= 0) {
+                  bulletsRef.current.splice(index, 1);
+                } else {
+                  bulletsRef.current[index] = updatedBullet;
+                }
+              }}
+            />
           ))}
         </>
       )}

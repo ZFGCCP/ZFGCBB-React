@@ -1,10 +1,7 @@
+import type { GameObject } from "@/types/game/game";
 import React from "react";
 
-interface AlienProps {
-  x: number;
-  y: number;
-  isAlive: boolean;
-}
+type AlienProps = GameObject;
 
 export const Alien: React.FC<AlienProps> = ({ x, y, isAlive }) => {
   if (!isAlive) return null;
