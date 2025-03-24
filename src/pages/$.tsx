@@ -1,3 +1,4 @@
+import BBLink from "@/components/common/bbLink.component";
 import errorGuy from "../assets/I_am_Error.png";
 
 export default function MyNameIsError404() {
@@ -5,6 +6,7 @@ export default function MyNameIsError404() {
     <div className="d-flex flex-column justify-content-center align-items-center">
       <h1>404</h1>
       <img src={errorGuy} alt="I am Error. Screenshot from Zelda II." />
+      <BBLink to="/sonic">It is a secret to everyone.</BBLink>
     </div>
   );
 }

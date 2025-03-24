@@ -20,6 +20,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <Meta />
         <Links />
+        <base href="/ZFGCBB-React/" />
       </head>
       <body id="root">
         <ContentView children={children} />

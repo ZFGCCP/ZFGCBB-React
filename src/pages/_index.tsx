@@ -1,6 +1,7 @@
 import type React from "react";
 import { styled } from "styled-components";
 import Widget from "../components/common/widgets/widget.component";
+import potmImage from "~/assets/images/triforceSaga.png";
 
 const Style = {
   FeaturedProjectImg: styled.img`
@@ -15,7 +16,7 @@ const Home: React.FC = () => {
         <Widget widgetTitle="Featured Project">
           <div className="d-flex">
             <Style.FeaturedProjectImg
-              src="http://zfgc.com/files/potms/triforceSaga.png"
+              src={potmImage}
               className="col-12 col-lg-6"
             />
             <div className="ms-2 mt-2 col-12 col-lg-6">
