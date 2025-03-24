@@ -41,11 +41,12 @@ jobs:
         with:
           enablement: true
 
-      - name: Download artifact
-        uses: actions/download-artifact@v4
+      - name: Upload build to pages
+        uses: actions/upload-pages-artifact@v3
         with:
           name: github-pages
           path: build/client
+          retention-days: 1
 
       - name: Deploy to GitHub Pages
         id: deployment
