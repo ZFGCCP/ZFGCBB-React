@@ -15,6 +15,10 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/checkout@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -32,14 +36,6 @@ jobs:
       - run: yarn install --frozen-lockfile --immutable
       - run: yarn check
       - run: yarn build
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload build to pages
         uses: actions/upload-pages-artifact@v3
