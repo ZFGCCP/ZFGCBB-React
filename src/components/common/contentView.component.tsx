@@ -4,7 +4,7 @@ import { UserContext } from "../../providers/user/userProvider";
 import { styled } from "styled-components";
 import { Outlet } from "react-router";
 import Navigator from "../navigation/navigator.component";
-import BBLink from "./bbLink";
+import BBLink from "./bbLink.component";
 import { ThemeContext } from "../../providers/theme/themeProvider";
 import type { Theme } from "../../types/theme";
 import { faBars } from "@fortawesome/free-solid-svg-icons";

@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 import type { BoardSummary } from "../../../types/forum";
 import BBTable from "../../common/tables/bbTable.component";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
-import BBLink from "../../common/bbLink";
+import BBLink from "../../common/bbLink.component";
 import type { Theme } from "../../../types/theme";
 
 const Style = {

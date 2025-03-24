@@ -3,7 +3,7 @@ import { Suspense, useContext, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router";
 import { styled } from "styled-components";
 import { Button, Pagination } from "react-bootstrap";
-import BBLink from "../components/common/bbLink";
+import BBLink from "../components/common/bbLink.component";
 import BBPaginator from "../components/common/paginator/bbPaginator.component";
 import BBTable from "../components/common/tables/bbTable.component";
 import Widget from "../components/common/widgets/widget.component";
