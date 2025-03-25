@@ -2,6 +2,7 @@ import type React from "react";
 import { styled } from "styled-components";
 import Widget from "../components/common/widgets/widget.component";
 import potmImage from "~/assets/images/triforceSaga.png";
+import { useNavigate } from "react-router";
 
 const Style = {
   FeaturedProjectImg: styled.img`
@@ -10,6 +11,7 @@ const Style = {
 };
 
 const Home: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <div className="row">
       <div className="col-12 col-lg-6 my-2">
@@ -30,7 +32,7 @@ const Home: React.FC = () => {
       <div className="col-12 col-lg-6 my-2">
         <Widget widgetTitle="Announcements">
           <>
-            <div>
+            <div onClick={() => navigate("/sonic")}>
               <h6>7/23/2024 - blah blah blah</h6>
               <div>Test content</div>
             </div>
