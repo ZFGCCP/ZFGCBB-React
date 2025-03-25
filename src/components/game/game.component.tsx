@@ -1,271 +1,226 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { Player } from "./entities/player.component";
-import { Alien } from "./entities/alien.component";
-import { Bullet } from "./entities/bullet.component";
-import type { GameObject, GameState } from "@/types/game/game";
 
-const GAME_WIDTH = 800;
-const GAME_HEIGHT = 600;
-const ALIEN_ROWS = 3;
-const ALIENS_PER_ROW = 8;
-const FPS = 60;
-const FRAME_TIME = 1000 / FPS;
-const ALIEN_SPEED = 1;
-const ALIEN_DROP_DISTANCE = 30;
+import { useGameEngine } from "@/hooks/game/useGameEngine";
+import { DebugPanel } from "./entities/debug.component";
+import { ScreenManager } from "./screenManager.component";
+import type { GameEngineState, Dimensions, DebugData } from "@/types/game/game";
 
-export const Game: React.FC = () => {
-  const gameStateRef = useRef<GameState>({
-    playerPosition: GAME_WIDTH / 2,
-    alienDirection: 1,
-    score: 0,
-    gameOver: false,
-    keysPressed: new Set(),
+interface GameProps<TState extends GameEngineState, TEntities> {
+  initialState: TState;
+  minDimensions: Dimensions;
+  maxDimensions: Dimensions;
+  aspectRatio: number;
+  renderTitle: (props: { onStartGame: () => void }) => React.ReactNode;
+  renderGameOver: (props: { onRestart: () => void }) => React.ReactNode;
+  renderGame: (props: {
+    gameState: TState;
+    debugData: DebugData;
+    dimensions: Dimensions;
+    dimensionsRef: React.RefObject<Dimensions>;
+    gameStateRef: React.RefObject<TState>;
+    entitiesRef: React.RefObject<TEntities>;
+    updateGameState: () => void;
+    onGameTick: (
+      callback: (deltaTime: number, timestamp: number) => void,
+    ) => () => void;
+    canvasRef: React.RefObject<HTMLCanvasElement>;
+  }) => React.ReactNode;
+}
+
+export const Game = <TState extends GameEngineState, TEntities>({
+  initialState,
+  minDimensions,
+  maxDimensions,
+  aspectRatio,
+  renderTitle,
+  renderGameOver,
+  renderGame,
+}: GameProps<TState, TEntities>) => {
+  const [dimensions, setDimensions] = useState<Dimensions>(minDimensions);
+  const dimensionsRef = useRef<Dimensions>(minDimensions);
+  const [gameState, setGameState] = useState<TState>(initialState);
+  const [debugData, setDebugData] = useState<DebugData>({
+    fps: 0,
+    entities: 0,
+    gameState: "initializing",
+    memoryUsage: 0,
+    timeRunning: 0,
+    updateLag: 0,
+    vsyncFps: 0,
   });
 
-  const [gameState, setGameState] = useState<GameState>(gameStateRef.current);
-  const [spacePressed, setSpacePressed] = useState(false);
+  const gameStateRef = useRef<TState>(gameState);
+  const entitiesRef = useRef<TEntities>({} as TEntities);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const debugUpdateRef = useRef({
+    lastUpdate: 0,
+    frames: 0,
+    startTime: 0,
+  });
 
-  const aliensRef = useRef<GameObject[]>([]);
-  const bulletsRef = useRef<GameObject[]>([]);
-  const lastFrameTimeRef = useRef<number>(0);
-  const animationFrameRef = useRef<number>(0);
-  const lastAlienUpdateRef = useRef<number>(0);
-  const ALIEN_UPDATE_INTERVAL = 16; // Update aliens every 16ms
+  useEffect(() => {
+    gameStateRef.current = gameState;
+  }, [gameState]);
 
-  const updateGameState = useCallback(() => {
-    setGameState({ ...gameStateRef.current });
-  }, []);
+  const updateDebugInfo = useCallback(
+    (fps: number, vsyncFps: number, updateLag: number) => {
+      const now = performance.now();
 
-  const initializeGame = useCallback(() => {
-    aliensRef.current = [];
-    for (let row = 0; row < ALIEN_ROWS; row++) {
-      for (let col = 0; col < ALIENS_PER_ROW; col++) {
-        aliensRef.current.push({
-          x: col * 80 + 100,
-          y: row * 60 + 50,
-          isAlive: true,
-        });
-      }
-    }
-
-    bulletsRef.current = [];
-    gameStateRef.current = {
-      playerPosition: GAME_WIDTH / 2,
-      alienDirection: 1,
-      score: 0,
-      gameOver: false,
-      keysPressed: new Set(),
-    };
-    setSpacePressed(false);
-    updateGameState();
-  }, [updateGameState]);
-
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (gameStateRef.current.gameOver) return;
-      gameStateRef.current.keysPressed.add(e.key);
-
-      if (e.code === "Space" && !spacePressed) {
-        e.preventDefault();
-        setSpacePressed(true);
-        bulletsRef.current.push({
-          x: gameStateRef.current.playerPosition + 23,
-          y: GAME_HEIGHT - 40,
-        });
-      }
-      updateGameState();
+      setDebugData((prev) => ({
+        ...prev,
+        fps,
+        vsyncFps,
+        updateLag,
+        gameState: gameState.gameOver
+          ? "game over"
+          : gameState.isPaused
+            ? "paused"
+            : gameState.isRunning
+              ? "running"
+              : "stopped",
+        // @ts-expect-error ignore this
+        entities: entitiesRef.current?.objects?.size || 0,
+        memoryUsage:
+          // @ts-expect-error ignore this
+          Math.round(performance.memory?.usedJSHeapSize / 1024 / 1024) || 0,
+        timeRunning: Math.round(
+          (now - debugUpdateRef.current.startTime) / 1000,
+        ),
+      }));
     },
-    [spacePressed, updateGameState],
+    [gameState.gameOver, gameState.isPaused, gameState.isRunning],
   );
 
-  const handleKeyUp = useCallback(
-    (e: KeyboardEvent) => {
-      gameStateRef.current.keysPressed.delete(e.key);
-      if (e.code === "Space") {
-        setSpacePressed(false);
-      }
-      updateGameState();
+  const {
+    updateGame,
+    startGame,
+    stopGame,
+    onGameTick,
+    getCurrentFps,
+    getVsyncFps,
+    getUpdateLag,
+  } = useGameEngine(gameStateRef, dimensionsRef, {
+    onUpdate: () => {
+      setGameState((prevState) => ({
+        ...prevState,
+        ...gameStateRef.current,
+      }));
+      updateDebugInfo(getCurrentFps(), getVsyncFps(), getUpdateLag());
     },
-    [updateGameState],
-  );
+    maxUpdateLag: 250,
+    targetFps: 60,
+    vsyncEnabled: true,
+    interpolationEnabled: true,
+  });
 
-  const updateAliens = useCallback((timestamp: number) => {
-    if (timestamp - lastAlienUpdateRef.current < ALIEN_UPDATE_INTERVAL) {
-      return;
-    }
+  const handleDimensionsChange = useCallback(
+    (width: number, height: number) => {
+      const newDimensions: Dimensions = { width, height };
+      dimensionsRef.current = newDimensions;
+      setDimensions(newDimensions);
 
-    let shouldChangeDirection = false;
-    let needToDropDown = false;
+      if (canvasRef.current) {
+        const dpr = window.devicePixelRatio || 1;
+        canvasRef.current.width = width * dpr;
+        canvasRef.current.height = height * dpr;
+        canvasRef.current.style.width = `${width}px`;
+        canvasRef.current.style.height = `${height}px`;
 
-    // Check boundaries for all aliens first
-    for (const alien of aliensRef.current) {
-      if (!alien.isAlive) continue;
-      const nextX = alien.x + ALIEN_SPEED * gameStateRef.current.alienDirection;
-      if (nextX <= 0 || nextX >= GAME_WIDTH - 32) {
-        shouldChangeDirection = true;
-        needToDropDown = true;
-        break;
+        const ctx = canvasRef.current.getContext("2d");
+        if (ctx) {
+          ctx.scale(dpr, dpr);
+        }
       }
-    }
 
-    // Update all aliens
-    aliensRef.current = aliensRef.current.map((alien) => {
-      if (!alien.isAlive) return alien;
-      return {
-        ...alien,
-        x:
-          alien.x +
-          (shouldChangeDirection
-            ? 0
-            : ALIEN_SPEED * gameStateRef.current.alienDirection),
-        y: alien.y + (needToDropDown ? ALIEN_DROP_DISTANCE : 0),
-        isAlive: alien.isAlive,
+      gameStateRef.current = {
+        ...gameStateRef.current,
+        width,
+        height,
       };
-    });
-
-    if (shouldChangeDirection) {
-      gameStateRef.current.alienDirection *= -1;
-    }
-
-    lastAlienUpdateRef.current = timestamp;
-  }, []);
-
-  const updateGame = useCallback(
-    (timestamp: number) => {
-      if (!lastFrameTimeRef.current) {
-        lastFrameTimeRef.current = timestamp;
-      }
-
-      const deltaTime = timestamp - lastFrameTimeRef.current;
-
-      if (deltaTime >= FRAME_TIME) {
-        updateAliens(timestamp);
-
-        // Check collisions
-        bulletsRef.current.forEach((bullet, bulletIndex) => {
-          aliensRef.current.forEach((alien, alienIndex) => {
-            if (!alien.isAlive) return;
-
-            if (
-              bullet.x >= alien.x &&
-              bullet.x <= alien.x + 32 &&
-              bullet.y >= alien.y &&
-              bullet.y <= alien.y + 32
-            ) {
-              aliensRef.current[alienIndex] = { ...alien, isAlive: false };
-              bulletsRef.current.splice(bulletIndex, 1);
-              gameStateRef.current.score += 100;
-            }
-          });
-        });
-
-        // Check if any alien reached the bottom
-        const aliensReachedBottom = aliensRef.current.some(
-          (alien) => alien.isAlive && alien.y + 32 >= GAME_HEIGHT - 60,
-        );
-
-        if (aliensReachedBottom) {
-          gameStateRef.current.gameOver = true;
-        }
-
-        // Check if all aliens are destroyed
-        const anyAliveAliens = aliensRef.current.some((alien) => alien.isAlive);
-        if (!anyAliveAliens) {
-          gameStateRef.current.gameOver = true;
-        }
-
-        lastFrameTimeRef.current = timestamp;
-        updateGameState();
-      }
-
-      if (!gameStateRef.current.gameOver) {
-        animationFrameRef.current = requestAnimationFrame(updateGame);
-      }
     },
-    [updateAliens, updateGameState],
+    [],
   );
 
   useEffect(() => {
-    initializeGame();
-  }, [initializeGame]);
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, [handleKeyDown, handleKeyUp]);
-
-  useEffect(() => {
-    if (!gameStateRef.current.gameOver) {
-      lastFrameTimeRef.current = 0;
-      lastAlienUpdateRef.current = 0;
-      animationFrameRef.current = requestAnimationFrame(updateGame);
+    if (gameState.gameStarted && !gameState.gameOver) {
+      debugUpdateRef.current = {
+        lastUpdate: performance.now(),
+        frames: 0,
+        startTime: performance.now(),
+      };
+      startGame();
+    } else if (gameState.gameOver) {
+      stopGame();
     }
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+  }, [gameState.gameStarted, gameState.gameOver, startGame, stopGame]);
+
+  const handleRestart = useCallback(() => {
+    setGameState((prevState) => ({
+      ...prevState,
+      gameOver: false,
+      isRunning: true,
+      isPaused: false,
+    }));
+    debugUpdateRef.current = {
+      lastUpdate: performance.now(),
+      frames: 0,
+      startTime: performance.now(),
     };
-  }, [gameState.gameOver, updateGame]);
+  }, []);
 
   return (
-    <div
-      className="position-relative"
-      style={{
-        width: "800px",
-        height: "600px",
-        backgroundColor: "black",
-        overflow: "hidden",
-      }}
+    <ScreenManager
+      onDimensionsChange={handleDimensionsChange}
+      minDimensions={minDimensions}
+      maxDimensions={maxDimensions}
+      aspectRatio={aspectRatio}
     >
-      {gameState.gameOver ? (
-        <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
-          <div className="text-center">
-            <h2 className="display-5 text-white mb-3">Game Over!</h2>
-            <p className="text-white fs-3 mb-4">
-              Final Score: {gameState.score}
-            </p>
-            <button
-              onClick={initializeGame}
-              className="btn btn-success btn-lg px-4 py-2"
-            >
-              Play Again
-            </button>
-          </div>
-        </div>
-      ) : (
-        <>
-          <div className="position-absolute top-0 start-0 p-3 text-white fs-4">
-            Score: {gameState.score}
-          </div>
-          <Player
-            gameState={gameStateRef.current}
-            onUpdate={(position) => {
-              gameStateRef.current.playerPosition = position;
-            }}
-          />
-          {aliensRef.current.map((alien, index) => (
-            <Alien key={index} {...alien} />
-          ))}
-          {bulletsRef.current.map((bullet, index) => (
-            <Bullet
-              key={index}
-              {...bullet}
-              gameState={gameStateRef.current}
-              onUpdate={(updatedBullet) => {
-                if (updatedBullet.y <= 0) {
-                  bulletsRef.current.splice(index, 1);
-                } else {
-                  bulletsRef.current[index] = updatedBullet;
-                }
-              }}
-            />
-          ))}
-        </>
-      )}
-    </div>
+      <canvas
+        ref={canvasRef}
+        className="position-absolute top-0 start-0"
+        style={{
+          width: "100%",
+          height: "100%",
+          imageRendering: "pixelated",
+        }}
+      />
+
+      <DebugPanel
+        data={debugData}
+        title="Game Stats"
+        position="top-right"
+        theme="dark"
+      />
+
+      {!gameState.gameStarted
+        ? renderTitle({
+            onStartGame: () =>
+              setGameState((prev) => ({
+                ...prev,
+                gameStarted: true,
+                isRunning: true,
+              })),
+          })
+        : gameState.gameOver
+          ? renderGameOver({
+              onRestart: handleRestart,
+            })
+          : renderGame({
+              gameState,
+              debugData,
+              dimensions,
+              dimensionsRef,
+              gameStateRef,
+              entitiesRef,
+              updateGameState: () => {
+                setGameState((prevState) => ({
+                  ...prevState,
+                  ...gameStateRef.current,
+                }));
+              },
+              onGameTick,
+              canvasRef: canvasRef as React.RefObject<HTMLCanvasElement>,
+            })}
+    </ScreenManager>
   );
 };

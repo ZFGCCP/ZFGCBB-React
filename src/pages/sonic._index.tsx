@@ -1,6 +1,6 @@
 import type React from "react";
 import Widget from "../components/common/widgets/widget.component";
-import { Game } from "@/components/game/game.component";
+import { SpaceInvadersGame } from "@/components/game/games/spaceInvaders.component";
 
 const Sonic: React.FC = () => {
   return (
@@ -10,7 +10,7 @@ const Sonic: React.FC = () => {
           {/* <div className="d-flex flex-column flex-md-row justify-content-center">
             <img src="https://pa1.aminoapps.com/7508/074c64ca038d1e4a61d03fede5555ef1fbc047c5r1-640-640_hq.gif" />
           </div> */}
-          <Game />
+          <SpaceInvadersGame />
         </Widget>
       </div>
     </div>
