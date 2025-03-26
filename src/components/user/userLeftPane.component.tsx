@@ -9,7 +9,7 @@ const Style = {
 
   userNameHeader: styled.div`
     border-bottom: 1px solid black;
-    border-right: 0.2rem solid black;
+    height: 3.3125rem;
   `,
 
   avatar: styled.img`
@@ -24,13 +24,18 @@ const Style = {
       border-radius: 0;
     }
   `,
+
+  customTitle: styled.div`
+    font-size: .8rem;
+  `
 };
 
 const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
   return (
     <Style.pane className="col-12 col-lg-2">
-      <Style.userNameHeader>
-        <div className="m-2 mt-0">{user?.displayName}</div>
+      <Style.userNameHeader className="p-2">
+        <div>{user?.displayName}</div>
+        <Style.customTitle>{user?.bioInfo?.customTitle}</Style.customTitle>
       </Style.userNameHeader>
       <div className="p-2 d-flex flex-row-reverse flex-md-column align-items-center">
         <div>{user.avatar && <Style.avatar src={user.avatar.url} />}</div>
