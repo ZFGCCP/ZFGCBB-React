@@ -80,6 +80,7 @@ export type Message = BaseBB & {
   currentMessage: MessageHistory;
 
   createdUser: User;
+  createdTsAsString: string;
 };
 
 export type MessageHistory = BaseBB & {

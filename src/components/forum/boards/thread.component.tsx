@@ -47,6 +47,7 @@ const Style = {
 
   signatureWrapper: styled.div`
     flex-grow: 1;
+    border-top: 1px solid black;
   `,
 
   messageBody: styled.div`
@@ -62,7 +63,9 @@ const Style = {
     font-size: 0.8rem;
   `,
 
-  time: styled.div``,
+  time: styled.div`
+    height: 3.3125rem;
+  `,
 
   graveDigWarning: styled.div`
     border: 0.1rem solid red;
@@ -72,6 +75,10 @@ const Style = {
 
   threadFooter: styled.div<{ theme: Theme }>`
     background-color: ${(props) => props.theme.footerColor};
+  `,
+
+  lastEdit: styled.div`
+    font-size: 0.8rem;
   `,
 };
 
@@ -168,11 +175,16 @@ const ForumThread: React.FC<{ threadId: string }> = ({
                   <UserLeftPane user={msg.createdUser} />
                   <div className="d-flex flex-column col-12 col-lg-10">
                     <Style.buttonWrapper className="d-flex justify-content-between">
-                      <Style.time className="m-2 mt-0">
-                        {msg.currentMessage.createdTsAsString}
-                        <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                          {<span> - 192.168.1.1</span>}
-                        </HasPermission>
+                      <Style.time className="p-2">
+                        <div>
+                          {msg.createdTsAsString}
+                          <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                            {<span> - 192.168.1.1</span>}
+                          </HasPermission>
+                        </div>
+                        <Style.lastEdit>
+                          Last Edit: {msg.currentMessage.createdTsAsString}
+                        </Style.lastEdit>
                       </Style.time>
                       <div className="d-flex justify-content-end">
                         <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
@@ -231,12 +243,14 @@ const ForumThread: React.FC<{ threadId: string }> = ({
                     <Style.messageBody className="m-2">
                       {parse(msg.currentMessage.messageText.toString())}
                     </Style.messageBody>
-                    <Style.signatureWrapper className="d-flex align-items-end p-2 mt-2">
-                      <div>
-                        {msg.createdUser.bioInfo?.signature &&
-                          parse(msg.createdUser.bioInfo?.signature)}
-                      </div>
-                    </Style.signatureWrapper>
+                    {msg.createdUser.bioInfo?.signature?.trim() !== "" && (
+                      <Style.signatureWrapper className="d-flex align-items-end m-2 py-2">
+                        <div>
+                          {msg.createdUser.bioInfo?.signature &&
+                            parse(msg.createdUser.bioInfo?.signature)}
+                        </div>
+                      </Style.signatureWrapper>
+                    )}
                   </div>
                 </Style.messageWrapper>
               );
