@@ -26,8 +26,8 @@ const Style = {
   `,
 
   customTitle: styled.div`
-    font-size: .8rem;
-  `
+    font-size: 0.8rem;
+  `,
 };
 
 const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {

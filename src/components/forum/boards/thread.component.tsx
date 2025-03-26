@@ -78,8 +78,8 @@ const Style = {
   `,
 
   lastEdit: styled.div`
-    font-size: .8rem;
-  `
+    font-size: 0.8rem;
+  `,
 };
 
 const ForumThread: React.FC<{ threadId: string }> = ({
@@ -176,7 +176,8 @@ const ForumThread: React.FC<{ threadId: string }> = ({
                   <div className="d-flex flex-column col-12 col-lg-10">
                     <Style.buttonWrapper className="d-flex justify-content-between">
                       <Style.time className="p-2">
-                        <div>{msg.createdTsAsString}
+                        <div>
+                          {msg.createdTsAsString}
                           <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
                             {<span> - 192.168.1.1</span>}
                           </HasPermission>
@@ -244,11 +245,12 @@ const ForumThread: React.FC<{ threadId: string }> = ({
                     </Style.messageBody>
                     {msg.createdUser.bioInfo?.signature?.trim() !== "" && (
                       <Style.signatureWrapper className="d-flex align-items-end m-2 py-2">
-                      <div>
-                        {msg.createdUser.bioInfo?.signature &&
-                          parse(msg.createdUser.bioInfo?.signature)}
-                      </div>
-                    </Style.signatureWrapper>)}
+                        <div>
+                          {msg.createdUser.bioInfo?.signature &&
+                            parse(msg.createdUser.bioInfo?.signature)}
+                        </div>
+                      </Style.signatureWrapper>
+                    )}
                   </div>
                 </Style.messageWrapper>
               );
