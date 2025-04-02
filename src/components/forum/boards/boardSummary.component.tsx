@@ -59,7 +59,10 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
                     Child boards:{" "}
                     {sb.childBoards.map((cb) => {
                       return (
-                        <BBLink to={`/forum/board/${cb.boardId}`}>
+                        <BBLink
+                          key={`${cb.boardId}`}
+                          to={`/forum/board/${cb.boardId}`}
+                        >
                           {cb.boardName}
                         </BBLink>
                       );
@@ -82,7 +85,10 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
                       Child boards:{" "}
                       {sb.childBoards.map((cb) => {
                         return (
-                          <BBLink to={`/forum/board/${cb.boardId}`}>
+                          <BBLink
+                            key={`${cb.boardId}`}
+                            to={`/forum/board/${cb.boardId}`}
+                          >
                             {cb.boardName}
                           </BBLink>
                         );
