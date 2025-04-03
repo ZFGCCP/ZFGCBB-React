@@ -3,7 +3,7 @@ import { Suspense, useContext, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { styled } from "styled-components";
 import { Button, Pagination } from "react-bootstrap";
-import BBLink from "../components/common/bbLink";
+import BBLink from "../components/common/bbLink.component";
 import BBPaginator from "../components/common/paginator/bbPaginator.component";
 import BBTable from "../components/common/tables/bbTable.component";
 import Widget from "../components/common/widgets/widget.component";
@@ -12,6 +12,7 @@ import { useBBQuery } from "../hooks/useBBQuery";
 import { ThemeContext } from "../providers/theme/themeProvider";
 import type { Board } from "../types/forum";
 import type { Theme } from "../types/theme";
+import BBImage from "@/components/common/bbImage.component";
 
 const Style = {
   forumDesc: styled.div`
@@ -123,7 +124,13 @@ const BoardContainer: React.FC = () => {
             </Widget>
           )}
 
-          <div className="my-3">ZFGC &gt;&gt; ZFGC.com &gt;&gt; Updates</div>
+          <div className="my-3">
+            <div className="d-flex gap-2">
+              <BBLink to="/forum">ZFGC.com</BBLink>
+              <span>&gt;&gt;</span>
+              <span>{board?.boardName}</span>
+            </div>
+          </div>
           <Widget widgetTitle={board?.boardName}>
             <BBTable>
               <thead>
@@ -152,14 +159,23 @@ const BoardContainer: React.FC = () => {
                       >
                         <td>
                           <div>
-                            <img src="http://zfgc.com/forum/Themes/midnight/images/topic/normal_post.gif" />
+                            <BBImage
+                              path="themes/midnight/images/topic/normal_post.gif"
+                              alt="FIXME: add proper alt text"
+                            />
                           </div>
                           <div className="d-block d-sm-none mt-3">
-                            <img src="http://zfgc.com/forum/Themes/midnight/images/post/xx.gif" />
+                            <BBImage
+                              path="themes/midnight/images/post/xx.gif"
+                              alt="FIXME: add proper alt text"
+                            />
                           </div>
                         </td>
                         <td className="d-none d-sm-table-cell">
-                          <img src="http://zfgc.com/forum/Themes/midnight/images/post/xx.gif" />
+                          <BBImage
+                            path="themes/midnight/images/post/xx.gif"
+                            alt="FIXME: add proper alt text"
+                          />
                         </td>
                         <td>
                           <BBLink to={`/forum/thread/${thread.id}/1`}>

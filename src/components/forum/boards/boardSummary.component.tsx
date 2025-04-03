@@ -4,8 +4,9 @@ import { styled } from "styled-components";
 import type { BoardSummary } from "../../../types/forum";
 import BBTable from "../../common/tables/bbTable.component";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
-import BBLink from "../../common/bbLink";
+import BBLink from "../../common/bbLink.component";
 import type { Theme } from "../../../types/theme";
+import BBImage from "@/components/common/bbImage.component";
 
 const Style = {
   forumRow: styled.tr`
@@ -37,7 +38,10 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
           return (
             <Style.forumRow key={`${sb.boardId}`} className="d-flex">
               <td className="col-2 col-md-1">
-                <img src="http://zfgc.com/forum/Themes/midnight/images/off.gif" />
+                <BBImage
+                  path="themes/midnight/images/board-summary/off.gif"
+                  alt="Off"
+                />
               </td>
 
               <td className="col-10 col-md-7 col-lg-2 align-content-center">

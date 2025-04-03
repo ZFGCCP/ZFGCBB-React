@@ -1,6 +1,6 @@
 import type React from "react";
 import { styled } from "styled-components";
-import BBLink from "../common/bbLink";
+import BBLink from "../common/bbLink.component";
 
 const Style = {
   subTabs: styled.div`

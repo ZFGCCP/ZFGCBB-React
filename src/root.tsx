@@ -4,7 +4,7 @@ import { UserProvider } from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./assets/App.css";
-import ContentView from "./components/common/contentView";
+import ContentView from "./components/common/contentView.component";
 
 export function HydrateFallback() {
   return (

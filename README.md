@@ -1,8 +1,8 @@
 # ZFGCBB-React
 
-![logo](./src/assets/logo.png)
+![logo](./src/assets/images/logo.png)
 
-[![CI](https://github.com/ZFGCCP/ZFGCBB-React/actions/workflows/ci.yml/badge.svg)](https://github.com/ZFGCCP/ZFGCBB-React/actions/workflows/ci.yml)
+[![CI](https://github.com/ZFGCCP/ZFGCBB-React/actions/workflows/workflow-ci.yml/badge.svg)](https://github.com/ZFGCCP/ZFGCBB-React/actions/workflows/workflow-ci.yml)
 
 This is the front-end for the [ZFGC.com](https://zfgc.com) forum, a community-driven open source project. Do you want to bomb some dodongos? Then you're in the right place!
 
