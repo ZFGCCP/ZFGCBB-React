@@ -42,11 +42,11 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
 
               <td className="col-10 col-md-7 col-lg-2 align-content-center">
                 <h6>
-                  <BBLink to={`/forum/board/${sb.boardId}?pageNo=1`}>
+                  <BBLink to={`/forum/board/${sb.boardId}/1`}>
                     {sb.boardName}
                   </BBLink>
                   <Style.latestPostLink className="d-inline-block d-md-none ms-4">
-                    <BBLink to={`/forum/thread/${sb.latestThreadId}?pageNo=1`}>
+                    <BBLink to={`/forum/thread/${sb.latestThreadId}/1`}>
                       Latest Post
                     </BBLink>
                   </Style.latestPostLink>
@@ -61,7 +61,7 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
                       return (
                         <BBLink
                           key={`${cb.boardId}`}
-                          to={`/forum/board/${cb.boardId}`}
+                          to={`/forum/board/${cb.boardId}/1`}
                         >
                           {cb.boardName}
                         </BBLink>
@@ -87,7 +87,7 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
                         return (
                           <BBLink
                             key={`${cb.boardId}`}
-                            to={`/forum/board/${cb.boardId}`}
+                            to={`/forum/board/${cb.boardId}/1`}
                           >
                             {cb.boardName}
                           </BBLink>
@@ -112,7 +112,7 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
                   </Style.forumText>
                   <Style.forumText>
                     in{" "}
-                    <BBLink to={`/forum/thread/${sb.latestThreadId}?pageNo=1`}>
+                    <BBLink to={`/forum/thread/${sb.latestThreadId}/1`}>
                       {sb.threadName}
                     </BBLink>
                   </Style.forumText>

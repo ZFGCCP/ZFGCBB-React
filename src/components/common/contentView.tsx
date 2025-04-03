@@ -62,7 +62,7 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
         </Style.navWrapper>
         <div className="d-none d-lg-flex flex-column justify-content-center">
           <div>
-            Welcome, {displayName}! Please login or{" "}
+            Welcome, {displayName}! <span>Please login or </span>
             <BBLink to="/user/registration">register</BBLink>
           </div>
           <div>Did you miss your activation email?</div>

@@ -5,7 +5,7 @@ import type { User } from "../../types/user";
 
 const emptyUser = {
   id: 0,
-  displayName: "",
+  displayName: "Guest",
   permissions: [],
 } as User;
 
