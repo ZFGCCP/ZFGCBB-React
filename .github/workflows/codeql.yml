@@ -18,7 +18,6 @@ jobs:
   analyze:
     name: Analyze code with CodeQL
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -26,7 +25,7 @@ jobs:
       - name: Set up CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: javascript # TypeScript is detected through JavaScript language
+          languages: actions, javascript, typescript, javascript-typescript
 
       - name: Use Node.js
         uses: actions/setup-node@v4
