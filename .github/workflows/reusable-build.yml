@@ -39,6 +39,7 @@ jobs:
       - run: yarn build
 
       - name: Upload build artifact
+        if: ${{ inputs.environment == 'development' || inputs.environment == 'main' }}
         uses: actions/upload-pages-artifact@v3
         with:
           name: ${{ inputs.environment }}-build
