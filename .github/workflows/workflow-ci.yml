@@ -1,0 +1,16 @@
+name: CI
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CI: 1
+
+jobs:
+  build:
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      environment: ${{ github.ref_name }}

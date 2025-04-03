@@ -1,0 +1,54 @@
+name: Deploy Frontend
+on:
+  #   push:
+  #     branches:
+  #       - main
+  #       - development
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "main"
+        type: choice
+        options:
+          - main
+          - development
+
+permissions:
+  pages: write
+  id-token: write
+  contents: read
+
+env:
+  CI: 1
+
+jobs:
+  determine_environment:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}
+    steps:
+      - id: set-env
+        run: |
+          echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          #   if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          #     echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          #   elif [ "${{ github.ref_name }}" == "main" ]; then
+          #     echo "environment=production" >> $GITHUB_OUTPUT
+          #   else
+          #     echo "environment=development" >> $GITHUB_OUTPUT
+          #   fi
+
+  build:
+    needs: determine_environment
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      environment: ${{ needs.determine_environment.outputs.environment }}
+
+  deploy:
+    needs: [determine_environment, build]
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      environment: ${{ needs.determine_environment.outputs.environment }}
+      artifact_name: ${{ needs.build.outputs.artifact_name }}
