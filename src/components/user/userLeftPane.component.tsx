@@ -1,6 +1,7 @@
 import type React from "react";
 import { styled } from "styled-components";
 import type { User } from "../../types/user";
+import BBImage from "../common/bbImage.component";
 
 const Style = {
   pane: styled.div`
@@ -40,7 +41,10 @@ const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
       <div className="p-2 d-flex flex-row-reverse flex-md-column align-items-center">
         <div>{user.avatar && <Style.avatar src={user.avatar.url} />}</div>
         <div className="d-none d-md-block">
-          <img src="http://localhost:8080/zfgbb/content/image/3" />
+          <BBImage
+            path={`${import.meta.env.REACT_ZFGBB_API_URL}/image/3`}
+            alt="TODO: add proper alt text"
+          />
         </div>
       </div>
     </Style.pane>

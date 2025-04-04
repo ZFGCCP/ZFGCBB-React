@@ -1,9 +1,9 @@
 import type React from "react";
 import { Suspense, useContext, useMemo, useState } from "react";
-import { useParams, useSearchParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { styled } from "styled-components";
 import { Button, Pagination } from "react-bootstrap";
-import BBLink from "../components/common/bbLink";
+import BBLink from "../components/common/bbLink.component";
 import BBPaginator from "../components/common/paginator/bbPaginator.component";
 import BBTable from "../components/common/tables/bbTable.component";
 import Widget from "../components/common/widgets/widget.component";
@@ -12,6 +12,7 @@ import { useBBQuery } from "../hooks/useBBQuery";
 import { ThemeContext } from "../providers/theme/themeProvider";
 import type { Board } from "../types/forum";
 import type { Theme } from "../types/theme";
+import BBImage from "@/components/common/bbImage.component";
 
 const Style = {
   forumDesc: styled.div`
@@ -79,13 +80,11 @@ const Style = {
 };
 
 const BoardContainer: React.FC = () => {
-  const { boardId } = useParams();
-  const [urlParams, setUrlParams] = useSearchParams();
-  const pageNo = Number(urlParams.get("pageNo"));
+  const navigate = useNavigate();
+  const { boardId, pageNo } = useParams();
   const { currentTheme } = useContext(ThemeContext);
-  const [currentPage, setCurrentPage] = useState(pageNo);
   const { data: board } = useBBQuery<Board>(
-    `/board/${boardId}?pageNo=${currentPage}`,
+    `/board/${boardId}?pageNo=${pageNo}`,
     0,
     0,
   );
@@ -111,12 +110,8 @@ const BoardContainer: React.FC = () => {
     ];
   }, [board]);
 
-  const loadNewPage = (pageNo: number) => {
-    setUrlParams((prev) => {
-      prev.set("pageNo", pageNo.toString());
-      return prev;
-    });
-    setCurrentPage(pageNo);
+  const loadNewPage = (currentPageNumber: number) => {
+    navigate(`/forum/board/${boardId}/${currentPageNumber}`);
   };
 
   return (
@@ -129,7 +124,13 @@ const BoardContainer: React.FC = () => {
             </Widget>
           )}
 
-          <div className="my-3">ZFGC &gt;&gt; ZFGC.com &gt;&gt; Updates</div>
+          <div className="my-3">
+            <div className="d-flex gap-2">
+              <BBLink to="/forum">ZFGC.com</BBLink>
+              <span>&gt;&gt;</span>
+              <span>{board?.boardName}</span>
+            </div>
+          </div>
           <Widget widgetTitle={board?.boardName}>
             <BBTable>
               <thead>
@@ -158,17 +159,26 @@ const BoardContainer: React.FC = () => {
                       >
                         <td>
                           <div>
-                            <img src="http://zfgc.com/forum/Themes/midnight/images/topic/normal_post.gif" />
+                            <BBImage
+                              path="themes/midnight/images/topic/normal_post.gif"
+                              alt="FIXME: add proper alt text"
+                            />
                           </div>
                           <div className="d-block d-sm-none mt-3">
-                            <img src="http://zfgc.com/forum/Themes/midnight/images/post/xx.gif" />
+                            <BBImage
+                              path="themes/midnight/images/post/xx.gif"
+                              alt="FIXME: add proper alt text"
+                            />
                           </div>
                         </td>
                         <td className="d-none d-sm-table-cell">
-                          <img src="http://zfgc.com/forum/Themes/midnight/images/post/xx.gif" />
+                          <BBImage
+                            path="themes/midnight/images/post/xx.gif"
+                            alt="FIXME: add proper alt text"
+                          />
                         </td>
                         <td>
-                          <BBLink to={`/forum/thread/${thread.id}?pageNo=1`}>
+                          <BBLink to={`/forum/thread/${thread.id}/1`}>
                             {thread.threadName}
                           </BBLink>
                           <Style.smallText className="d-block d-md-none">
@@ -219,7 +229,7 @@ const BoardContainer: React.FC = () => {
               {board && (
                 <BBPaginator
                   numPages={board.pageCount}
-                  currentPage={currentPage}
+                  currentPage={Number(pageNo)}
                   onPageChange={loadNewPage}
                 />
               )}

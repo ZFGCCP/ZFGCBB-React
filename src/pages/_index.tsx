@@ -1,6 +1,7 @@
 import type React from "react";
 import { styled } from "styled-components";
 import Widget from "../components/common/widgets/widget.component";
+import BBImage from "@/components/common/bbImage.component";
 
 const Style = {
   FeaturedProjectImg: styled.img`
@@ -14,9 +15,9 @@ const Home: React.FC = () => {
       <div className="col-12 col-lg-6 my-2">
         <Widget widgetTitle="Featured Project">
           <div className="d-flex">
-            <Style.FeaturedProjectImg
-              src="http://zfgc.com/files/potms/triforceSaga.png"
-              className="col-12 col-lg-6"
+            <BBImage
+              path="potm/triforceSaga.png"
+              as={Style.FeaturedProjectImg}
             />
             <div className="ms-2 mt-2 col-12 col-lg-6">
               <h5>Triforce Saga</h5>

@@ -1,15 +1,32 @@
-name: CI
+name: "CodeQL"
+
 on:
+  push:
+    branches:
+      - main
+      - development
   pull_request:
+    branches:
+      - main
+      - development
 
 permissions:
   contents: read
+  security-events: write
 
 jobs:
-  build:
+  analyze:
+    name: Analyze code with CodeQL
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Set up CodeQL analysis
+      - name: Set up CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: actions, javascript, typescript, javascript-typescript
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -24,5 +41,6 @@ jobs:
           cache: yarn
 
       - run: yarn install --frozen-lockfile --immutable
-      - run: yarn check
-      - run: yarn build
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3

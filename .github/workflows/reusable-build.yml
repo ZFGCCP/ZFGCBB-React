@@ -1,0 +1,47 @@
+name: Build
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: false
+        type: string
+        default: ${{ github.ref_name }}
+        description: "The environment to build for (e.g., main, development). Defaults to the branch name."
+    outputs:
+      artifact_name:
+        description: "The name of the build artifact"
+        value: ${{ jobs.build.outputs.artifact_name }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CI: 1
+    outputs:
+      artifact_name: ${{ inputs.environment }}-build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          # cache: yarn FIXME: uncomment when https://github.com/actions/setup-node/issues/531 is closed.
+      - run: corepack enable
+
+      - name: Use Node.js (yarn cache workaround) # FIXME: uncomment when https://github.com/actions/setup-node/issues/531 is closed.
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - run: yarn install --frozen-lockfile --immutable
+      - run: yarn check
+      - run: yarn build
+
+      - name: Upload build artifact
+        if: ${{ inputs.environment == 'development' || inputs.environment == 'main' }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: ${{ inputs.environment }}-build
+          path: build/client
+          retention-days: 1

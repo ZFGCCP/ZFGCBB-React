@@ -43,6 +43,7 @@ const FooterButtons: React.FC<{ options: FooterConfig[] }> = ({ options }) => {
       {options.map((opt) => {
         return (
           <Style.FooterButton
+            key={`${opt.label}`}
             onClick={() => opt.callback()}
             className="footer-btn px-2"
             theme={currentTheme}
