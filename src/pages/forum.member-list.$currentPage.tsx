@@ -1,6 +1,6 @@
 import type React from "react";
 import { useContext, useMemo, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { styled } from "styled-components";
 import { Button, Pagination } from "react-bootstrap";
 import BBTable from "../components/common/tables/bbTable.component";
@@ -8,6 +8,7 @@ import { useBBQuery } from "../hooks/useBBQuery";
 import { ThemeContext } from "../providers/theme/themeProvider";
 import type { Theme } from "../types/theme";
 import type { User } from "../types/user";
+import BBPaginator from "@/components/common/paginator/bbPaginator.component";
 
 const Style = {
   forumDesc: styled.div`
@@ -71,15 +72,15 @@ const Style = {
 };
 
 const MemberListContainer: React.FC = () => {
+  const navigate = useNavigate();
   const { currentTheme } = useContext(ThemeContext);
-  const { currentPage: initialCurrentPage } = useParams();
-  const [currentPage, setCurrentPage] = useState(initialCurrentPage ?? 1);
+  const { currentPage } = useParams();
   const { data: memberList } = useBBQuery<User[]>(
     `/user/memberList?pageNo=${currentPage}`,
   );
 
   const loadNewPage = (pageNo: number) => {
-    setCurrentPage(pageNo);
+    navigate(`/forum/member-list/${pageNo}`);
   };
 
   return (
@@ -118,7 +119,21 @@ const MemberListContainer: React.FC = () => {
                       <td>last seen</td>
                     </Style.row>
                   );
-                })) || (
+                }) && (
+                  <Style.row className="tableRow" theme={currentTheme}>
+                    <td>
+                      <Style.boardFooter theme={currentTheme}>
+                        {memberList && (
+                          <BBPaginator
+                            numPages={memberList.length / 10}
+                            currentPage={Number(currentPage)}
+                            onPageChange={loadNewPage}
+                          />
+                        )}
+                      </Style.boardFooter>
+                    </td>
+                  </Style.row>
+                )) || (
                 <Style.row className="tableRow body" theme={currentTheme}>
                   <td colSpan={7}>
                     <div>Sure looks like a ghost town hahahahaha! 👻</div>

@@ -29,7 +29,7 @@ import HasPermission from "../../common/security/HasPermission.component";
 import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBPaginator from "../../common/paginator/bbPaginator.component";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 const Style = {
   messageWrapper: styled.div<{ theme: Theme }>`
@@ -82,17 +82,17 @@ const Style = {
   `,
 };
 
-const ForumThread: React.FC<{ threadId: string }> = ({
+const ForumThread: React.FC<{ threadId: string; pageNo: string }> = ({
   threadId: paramsThreadId,
+  pageNo: paramsPageNo,
 }) => {
+  const navigate = useNavigate();
   const threadId = parseInt(paramsThreadId!);
-  const [urlParams, setUrlParams] = useSearchParams();
-  const pageNo = Number(urlParams.get("pageNo"));
+  const currentPage = parseInt(paramsPageNo!);
 
   const textAreaRef = useRef("");
   let cursorPosition = 0;
   const [showReplyBox, setShowReplyBox] = useState(false);
-  const [currentPage, setCurrentPage] = useState(pageNo);
   const [msgText, setMsgText] = useState<
     string | number | readonly string[] | undefined
   >("");
@@ -102,16 +102,9 @@ const ForumThread: React.FC<{ threadId: string }> = ({
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
   const { currentTheme } = useContext(ThemeContext);
 
-  const loadNewPage = useCallback(
-    (pageNo: number) => {
-      setUrlParams((prev) => {
-        prev.set("pageNo", pageNo.toString());
-        return prev;
-      });
-      setCurrentPage(pageNo);
-    },
-    [setCurrentPage],
-  );
+  const loadNewPage = (pageNo: number) => {
+    navigate(`/forum/thread/${threadId}/${pageNo}`);
+  };
 
   const footer = useMemo(() => {
     return [

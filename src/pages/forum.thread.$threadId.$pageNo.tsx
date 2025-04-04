@@ -3,10 +3,10 @@ import ForumThread from "../components/forum/boards/thread.component";
 import { useParams } from "react-router";
 
 const ForumThreadPage: React.FC = () => {
-  const { threadId } = useParams();
+  const { threadId, pageNo } = useParams();
   return (
     <>
-      <ForumThread threadId={threadId!} />
+      <ForumThread threadId={threadId!} pageNo={pageNo!} />
     </>
   );
 };
