@@ -71,7 +71,7 @@ function preloadImage(path: string): CacheEntry {
     return cacheEntry;
   }
 
-  const imageLoader = images[`/src/assets/${path}`];
+  const imageLoader = images[path];
 
   if (!imageLoader) {
     if (import.meta.env.DEV) {
@@ -96,7 +96,7 @@ function preloadImage(path: string): CacheEntry {
 
 function useImage(path: string): string | undefined {
   const pathRef = useRef<string>(path);
-  const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState(import.meta.env.SSR);
   pathRef.current = path;
 
   // Handle hydration mismatch by deferring client-side loading
@@ -130,10 +130,12 @@ function ImageLoader<ComponentType extends ElementType = "img">({
   as,
   ...props
 }: ImageLoaderProps<ComponentType>): React.ReactElement | null {
-  const imageSrc = useImage(src);
+  const imageSrc = useImage(`/src/assets/${src}`);
   const Component = as || "img";
 
-  return imageSrc ? <Component {...props} src={imageSrc} /> : null;
+  return typeof imageSrc === "string" && imageSrc.length > 0 ? (
+    <Component {...props} src={imageSrc} />
+  ) : null;
 }
 
 export type BBImageProps<ComponentType extends ElementType = "img"> = Omit<
@@ -166,17 +168,21 @@ export default function BBImage<ComponentType extends ElementType = "img">(
 ): React.ReactElement {
   if (import.meta.env.DEV && !("alt" in props)) {
     console.warn(
-      `BBImage component is missing an alt prop. This will cause a11y issues.`,
+      "BBImage component for",
+      props.src,
+      "is missing an alt prop. This will cause a11y issues.",
     );
   }
 
   // Use a simpler fallback during SSR to avoid hydration mismatches
-  const fallback =
-    typeof window === "undefined" ? null : (props.fallback ?? <Skeleton />);
+  const MyAss = props.fallback ?? <Skeleton />;
+  const fallback = typeof window === "undefined" ? null : MyAss;
+  const componentProps = { ...props };
+  delete componentProps.fallback;
 
   return (
     <Suspense fallback={fallback}>
-      <ImageLoader {...props} src={props.src} as={props.as} />
+      <ImageLoader {...componentProps} src={props.src} as={props.as} />
     </Suspense>
   );
 }

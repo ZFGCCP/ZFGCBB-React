@@ -40,12 +40,17 @@ const Style = {
 
   headerImg: styled.img`
     position: relative;
-    width: 485px;
-    height: 100px;
     z-index: -1; /* Send the image behind the content */
     @media (min-width: 768px) {
       margin-bottom: -1.5rem;
     }
+  `,
+
+  headerImgFallback: styled.div`
+    position: relative;
+    z-index: -1; /* Send the image behind the content */
+    width: 485px;
+    height: 100px;
   `,
 
   navWrapper: styled.div`
@@ -64,14 +69,8 @@ const Style = {
     width: 100dvw;
     position: relative;
     z-index: 100001; /* This magic number is for tanstack/react-query-devtools */
-    place-content: end center;
     align-items: center;
-  `,
-
-  loginRegistrationWrapper: styled.div`
-    @media (max-width: 870px) {
-      font-size: 0.6rem;
-    }
+    place-self: end;
   `,
 };
 
@@ -83,31 +82,37 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
     <Style.MainContent className="d-grid overflow-hidden">
       <Style.header className="d-none d-md-flex">
         <Style.navWrapper>
-          <BBImage src="images/logo.png" as={Style.headerImg} alt="Logo" />
+          <BBImage
+            src="images/logo.png"
+            as={Style.headerImg}
+            alt="Logo"
+            fallback={<Style.headerImgFallback />}
+          />
           <Navigator />
         </Style.navWrapper>
-        <Style.loginRegistrationWrapper className="d-flex flex-column ">
+        <section className="d-flex flex-column ">
           <div>
             Welcome, {displayName}! <span>Please login or </span>
             <BBLink to="/user/auth/registration">register</BBLink>.
           </div>
           <div>Did you miss your activation email?</div>
-        </Style.loginRegistrationWrapper>
+        </section>
       </Style.header>
       <Style.pageWrapper className="container-xxl pt-1 pb-1">
         <div className="d-grid d-md-none justify-content-center">
           <BBImage
-            className="d-md-none pb-1 w-100 h-100"
+            className="d-md-none w-100 h-100"
             src="images/logo.png"
             as={Style.headerImg}
             alt="Logo"
+            fallback={<Style.headerImgFallback />}
           />
         </div>
         {children}
       </Style.pageWrapper>
       <Style.mobileNavWrapper
         theme={currentTheme}
-        className="d-flex d-md-none justify-content-around align-items-center"
+        className="d-flex d-md-none justify-content-around"
       >
         <BBLink to="/">Home</BBLink>
         <BBLink to="/">Wiki</BBLink>
