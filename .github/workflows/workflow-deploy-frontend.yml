@@ -20,6 +20,10 @@ permissions:
   id-token: write
   contents: read
 
+concurrency:
+  group: "pages-${{ inputs.environment}}"
+  cancel-in-progress: true
+
 env:
   CI: 1
   GITHUB_PAGES: "true"

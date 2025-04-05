@@ -11,10 +11,12 @@ const SkeletonStyle = {
     animation: skeleton-loading 1.4s ease-in-out infinite;
     @keyframes skeleton-loading {
       0% {
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgba(0, 0, 0, 0.5);
+        opacity: 0.5;
       }
       100% {
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: rgba(255, 255, 255, 0.6);
+        opacity: 0.8;
       }
     }
   `,

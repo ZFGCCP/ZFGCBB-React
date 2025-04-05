@@ -8,6 +8,10 @@ permissions:
 env:
   CI: 1
 
+concurrency:
+  group: "ci-${{ github.head_ref }}"
+  cancel-in-progress: true
+
 jobs:
   build:
     uses: ./.github/workflows/reusable-build.yml
