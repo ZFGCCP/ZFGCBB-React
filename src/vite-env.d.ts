@@ -3,4 +3,5 @@
 
 interface ImportMetaEnv {
   readonly REACT_ZFGBB_API_URL: `${string}://${string}:${string}/${string}/`;
+  readonly VITE_BASE_URI: `/${string}`;
 }
