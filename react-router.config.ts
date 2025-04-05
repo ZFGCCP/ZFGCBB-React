@@ -6,4 +6,11 @@ export default {
   appDirectory: "src",
   ssr: false,
   basename: env["VITE_BASE_URI"] ?? "/",
+  future: {
+    unstable_viteEnvironmentApi: true,
+    unstable_middleware: true,
+    unstable_optimizeDeps: true,
+    unstable_splitRouteModules: true,
+    unstable_subResourceIntegrity: true,
+  },
 } satisfies Config;
