@@ -7,10 +7,7 @@ const Style = {
     background-color: #1e2b44;
   `,
 
-  wrapper: styled.div`
-    position: relative;
-    z-index: 2;
-  `,
+  wrapper: styled.div``,
 };
 
 const NavTabStyle = {
@@ -19,9 +16,7 @@ const NavTabStyle = {
     background-color: #1e2b44;
     border-bottom: 0;
     height: 2rem;
-
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
+    border-radius: 0.5rem 0.5rem 0 0;
   `,
 };
 
@@ -40,7 +35,7 @@ const NavTab: React.FC<{ title: String; path: `/${string}` }> = ({
 
 const Navigator: React.FC = () => {
   return (
-    <Style.wrapper className="d-none d-md-flex pt-3 align-items-end">
+    <Style.wrapper className="d-none d-md-flex align-items-end">
       <NavTab title="Home" path="/" />
       <NavTab title="Forum" path="/forum" />
       <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">

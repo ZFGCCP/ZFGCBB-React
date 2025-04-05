@@ -14,9 +14,10 @@ const Home: React.FC = () => {
     <div className="row">
       <div className="col-12 col-lg-6 my-2">
         <Widget widgetTitle="Featured Project">
-          <div className="d-flex">
+          <div className="d-flex flex-column flex-lg-row overflow-hidden">
             <BBImage
-              path="potm/triforceSaga.png"
+              className="w-100"
+              src="images/potm/triforceSaga.png"
               as={Style.FeaturedProjectImg}
             />
             <div className="ms-2 mt-2 col-12 col-lg-6">

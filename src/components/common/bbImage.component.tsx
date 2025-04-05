@@ -1,4 +1,6 @@
-import React, {
+/// <reference path="../../../build/types/image-paths.d.ts" />
+import type React from "react";
+import {
   Suspense,
   type ElementType,
   type ComponentProps,
@@ -69,10 +71,11 @@ function preloadImage(path: string): CacheEntry {
     return cacheEntry;
   }
 
-  const url = path.startsWith("themes/")
-    ? `/src/assets/themes/${path.replace("themes/", "")}`
-    : `/src/assets/images/${path}`;
-  const imageLoader = images[url];
+  // const url =
+  // path.startsWith("themes/")
+  //   ? `/src/assets/themes/${path.replace("themes/", "")}`
+  //   : `/src/assets/images/${path}`;
+  const imageLoader = images[`/src/assets/${path}`];
 
   if (!imageLoader) {
     if (import.meta.env.DEV) {
@@ -122,27 +125,27 @@ function useImage(path: string): string | undefined {
 }
 
 type ImageLoaderProps<ComponentType extends ElementType = "img"> = {
-  path: string;
+  src: string;
   as?: ComponentType;
-} & Omit<ComponentProps<ComponentType>, "src">;
+};
 
 function ImageLoader<ComponentType extends ElementType = "img">({
-  path,
+  src,
   as,
   ...props
 }: ImageLoaderProps<ComponentType>): React.ReactElement | null {
-  const imageSrc = useImage(path);
+  const imageSrc = useImage(src);
   const Component = as || "img";
 
   return imageSrc ? <Component {...props} src={imageSrc} /> : null;
 }
 
-type BBImageProps<ComponentType extends ElementType = "img"> = Omit<
+export type BBImageProps<ComponentType extends ElementType = "img"> = Omit<
   ComponentProps<ComponentType>,
   "src"
 > & {
   fallback?: React.ReactNode;
-  path: string;
+  src: ImagesPath | ThemesPath | `${string}://${string}/${string}`;
   as?: ComponentType;
 };
 
@@ -179,7 +182,7 @@ export default function BBImage<ComponentType extends ElementType = "img">(
 
   return (
     <Suspense fallback={fallback}>
-      <ImageLoader {...props} path={props.path} as={props.as} />
+      <ImageLoader {...props} src={props.src} as={props.as} />
     </Suspense>
   );
 }

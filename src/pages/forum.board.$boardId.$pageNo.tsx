@@ -160,20 +160,20 @@ const BoardContainer: React.FC = () => {
                         <td>
                           <div>
                             <BBImage
-                              path="themes/midnight/images/topic/normal_post.gif"
+                              src="themes/midnight/images/topic/normal_post.gif"
                               alt="FIXME: add proper alt text"
                             />
                           </div>
                           <div className="d-block d-sm-none mt-3">
                             <BBImage
-                              path="themes/midnight/images/post/xx.gif"
+                              src="themes/midnight/images/post/xx.gif"
                               alt="FIXME: add proper alt text"
                             />
                           </div>
                         </td>
                         <td className="d-none d-sm-table-cell">
                           <BBImage
-                            path="themes/midnight/images/post/xx.gif"
+                            src="themes/midnight/images/post/xx.gif"
                             alt="FIXME: add proper alt text"
                           />
                         </td>

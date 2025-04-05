@@ -12,34 +12,38 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BBImage from "./bbImage.component";
 
 const Style = {
-  MainContent: styled.div``,
+  MainContent: styled.div`
+    position: relative;
+    padding-bottom: 4rem; /* Space for the Navigator */
+  `,
 
   header: styled.div`
     border-bottom: 0.2rem solid black;
-    height: 7.45rem;
-  `,
-
-  headerImg: styled.img`
-    position: relative;
-    top: 2.3rem;
-    z-index: 1;
-
-    @media (max-width: 767px) {
-      top: 3rem;
+    @media (max-width: 768px) {
+      border-bottom: 0;
     }
   `,
 
-  navWrapper: styled.div`
-    position: relative;
-    top: -2rem;
+  headerImg: styled.img`
+    z-index: -1; /* Send the image behind the content */
+    margin-bottom: -1.25rem;
   `,
+
+  navWrapper: styled.div``,
 
   mobileNavWrapper: styled.div<{ theme: Theme }>`
     background-color: ${(props) => props.theme.black};
     height: 2.5rem;
     position: fixed;
-    width: 100%;
+    width: 100dvw;
     bottom: 0;
+    z-index: 100001;
+  `,
+
+  loginRegistrationWrapper: styled.div`
+    @media (max-width: 870px) {
+      font-size: 0.6rem;
+    }
   `,
 };
 
@@ -49,23 +53,18 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <Style.MainContent className="d-flex flex-column mb-5">
-      <Style.header className="d-flex mb-5 px-3 justify-content-between">
+      <Style.header className="d-flex mb-5 px-3 justify-content-around">
         <Style.navWrapper>
-          <BBImage
-            path="logo.png"
-            as={Style.headerImg}
-            className="d-none d-sm-block"
-            alt="Logo"
-          />
+          <BBImage src="images/logo.png" as={Style.headerImg} alt="Logo" />
           <Navigator />
         </Style.navWrapper>
-        <div className="d-none d-lg-flex flex-column justify-content-center">
+        <Style.loginRegistrationWrapper className="d-none d-md-flex flex-column justify-content-center text-start ">
           <div>
             Welcome, {displayName}! <span>Please login or </span>
-            <BBLink to="/user/registration">register</BBLink>
+            <BBLink to="/user/auth/registration">register</BBLink>.
           </div>
           <div>Did you miss your activation email?</div>
-        </div>
+        </Style.loginRegistrationWrapper>
       </Style.header>
       <div className="container-xxl">{children}</div>
       <Style.mobileNavWrapper

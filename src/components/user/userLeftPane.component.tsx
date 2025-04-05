@@ -42,7 +42,7 @@ const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
         <div>{user.avatar && <Style.avatar src={user.avatar.url} />}</div>
         <div className="d-none d-md-block">
           <BBImage
-            path={`${import.meta.env.REACT_ZFGBB_API_URL}/image/3`}
+            src={`${import.meta.env.REACT_ZFGBB_API_URL}/image/3`}
             alt="TODO: add proper alt text"
           />
         </div>

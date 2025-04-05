@@ -39,7 +39,7 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
             <Style.forumRow key={`${sb.boardId}`} className="d-flex">
               <td className="col-2 col-md-1">
                 <BBImage
-                  path="themes/midnight/images/board-summary/off.gif"
+                  src="themes/midnight/images/board-summary/off.gif"
                   alt="Off"
                 />
               </td>

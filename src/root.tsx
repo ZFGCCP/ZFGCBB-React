@@ -7,9 +7,7 @@ import "./assets/App.css";
 import ContentView from "./components/common/contentView.component";
 
 export function HydrateFallback() {
-  return (
-    <img src="https://pa1.aminoapps.com/7508/074c64ca038d1e4a61d03fede5555ef1fbc047c5r1-640-640_hq.gif" />
-  );
+  return <></>;
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {

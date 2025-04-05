@@ -37,7 +37,7 @@ TBD. We could use some help writing this out.
 1. Clone the repository
 
    ```bash
-   git clone https://github.com/ZFGC-BB/ZFGCBB-React.git
+   git clone https://github.com/ZFGCCP/ZFGCBB-React.git
    ```
 
 2. Configure the project
