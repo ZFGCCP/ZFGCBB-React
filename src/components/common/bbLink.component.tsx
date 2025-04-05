@@ -31,7 +31,7 @@ type ReplaceParamsWithString<T extends string> =
 type RouteKeys = Exclude<keyof RouteParams, "/*">;
 export type RoutePaths = ReplaceParamsWithString<RouteKeys>;
 export type BBLinkProps = Omit<LinkProps, "to"> & {
-  to: RoutePaths;
+  to: RoutePaths | `${string}://${string}/${string}`;
 };
 /**
  * This component is a wrapper around the <Link> component that provides

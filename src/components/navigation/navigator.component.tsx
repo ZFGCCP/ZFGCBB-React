@@ -39,12 +39,16 @@ const Navigator: React.FC = () => {
       <NavTab title="Home" path="/" />
       <NavTab title="Forum" path="/forum" />
       <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
-        <BBLink to={"https://discord.gg/NP2nNKjun6"} relative="path">
+        <BBLink
+          to={"https://discord.gg/NP2nNKjun6"}
+          relative="path"
+          target="_blank"
+        >
           Chat
         </BBLink>
       </NavTabStyle.tab>
       <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
-        <BBLink to={"http://wiki.zfgc.com"} relative="path">
+        <BBLink to={"http://wiki.zfgc.com"} relative="path" target="_blank">
           Wiki
         </BBLink>
       </NavTabStyle.tab>

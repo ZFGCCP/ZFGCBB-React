@@ -29,7 +29,7 @@ const Home: React.FC = () => {
       </div>
 
       <div className="col-12 col-lg-6 my-2">
-        <Widget widgetTitle="Announcements">
+        <Widget widgetTitle="Recent Activity">
           <>
             <div>
               <h6>7/23/2024 - blah blah blah</h6>
@@ -41,9 +41,27 @@ const Home: React.FC = () => {
 
       <div className="col-12 my-2">
         <Widget widgetTitle="Announcements">
-          <>
-            <div>Test content s</div>
-          </>
+          <article>
+            <header>
+              <h1 className="fs-1">It's dangerous to go alone!</h1>
+              <h2 className="fs-6 fst-italic">Date: 04/05/2025</h2>
+            </header>
+            <main>
+              <p>
+                Slowly the site is coming back together. We could use your help!
+                If you're interested, check out the repo on GitHub and join the
+                ZFGC Community Project (ZFGCCP) effort in rewriting the site!
+                <br />
+                <a
+                  href="https://github.com/ZFGCCP/ZFGCBB-React"
+                  target="_blank"
+                >
+                  Come join the effort!
+                </a>
+                <br />
+              </p>
+            </main>
+          </article>
         </Widget>
       </div>
     </div>
