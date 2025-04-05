@@ -34,12 +34,7 @@ const isValidUrl = (str: string): boolean => {
   }
 };
 
-function preloadImage(incomingPath: string): CacheEntry {
-  let path = incomingPath;
-
-  if (import.meta.env.VITE_BASE_URI)
-    path = `/assets/${path.replace(import.meta.env.VITE_BASE_URI, "")}`;
-
+function preloadImage(path: string): CacheEntry {
   if (imageCache.has(path)) {
     return imageCache.get(path)!;
   }
@@ -93,7 +88,9 @@ function preloadImage(incomingPath: string): CacheEntry {
   cacheEntry.promise = imageLoader()
     .then((mod: ImageModule) => {
       cacheEntry.status = "success";
-      cacheEntry.result = mod.default;
+      cacheEntry.result = import.meta.env.VITE_BASE_URI
+        ? `${import.meta.env.VITE_BASE_URI}${mod.default}`
+        : mod.default;
     })
     .catch((err: unknown) => {
       console.error(`Failed to load image: ${path}`, err);
