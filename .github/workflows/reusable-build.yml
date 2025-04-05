@@ -21,7 +21,7 @@ jobs:
     env:
       CI: 1
       GITHUB_PAGES: ${{ inputs.deployment_target == 'github-pages' }}
-      NODE_ENV: ${{ inputs.deployment_target || 'production' }}
+      VITE_MODE: ${{ inputs.deployment_target || 'production' }}
 
     outputs:
       artifact_name: ${{ inputs.environment }}-build
@@ -50,7 +50,7 @@ jobs:
         run: cp ./.github/404.html ./build/client/404.html #see https://github.com/orgs/community/discussions/64096
 
       - name: Upload build artifact
-        if: ${{ (inputs.environment == 'development' || inputs.environment == 'main') && inputs.deployment_target == 'github-pages' }}
+        if: ${{ inputs.deployment_target == 'github-pages' }}
         uses: actions/upload-pages-artifact@v3
         with:
           name: ${{ inputs.environment }}-build

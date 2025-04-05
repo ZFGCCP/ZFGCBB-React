@@ -71,10 +71,6 @@ function preloadImage(path: string): CacheEntry {
     return cacheEntry;
   }
 
-  // const url =
-  // path.startsWith("themes/")
-  //   ? `/src/assets/themes/${path.replace("themes/", "")}`
-  //   : `/src/assets/images/${path}`;
   const imageLoader = images[`/src/assets/${path}`];
 
   if (!imageLoader) {

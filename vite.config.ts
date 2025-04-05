@@ -6,21 +6,24 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateImagePaths } from "./vite/plugins/vite-plugin-generate-image-paths";
 
-const env = loadEnv(process.env["NODE_ENV"] ?? "", "./", ["REACT_", "VITE_"]);
+const env = loadEnv(process.env["VITE_MODE"] ?? "", process.cwd(), [
+  "REACT_",
+  "VITE_",
+  "BASE_",
+]);
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: env["VITE_BASE_URI"],
+  base: env["BASE_URL"],
   plugins: [
     react({
       plugins: [["@swc/plugin-styled-components", {}]],
     }),
     reactRouter(),
-
     generateImagePaths(),
   ],
-  envPrefix: ["REACT_", "VITE_"],
+  envPrefix: ["REACT_", "VITE_", "BASE_", "PROD"],
   build: {
     target: "esnext",
   },

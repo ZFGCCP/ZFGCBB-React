@@ -27,7 +27,7 @@ concurrency:
 env:
   CI: 1
   GITHUB_PAGES: "true"
-  VITE_BASE_URI: "/ZFGCBB-React/"
+  BASE_URL: "/ZFGCBB-React/"
 
 jobs:
   # determine_environment:
