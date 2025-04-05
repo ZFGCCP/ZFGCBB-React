@@ -1,4 +1,3 @@
-/// <reference path="../../../build/types/image-paths.d.ts" />
 import type React from "react";
 import {
   Suspense,
