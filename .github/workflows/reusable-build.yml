@@ -43,7 +43,7 @@ jobs:
 
       - run: yarn install --frozen-lockfile --immutable
       - if: ${{ inputs.deployment_target == 'github-pages' }}
-        run: echo "VITE_BASE_URI=/ZFGCBB-React/" >> .env.production
+        run: echo -e "VITE_BASE_URI=/ZFGCBB-React/" >> .env.production
 
       - run: yarn build
       - run: yarn check

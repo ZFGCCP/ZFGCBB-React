@@ -34,6 +34,9 @@ jobs:
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - if: ${{ inputs.environment == 'main' && github.head_ref != 'main' }}
+        run: echo "This is not the main branch, skipping deployment." && exit 1
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
