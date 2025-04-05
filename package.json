@@ -5,6 +5,7 @@
   "description": "Putting the drama back into the Llama! Sponsored by Infini's Pizza!",
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://zfgccp.github.io/ZFGCBB-React/",
   "scripts": {
     "check": "react-router typegen  && tsc --noEmit  --project tsconfig.json --composite false && prettier . --check || (yarn format && git diff --exit-code)",
     "format": "prettier . --write",
