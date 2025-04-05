@@ -17,7 +17,7 @@ const ForumMain: React.FC = () => {
 
   return (
     <div>
-      <Widget className="mb-5">
+      <Widget className="mb-5 my-2">
         <Style.newsFaderText className="m-4">
           Hi! We're read-only for now, but make sure to join us on{" "}
           <BBLink to="https://discord.gg/NP2nNKjun6">Discord!</BBLink>
