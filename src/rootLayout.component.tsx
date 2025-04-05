@@ -20,6 +20,9 @@ const Style = {
   `,
 
   header: styled.div`
+    place-content: end space-around;
+    place-items: center;
+
     border-bottom: 0.2rem solid black;
     @media (max-width: 768px) {
       border-bottom: 0;
@@ -37,6 +40,8 @@ const Style = {
 
   headerImg: styled.img`
     position: relative;
+    width: 485px;
+    height: 100px;
     z-index: -1; /* Send the image behind the content */
     @media (min-width: 768px) {
       margin-bottom: -1.5rem;
@@ -45,6 +50,7 @@ const Style = {
 
   navWrapper: styled.div`
     overflow: clip;
+    place-self: end;
     @media (max-width: 768px) {
       display: grid;
       width: 100dvw;
@@ -75,17 +81,12 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <Style.MainContent className="d-grid overflow-hidden">
-      <Style.header className="d-flex justify-content-start justify-content-md-around">
+      <Style.header className="d-none d-md-flex">
         <Style.navWrapper>
-          <BBImage
-            className="d-none d-md-block"
-            src="images/logo.png"
-            as={Style.headerImg}
-            alt="Logo"
-          />
+          <BBImage src="images/logo.png" as={Style.headerImg} alt="Logo" />
           <Navigator />
         </Style.navWrapper>
-        <Style.loginRegistrationWrapper className="d-none d-md-flex flex-column justify-content-center text-start ">
+        <Style.loginRegistrationWrapper className="d-flex flex-column ">
           <div>
             Welcome, {displayName}! <span>Please login or </span>
             <BBLink to="/user/auth/registration">register</BBLink>.
