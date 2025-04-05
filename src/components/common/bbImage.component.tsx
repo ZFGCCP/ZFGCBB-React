@@ -88,9 +88,7 @@ function preloadImage(path: string): CacheEntry {
   cacheEntry.promise = imageLoader()
     .then((mod: ImageModule) => {
       cacheEntry.status = "success";
-      cacheEntry.result = import.meta.env.VITE_BASE_URI
-        ? `${import.meta.env.VITE_BASE_URI}${mod.default}`
-        : mod.default;
+      cacheEntry.result = mod.default;
     })
     .catch((err: unknown) => {
       console.error(`Failed to load image: ${path}`, err);
