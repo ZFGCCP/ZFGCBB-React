@@ -46,6 +46,10 @@ jobs:
       - run: yarn build
       - run: yarn check
 
+      - if: ${{ inputs.deployment_target == 'github-pages' }}
+        name: Copy 404 page to workaround gh pages routing
+        run: cp ./.github/404.html ./build/client/404.html #see https://github.com/orgs/community/discussions/64096
+
       - name: Upload build artifact
         if: ${{ inputs.environment == 'development' || inputs.environment == 'main' }}
         uses: actions/upload-pages-artifact@v3
