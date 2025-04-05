@@ -9,7 +9,6 @@ on:
       deployment_target:
         required: false
         type: string
-        default: "github-pages"
         description: "The deployment target to use (e.g., github-pages, netlify, vercel, etc.)"
     outputs:
       artifact_name:
