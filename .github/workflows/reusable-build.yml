@@ -35,8 +35,8 @@ jobs:
           cache: yarn
 
       - run: yarn install --frozen-lockfile --immutable
-      - run: yarn check
       - run: yarn build
+      - run: yarn check
 
       - name: Upload build artifact
         if: ${{ inputs.environment == 'development' || inputs.environment == 'main' }}
