@@ -2,7 +2,6 @@ import type React from "react";
 import { styled } from "styled-components";
 import Widget from "../components/common/widgets/widget.component";
 import BBImage from "@/components/common/bbImage.component";
-import Skeleton from "@/components/common/skeleton.component";
 
 const Style = {
   FeaturedProjectImg: styled.img`

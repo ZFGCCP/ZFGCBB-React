@@ -1,3 +1,4 @@
+@import url("bootstrap/dist/css/bootstrap.min.css");
 :root {
   --bs-body-bg: none;
   --bs-link-hover-color: none;
@@ -15,11 +16,9 @@ body,
 #root {
   height: 100dvh;
   width: 100dvw;
-}
-
-html,
-body {
   overflow: hidden;
+
+  font-family: sans-serif;
 }
 
 #root {
@@ -29,10 +28,6 @@ body {
   @media (min-width: 992px) {
     overflow: auto;
   }
-}
-
-body {
-  font-family: sans-serif;
 }
 
 .container-xxl {

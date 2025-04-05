@@ -59,6 +59,8 @@ async function generateTypeFile(options: Required<ImagePathPluginOptions>) {
     const literals =
       relativeFiles.map((f) => `"${f}"`).join(" |\n    ") || "never";
 
+    // FIXME: #112 fix: add support for scanning assets(images, videos, etc.) in sub-directories to inject width/height attributes so BBImage can render the fallback at the correct size
+
     typeBlocks.push(`  export type ${typeName} =\n    ${literals};`);
   }
 

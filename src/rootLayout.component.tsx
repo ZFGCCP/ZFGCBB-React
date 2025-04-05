@@ -20,9 +20,8 @@ const Style = {
   `,
 
   header: styled.div`
-    place-content: end space-around;
-    place-items: center;
-
+    place-content: stretch space-between;
+    place-items: end;
     border-bottom: 0.2rem solid black;
     @media (max-width: 768px) {
       border-bottom: 0;
@@ -46,31 +45,18 @@ const Style = {
     }
   `,
 
-  headerImgFallback: styled.div`
-    position: relative;
-    z-index: -1; /* Send the image behind the content */
-    width: 485px;
-    height: 100px;
-  `,
-
-  navWrapper: styled.div`
-    overflow: clip;
-    place-self: end;
-    @media (max-width: 768px) {
-      display: grid;
-      width: 100dvw;
-      place-self: start;
-    }
-  `,
-
   mobileNavWrapper: styled.div<{ theme: Theme }>`
     background-color: ${(props) => props.theme.black};
     height: 2.5rem;
-    width: 100dvw;
+    width: 100%;
     position: relative;
     z-index: 100001; /* This magic number is for tanstack/react-query-devtools */
     align-items: center;
     place-self: end;
+  `,
+
+  userGreetingWrapper: styled.div`
+    place-self: center stretch;
   `,
 };
 
@@ -81,31 +67,25 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
   return (
     <Style.MainContent className="d-grid overflow-hidden">
       <Style.header className="d-none d-md-flex">
-        <Style.navWrapper>
-          <BBImage
-            src="images/logo.png"
-            as={Style.headerImg}
-            alt="Logo"
-            fallback={<Style.headerImgFallback />}
-          />
+        <div>
+          <BBImage src="images/logo.png" as={Style.headerImg} alt="Logo" />
           <Navigator />
-        </Style.navWrapper>
-        <section className="d-flex flex-column ">
-          <div>
+        </div>
+        <Style.userGreetingWrapper>
+          <p className="mb-0">
             Welcome, {displayName}! <span>Please login or </span>
             <BBLink to="/user/auth/registration">register</BBLink>.
-          </div>
-          <div>Did you miss your activation email?</div>
-        </section>
+          </p>
+          <p>Did you miss your activation email?</p>
+        </Style.userGreetingWrapper>
       </Style.header>
       <Style.pageWrapper className="container-xxl pt-1 pb-1">
         <div className="d-grid d-md-none justify-content-center">
           <BBImage
-            className="d-md-none w-100 h-100"
+            className="w-100 h-100"
             src="images/logo.png"
             as={Style.headerImg}
             alt="Logo"
-            fallback={<Style.headerImgFallback />}
           />
         </div>
         {children}
