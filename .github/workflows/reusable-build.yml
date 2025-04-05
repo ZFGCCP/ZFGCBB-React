@@ -50,7 +50,7 @@ jobs:
         run: cp ./.github/404.html ./build/client/404.html #see https://github.com/orgs/community/discussions/64096
 
       - name: Upload build artifact
-        if: ${{ inputs.environment == 'development' || inputs.environment == 'main' }}
+        if: ${{ (inputs.environment == 'development' || inputs.environment == 'main') && inputs.deployment_target == 'github-pages' }}
         uses: actions/upload-pages-artifact@v3
         with:
           name: ${{ inputs.environment }}-build
