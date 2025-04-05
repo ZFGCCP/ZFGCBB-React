@@ -1,11 +1,3 @@
-@import url("../../node_modules/bootstrap/dist/css/bootstrap.min.css");
-
-.container-xxl {
-  @media (min-width: 1400px) {
-    max-width: 145rem;
-  }
-}
-
 :root {
   --bs-body-bg: none;
   --bs-link-hover-color: none;
@@ -42,6 +34,14 @@ body {
 body {
   font-family: sans-serif;
 }
+
+.container-xxl {
+  @media (min-width: 1400px) {
+    max-width: 145rem;
+  }
+}
+
+/** FIXME: #111 move the bbcode styles elsewhere */
 .bb-code-b {
   font-weight: bold;
 }

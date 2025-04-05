@@ -1,3 +1,4 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/App.css";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import ThemeProvider from "./providers/theme/themeProvider";
