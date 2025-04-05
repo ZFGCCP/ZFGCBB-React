@@ -6,6 +6,11 @@ on:
         type: string
         default: ${{ github.ref_name }}
         description: "The environment to build for (e.g., main, development). Defaults to the branch name."
+      deployment_target:
+        required: false
+        type: string
+        default: "github-pages"
+        description: "The deployment target to use (e.g., github-pages, netlify, vercel, etc.)"
     outputs:
       artifact_name:
         description: "The name of the build artifact"
@@ -34,6 +39,9 @@ jobs:
           cache: yarn
 
       - run: yarn install --frozen-lockfile --immutable
+      - if: ${{ inputs.deployment_target == 'github-pages' }}
+        run: echo "VITE_BASE_URI=/ZFGCBB-React/" >> .env.production
+
       - run: yarn build
       - run: yarn check
 

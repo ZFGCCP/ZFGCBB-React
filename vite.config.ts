@@ -11,7 +11,7 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 // https://vitejs.dev/config/
 export default defineConfig({
   base: process.env["CI"]
-    ? (process.env["GITHUB_PAGES"] ?? "/ZFGCBB-React/")
+    ? (process.env["VITE_BASE_URI"] ?? undefined)
     : undefined,
   plugins: [
     react({

@@ -46,6 +46,7 @@ jobs:
     uses: ./.github/workflows/reusable-build.yml
     with:
       environment: ${{ github.event.inputs.environment }}
+      deployment_target: "github-pages"
       # environment: ${{ needs.determine_environment.outputs.environment }}
 
   deploy:
