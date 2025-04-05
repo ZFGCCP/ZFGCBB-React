@@ -94,12 +94,14 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
         </Style.loginRegistrationWrapper>
       </Style.header>
       <Style.pageWrapper className="container-xxl pt-1 pb-1">
-        <BBImage
-          className="d-md-none pb-1"
-          src="images/logo.png"
-          as={Style.headerImg}
-          alt="Logo"
-        />
+        <div className="d-grid d-md-none justify-content-center">
+          <BBImage
+            className="d-md-none pb-1 w-100 h-100"
+            src="images/logo.png"
+            as={Style.headerImg}
+            alt="Logo"
+          />
+        </div>
         {children}
       </Style.pageWrapper>
       <Style.mobileNavWrapper

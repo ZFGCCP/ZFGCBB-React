@@ -10,7 +10,9 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: process.env["CI"] ? "/ZFGCBB-React/" : undefined,
+  base: process.env["CI"]
+    ? (process.env["GITHUB_PAGES"] ?? "/ZFGCBB-React/")
+    : undefined,
   plugins: [
     react({
       plugins: [["@swc/plugin-styled-components", {}]],
