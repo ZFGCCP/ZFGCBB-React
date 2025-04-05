@@ -21,6 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: 1
+      GITHUB_PAGES: ${{ inputs.deployment_target == 'github-pages' }}
+      NODE_ENV: "production"
+
     outputs:
       artifact_name: ${{ inputs.environment }}-build
     steps:
