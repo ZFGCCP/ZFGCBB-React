@@ -13,8 +13,11 @@ import BBImage from "./bbImage.component";
 
 const Style = {
   MainContent: styled.div`
-    position: relative;
-    padding-bottom: 4rem; /* Space for the Navigator */
+    grid-template-rows: auto 1fr auto;
+    @media (max-width: 768px) {
+      height: 100dvh;
+      width: 100dvw;
+    }
   `,
 
   header: styled.div`
@@ -24,20 +27,40 @@ const Style = {
     }
   `,
 
-  headerImg: styled.img`
-    z-index: -1; /* Send the image behind the content */
-    margin-bottom: -1.25rem;
+  pageWrapper: styled.div`
+    overflow: hidden auto;
+    height: 100%;
+    width: 100%;
+    @media (min-width: 768px) {
+      overflow: hidden;
+    }
   `,
 
-  navWrapper: styled.div``,
+  headerImg: styled.img`
+    position: relative;
+    z-index: -1; /* Send the image behind the content */
+    @media (min-width: 768px) {
+      margin-bottom: -1.5rem;
+    }
+  `,
+
+  navWrapper: styled.div`
+    overflow: clip;
+    @media (max-width: 768px) {
+      display: grid;
+      width: 100dvw;
+      place-self: start;
+    }
+  `,
 
   mobileNavWrapper: styled.div<{ theme: Theme }>`
     background-color: ${(props) => props.theme.black};
     height: 2.5rem;
-    position: fixed;
     width: 100dvw;
-    bottom: 0;
-    z-index: 100001;
+    position: relative;
+    z-index: 100001; /* This magic number is for tanstack/react-query-devtools */
+    place-content: end center;
+    align-items: center;
   `,
 
   loginRegistrationWrapper: styled.div`
@@ -52,10 +75,15 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
   const { currentTheme } = useContext(ThemeContext);
 
   return (
-    <Style.MainContent className="d-flex flex-column mb-5">
-      <Style.header className="d-flex mb-5 px-3 justify-content-around">
+    <Style.MainContent className="d-grid overflow-hidden">
+      <Style.header className="d-flex justify-content-start justify-content-md-around">
         <Style.navWrapper>
-          <BBImage src="images/logo.png" as={Style.headerImg} alt="Logo" />
+          <BBImage
+            className="d-none d-md-block"
+            src="images/logo.png"
+            as={Style.headerImg}
+            alt="Logo"
+          />
           <Navigator />
         </Style.navWrapper>
         <Style.loginRegistrationWrapper className="d-none d-md-flex flex-column justify-content-center text-start ">
@@ -66,7 +94,15 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
           <div>Did you miss your activation email?</div>
         </Style.loginRegistrationWrapper>
       </Style.header>
-      <div className="container-xxl">{children}</div>
+      <Style.pageWrapper className="container-xxl pt-1 pb-1">
+        <BBImage
+          className="d-md-none pb-1"
+          src="images/logo.png"
+          as={Style.headerImg}
+          alt="Logo"
+        />
+        {children}
+      </Style.pageWrapper>
       <Style.mobileNavWrapper
         theme={currentTheme}
         className="d-flex d-md-none justify-content-around align-items-center"

@@ -31,9 +31,12 @@ body {
 }
 
 #root {
-  overflow: auto;
   background-color: var(--bg);
   color: var(--text);
+  overflow: hidden;
+  @media (min-width: 992px) {
+    overflow: auto;
+  }
 }
 
 body {

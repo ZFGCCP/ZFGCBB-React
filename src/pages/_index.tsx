@@ -14,13 +14,13 @@ const Home: React.FC = () => {
     <div className="row">
       <div className="col-12 col-lg-6 my-2">
         <Widget widgetTitle="Featured Project">
-          <div className="d-flex flex-column flex-lg-row overflow-hidden">
+          <div className="d-flex flex-column flex-md-row overflow-hidden">
             <BBImage
               className="w-100"
               src="images/potm/triforceSaga.png"
               as={Style.FeaturedProjectImg}
             />
-            <div className="ms-2 mt-2 col-12 col-lg-6">
+            <div className="ms-2 mt-2 col-12 col-md-6">
               <h5>Triforce Saga</h5>
               <h6>Developer: chaoazul1</h6>
             </div>
