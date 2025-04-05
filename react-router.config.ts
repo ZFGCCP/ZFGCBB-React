@@ -5,5 +5,5 @@ const env = loadEnv(process.env["NODE_ENV"] ?? "", "./", ["REACT_", "VITE_"]);
 export default {
   appDirectory: "src",
   ssr: false,
-  basename: env["CI"] ? (env["VITE_BASE_URI"] ?? "/") : "/",
+  basename: env["VITE_BASE_URI"] ?? "/",
 } satisfies Config;

@@ -40,7 +40,6 @@ jobs:
   #         else
   #           echo "environment=development" >> $GITHUB_OUTPUT
   #         fi
-
   build:
     # needs: determine_environment
     uses: ./.github/workflows/reusable-build.yml
