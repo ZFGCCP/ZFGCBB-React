@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import Skeleton from "./skeleton.component";
 
 type ImageModule = { default: string };
 
@@ -175,9 +176,7 @@ export default function BBImage<ComponentType extends ElementType = "img">(
 
   // Use a simpler fallback during SSR to avoid hydration mismatches
   const fallback =
-    typeof window === "undefined"
-      ? null
-      : (props.fallback ?? <div>Loading...</div>);
+    typeof window === "undefined" ? null : (props.fallback ?? <Skeleton />);
 
   return (
     <Suspense fallback={fallback}>

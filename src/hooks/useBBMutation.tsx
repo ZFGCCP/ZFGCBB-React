@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import type { BaseBB } from "../../types/api";
+import type { BaseBB } from "../types/api";
 
 export const useBBMutation = <T extends BaseBB, U extends BaseBB>(
   config: () => [string, T],

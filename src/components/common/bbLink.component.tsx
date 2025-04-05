@@ -29,7 +29,7 @@ type ReplaceParamsWithString<T extends string> =
       : T | (string & {}); // Return the path as is if no dynamic segments
 
 type RouteKeys = Exclude<keyof RouteParams, "/*">;
-type RoutePaths = ReplaceParamsWithString<RouteKeys>;
+export type RoutePaths = ReplaceParamsWithString<RouteKeys>;
 export type BBLinkProps = Omit<LinkProps, "to"> & {
   to: RoutePaths;
 };

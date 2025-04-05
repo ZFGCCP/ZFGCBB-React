@@ -1,6 +1,6 @@
 import type React from "react";
 import { styled } from "styled-components";
-import BBLink from "../common/bbLink.component";
+import BBLink, { type RoutePaths } from "../common/bbLink.component";
 
 const Style = {
   subTabs: styled.div`
@@ -20,7 +20,7 @@ const NavTabStyle = {
   `,
 };
 
-const NavTab: React.FC<{ title: String; path: `/${string}` }> = ({
+const NavTab: React.FC<{ title: String; path: RoutePaths }> = ({
   title,
   path,
 }) => {
@@ -48,8 +48,8 @@ const Navigator: React.FC = () => {
           Wiki
         </BBLink>
       </NavTabStyle.tab>
-      <NavTab title="Projects" path="/" />
-      <NavTab title="Resources" path="/" />
+      <NavTab title="Projects" path="/projects" />
+      <NavTab title="Resources" path="/resources" />
     </Style.wrapper>
   );
 };

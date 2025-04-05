@@ -9,7 +9,7 @@ const emptyUser = {
   permissions: [],
 } as User;
 
-const UserContext = createContext<User>(emptyUser);
+export const UserContext = createContext<User>(emptyUser);
 
 const UserProvider: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -22,5 +22,4 @@ const UserProvider: React.FC<{ children?: React.ReactNode }> = ({
     </UserContext.Provider>
   );
 };
-
-export { UserProvider, UserContext };
+export default UserProvider;

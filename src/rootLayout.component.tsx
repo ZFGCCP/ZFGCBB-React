@@ -1,15 +1,14 @@
 import type React from "react";
 import { useContext } from "react";
-import { UserContext } from "../../providers/user/userProvider";
+import { UserContext } from "./providers/user/userProvider";
 import { styled } from "styled-components";
-import { Outlet } from "react-router";
-import Navigator from "../navigation/navigator.component";
-import BBLink from "./bbLink.component";
-import { ThemeContext } from "../../providers/theme/themeProvider";
-import type { Theme } from "../../types/theme";
+import Navigator from "./components/navigation/navigator.component";
+import BBLink from "./components/common/bbLink.component";
+import { ThemeContext } from "./providers/theme/themeProvider";
+import type { Theme } from "./types/theme";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import BBImage from "./bbImage.component";
+import BBImage from "./components/common/bbImage.component";
 
 const Style = {
   MainContent: styled.div`

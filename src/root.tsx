@@ -1,13 +1,14 @@
+import "./assets/App.css";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-import { ThemeProvider } from "./providers/theme/themeProvider";
-import { UserProvider } from "./providers/user/userProvider";
+import ThemeProvider from "./providers/theme/themeProvider";
+import UserProvider from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import "./assets/App.css";
-import ContentView from "./components/common/contentView.component";
+import RootLayout from "./rootLayout.component";
+import Skeleton from "./components/common/skeleton.component";
 
 export function HydrateFallback() {
-  return <></>;
+  return <Skeleton />;
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -20,7 +21,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body id="root">
-        <ContentView children={children} />
+        <RootLayout children={children} />
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -36,7 +37,7 @@ export default function App() {
           <Outlet />
         </ThemeProvider>
       </UserProvider>
-      <ReactQueryDevtools />
+      {(import.meta.env.DEV && <ReactQueryDevtools />) || null}
     </QueryProvider>
   );
 }
