@@ -34,7 +34,12 @@ const isValidUrl = (str: string): boolean => {
   }
 };
 
-function preloadImage(path: string): CacheEntry {
+function preloadImage(incomingPath: string): CacheEntry {
+  let path = incomingPath;
+
+  if (import.meta.env.VITE_BASE_URI)
+    path = `/assets/${path.replace(import.meta.env.VITE_BASE_URI, "")}`;
+
   if (imageCache.has(path)) {
     return imageCache.get(path)!;
   }
