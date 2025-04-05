@@ -22,7 +22,7 @@ jobs:
     env:
       CI: 1
       GITHUB_PAGES: ${{ inputs.deployment_target == 'github-pages' }}
-      NODE_ENV: "production"
+      NODE_ENV: ${{ inputs.deployment_target || 'production' }}
 
     outputs:
       artifact_name: ${{ inputs.environment }}-build
@@ -42,8 +42,6 @@ jobs:
           cache: yarn
 
       - run: yarn install --frozen-lockfile --immutable
-      - if: ${{ inputs.deployment_target == 'github-pages' }}
-        run: echo -e "VITE_BASE_URI=/ZFGCBB-React/" >> .env.production
 
       - run: yarn build
       - run: yarn check

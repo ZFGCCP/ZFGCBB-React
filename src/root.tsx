@@ -19,9 +19,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <Meta />
         <Links />
-        {import.meta.env.VITE_BASE_URI && (
-          <base href={import.meta.env.VITE_BASE_URI} />
-        )}
+        <base href={import.meta.env.VITE_BASE_URI ?? "/"} />
       </head>
       <body id="root">
         <RootLayout children={children} />
