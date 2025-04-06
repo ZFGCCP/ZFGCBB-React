@@ -4,7 +4,9 @@ import { useNavigate, useParams } from "react-router";
 import { styled } from "styled-components";
 import { Button, Pagination } from "react-bootstrap";
 import BBLink from "../components/common/bbLink.component";
-import BBPaginator from "../components/common/paginator/bbPaginator.component";
+import BBPaginator, {
+  type BBPaginatorProps,
+} from "../components/common/paginator/bbPaginator.component";
 import BBTable from "../components/common/tables/bbTable.component";
 import Widget from "../components/common/widgets/widget.component";
 import BoardSummaryView from "../components/forum/boards/boardSummary.component";
@@ -82,22 +84,22 @@ const Style = {
 
 function BoardTablePaginatorComponent({
   board,
-  loadNewPage,
+  onPageChange,
   isLoading,
-  pageNo,
+  currentPage,
+  maxPageCount,
 }: {
   board?: Board;
-  loadNewPage: (pageNo: number) => void;
   isLoading: boolean;
-  pageNo: number;
-}) {
+} & Omit<BBPaginatorProps, "numPages">) {
   return (
     <div className="d-flex justify-content-left">
       {!isLoading && board ? (
         <BBPaginator
           numPages={board.pageCount}
-          currentPage={pageNo}
-          onPageChange={loadNewPage}
+          currentPage={currentPage}
+          maxPageCount={maxPageCount}
+          onPageChange={onPageChange}
         />
       ) : (
         <Skeleton />
@@ -273,6 +275,10 @@ const BoardContainer: React.FC = () => {
     0,
   );
 
+  const boardName = useMemo(() => {
+    return board?.boardName ?? "Loading...";
+  }, [board]);
+
   const footer = useMemo(() => {
     return [
       {
@@ -313,23 +319,34 @@ const BoardContainer: React.FC = () => {
         <div className="d-flex gap-2">
           <BBLink to="/forum">ZFGC.com</BBLink>
           <span>&gt;&gt;</span>
-          <span>{board?.boardName}</span>
+          <span>{boardName}</span>
         </div>
       </div>
 
-      <Widget widgetTitle={board?.boardName ?? "Loading..."}>
+      <Widget widgetTitle={boardName}>
         <BoardTableComponent
           board={board}
           theme={currentTheme}
           isLoading={isLoading}
         />
         <Style.boardFooter theme={currentTheme}>
-          <BoardTablePaginatorComponent
-            board={board}
-            loadNewPage={loadNewPage}
-            isLoading={isLoading}
-            pageNo={Number(pageNo)}
-          />
+          <div className="d-sm-none">
+            <BoardTablePaginatorComponent
+              board={board}
+              onPageChange={loadNewPage}
+              isLoading={isLoading}
+              currentPage={Number(pageNo)}
+              maxPageCount={4}
+            />
+          </div>
+          <div className="d-none d-sm-block">
+            <BoardTablePaginatorComponent
+              board={board}
+              onPageChange={loadNewPage}
+              isLoading={isLoading}
+              currentPage={Number(pageNo)}
+            />
+          </div>
         </Style.boardFooter>
       </Widget>
     </>

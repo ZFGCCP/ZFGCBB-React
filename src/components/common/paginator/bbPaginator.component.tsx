@@ -38,14 +38,22 @@ const Styled = {
   `,
 };
 
-const BBPaginator: React.FC<{
+export type BBPaginatorProps = {
   numPages: number;
   currentPage: number;
+  maxPageCount?: number;
   onPageChange: (pageNo: number) => void;
-}> = ({ numPages, currentPage, onPageChange }) => {
+};
+
+const BBPaginator: React.FC<BBPaginatorProps> = ({
+  numPages,
+  currentPage,
+  onPageChange,
+  maxPageCount,
+}) => {
   const { currentTheme } = useContext(ThemeContext);
 
-  const maxPages = 10;
+  const maxPages = maxPageCount ?? 10;
   const maxToRender = useMemo(() => {
     return numPages <= maxPages ? numPages : maxPages;
   }, [numPages, maxPages]);
