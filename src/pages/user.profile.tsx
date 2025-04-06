@@ -3,12 +3,12 @@ import { Outlet } from "react-router";
 
 export default function UserProfile() {
   return (
-    <div className="row">
-      <div className="col-12 my-2">
+    <article className="container-xxl">
+      <section className="col-12 my-2">
         <Widget widgetTitle={"Profile Summary"}>
           <Outlet />
         </Widget>
-      </div>
-    </div>
+      </section>
+    </article>
   );
 }

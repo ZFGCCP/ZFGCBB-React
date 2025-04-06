@@ -15,8 +15,8 @@ const Style = {
 
 const Home: React.FC = () => {
   return (
-    <div className="container">
-      <div className="row">
+    <article className="container-xxl">
+      <section className="row">
         <div className="col-lg-6 my-2">
           <Widget widgetTitle="Featured Project">
             <div className="row">
@@ -46,7 +46,7 @@ const Home: React.FC = () => {
             </>
           </Widget>
         </div>
-      </div>
+      </section>
 
       <div className="row">
         <div className="col-12 my-2">
@@ -76,7 +76,7 @@ const Home: React.FC = () => {
           </Widget>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

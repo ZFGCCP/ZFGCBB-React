@@ -62,7 +62,7 @@ const Style = {
   `,
 };
 
-const ContentView = ({ children }: { children: React.ReactNode }) => {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   const { displayName } = useContext(UserContext);
   const { currentTheme } = useContext(ThemeContext);
 
@@ -81,6 +81,7 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
           <p>Did you miss your activation email?</p>
         </Style.userGreetingWrapper>
       </Style.header>
+
       <Style.pageWrapper className="p-2">
         <div className="d-grid d-md-none justify-content-center">
           <BBImage
@@ -92,6 +93,7 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
         </div>
         {children}
       </Style.pageWrapper>
+
       <Style.mobileNavWrapper
         theme={currentTheme}
         className="d-flex d-md-none justify-content-around"
@@ -110,4 +112,4 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default ContentView;
+export default RootLayout;

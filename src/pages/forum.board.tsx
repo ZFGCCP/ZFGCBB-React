@@ -1,10 +1,10 @@
 import { Outlet, useNavigation } from "react-router";
 
-export default function ForumBoard() {
+export default function ForumBoardLayout() {
   const navigation = useNavigation();
   return (
-    <>
-      <div className="row">
+    <article className="container-xxl">
+      <section className="row">
         <div className="col-12 my-2">
           {navigation.state === "loading" ? (
             <div>
@@ -14,7 +14,7 @@ export default function ForumBoard() {
             <Outlet />
           )}
         </div>
-      </div>
-    </>
+      </section>
+    </article>
   );
 }

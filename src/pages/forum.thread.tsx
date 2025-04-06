@@ -1,5 +1,11 @@
 import { Outlet } from "react-router";
 
-export default function ForumThread() {
-  return <Outlet />;
+export default function ForumThreadLayout() {
+  return (
+    <article className="container-xxl">
+      <section className="col-12 my-2">
+        <Outlet />
+      </section>
+    </article>
+  );
 }
