@@ -24,6 +24,7 @@ const Home: React.FC = () => {
                   className="img-fluid mx-auto d-block"
                   src="images/potm/triforceSaga.png"
                   as={Style.FeaturedProjectImg}
+                  alt="FIXME: add proper alt text"
                 />
               </div>
               <div className="border-start-0 border-lg-start border-lg-2 border-lg-black border-black col-12 col-lg-6 ">
@@ -79,3 +80,7 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
+export function meta() {
+  return [{ title: "Home" }];
+}

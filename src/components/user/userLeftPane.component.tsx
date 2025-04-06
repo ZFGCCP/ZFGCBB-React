@@ -43,7 +43,7 @@ const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
         <div className="d-none d-md-block">
           <BBImage
             src={`${import.meta.env.REACT_ZFGBB_API_URL}/image/3`}
-            alt="TODO: add proper alt text"
+            alt="FIXME: add proper alt text"
           />
         </div>
       </div>

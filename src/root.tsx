@@ -49,3 +49,7 @@ export function ErrorBoundary() {
     </main>
   );
 }
+
+export function meta() {
+  return [{ title: "ZFGC.com" }];
+}
