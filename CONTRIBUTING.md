@@ -15,6 +15,7 @@ TBD. We could use some help writing this out.
     - [Provided package.json scripts](#provided-packagejson-scripts)
       - [Setting up the project](#setting-up-the-project)
         - [Why is the forum not loading?](#why-is-the-forum-not-loading)
+      - [Using VSCode](#using-vscode)
         - [Using the VSCode devcontainer](#using-the-vscode-devcontainer)
   - [Pull Request Process \[WIP\]](#pull-request-process-wip)
   - [CI/CD \[WIP\]](#cicd-wip)
@@ -64,6 +65,17 @@ TBD. We could use some help writing this out.
 ##### Why is the forum not loading?
 
 The default value is pointing to your local machine. While we do have dockerfiles for the backend, we haven't gotten around to streamlining using the backend in a development setting for the frontend. To run the frontend locally, pointed to `zfgc.com`, run `yarn dev --mode=production`, and that will point to the production environment. This will get you up and running! \o/
+
+#### Using VSCode
+
+The VSCode project is setup with two [launch tasks](./.vscode/launch.json):
+
+- `Launch zfgc.com`: Runs the application in development mode
+- `Launch zfgc.com (production)`: Runs the application in production mode
+
+Both of these tasks will also run `corepack enable` and `yarn install` before running the application. See [.vscode/tasks.json](./.vscode/tasks.json) for more information.
+
+This project provides [extension recommendations](./.vscode/extensions.json) for VSCode. You can install these extensions by opening the command palette and running the `Extensions: Install Extensions` command (CRTL/CMD + SHIFT + P). You can use the `@recommended` tag to only install extensions that are recommended by this project. See <https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_recommended-extensions> for more information.
 
 ##### Using the VSCode devcontainer
 

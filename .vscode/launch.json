@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug with Chrome",
+      "name": "Launch zfgc.com",
       "request": "launch",
       "runtimeExecutable": "yarn",
       "runtimeArgs": ["dev"],
@@ -13,11 +13,30 @@
       "env": {
         "NO_COLOR": "true"
       },
+      "autoAttachChildProcesses": true,
       "serverReadyAction": {
         "action": "debugWithChrome",
         "pattern": "Local:   http://localhost:([0-9]+)/",
         "uriFormat": "http://localhost:%s"
-      }
+      },
+      "preLaunchTask": "yarn install"
+    },
+    {
+      "name": "Launch zfgc.com (production)",
+      "request": "launch",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["dev", "--mode=production"],
+      "type": "node",
+      "env": {
+        "NO_COLOR": "true"
+      },
+      "autoAttachChildProcesses": true,
+      "serverReadyAction": {
+        "action": "debugWithChrome",
+        "pattern": "Local:   http://localhost:([0-9]+)/",
+        "uriFormat": "http://localhost:%s"
+      },
+      "preLaunchTask": "yarn install"
     }
   ]
 }
