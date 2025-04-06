@@ -1,6 +1,13 @@
 import { styled } from "styled-components";
 import type React from "react";
-import { useCallback, useContext, useMemo } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Pagination } from "react-bootstrap";
 import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
@@ -53,7 +60,28 @@ const BBPaginator: React.FC<BBPaginatorProps> = ({
 }) => {
   const { currentTheme } = useContext(ThemeContext);
 
-  const maxPages = maxPageCount ?? 10;
+  const [maxPages, setMaxPageCount] = useState(
+    window.innerWidth < 768 ? 4 : (maxPageCount ?? 10),
+  );
+
+  useEffect(() => {
+    let debounceTimeout: ReturnType<typeof setTimeout>;
+
+    const handleResize = () => {
+      clearTimeout(debounceTimeout);
+      debounceTimeout = setTimeout(() => {
+        setMaxPageCount(window.innerWidth < 768 ? 4 : (maxPageCount ?? 10));
+      }, 250); // 200ms debounce delay
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      clearTimeout(debounceTimeout);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [maxPageCount]);
+
   const maxToRender = useMemo(() => {
     return numPages <= maxPages ? numPages : maxPages;
   }, [numPages, maxPages]);
@@ -86,7 +114,7 @@ const BBPaginator: React.FC<BBPaginatorProps> = ({
     }
 
     return pages;
-  }, [numPages, currentPage, onPageChange]);
+  }, [numPages, currentPage, onPageChange, maxPages]);
 
   const shiftPage = useCallback(
     (inc: number) => {

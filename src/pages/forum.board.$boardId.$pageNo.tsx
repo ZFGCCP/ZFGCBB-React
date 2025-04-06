@@ -330,23 +330,12 @@ const BoardContainer: React.FC = () => {
           isLoading={isLoading}
         />
         <Style.boardFooter theme={currentTheme}>
-          <div className="d-sm-none">
-            <BoardTablePaginatorComponent
-              board={board}
-              onPageChange={loadNewPage}
-              isLoading={isLoading}
-              currentPage={Number(pageNo)}
-              maxPageCount={4}
-            />
-          </div>
-          <div className="d-none d-sm-block">
-            <BoardTablePaginatorComponent
-              board={board}
-              onPageChange={loadNewPage}
-              isLoading={isLoading}
-              currentPage={Number(pageNo)}
-            />
-          </div>
+          <BoardTablePaginatorComponent
+            board={board}
+            onPageChange={loadNewPage}
+            isLoading={isLoading}
+            currentPage={Number(pageNo)}
+          />
         </Style.boardFooter>
       </Widget>
     </>
