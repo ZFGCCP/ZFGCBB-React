@@ -21,7 +21,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <base href={import.meta.env.BASE_URL ?? "/"} />
       </head>
       <body id="root">
-        <RootLayout children={children} />
+        {children}
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -34,7 +34,7 @@ export default function App() {
     <QueryProvider>
       <UserProvider>
         <ThemeProvider>
-          <Outlet />
+          <RootLayout children={<Outlet />} />
         </ThemeProvider>
       </UserProvider>
       {(import.meta.env.DEV && <ReactQueryDevtools />) || null}
@@ -42,4 +42,10 @@ export default function App() {
   );
 }
 
-export function ErrorBoundary() {}
+export function ErrorBoundary() {
+  return (
+    <main>
+      <p>Something went wrong. Please try again later.</p>
+    </main>
+  );
+}

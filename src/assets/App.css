@@ -8,6 +8,7 @@
   --linaria-2: #f15f79;
   --text: #fff;
   --bg: #204378;
+
   box-sizing: border-box;
 }
 
@@ -17,17 +18,16 @@ body,
   height: 100dvh;
   width: 100dvw;
   overflow: hidden;
-
-  font-family: sans-serif;
-}
-
-#root {
-  background-color: var(--bg);
-  color: var(--text);
-  overflow: hidden;
-  @media (min-width: 992px) {
+  @media (min-width: 768px) {
     overflow: auto;
   }
+
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: sans-serif;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
 }
 
 .container-xxl {

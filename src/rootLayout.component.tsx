@@ -11,15 +11,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BBImage from "./components/common/bbImage.component";
 
 const Style = {
-  MainContent: styled.div`
+  MainContent: styled.main`
     grid-template-rows: auto 1fr auto;
+    height: fit-content;
     @media (max-width: 768px) {
-      height: 100dvh;
-      width: 100dvw;
+      height: 100%;
     }
+    width: auto;
   `,
 
-  header: styled.div`
+  header: styled.header`
     place-content: stretch space-between;
     place-items: end;
     border-bottom: 0.2rem solid black;
@@ -28,7 +29,7 @@ const Style = {
     }
   `,
 
-  pageWrapper: styled.div`
+  pageWrapper: styled.article`
     overflow: hidden auto;
     height: 100%;
     width: 100%;
@@ -45,7 +46,7 @@ const Style = {
     }
   `,
 
-  mobileNavWrapper: styled.div<{ theme: Theme }>`
+  mobileNavWrapper: styled.footer<{ theme: Theme }>`
     background-color: ${(props) => props.theme.black};
     height: 2.5rem;
     width: 100%;
@@ -65,9 +66,9 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
   const { currentTheme } = useContext(ThemeContext);
 
   return (
-    <Style.MainContent className="d-grid overflow-hidden">
+    <Style.MainContent className="d-grid">
       <Style.header className="d-none d-md-flex">
-        <div>
+        <div className="z-1">
           <BBImage src="images/logo.png" as={Style.headerImg} alt="Logo" />
           <Navigator />
         </div>
@@ -79,10 +80,10 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
           <p>Did you miss your activation email?</p>
         </Style.userGreetingWrapper>
       </Style.header>
-      <Style.pageWrapper className="container-xxl pt-1 pb-1">
+      <Style.pageWrapper className="p-2">
         <div className="d-grid d-md-none justify-content-center">
           <BBImage
-            className="w-100 h-100"
+            className="w-100 h-100 z-1"
             src="images/logo.png"
             as={Style.headerImg}
             alt="Logo"
