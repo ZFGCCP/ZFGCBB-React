@@ -18,8 +18,9 @@ TBD. We could use some help writing this out.
         - [Troubleshooting](#troubleshooting)
           - [Why is the forum not loading?](#why-is-the-forum-not-loading)
       - [VSCode - Usage](#vscode---usage)
-        - [VSCode - Running the application (Launch Tasks)](#vscode---running-the-application-launch-tasks)
+        - [VSCode - Recommended Extensions](#vscode---recommended-extensions)
         - [VSCode - Typescript Workspace Version](#vscode---typescript-workspace-version)
+        - [VSCode - Running the application (Launch Tasks)](#vscode---running-the-application-launch-tasks)
         - [VSCode - Using the devcontainer (optional)](#vscode---using-the-devcontainer-optional)
     - [Workflow - Typical Development Workflow](#workflow---typical-development-workflow)
   - [CI/CD \[WIP\]](#cicd-wip)
@@ -82,11 +83,21 @@ The default value is pointing to your local machine. While we do have dockerfile
 
 #### VSCode - Usage
 
+VSCode is our preferred IDE for development. To get the best experience, try installing the recommended extensions. The provided launch tasks will automatically configure the project for you and allow you to set breakpoints and debug your code. Continue to [VSCode - Running the application (Launch Tasks)](#vscode---running-the-application-launch-tasks) for more information.
+
+##### VSCode - Recommended Extensions
+
 This project provides [extension recommendations](./.vscode/extensions.json) for VSCode. Press `(CRTL/CMD + SHIFT + X)` to open the Extensions panel on the sidebar. You can use the `@recommended` tag to only install extensions that are recommended by this project. See <https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_recommended-extensions> for more information.
 
 ![VSCode Extensions Panel](docs/assets/vscode-recommended-extensions.png)
 
 If the sidebar looks like this, then you can install the recommended extensions if the option is available.
+
+##### VSCode - Typescript Workspace Version
+
+Please be sure to allow the [Typescript Workspace Version](https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version) to be enabled. This will allow you to get type checking and intellisense for the entire project.
+
+![VSCode Typescript Workspace Notification](docs/assets/vscode-typescript-notification.png)
 
 ##### VSCode - Running the application (Launch Tasks)
 
@@ -100,12 +111,6 @@ Find the launch tasks by navigating to the `Run and Debug` section `(CRTL/CMD + 
 - `Launch zfgc.com (production)`: Runs the application in production mode
 
 Both of these tasks will also run `corepack enable` and `yarn install` before running the application. So, you do not need to worry aobut that. See [.vscode/tasks.json](./.vscode/tasks.json) for more information.
-
-##### VSCode - Typescript Workspace Version
-
-Please be sure to allow the [Typescript Workspace Version](https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version) to be enabled. This will allow you to get type checking and intellisense for the entire project.
-
-![VSCode Typescript Workspace Notification](docs/assets/vscode-typescript-notification.png)
 
 ##### VSCode - Using the devcontainer (optional)
 
