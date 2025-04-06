@@ -2,6 +2,7 @@ import type React from "react";
 import { styled } from "styled-components";
 import type { User } from "../../types/user";
 import BBImage from "../common/bbImage.component";
+import BBLink from "../common/bbLink.component";
 
 const Style = {
   pane: styled.div`
@@ -35,7 +36,11 @@ const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
   return (
     <Style.pane className="col-12 col-lg-2">
       <Style.userNameHeader className="p-2">
-        <div>{user?.displayName}</div>
+        {user.id > 0 ? (
+          <BBLink to={`/user/profile/${user.id}`}>{user?.displayName}</BBLink>
+        ) : (
+          <span>{user?.displayName}</span>
+        )}
         <Style.customTitle>{user?.bioInfo?.customTitle}</Style.customTitle>
       </Style.userNameHeader>
       <div className="p-2 d-flex flex-row-reverse flex-md-column align-items-center">

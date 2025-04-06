@@ -15,7 +15,7 @@ const Style = {
   `,
 };
 
-const MessageEditor: React.FC<{ threadId: Number }> = ({ threadId }) => {
+const MessageEditor: React.FC<{ threadId: number }> = ({ threadId }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { data: currentMsg } = useBBQuery<Message>(
     `/message/template?threadId=${threadId}`,

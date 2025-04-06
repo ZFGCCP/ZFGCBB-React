@@ -11,7 +11,6 @@ const Styled = {
     margin-bottom: 0;
     display: flex;
     gap: 0.25rem;
-    place-content: stretch space-between;
 
     li.page-item {
       scroll-snap-align: start;

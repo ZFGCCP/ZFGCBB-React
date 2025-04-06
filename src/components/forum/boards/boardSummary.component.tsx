@@ -113,7 +113,14 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
               <td className="d-none d-md-table-cell col-4 col-md-2 col-lg-2 align-content-center">
                 <div className="d-flex flex-column">
                   <Style.forumText>
-                    Last Post by: {sb.latestMessageUserName}
+                    <span>Last Post by: </span>
+                    {sb.latestMessageOwnerId && sb.latestMessageOwnerId > 0 ? (
+                      <BBLink to={`/user/profile/${sb.latestMessageOwnerId}`}>
+                        {sb.latestMessageUserName}
+                      </BBLink>
+                    ) : (
+                      <span>{sb.latestMessageUserName}</span>
+                    )}
                   </Style.forumText>
                   <Style.forumText>
                     in{" "}

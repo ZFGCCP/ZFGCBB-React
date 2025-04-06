@@ -8,7 +8,7 @@ export type Forum = BaseBB & {
 export type Board = BaseBB & {
   boardName: String;
   description: String;
-  categoryId: Number;
+  categoryId: number;
   threadCount: number;
   parentBoardId: number;
   stickyThreads: Thread[];
@@ -45,7 +45,7 @@ export type ChildBoard = {
 export type Category = BaseBB & {
   categoryName: String;
   description: String;
-  parentCategoryId: Number;
+  parentCategoryId: number;
   boards: BoardSummary[];
 };
 
@@ -65,18 +65,19 @@ export type Thread = BaseBB & {
 };
 
 export type LatestMessage = {
-  threadId: Number;
+  threadId: number;
   threadName: String;
-  messageId: Number;
-  messageHistoryId: Number;
+  messageId: number;
+  messageHistoryId: number;
   createdTsAsString: String;
   ownerName: String;
+  ownerId: number;
   lastPostTsAsString: String;
 };
 
 export type Message = BaseBB & {
-  ownerId: Number;
-  threadId: Number;
+  ownerId: number;
+  threadId: number;
   currentMessage: MessageHistory;
 
   createdUser: User;
@@ -84,7 +85,7 @@ export type Message = BaseBB & {
 };
 
 export type MessageHistory = BaseBB & {
-  messageId: Number;
+  messageId: number;
   messageText: String;
   unparsedText: String;
   currentFlag?: Boolean;

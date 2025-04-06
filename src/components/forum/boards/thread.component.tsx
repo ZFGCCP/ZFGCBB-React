@@ -152,7 +152,7 @@ const ForumThread: React.FC<{
     setCurrentMsg(msg);
   };
 
-  const submitPost = (msg: Message, threadId: Number) => {};
+  const submitPost = (msg: Message, threadId: number) => {};
 
   return (
     <>

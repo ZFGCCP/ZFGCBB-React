@@ -175,7 +175,15 @@ function BoardTableBodyComponent({
                   {thread.threadName}
                 </BBLink>
                 <Style.smallText className="d-block d-md-none">
-                  Author: {thread.createdUser?.displayName}
+                  <span>Author: </span>
+
+                  {thread.createdUserId > 0 ? (
+                    <BBLink to={`/user/profile/${thread.createdUser?.id}`}>
+                      {thread.createdUser?.displayName}
+                    </BBLink>
+                  ) : (
+                    <span>{thread.createdUser?.displayName}</span>
+                  )}
                 </Style.smallText>
                 <Style.smallText className="d-block d-md-none">
                   <span>Replies: {thread.postCount.toString()}</span>
@@ -188,7 +196,13 @@ function BoardTableBodyComponent({
                 </Style.smallText>
               </td>
               <td className="d-none d-md-table-cell">
-                {thread.createdUser?.displayName}
+                {thread.createdUserId > 0 ? (
+                  <BBLink to={`/user/profile/${thread.createdUser?.id}`}>
+                    {thread.createdUser?.displayName}
+                  </BBLink>
+                ) : (
+                  <span>{thread.createdUser?.displayName}</span>
+                )}
               </td>
               <td className="d-none d-lg-table-cell">
                 {thread.postCount.toString()}
@@ -206,7 +220,17 @@ function BoardTableBodyComponent({
               </td>
               <td className="d-none d-md-table-cell">
                 <Style.smallText>
-                  by {thread.latestMessage?.ownerName}
+                  <span>by </span>
+                  {thread.latestMessage?.ownerId &&
+                  thread.latestMessage.ownerId > 0 ? (
+                    <BBLink
+                      to={`/user/profile/${thread.latestMessage?.ownerId}`}
+                    >
+                      {thread.latestMessage?.ownerName}
+                    </BBLink>
+                  ) : (
+                    <span>{thread.latestMessage?.ownerName}</span>
+                  )}
                 </Style.smallText>
                 <Style.smallText>
                   on {thread.latestMessage?.lastPostTsAsString}
