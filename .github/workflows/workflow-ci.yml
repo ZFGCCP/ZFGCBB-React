@@ -1,6 +1,13 @@
 name: CI
+# trigger on changes to package.json, yarn.lock, .nvmrc, or .github/workflows/*.yml or src/**/* files
 on:
-  pull_request:
+  push:
+    paths:
+      - "package.json"
+      - "yarn.lock"
+      - ".nvmrc"
+      - ".github/workflows/*.yml"
+      - "src/**/*"
 
 permissions:
   contents: read
