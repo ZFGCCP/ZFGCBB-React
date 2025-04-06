@@ -18,7 +18,8 @@ TBD. We could use some help writing this out.
         - [Using the VSCode devcontainer](#using-the-vscode-devcontainer)
   - [Pull Request Process \[WIP\]](#pull-request-process-wip)
   - [CI/CD \[WIP\]](#cicd-wip)
-    - [.github/workflows/ci.yml](#githubworkflowsciyml)
+    - [.github/workflows/workflows-ci.yml](#githubworkflowsworkflows-ciyml)
+    - [./github/workflows/workflow-deploy-frontend.yml](#githubworkflowsworkflow-deploy-frontendyml)
 
 ## Development
 
@@ -84,6 +85,10 @@ If you would like to avoid having to setup a development environment on your act
 
 We use GitHub Actions to run the CI/CD pipeline.
 
-### [.github/workflows/ci.yml](.github/workflows/ci.yml)
+### [.github/workflows/workflows-ci.yml](.github/workflows/workflow-ci.yml)
 
 This workflow builds and tests the project on each pull request.
+
+### [./github/workflows/workflow-deploy-frontend.yml](.github/workflows/workflow-deploy-frontend.yml)
+
+This workflow builds and deploys the project to GitHub Pages.

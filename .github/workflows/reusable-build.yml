@@ -8,8 +8,9 @@ on:
         description: "The environment to build for (e.g., main, development). Defaults to the branch name."
       deployment_target:
         required: false
+        default: production
         type: string
-        description: "The deployment target to use (e.g., github-pages, netlify, vercel, etc.)"
+        description: "The deployment target to use (e.g., production,github-pages, netlify, vercel, etc.)"
     outputs:
       artifact_name:
         description: "The name of the build artifact"
@@ -42,7 +43,7 @@ jobs:
 
       - run: yarn install --frozen-lockfile --immutable
 
-      - run: yarn build
+      - run: yarn build --mode="${{ inputs.deployment_target }}"
       - run: yarn check
 
       - if: ${{ inputs.deployment_target == 'github-pages' }}
