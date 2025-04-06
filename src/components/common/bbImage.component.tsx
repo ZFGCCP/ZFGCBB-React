@@ -74,7 +74,7 @@ function preloadImage(path: string): CacheEntry {
     return cacheEntry;
   }
 
-  const imageLoader = images[path];
+  const imageLoader = images[`/src/assets/${path}`];
 
   if (!imageLoader) {
     if (import.meta.env.DEV) {
@@ -171,7 +171,7 @@ function ImageLoader<ComponentType extends ElementType = "img">({
   as,
   ...props
 }: ImageLoaderProps<ComponentType>): React.ReactElement | null {
-  const imageSrc = useImage(`/src/assets/${src}`);
+  const imageSrc = useImage(src);
   const Component = as || "img";
 
   return typeof imageSrc === "string" && imageSrc.length > 0 ? (
