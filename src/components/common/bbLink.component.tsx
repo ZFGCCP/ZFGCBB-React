@@ -36,9 +36,9 @@ type ReplaceParamsWithString<T extends string> =
       : T | (string & {}); // Return the path as is if no dynamic segments
 
 /**
- * gm112 note: To debug this, just hover over `RouteKeys` and see what it expands to.
+ * gm112 note: To debug this, just hover over `RoutePaths` and see what it expands to.
  *
- * It's a recursive type that extracts the keys from the `RouteParams` type to
+ * It's a recursive type that extracts the keys from the `RouteKeys` type to
  * build a string using ReplaceParamsWithString.
  */
 type RouteKeys = Exclude<keyof RouteParams, "/*">;
