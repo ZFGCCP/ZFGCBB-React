@@ -96,7 +96,13 @@ function preloadImage(path: string): CacheEntry {
 
   return cacheEntry;
 }
-
+/**
+ * This hook returns the path of the image file for a given path.
+ * It handles caching and preloading of images. Handles hydration mismatch by
+ * deferring client-side loading.
+ * @param path - The path of the image file.
+ * @returns The path of the image file.
+ */
 function useImage(path: string): string | undefined {
   const pathRef = useRef<string>(path);
   const [isClient, setIsClient] = useState(import.meta.env.SSR);
@@ -123,20 +129,43 @@ function useImage(path: string): string | undefined {
   }
 }
 
+/**
+ * This type represents the `src` prop of a component that uses the {@link BBImage} component.
+ * @see {@link BBImage}
+ * @see {@link BBImageProps}
+ * @see {@link HTMLImageElement}
+ */
 type ComponentWithSrcProp = {
   src: ImagesPath | ThemesPath | `${string}://${string}/${string}`;
 };
 
+/**
+ * This type represents the props of a component that uses the {@link BBImage} component.
+ * It extends the {@link ComponentProps} type with the `src` prop. (i.e., {@link HTMLImageElement})
+ * @see {@link ComponentWithSrcProp}
+ */
 type ReactComponentWithSrcProps<ComponentType extends ElementType> =
   "src" extends keyof ComponentProps<ComponentType>
     ? Omit<ComponentProps<ComponentType>, "src"> & ComponentWithSrcProp
     : never;
 
+/**
+ * This type represents the props of the {@link ImageLoader} component.
+ * @param ComponentType - The component type to render.
+ */
 type ImageLoaderProps<ComponentType extends ElementType = "img"> = {
   src: ComponentWithSrcProp["src"];
   as?: ComponentType;
 };
 
+/**
+ * This component is a wrapper around the {@link ImageLoader} component that handles the `src` prop.
+ * @param src - The path of the image file.
+ * @param as - The component type to render.
+ * @param props - The props to pass to the component.
+ * @returns The rendered component.
+ * @see {@link ImageLoaderProps}
+ */
 function ImageLoader<ComponentType extends ElementType = "img">({
   src,
   as,
@@ -150,6 +179,11 @@ function ImageLoader<ComponentType extends ElementType = "img">({
   ) : null;
 }
 
+/**
+ * This type represents the props of the {@link BBImage} component.
+ * @param ComponentType - The component type to render.
+ * @extends ReactComponentWithSrcProps - Extends the {@link ReactComponentWithSrcProps} type to add the `fallback` and `as` props.
+ */
 export type BBImageProps<ComponentType extends ElementType = "img"> =
   ReactComponentWithSrcProps<ComponentType> & {
     fallback?: React.ReactNode;
@@ -171,6 +205,9 @@ export type BBImageProps<ComponentType extends ElementType = "img"> =
  * // With URL
  * <BBImage src="https://example.com/image.jpg" alt="Description" />
  * ```
+ * @param rest - The {@link BBImageProps} to pass to the {@link BBImage} component.
+ * @returns The rendered component.
+ * @see {@link BBImageProps}
  */
 export default function BBImage<ComponentType extends ElementType = "img">({
   fallback,

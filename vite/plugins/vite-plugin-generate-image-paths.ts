@@ -1,6 +1,7 @@
 import { Plugin, ViteDevServer } from "vite";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import type BBImage from "../../src/components/common/bbImage.component";
 
 interface ImagePathPluginOptions {
   assetsPath?: string;
@@ -99,6 +100,32 @@ export {};
     );
 }
 
+/**
+ * Since we have {@link BBImage} component, we need to generate a type file for the image paths in the provided assets directory.
+ * It supports both absolute and relative paths, and can be configured to include
+ * specific directories or to exclude certain directories.
+ *
+ * Usage:
+ * ```ts
+ * // vite.config.ts
+ * import { defineConfig } from "vite";
+ * import { generateImagePaths } from "./vite/plugins/vite-plugin-generate-image-paths";
+ *
+ * export default defineConfig({
+ *   plugins: [
+ *     generateImagePaths({
+ *       // These are the default options.
+ *       assetsPath: "src/assets",
+ *       outputFile: "build/types/image-paths.d.ts",
+ *       includeDirs: ["images", "themes"],
+ *     }),
+ *   ],
+ * });
+ * ```
+ *
+ * @param userOptions - The options to pass to the plugin.
+ * @see {@link BBImage}
+ */
 export function generateImagePaths(
   userOptions: ImagePathPluginOptions = {},
 ): Plugin {
