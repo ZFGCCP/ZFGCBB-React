@@ -2,9 +2,13 @@
 
 ![logo](./src/assets/images/logo.png)
 
-[![Workflow - CI](https://github.com/ZFGCCP/ZFGCBB-React/actions/workflows/workflow-ci.yml/badge.svg)](https://github.com/ZFGCCP/ZFGCBB-React/actions/workflows/workflow-ci.yml)
+[![Workflow - Frontend - CI](https://github.com/ZFGCCP/ZFGCBB-React/actions/workflows/workflow-ci.yml/badge.svg)](https://github.com/ZFGCCP/ZFGCBB-React/actions/workflows/workflow-ci.yml)
+
+[![Workflow - Backend - CI](https://github.com/ZFGCCP/ZFGCBB/actions/workflows/ci.yml/badge.svg)](https://github.com/ZFGCCP/ZFGCBB/actions/workflows/ci.yml)
 
 This is the front-end for the [ZFGC.com](http://zfgc.com) forum, a community-driven open source project. Do you want to bomb some dodongos? Then you're in the right place!
+
+If you are looking for an old man with a sword, then you may want to check out <https://github.com/ZFGCCP/ZFGCBB>.
 
 ## Table of Contents
 
