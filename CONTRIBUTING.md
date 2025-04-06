@@ -15,8 +15,11 @@ TBD. We could use some help writing this out.
     - [Provided package.json scripts](#provided-packagejson-scripts)
       - [Setting up the project](#setting-up-the-project)
         - [Why is the forum not loading?](#why-is-the-forum-not-loading)
-      - [Using VSCode](#using-vscode)
-        - [Using the VSCode devcontainer](#using-the-vscode-devcontainer)
+      - [Workflow - Typical Development Workflow](#workflow---typical-development-workflow)
+      - [VSCode - Usage](#vscode---usage)
+        - [VSCode - Running the application (Launch Tasks)](#vscode---running-the-application-launch-tasks)
+        - [VSCode - Typescript Workspace Version](#vscode---typescript-workspace-version)
+        - [VSCode - Using the devcontainer (optional)](#vscode---using-the-devcontainer-optional)
   - [Pull Request Process \[WIP\]](#pull-request-process-wip)
   - [CI/CD \[WIP\]](#cicd-wip)
     - [.github/workflows/workflows-ci.yml](#githubworkflowsworkflows-ciyml)
@@ -66,18 +69,67 @@ TBD. We could use some help writing this out.
 
 The default value is pointing to your local machine. While we do have dockerfiles for the backend, we haven't gotten around to streamlining using the backend in a development setting for the frontend. To run the frontend locally, pointed to `zfgc.com`, run `yarn dev --mode=production`, and that will point to the production environment. This will get you up and running! \o/
 
-#### Using VSCode
+#### Workflow - Typical Development Workflow
+
+1. If you are not part of the ZFGCCP organization, you will need to fork this repository.
+2. Make sure you are on the `development` branch. `git switch development && git pull`.
+3. Make a new branch for your changes. `git switch -c my-new-branch`.
+   1. How do I name my branch? See the next section, we have some recommendations, but we don't have any official rules so you can use whatever naming convention you prefer for your branch.
+   2. Brach Naming Conventions (General Recommendations)
+      1. If you are working on a new feature, you can name your branch `feature/my-new-feature`.
+      2. If you are working on a bug fix, you can name your branch `bugfix/my-bug-fix` or `fix/my-bug-fix`.
+      3. If you are working on a documentation change, you can name your branch `docs/my-docs-change`.
+      4. If you are working on a refactor, you can name your branch `refactor/my-refactor`.
+      5. If you are working on a test, you can name your branch `test/my-test`.
+      6. You are ready to start working on your branch!
+4. Working on your changes: Use your IDE of choice to edit files and save changes.
+   1. Use the `yarn dev` command to start the development server. Make sure to run `yarn install` before running the command.
+      1. If you are using VSCode, you can use the `Launch zfgc.com` launch task to do this for you.
+   2. Use the `yarn format` command to format the code using Prettier.
+   3. Use the `yarn check` command to run type checking, linting, and formatting checks.
+   4. Repeat steps 1-3 as needed until `yarn check` passes.
+      1. Feel free to reach out on Discord if you have any questions.
+   5. Stage and commit your changes.
+   6. Push your changes to your branch on GitHub.
+5. [Create a new pull request](https://github.com/ZFGCCP/ZFGCBB-React/compare) and request a review from one of the maintainers.
+   1. Add a bullet point list of changes you made.
+   2. Mention the issue number you are working on.
+      1. If there is no issue, you can create one.
+   3. Title the pull request using conventional commits, with `closes #issue-number` included, if applicable.
+      1. Example: `feat: add new feature`
+      2. See: <https://www.conventionalcommits.org/en/v1.0.0/>
+   4. For the duration of your pull request, please keep your branch up to date with the `development` branch.
+   5. Your PR must pass all checks before it can be merged or requested for review.
+6. As Sonic the Hedgehog says, "Gotta go fast!". And you went fast! Congratulations on making a contribution to the project!
+
+#### VSCode - Usage
+
+This project provides [extension recommendations](./.vscode/extensions.json) for VSCode. Press `(CRTL/CMD + SHIFT + X)` to open the Extensions panel on the sidebar. You can use the `@recommended` tag to only install extensions that are recommended by this project. See <https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_recommended-extensions> for more information.
+
+![VSCode Extensions Panel](docs/assets/vscode-recommended-extensions.png)
+
+If the sidebar looks like this, then you can install the recommended extensions if the option is available.
+
+##### VSCode - Running the application (Launch Tasks)
 
 The VSCode project is setup with two [launch tasks](./.vscode/launch.json):
+
+Find the launch tasks by navigating to the `Run and Debug` section `(CRTL/CMD + SHIFT + D)` of the sidebar.
+
+![VSCode Launch Location on the UI](docs/assets/vscode-launch-location.png)
 
 - `Launch zfgc.com`: Runs the application in development mode
 - `Launch zfgc.com (production)`: Runs the application in production mode
 
-Both of these tasks will also run `corepack enable` and `yarn install` before running the application. See [.vscode/tasks.json](./.vscode/tasks.json) for more information.
+Both of these tasks will also run `corepack enable` and `yarn install` before running the application. So, you do not need to worry aobut that. See [.vscode/tasks.json](./.vscode/tasks.json) for more information.
 
-This project provides [extension recommendations](./.vscode/extensions.json) for VSCode. You can install these extensions by opening the command palette and running the `Extensions: Install Extensions` command (CRTL/CMD + SHIFT + P). You can use the `@recommended` tag to only install extensions that are recommended by this project. See <https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_recommended-extensions> for more information.
+##### VSCode - Typescript Workspace Version
 
-##### Using the VSCode devcontainer
+Please be sure to allow the [Typescript Workspace Version](https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version) to be enabled. This will allow you to get type checking and intellisense for the entire project.
+
+![VSCode Typescript Workspace Notification](docs/assets/vscode-typescript-notification.png)
+
+##### VSCode - Using the devcontainer (optional)
 
 If you would like to avoid having to setup a development environment on your actual machine. This repository implements a VS Code Dev Container, which can give you a simple way to get started developing! To learn more about the VS Code Dev Containers, check out the [documentation](https://code.visualstudio.com/docs/devcontainers/containers).
 
