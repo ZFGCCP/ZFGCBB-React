@@ -98,7 +98,9 @@ const ContentView = ({ children }: { children: React.ReactNode }) => {
       >
         <BBLink to="/">Home</BBLink>
         <BBLink to="/">Wiki</BBLink>
-        <BBLink to="/forum">Forum</BBLink>
+        <BBLink to="/forum" prefetch="intent">
+          Forum
+        </BBLink>
         <BBLink to="/">Chat</BBLink>
         <BBLink to="/">
           <FontAwesomeIcon icon={faBars} />

@@ -1,6 +1,9 @@
 import type React from "react";
 import { styled } from "styled-components";
-import BBLink, { type RoutePaths } from "../common/bbLink.component";
+import BBLink, {
+  type BBLinkProps,
+  type RoutePaths,
+} from "../common/bbLink.component";
 
 const Style = {
   subTabs: styled.div`
@@ -20,13 +23,13 @@ const NavTabStyle = {
   `,
 };
 
-const NavTab: React.FC<{ title: String; path: RoutePaths }> = ({
+const NavTab: React.FC<Omit<BBLinkProps, "relative">> = ({
   title,
-  path,
+  ...props
 }) => {
   return (
     <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
-      <BBLink to={path} relative="path">
+      <BBLink {...props} relative="path">
         {title}
       </BBLink>
     </NavTabStyle.tab>
@@ -36,8 +39,8 @@ const NavTab: React.FC<{ title: String; path: RoutePaths }> = ({
 const Navigator: React.FC = () => {
   return (
     <Style.wrapper className="d-none d-md-flex align-items-end">
-      <NavTab title="Home" path="/" />
-      <NavTab title="Forum" path="/forum" />
+      <NavTab title="Home" to="/" />
+      <NavTab title="Forum" to="/forum" prefetch="intent" />
       <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
         <BBLink
           to={"https://discord.gg/NP2nNKjun6"}
@@ -52,8 +55,8 @@ const Navigator: React.FC = () => {
           Wiki
         </BBLink>
       </NavTabStyle.tab>
-      <NavTab title="Projects" path="/projects" />
-      <NavTab title="Resources" path="/resources" />
+      <NavTab title="Projects" to="/projects" />
+      <NavTab title="Resources" to="/resources" />
     </Style.wrapper>
   );
 };
