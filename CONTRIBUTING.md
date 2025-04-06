@@ -106,7 +106,11 @@ You can press `(CRTL/CMD + SHIFT + P)` to open the Command Palette. Then, type `
 
 ![Use Workspace Version](docs/assets/vscode-select-typescript-version.png)
 
-After you've pressed `Allow`, you can proceed to [VSCode - Running the application (Launch Tasks)](#vscode---running-the-application-launch-tasks) for more information.
+Then you should be prompted to select a version. Select `Use Workspace Version`.
+
+![Use Workspace Version](docs/assets/vscode-select-typescript-version-option.png)
+
+If a notification pops up, you will need to press `Allow`. After you've pressed `Allow`, you can proceed to [VSCode - Running the application (Launch Tasks)](#vscode---running-the-application-launch-tasks) for more information.
 
 ##### VSCode - Running the application (Launch Tasks)
 
@@ -116,10 +120,10 @@ Find the launch tasks by navigating to the `Run and Debug` section `(CRTL/CMD + 
 
 ![VSCode Launch Location on the UI](docs/assets/vscode-launch-location.png)
 
-- `Launch zfgc.com`: Runs the application in development mode
-- `Launch zfgc.com (production)`: Runs the application in production mode
+- `Launch zfgc.com`: Runs the application in development mode pointed to <http://localhost:8080/zfgbb> or the value of `REACT_ZFGBB_API_URL` in [.env.local](.env.local).
+- `Launch zfgc.com (production)`: Runs the application pointed to `zfgc.com` for the backend, using the value of `REACT_ZFGBB_API_URL` in [.env.production](.env.production).
 
-Both of these tasks will also run `corepack enable` and `yarn install` before running the application. So, you do not need to worry aobut that. See [.vscode/tasks.json](./.vscode/tasks.json) for more information.
+Both of these tasks will also run `corepack enable` and `yarn install` before running the application. So, you do not need to worry aobut that. See [.vscode/tasks.json](./.vscode/tasks.json) if you would like to see how these tasks run those commands.
 
 Now that you are ready, you can proceed to [Workflow - Typical Development Workflow](#workflow---typical-development-workflow) for more information.
 

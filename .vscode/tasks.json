@@ -5,12 +5,10 @@
       // This will run yarn install
       "label": "yarn install",
       "type": "shell",
-      "command": "bash",
-      "args": ["-c", "'corepack enable && yarn install'"],
+      "command": "corepack enable && yarn install",
       "problemMatcher": ["$tsc"],
       "group": {
-        "kind": "build",
-        "isDefault": true
+        "kind": "build"
       },
       "presentation": {
         "close": true,

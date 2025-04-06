@@ -16,6 +16,7 @@
       "autoAttachChildProcesses": true,
       "smartStep": true,
       "cascadeTerminateToConfigurations": ["Browser Debug"],
+      "internalConsoleOptions": "openOnSessionStart",
       "serverReadyAction": {
         "action": "debugWithChrome",
         "pattern": "Local:   http://localhost:([0-9]+)/",
@@ -35,6 +36,7 @@
       "autoAttachChildProcesses": true,
       "smartStep": true,
       "cascadeTerminateToConfigurations": ["Browser Debug"],
+      "internalConsoleOptions": "openOnSessionStart",
       "serverReadyAction": {
         "action": "debugWithChrome",
         "pattern": "Local:   http://localhost:([0-9]+)/",
