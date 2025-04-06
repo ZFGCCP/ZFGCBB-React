@@ -118,6 +118,7 @@ export {};
  *       assetsPath: "src/assets",
  *       outputFile: "build/types/image-paths.d.ts",
  *       includeDirs: ["images", "themes"],
+ *       // debug: true, // Uncomment to enable debug logging
  *     }),
  *   ],
  * });
