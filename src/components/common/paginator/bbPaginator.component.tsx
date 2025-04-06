@@ -62,7 +62,7 @@ const BBPaginator: React.FC<{
   );
 
   return (
-    <div className="d-flex flex-row align-items-center">
+    <div className="d-flex flex-row align-items-center overflow-auto w-100">
       <Style.pagination theme={currentTheme}>
         <Pagination.First
           onClick={() => {
