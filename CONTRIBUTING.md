@@ -12,9 +12,11 @@ TBD. We could use some help writing this out.
 - [Contributing](#contributing)
   - [Table of Contents](#table-of-contents)
   - [Development](#development)
-    - [Provided package.json scripts](#provided-packagejson-scripts)
-      - [Setting up the project](#setting-up-the-project)
-        - [Why is the forum not loading?](#why-is-the-forum-not-loading)
+    - [Downloading the Project](#downloading-the-project)
+    - [package.json - Provided package.json scripts](#packagejson---provided-packagejson-scripts)
+      - [package.json - Usage](#packagejson---usage)
+        - [Troubleshooting](#troubleshooting)
+          - [Why is the forum not loading?](#why-is-the-forum-not-loading)
       - [VSCode - Usage](#vscode---usage)
         - [VSCode - Running the application (Launch Tasks)](#vscode---running-the-application-launch-tasks)
         - [VSCode - Typescript Workspace Version](#vscode---typescript-workspace-version)
@@ -26,7 +28,21 @@ TBD. We could use some help writing this out.
 
 ## Development
 
-### Provided package.json scripts
+We recommend using [VSCode](#vscode---usage) for development. If you are not using VSCode, you can use the provided package.json scripts to get started. To begin, you will need to download the project.
+
+### Downloading the Project
+
+1. Make sure you have [Node.js](https://nodejs.org/en/download/) installed. (We recommend using the current LTS version).
+2. Make sure you have [Git](https://git-scm.com/downloads) installed.
+3. Clone the repository
+
+   ```bash
+   git clone https://github.com/ZFGCCP/ZFGCBB-React.git
+   ```
+
+If you are not using VSCode, you can use the provided package.json scripts to get started.
+
+### [package.json](package.json) - Provided package.json scripts
 
 - `yarn dev`: Starts the development server
 - `yarn build`: Builds the application for production
@@ -36,35 +52,31 @@ TBD. We could use some help writing this out.
 <!-- - `yarn preview:ssr`: Runs the application in the production mode with server-side rendering
 - `yarn start`: Runs the application in production mode with server-side rendering -->
 
-#### Setting up the project
+#### [package.json](package.json) - Usage
 
-1. Clone the repository
-
-   ```bash
-   git clone https://github.com/ZFGCCP/ZFGCBB-React.git
-   ```
-
-2. Configure the project (Have the prequisites installed - see [README.md](README.md))
+1. Configure the project (Have the prequisites installed - see [README.md](README.md))
 
    ```bash
    corepack enable
    ```
 
-3. Install the dependencies
+2. Install the dependencies
 
    ```bash
    yarn install
    ```
 
-4. Start the development server
+3. Start the development server
 
    ```bash
    yarn dev
    ```
 
-5. Open your browser and navigate to <http://localhost:5173>.
+4. Open your browser and navigate to <http://localhost:5173>.
 
-##### Why is the forum not loading?
+##### Troubleshooting
+
+###### Why is the forum not loading?
 
 The default value is pointing to your local machine. While we do have dockerfiles for the backend, we haven't gotten around to streamlining using the backend in a development setting for the frontend. To run the frontend locally, pointed to `zfgc.com`, run `yarn dev --mode=production`, and that will point to the production environment. This will get you up and running! \o/
 
