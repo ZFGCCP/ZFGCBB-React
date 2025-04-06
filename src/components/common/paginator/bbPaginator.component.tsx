@@ -1,25 +1,41 @@
 import { styled } from "styled-components";
 import type React from "react";
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import { Pagination } from "react-bootstrap";
 import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 
-const Style = {
+const Styled = {
   pagination: styled(Pagination)<{ theme: Theme }>`
-    &.pagination {
-      margin-bottom: 0;
+  &.pagination {
+    margin-bottom: 0;
+    display: flex;
+    gap: 0.25rem;
+    place-content: stretch space-between;
 
-      li.page-item {
-        &:hover {
-          background-color: ${(props) => props.theme.backgroundColor};
-        }
+    li.page-item {
+      scroll-snap-align: start;
 
-        a {
-          border: 0;
-        }
+      &:last-child {
+        scroll-snap-align: end;
       }
+
+      &:hover {
+        background-color: ${(props) => props.theme.backgroundColor};
+      }
+
+      a {
+        border: 0;
+      }
+
+      &
     }
+  }
+`,
+  scrollWrapper: styled.div`
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    width: 100%;
   `,
 };
 
@@ -29,6 +45,7 @@ const BBPaginator: React.FC<{
   onPageChange: (pageNo: number) => void;
 }> = ({ numPages, currentPage, onPageChange }) => {
   const { currentTheme } = useContext(ThemeContext);
+
   const maxPages = 10;
   const maxToRender = useMemo(() => {
     return numPages <= maxPages ? numPages : maxPages;
@@ -37,18 +54,28 @@ const BBPaginator: React.FC<{
   const pages = useMemo(() => {
     const pages: React.JSX.Element[] = [];
 
-    for (let i: number = 0; i < maxToRender; i++) {
+    // Handle edge case when there are fewer pages than maxPages
+    const startPage = Math.max(currentPage - Math.floor(maxToRender / 2), 1);
+    const endPage = Math.min(startPage + maxToRender - 1, numPages ?? 1);
+
+    for (let i = startPage; i <= endPage; i++) {
       pages.push(
         <Pagination.Item
-          key={`${i}`}
-          active={currentPage === i + 1}
-          onClick={() => {
-            onPageChange(i + 1);
-          }}
+          key={i}
+          active={currentPage === i}
+          onClick={() => onPageChange(i)}
         >
-          {i + 1}
+          {i}
         </Pagination.Item>,
       );
+    }
+
+    // If there are more pages than we can show, add ellipsis
+    if (startPage > 1 && numPages > maxToRender) {
+      pages.unshift(<Pagination.Ellipsis key="start-ellipsis" disabled />);
+    }
+    if (endPage < numPages) {
+      pages.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
     }
 
     return pages;
@@ -62,28 +89,20 @@ const BBPaginator: React.FC<{
   );
 
   return (
-    <div className="d-flex flex-row align-items-center overflow-auto w-100">
-      <Style.pagination theme={currentTheme}>
-        <Pagination.First
-          onClick={() => {
-            onPageChange(1);
-          }}
-        />
+    <Styled.scrollWrapper>
+      <Styled.pagination theme={currentTheme}>
+        <Pagination.First onClick={() => onPageChange(1)} />
         {currentPage !== 1 && <Pagination.Prev onClick={() => shiftPage(-1)} />}
         {pages}
         {currentPage !== numPages && (
           <Pagination.Next onClick={() => shiftPage(1)} />
         )}
-        <Pagination.Last
-          onClick={() => {
-            onPageChange(numPages);
-          }}
-        />
-      </Style.pagination>
+        <Pagination.Last onClick={() => onPageChange(numPages)} />
+      </Styled.pagination>
       <div>
         Page {currentPage} of {numPages}
       </div>
-    </div>
+    </Styled.scrollWrapper>
   );
 };
 
