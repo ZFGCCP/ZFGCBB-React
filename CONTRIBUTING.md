@@ -74,6 +74,7 @@ If you are not using VSCode, you can use the provided package.json scripts to ge
    ```
 
 4. Open your browser and navigate to <http://localhost:5173>.
+5. You can now proceed to [Workflow - Typical Development Workflow](#workflow---typical-development-workflow) for more information.
 
 ##### Troubleshooting
 
@@ -83,7 +84,7 @@ The default value is pointing to your local machine. While we do have dockerfile
 
 #### VSCode - Usage
 
-VSCode is our preferred IDE for development. To get the best experience, try installing the recommended extensions. The provided launch tasks will automatically configure the project for you and allow you to set breakpoints and debug your code. Continue to [VSCode - Running the application (Launch Tasks)](#vscode---running-the-application-launch-tasks) for more information.
+VSCode is our preferred IDE for development. To get the best experience, try installing the recommended extensions. The provided launch tasks will automatically configure the project for you and allow you to set breakpoints and debug your code. Continue to [VSCode - Recommended Extensions](#vscode---recommended-extensions) for more information.
 
 ##### VSCode - Recommended Extensions
 
@@ -91,13 +92,21 @@ This project provides [extension recommendations](./.vscode/extensions.json) for
 
 ![VSCode Extensions Panel](docs/assets/vscode-recommended-extensions.png)
 
-If the sidebar looks like this, then you can install the recommended extensions if the option is available.
+If the sidebar looks like this, then you can install the recommended extensions if the option is available. After you've installed the recommended extensions, you can continue to [VSCode - Typescript Workspace Version](#vscode---typescript-workspace-version) for more information.
 
 ##### VSCode - Typescript Workspace Version
 
 Please be sure to allow the [Typescript Workspace Version](https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version) to be enabled. This will allow you to get type checking and intellisense for the entire project.
 
 ![VSCode Typescript Workspace Notification](docs/assets/vscode-typescript-notification.png)
+
+If you cannot find the notification, then you can use the command palette to achieve the same thing. \*NOTE: Open a TypeScript file first, such as [src/root.tsx](src/root.tsx). Otherwise the `Typescript: Select Typescript Version` won't be available as an option.
+
+You can press `(CRTL/CMD + SHIFT + P)` to open the Command Palette. Then, type `TypeScript: Select TypeScript Version` and select `Use Workspace Version`.
+
+![Use Workspace Version](docs/assets/vscode-select-typescript-version.png)
+
+After you've pressed `Allow`, you can proceed to [VSCode - Running the application (Launch Tasks)](#vscode---running-the-application-launch-tasks) for more information.
 
 ##### VSCode - Running the application (Launch Tasks)
 
@@ -111,6 +120,8 @@ Find the launch tasks by navigating to the `Run and Debug` section `(CRTL/CMD + 
 - `Launch zfgc.com (production)`: Runs the application in production mode
 
 Both of these tasks will also run `corepack enable` and `yarn install` before running the application. So, you do not need to worry aobut that. See [.vscode/tasks.json](./.vscode/tasks.json) for more information.
+
+Now that you are ready, you can proceed to [Workflow - Typical Development Workflow](#workflow---typical-development-workflow) for more information.
 
 ##### VSCode - Using the devcontainer (optional)
 
