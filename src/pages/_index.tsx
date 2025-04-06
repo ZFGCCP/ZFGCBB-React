@@ -2,6 +2,7 @@ import type React from "react";
 import { styled } from "styled-components";
 import Widget from "../components/common/widgets/widget.component";
 import BBImage from "@/components/common/bbImage.component";
+import BBLink from "@/components/common/bbLink.component";
 
 const Style = {
   FeaturedProjectImg: styled.img`
@@ -62,12 +63,12 @@ const Home: React.FC = () => {
                   join the ZFGC Community Project (ZFGCCP) effort in rewriting
                   the site!
                   <br />
-                  <a
-                    href="https://github.com/ZFGCCP/ZFGCBB-React"
+                  <BBLink
+                    to="https://github.com/ZFGCCP/ZFGCBB-React"
                     target="_blank"
                   >
                     Come join the effort!
-                  </a>
+                  </BBLink>
                   <br />
                 </p>
               </main>
