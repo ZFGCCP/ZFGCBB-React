@@ -107,9 +107,10 @@ If you would like to avoid having to setup a development environment on your act
 
 ### Workflow - Typical Development Workflow
 
-1. If you are not part of the ZFGCCP organization, you will need to fork this repository.
-2. Make sure you are on the `development` branch. `git switch development && git pull`.
-3. Make a new branch for your changes. `git switch -c my-new-branch`.
+1. Read the [Code of Conduct](CODE_OF_CONDUCT.md).
+2. If you are not part of the ZFGCCP organization, you will need to fork this repository.
+3. Make sure you are on the `development` branch. `git switch development && git pull`.
+4. Make a new branch for your changes. `git switch -c my-new-branch`.
    1. How do I name my branch? See the next section, we have some recommendations, but we don't have any official rules so you can use whatever naming convention you prefer for your branch.
    2. Brach Naming Conventions (General Recommendations)
       1. If you are working on a new feature, you can name your branch `feature/my-new-feature`.
@@ -118,7 +119,7 @@ If you would like to avoid having to setup a development environment on your act
       4. If you are working on a refactor, you can name your branch `refactor/my-refactor`.
       5. If you are working on a test, you can name your branch `test/my-test`.
       6. You are ready to start working on your branch!
-4. Working on your changes: Use your IDE of choice to edit files and save changes.
+5. Working on your changes: Use your IDE of choice to edit files and save changes.
    1. Use the `yarn dev` command to start the development server. Make sure to run `yarn install` before running the command.
       1. If you are using VSCode, you can use the `Launch zfgc.com` launch task to do this for you.
       2. For now, if cloning the [backend](https://github.com/ZFGCCP/ZFGCBB) is too much of a hassle, you can use the `yarn dev --mode=production` command to start the development server on `zfgc.com` or `Launch zfgc.com (production) in` VSCode. <!-- FIXME: remove this note when we have a container that can be pulled down and run locally -->
@@ -128,7 +129,7 @@ If you would like to avoid having to setup a development environment on your act
       1. Feel free to reach out on Discord if you have any questions.
    5. Stage and commit your changes.
    6. Push your changes to your branch on GitHub.
-5. [Create a new pull request](https://github.com/ZFGCCP/ZFGCBB-React/compare) and request a review from one of the maintainers.
+6. [Create a new pull request](https://github.com/ZFGCCP/ZFGCBB-React/compare) and request a review from one of the maintainers.
    1. Add a bullet point list of changes you made.
    2. Mention the issue number you are working on.
       1. If there is no issue, you can create one.
@@ -137,7 +138,7 @@ If you would like to avoid having to setup a development environment on your act
       2. See: <https://www.conventionalcommits.org/en/v1.0.0/>
    4. For the duration of your pull request, please keep your branch up to date with the `development` branch.
    5. Your PR must pass all checks before it can be merged or requested for review.
-6. As Sonic the Hedgehog says, "Gotta go fast!". And you went fast! Congratulations on making a contribution to the project!
+7. As Sonic the Hedgehog says, "Gotta go fast!". And you went fast! Congratulations on making a contribution to the project!
 
 ## CI/CD [WIP]
 
