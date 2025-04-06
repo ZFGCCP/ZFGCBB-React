@@ -7,7 +7,7 @@ const Style = {
     background-color: #1e2b44;
   `,
 
-  wrapper: styled.div``,
+  wrapper: styled.nav``,
 };
 
 const NavTabStyle = {
