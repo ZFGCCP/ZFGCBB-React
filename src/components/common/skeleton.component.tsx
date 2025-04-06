@@ -1,10 +1,9 @@
 import type React from "react";
 import { styled } from "styled-components";
 
-// We are going to make a skeleton component with a simple animation
-
 const SkeletonStyle = {
   skeleton: styled.div`
+    display: inline-block;
     width: max-content;
     height: max-content;
     max-width: 100%;
@@ -14,7 +13,7 @@ const SkeletonStyle = {
     @keyframes skeleton-loading {
       0% {
         background-color: rgba(0, 0, 0, 0.5);
-        opacity: 0.5;
+        opacity: 0;
       }
       100% {
         background-color: rgba(255, 255, 255, 0.6);

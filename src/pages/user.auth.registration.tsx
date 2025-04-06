@@ -20,15 +20,11 @@ const Style = {
 const UserRegistration: React.FC = () => {
   const { currentTheme } = useContext(ThemeContext);
   return (
-    <div className="row">
-      <div className="col-12 my-2">
-        <Widget widgetTitle={"Registration"}>
-          <div className="d-flex flex-column flex-md-row">
-            <p>Please fill out the form below to register your account.</p>
-          </div>
-        </Widget>
+    <Widget widgetTitle={"Registration"}>
+      <div className="d-flex flex-column flex-md-row">
+        <p>Please fill out the form below to register your account.</p>
       </div>
-    </div>
+    </Widget>
   );
 };
 

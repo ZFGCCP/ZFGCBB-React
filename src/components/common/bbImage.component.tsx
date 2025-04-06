@@ -23,6 +23,9 @@ type CacheEntry = {
   promise?: Promise<void>;
 };
 
+/**
+ * A simple in-memory cache for image URLs.
+ */
 const imageCache = new Map<string, CacheEntry>();
 
 const isValidUrl = (str: string): boolean => {
@@ -120,8 +123,17 @@ function useImage(path: string): string | undefined {
   }
 }
 
+type ComponentWithSrcProp = {
+  src: ImagesPath | ThemesPath | `${string}://${string}/${string}`;
+};
+
+type ReactComponentWithSrcProps<ComponentType extends ElementType> =
+  "src" extends keyof ComponentProps<ComponentType>
+    ? Omit<ComponentProps<ComponentType>, "src"> & ComponentWithSrcProp
+    : never;
+
 type ImageLoaderProps<ComponentType extends ElementType = "img"> = {
-  src: string;
+  src: ComponentWithSrcProp["src"];
   as?: ComponentType;
 };
 
@@ -138,14 +150,11 @@ function ImageLoader<ComponentType extends ElementType = "img">({
   ) : null;
 }
 
-export type BBImageProps<ComponentType extends ElementType = "img"> = Omit<
-  ComponentProps<ComponentType>,
-  "src"
-> & {
-  fallback?: React.ReactNode;
-  src: ImagesPath | ThemesPath | `${string}://${string}/${string}`;
-  as?: ComponentType;
-};
+export type BBImageProps<ComponentType extends ElementType = "img"> =
+  ReactComponentWithSrcProps<ComponentType> & {
+    fallback?: React.ReactNode;
+    as?: ComponentType;
+  };
 
 /**
  * This component is a wrapper around the <img> tag that preloads the image
@@ -157,32 +166,30 @@ export type BBImageProps<ComponentType extends ElementType = "img"> = Omit<
  * Usage:
  * ```tsx
  * // With dynamic import
- * <BBImage path="folder/image.png" alt="Description" />
+ * <BBImage src="folder/image.png" alt="Description" />
  *
  * // With URL
- * <BBImage path="https://example.com/image.jpg" alt="Description" />
+ * <BBImage src="https://example.com/image.jpg" alt="Description" />
  * ```
  */
-export default function BBImage<ComponentType extends ElementType = "img">(
-  props: BBImageProps<ComponentType>,
-): React.ReactElement {
-  if (import.meta.env.DEV && !("alt" in props)) {
+export default function BBImage<ComponentType extends ElementType = "img">({
+  fallback,
+  ...rest
+}: BBImageProps<ComponentType>): React.ReactElement {
+  if (import.meta.env.DEV && !("alt" in rest)) {
     console.warn(
       "BBImage component for",
-      props.src,
-      "is missing an alt prop. This will cause a11y issues.",
+      rest.src,
+      "is missing an alt prop. This will cause a11y issue.",
     );
   }
 
-  // Use a simpler fallback during SSR to avoid hydration mismatches
-  const MyAss = props.fallback ?? <Skeleton />;
-  const fallback = typeof window === "undefined" ? null : MyAss;
-  const componentProps = { ...props };
-  delete componentProps.fallback;
+  const MyAss =
+    typeof window === "undefined" ? null : (fallback ?? <Skeleton />);
 
   return (
-    <Suspense fallback={fallback}>
-      <ImageLoader {...componentProps} src={props.src} as={props.as} />
+    <Suspense fallback={MyAss}>
+      <ImageLoader {...rest} />
     </Suspense>
   );
 }

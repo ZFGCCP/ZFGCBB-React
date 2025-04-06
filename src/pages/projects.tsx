@@ -1,7 +1,5 @@
-import BBImage from "@/components/common/bbImage.component";
+import { Outlet } from "react-router";
 
-export default function Resources() {
-  return (
-    <BBImage src="images/I_am_Error.png" alt="I am Error. From Zelda II." />
-  );
+export default function Projects() {
+  return <Outlet />;
 }

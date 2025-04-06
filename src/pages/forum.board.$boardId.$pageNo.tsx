@@ -1,6 +1,6 @@
 import type React from "react";
-import { Suspense, useContext, useMemo, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router";
+import { Suspense, useContext, useMemo } from "react";
+import { useNavigate, useParams } from "react-router";
 import { styled } from "styled-components";
 import { Button, Pagination } from "react-bootstrap";
 import BBLink from "../components/common/bbLink.component";
@@ -10,9 +10,10 @@ import Widget from "../components/common/widgets/widget.component";
 import BoardSummaryView from "../components/forum/boards/boardSummary.component";
 import { useBBQuery } from "../hooks/useBBQuery";
 import { ThemeContext } from "../providers/theme/themeProvider";
-import type { Board } from "../types/forum";
+import type { Board, Thread } from "../types/forum";
 import type { Theme } from "../types/theme";
 import BBImage from "@/components/common/bbImage.component";
+import Skeleton from "@/components/common/skeleton.component";
 
 const Style = {
   forumDesc: styled.div`
@@ -79,11 +80,170 @@ const Style = {
   `,
 };
 
+function BoardTablePaginatorComponent({
+  board,
+  loadNewPage,
+  isLoading,
+  pageNo,
+}: {
+  board?: Board;
+  loadNewPage: (pageNo: number) => void;
+  isLoading: boolean;
+  pageNo: number;
+}) {
+  return (
+    <div className="d-flex justify-content-left">
+      {!isLoading && board ? (
+        <BBPaginator
+          numPages={board.pageCount}
+          currentPage={pageNo}
+          onPageChange={loadNewPage}
+        />
+      ) : (
+        <Skeleton />
+      )}
+    </div>
+  );
+}
+
+function BoardTableHeaderComponent({
+  theme,
+}: {
+  board?: Board;
+  theme: Theme;
+  isLoading?: boolean;
+}) {
+  return (
+    <thead>
+      <Style.row className="tableRow" theme={theme}>
+        <th></th>
+        <th className="d-none d-sm-table-cell"></th>
+        <th>Subject</th>
+        <th className="d-none d-md-table-cell">Author</th>
+        <th className="d-none d-lg-table-cell">Replies</th>
+        <th className="d-none d-lg-table-cell">Views</th>
+        <th className="d-none d-md-table-cell d-lg-none"></th>
+        <th className="d-none d-md-table-cell">Latest Post</th>
+      </Style.row>
+      <Style.row className="subRow" theme={theme}>
+        <th colSpan={7}></th>
+      </Style.row>
+    </thead>
+  );
+}
+
+function BoardTableBodyComponent({
+  board,
+  theme,
+}: {
+  board?: Board;
+  theme: Theme;
+  isLoading?: boolean;
+}) {
+  return (
+    <tbody>
+      <Suspense>
+        {board?.unStickyThreads?.map((thread) => {
+          return (
+            <Style.row
+              key={`${thread.id}`}
+              className="tableRow body"
+              theme={theme}
+            >
+              <td>
+                <div>
+                  <BBImage
+                    src="themes/midnight/images/topic/normal_post.gif"
+                    alt="FIXME: add proper alt text"
+                  />
+                </div>
+                <div className="d-block d-sm-none mt-3">
+                  <BBImage
+                    src="themes/midnight/images/post/xx.gif"
+                    alt="FIXME: add proper alt text"
+                  />
+                </div>
+              </td>
+              <td className="d-none d-sm-table-cell">
+                <BBImage
+                  src="themes/midnight/images/post/xx.gif"
+                  alt="FIXME: add proper alt text"
+                />
+              </td>
+              <td>
+                <BBLink to={`/forum/thread/${thread.id}/1`}>
+                  {thread.threadName}
+                </BBLink>
+                <Style.smallText className="d-block d-md-none">
+                  Author: {thread.createdUser?.displayName}
+                </Style.smallText>
+                <Style.smallText className="d-block d-md-none">
+                  <span>Replies: {thread.postCount.toString()}</span>
+                  <span className="ms-2">
+                    Views: {thread.viewCount.toString()}
+                  </span>
+                </Style.smallText>
+                <Style.smallText className="d-block d-md-none">
+                  Latest Post by: {thread.latestMessage?.ownerName}
+                </Style.smallText>
+              </td>
+              <td className="d-none d-md-table-cell">
+                {thread.createdUser?.displayName}
+              </td>
+              <td className="d-none d-lg-table-cell">
+                {thread.postCount.toString()}
+              </td>
+              <td className="d-none d-lg-table-cell">
+                {thread.viewCount.toString()}
+              </td>
+              <td className="d-none d-md-table-cell d-lg-none">
+                <Style.smallText>
+                  Replies: {thread.postCount.toString()}
+                </Style.smallText>
+                <Style.smallText>
+                  Views: {thread.viewCount.toString()}
+                </Style.smallText>
+              </td>
+              <td className="d-none d-md-table-cell">
+                <Style.smallText>
+                  by {thread.latestMessage?.ownerName}
+                </Style.smallText>
+                <Style.smallText>
+                  on {thread.latestMessage?.lastPostTsAsString}
+                </Style.smallText>
+              </td>
+            </Style.row>
+          );
+        })}
+      </Suspense>
+    </tbody>
+  );
+}
+
+function BoardTableComponent({
+  board,
+  theme,
+  isLoading,
+}: {
+  board?: Board;
+  theme: Theme;
+  isLoading?: boolean;
+}) {
+  return isLoading && !board ? (
+    <Skeleton />
+  ) : (
+    <BBTable>
+      <BoardTableHeaderComponent theme={theme} />
+      <BoardTableBodyComponent board={board} theme={theme} />
+    </BBTable>
+  );
+}
+
 const BoardContainer: React.FC = () => {
   const navigate = useNavigate();
   const { boardId, pageNo } = useParams();
   const { currentTheme } = useContext(ThemeContext);
-  const { data: board } = useBBQuery<Board>(
+  const { data: board, isLoading } = useBBQuery<Board>(
     `/board/${boardId}?pageNo=${pageNo}`,
     0,
     0,
@@ -116,127 +276,38 @@ const BoardContainer: React.FC = () => {
 
   return (
     <>
-      <div className="row">
-        <div className="col-12 my-2">
-          {board && board.childBoards && board?.childBoards?.length > 0 && (
-            <Widget widgetTitle={"Child Boards"}>
-              <BoardSummaryView subBoards={board.childBoards} />
-            </Widget>
-          )}
-
-          <div className="my-3">
-            <div className="d-flex gap-2">
-              <BBLink to="/forum">ZFGC.com</BBLink>
-              <span>&gt;&gt;</span>
-              <span>{board?.boardName}</span>
-            </div>
-          </div>
-          <Widget widgetTitle={board?.boardName}>
-            <BBTable>
-              <thead>
-                <Style.row className="tableRow" theme={currentTheme}>
-                  <th></th>
-                  <th className="d-none d-sm-table-cell"></th>
-                  <th>Subject</th>
-                  <th className="d-none d-md-table-cell">Author</th>
-                  <th className="d-none d-lg-table-cell">Replies</th>
-                  <th className="d-none d-lg-table-cell">Views</th>
-                  <th className="d-none d-md-table-cell d-lg-none"></th>
-                  <th className="d-none d-md-table-cell">Latest Post</th>
-                </Style.row>
-                <Style.row className="subRow" theme={currentTheme}>
-                  <th colSpan={7}></th>
-                </Style.row>
-              </thead>
-              <tbody>
-                <Suspense>
-                  {board?.unStickyThreads?.map((thread) => {
-                    return (
-                      <Style.row
-                        key={`${thread.id}`}
-                        className="tableRow body"
-                        theme={currentTheme}
-                      >
-                        <td>
-                          <div>
-                            <BBImage
-                              src="themes/midnight/images/topic/normal_post.gif"
-                              alt="FIXME: add proper alt text"
-                            />
-                          </div>
-                          <div className="d-block d-sm-none mt-3">
-                            <BBImage
-                              src="themes/midnight/images/post/xx.gif"
-                              alt="FIXME: add proper alt text"
-                            />
-                          </div>
-                        </td>
-                        <td className="d-none d-sm-table-cell">
-                          <BBImage
-                            src="themes/midnight/images/post/xx.gif"
-                            alt="FIXME: add proper alt text"
-                          />
-                        </td>
-                        <td>
-                          <BBLink to={`/forum/thread/${thread.id}/1`}>
-                            {thread.threadName}
-                          </BBLink>
-                          <Style.smallText className="d-block d-md-none">
-                            Author: {thread.createdUser?.displayName}
-                          </Style.smallText>
-                          <Style.smallText className="d-block d-md-none">
-                            <span>Replies: {thread.postCount.toString()}</span>
-                            <span className="ms-2">
-                              Views: {thread.viewCount.toString()}
-                            </span>
-                          </Style.smallText>
-                          <Style.smallText className="d-block d-md-none">
-                            Latest Post by: {thread.latestMessage?.ownerName}
-                          </Style.smallText>
-                        </td>
-                        <td className="d-none d-md-table-cell">
-                          {thread.createdUser?.displayName}
-                        </td>
-                        <td className="d-none d-lg-table-cell">
-                          {thread.postCount.toString()}
-                        </td>
-                        <td className="d-none d-lg-table-cell">
-                          {thread.viewCount.toString()}
-                        </td>
-                        <td className="d-none d-md-table-cell d-lg-none">
-                          <Style.smallText>
-                            Replies: {thread.postCount.toString()}
-                          </Style.smallText>
-                          <Style.smallText>
-                            Views: {thread.viewCount.toString()}
-                          </Style.smallText>
-                        </td>
-                        <td className="d-none d-md-table-cell">
-                          <Style.smallText>
-                            by {thread.latestMessage?.ownerName}
-                          </Style.smallText>
-                          <Style.smallText>
-                            on {thread.latestMessage?.lastPostTsAsString}
-                          </Style.smallText>
-                        </td>
-                      </Style.row>
-                    );
-                  })}
-                </Suspense>
-              </tbody>
-            </BBTable>
-            <Style.boardFooter theme={currentTheme}>
-              {board && (
-                <BBPaginator
-                  numPages={board.pageCount}
-                  currentPage={Number(pageNo)}
-                  onPageChange={loadNewPage}
-                />
-              )}
-            </Style.boardFooter>
+      {!isLoading &&
+        board &&
+        board.childBoards &&
+        board?.childBoards?.length > 0 && (
+          <Widget widgetTitle={"Child Boards"}>
+            <BoardSummaryView subBoards={board.childBoards} />
           </Widget>
+        )}
+
+      <div className="my-3">
+        <div className="d-flex gap-2">
+          <BBLink to="/forum">ZFGC.com</BBLink>
+          <span>&gt;&gt;</span>
+          <span>{board?.boardName}</span>
         </div>
       </div>
+
+      <Widget widgetTitle={board?.boardName ?? "Loading..."}>
+        <BoardTableComponent
+          board={board}
+          theme={currentTheme}
+          isLoading={isLoading}
+        />
+        <Style.boardFooter theme={currentTheme}>
+          <BoardTablePaginatorComponent
+            board={board}
+            loadNewPage={loadNewPage}
+            isLoading={isLoading}
+            pageNo={Number(pageNo)}
+          />
+        </Style.boardFooter>
+      </Widget>
     </>
   );
 };

@@ -25,7 +25,7 @@
   },
   "include": [
     "src",
-    "build/types/image-paths.d.ts",
+    "build/types",
     ".react-router/types/+register.ts",
     ".react-router/types/+virtual.d.ts"
   ],

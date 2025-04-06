@@ -32,20 +32,21 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
   const { currentTheme } = useContext(ThemeContext);
 
   return (
-    <BBTable>
+    <BBTable className="table align-middle">
       <tbody>
         {subBoards?.map((sb) => {
           return (
-            <Style.forumRow key={`${sb.boardId}`} className="d-flex">
-              <td className="col-2 col-md-1">
+            <Style.forumRow key={`${sb.boardId}`} className="d-flex ">
+              <td className="col-2 col-md-1 align-content-center">
                 <BBImage
+                  className="mt-0 mb-0"
                   src="themes/midnight/images/board-summary/off.gif"
                   alt="Off"
                 />
               </td>
 
               <td className="col-10 col-md-7 col-lg-2 align-content-center">
-                <h6>
+                <h6 className="mb-0">
                   <BBLink to={`/forum/board/${sb.boardId}/1`}>
                     {sb.boardName}
                   </BBLink>

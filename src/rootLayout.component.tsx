@@ -58,6 +58,7 @@ const Style = {
 
   userGreetingWrapper: styled.div`
     place-self: center stretch;
+    padding: 1rem;
   `,
 };
 
