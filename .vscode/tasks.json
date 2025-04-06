@@ -7,16 +7,15 @@
       "type": "shell",
       "command": "bash",
       "args": ["-c", "'corepack enable && yarn install'"],
-      "problemMatcher": ["$func-node-watch"],
+      "problemMatcher": ["$tsc"],
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "isBackground": true,
       "presentation": {
         "close": true,
         "group": "build",
-        "reveal": "silent"
+        "reveal": "never"
       }
     }
   ]
