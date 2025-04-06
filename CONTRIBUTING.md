@@ -85,6 +85,7 @@ The default value is pointing to your local machine. While we do have dockerfile
 4. Working on your changes: Use your IDE of choice to edit files and save changes.
    1. Use the `yarn dev` command to start the development server. Make sure to run `yarn install` before running the command.
       1. If you are using VSCode, you can use the `Launch zfgc.com` launch task to do this for you.
+      2. For now, if cloning the [backend](https://github.com/ZFGCCP/ZFGCBB) is too much of a hassle, you can use the `yarn dev --mode=production` command to start the development server on `zfgc.com` or `Launch zfgc.com (production) in` VSCode. <!-- FIXME: remove this note when we have a container that can be pulled down and run locally -->
    2. Use the `yarn format` command to format the code using Prettier.
    3. Use the `yarn check` command to run type checking, linting, and formatting checks.
    4. Repeat steps 1-3 as needed until `yarn check` passes.
