@@ -14,7 +14,7 @@ TBD. We could use some help writing this out.
   - [Development](#development)
     - [Provided package.json scripts](#provided-packagejson-scripts)
       - [Setting up the project](#setting-up-the-project)
-        - [Configuring .env.local file](#configuring-envlocal-file)
+        - [Why is the forum not loading?](#why-is-the-forum-not-loading)
         - [Using the VSCode devcontainer](#using-the-vscode-devcontainer)
   - [Pull Request Process \[WIP\]](#pull-request-process-wip)
   - [CI/CD \[WIP\]](#cicd-wip)
@@ -40,7 +40,7 @@ TBD. We could use some help writing this out.
    git clone https://github.com/ZFGCCP/ZFGCBB-React.git
    ```
 
-2. Configure the project
+2. Configure the project (Have the prequisites installed - see [README.md](README.md))
 
    ```bash
    corepack enable
@@ -60,9 +60,9 @@ TBD. We could use some help writing this out.
 
 5. Open your browser and navigate to <http://localhost:5173>.
 
-##### Configuring [.env.local](./.env.local) file
+##### Why is the forum not loading?
 
-The default value is pointing to your local machine. While we do have dockerfiles for the backend, we haven't gotten around to streamlining using the backend in a development setting for the frontend. Setting the .env.local value to `http://zfgc.com:28080/zfgbb` will allow you to run the frontend against the production backend.
+The default value is pointing to your local machine. While we do have dockerfiles for the backend, we haven't gotten around to streamlining using the backend in a development setting for the frontend. To run the frontend locally, pointed to `zfgc.com`, run `yarn dev --mode=production`, and that will point to the production environment. This will get you up and running! \o/
 
 ##### Using the VSCode devcontainer
 
