@@ -36,12 +36,17 @@ jobs:
       - run: corepack enable
 
       - name: Use Node.js (yarn cache workaround) # FIXME: uncomment when https://github.com/actions/setup-node/issues/531 is closed.
+        id: yarn-cache
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: yarn
 
-      - run: yarn install --immutable --immutable-cache
+      - if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        run: yarn install --immutable
+
+      - if: ${{ steps.yarn-cache.outputs.cache-hit == 'true' }}
+        run: yarn install --immutable --immutable-cache
 
       - run: yarn build --mode="${{ inputs.deployment_target }}"
       - run: yarn check
