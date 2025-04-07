@@ -1,34 +1,7 @@
 import type React from "react";
 import { useContext } from "react";
-import { styled } from "styled-components";
-import { Button } from "react-bootstrap";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import type { Theme } from "../../../types/theme";
-
-const Style = {
-  FooterButton: styled(Button)<{ theme: Theme }>`
-    &.footer-btn {
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-      background-color: #25334e;
-      border: ${(props) => props.theme.borderWidth} solid
-        ${(props) => props.theme.black};
-      border-top: 0;
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;
-      border-right: 0;
-
-      &:first-child {
-        border-bottom-left-radius: 0.5rem;
-      }
-
-      &:last-child {
-        border-bottom-right-radius: 0.5rem;
-        border-right: 0.2rem solid black;
-      }
-    }
-  `,
-};
 
 export type FooterConfig = {
   label: String;
@@ -38,18 +11,39 @@ export type FooterConfig = {
 const FooterButtons: React.FC<{ options: FooterConfig[] }> = ({ options }) => {
   const { currentTheme } = useContext(ThemeContext);
 
+  // Get border width from theme for dynamic styles
+  const borderWidth = currentTheme?.borderWidth || "0.2rem";
+
   return (
-    <div className="d-flex justify-content-end">
-      {options.map((opt) => {
+    <div className="flex justify-end">
+      {options.map((opt, index) => {
+        const isFirst = index === 0;
+        const isLast = index === options.length - 1;
+
         return (
-          <Style.FooterButton
+          <button
             key={`${opt.label}`}
             onClick={() => opt.callback()}
-            className="footer-btn px-2"
-            theme={currentTheme}
+            className={`
+              px-2 
+              bg-[#25334e] 
+              border-black
+              border-l
+              border-b
+              rounded-none
+              border-solid
+              ${isFirst ? "rounded-bl-lg" : ""}
+              ${isLast ? "rounded-br-lg border-r" : ""}
+            `}
+            style={{
+              borderWidth: isLast
+                ? borderWidth
+                : "0 0 " + borderWidth + " " + borderWidth,
+              borderTopWidth: 0,
+            }}
           >
             {opt.label}
-          </Style.FooterButton>
+          </button>
         );
       })}
     </div>

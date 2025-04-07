@@ -1,4 +1,3 @@
-@import url("bootstrap/dist/css/bootstrap.min.css");
 @import "tailwindcss";
 :root {
   --bs-body-bg: none;
@@ -9,8 +8,6 @@
   --linaria-2: #f15f79;
   --text: #fff;
   --bg: #204378;
-
-  box-sizing: border-box;
 }
 
 html,
@@ -31,20 +28,22 @@ body,
     color 0.2s ease-in-out;
 }
 
-.container-xxl {
-  @media (min-width: 1400px) {
-    max-width: 145rem;
-  }
-}
-
-/** FIXME: #111 move the bbcode styles elsewhere */
+/* bb-code styles */
 .bb-code-b {
   font-weight: bold;
 }
 
 .bb-code-quote {
-  .bb-code-quote-body {
-    border: 0.2rem solid black;
-    padding: 1rem;
+  @apply border-2 p-4 border-black; /* Tailwind utilities for border and padding */
+}
+
+/* Tailwind Utilities */
+@layer base {
+  /* Global Body Styles */
+  body {
+    @apply bg-[var(--bg)] text-[var(--text)] font-sans;
+    transition:
+      background-color 0.2s ease-in-out,
+      color 0.2s ease-in-out;
   }
 }

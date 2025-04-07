@@ -1,20 +1,6 @@
 import type React from "react";
 import { useContext } from "react";
-import { styled } from "styled-components";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
-import type { Theme } from "../../../types/theme";
-
-const Style = {
-  widgetMain: styled.section<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.headerColor};
-    border: ${(props) => props.theme.borderWidth} solid black;
-
-    .widget-title {
-      border-bottom: ${(props) => props.theme.borderWidth} solid black;
-      font-weight: bold;
-    }
-  `,
-};
 
 const Widget: React.FC<{
   widgetTitle?: String;
@@ -24,10 +10,25 @@ const Widget: React.FC<{
   const { currentTheme } = useContext(ThemeContext);
 
   return (
-    <Style.widgetMain className={`${className}`} theme={currentTheme}>
-      {widgetTitle && <h6 className="p-1 m-0 widget-title">{widgetTitle}</h6>}
+    <section
+      className={`${className}`}
+      style={{
+        backgroundColor: currentTheme.headerColor,
+        border: `${currentTheme.borderWidth} solid black`,
+      }}
+    >
+      {widgetTitle && (
+        <h6
+          className="p-1 m-0 font-bold"
+          style={{
+            borderBottom: `${currentTheme.borderWidth} solid black`,
+          }}
+        >
+          {widgetTitle}
+        </h6>
+      )}
       <div>{children}</div>
-    </Style.widgetMain>
+    </section>
   );
 };
 

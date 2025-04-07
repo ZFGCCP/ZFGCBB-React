@@ -1,41 +1,8 @@
 import type React from "react";
 import { useContext } from "react";
-import { Table } from "react-bootstrap";
-import { styled } from "styled-components";
-import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 
-const Style = {
-  Table: styled(Table)<{ theme: Theme }>`
-    th {
-      background-color: ${(props) => props.theme.widgetColor};
-      color: white;
-      border: 0;
-    }
-
-    tbody {
-      tr {
-        td {
-          color: ${(props) => props.theme.textColor};
-          vertical-align: middle;
-          border: 0;
-        }
-
-        &:nth-child(odd) {
-          td {
-            background-color: ${(props) => props.theme.tableRowAlt};
-          }
-        }
-
-        &:nth-child(even) {
-          td {
-            background-color: ${(props) => props.theme.tableRow};
-          }
-        }
-      }
-    }
-  `,
-};
+import "./bbTable.component.css";
 
 const BBTable: React.FC<{ children: React.ReactNode; className?: string }> = ({
   children,
@@ -44,15 +11,20 @@ const BBTable: React.FC<{ children: React.ReactNode; className?: string }> = ({
   const { currentTheme } = useContext(ThemeContext);
 
   return (
-    <Style.Table
-      className={`my-0 ${className ?? ""}`}
-      striped
-      hover
-      responsive
-      theme={currentTheme}
-    >
-      {children}
-    </Style.Table>
+    <div className={`my-0 w-full ${className || ""} overflow-x-auto`}>
+      <table
+        className="w-full border-collapse"
+        style={{
+          // Using the CSS variables approach
+          ["--th-bg" as any]: currentTheme.widgetColor,
+          ["--td-color" as any]: currentTheme.textColor,
+          ["--tr-odd-bg" as any]: currentTheme.tableRowAlt,
+          ["--tr-even-bg" as any]: currentTheme.tableRow,
+        }}
+      >
+        {children}
+      </table>
+    </div>
   );
 };
 

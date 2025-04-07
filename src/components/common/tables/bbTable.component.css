@@ -1,0 +1,26 @@
+table[style*="--th-bg"] th {
+  background-color: var(--th-bg);
+  color: white;
+  border: 0;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+table[style*="--td-color"] td {
+  color: var(--td-color);
+  vertical-align: middle;
+  border: 0;
+  padding: 0.5rem;
+}
+
+table[style*="--tr-odd-bg"] tbody tr:nth-child(odd) td {
+  background-color: var(--tr-odd-bg);
+}
+
+table[style*="--tr-even-bg"] tbody tr:nth-child(even) td {
+  background-color: var(--tr-even-bg);
+}
+
+table tbody tr:hover td {
+  background-color: rgba(0, 0, 0, 0.05);
+}

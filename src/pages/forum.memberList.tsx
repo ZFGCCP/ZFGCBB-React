@@ -2,8 +2,8 @@ import { Outlet } from "react-router";
 
 export default function ForumMemberListLayout() {
   return (
-    <article className="container-xxl">
-      <section className="col-12 my-2">
+    <article className="max-w-screen-xl mx-auto">
+      <section className="w-full my-2">
         <Outlet />
       </section>
     </article>

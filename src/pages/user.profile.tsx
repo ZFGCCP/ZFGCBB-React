@@ -3,8 +3,8 @@ import { Outlet } from "react-router";
 
 export default function UserProfile() {
   return (
-    <article className="container-xxl">
-      <section className="col-12 my-2">
+    <article className="max-w-7xl mx-auto px-4">
+      <section className="w-full my-4">
         <Widget widgetTitle={"Profile Summary"}>
           <Outlet />
         </Widget>

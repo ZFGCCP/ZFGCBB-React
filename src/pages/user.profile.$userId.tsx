@@ -1,27 +1,11 @@
 import type React from "react";
 import { useContext } from "react";
-import { styled } from "styled-components";
-import { Form } from "react-bootstrap";
-import Widget from "../components/common/widgets/widget.component";
 import { useBBQuery } from "../hooks/useBBQuery";
 import type { User } from "../types/user";
-import type { Theme } from "../types/theme";
-import UserLeftPane from "../components/user/userLeftPane.component";
 import { ThemeContext } from "../providers/theme/themeProvider";
 import Accordion from "../components/common/accordion/Accordion.component";
 import { useParams } from "react-router";
-
-const Style = {
-  accordionWrapper: styled.div`
-    margin: 2rem;
-  `,
-
-  accordionHeader: styled.div<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.backgroundColor};
-    border: ${(props) => props.theme.borderWidth} solid
-      ${(props) => props.theme.black};
-  `,
-};
+import UserLeftPane from "../components/user/userLeftPane.component";
 
 const UserProfileMaster: React.FC<{ userId: string }> = () => {
   const { userId } = useParams();
@@ -29,68 +13,160 @@ const UserProfileMaster: React.FC<{ userId: string }> = () => {
   const { currentTheme } = useContext(ThemeContext);
 
   return (
-    <div className="d-flex flex-column flex-md-row">
+    <div className="flex flex-col md:flex-row">
       {user && <UserLeftPane user={user} />}
-      <div className="right-pane col-12 col-md-9">
+      <div className="right-pane w-full md:w-9/12">
         <Accordion title="Bio Information">
-          <Form>
-            <Form.Group>
-              <Form.Label>Displayname</Form.Label>
-              <Form.Control type="text" value={user?.displayName} />
-            </Form.Group>
+          <form>
+            <div className="mb-4">
+              <label
+                htmlFor="displayname"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Displayname
+              </label>
+              <input
+                type="text"
+                id="displayname"
+                value={user?.displayName}
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              />
+            </div>
 
-            <Form.Group>
-              <Form.Label>Personal Text</Form.Label>
-              <Form.Control type="text" value={user?.bioInfo?.personalText} />
-            </Form.Group>
+            <div className="mb-4">
+              <label
+                htmlFor="personalText"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Personal Text
+              </label>
+              <input
+                type="text"
+                id="personalText"
+                value={user?.bioInfo?.personalText}
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              />
+            </div>
 
-            <Form.Group>
-              <Form.Label>Date of Birth</Form.Label>
-              <Form.Control type="text" placeholder="MM/dd/YYYY" />
-            </Form.Group>
+            <div className="mb-4">
+              <label
+                htmlFor="dob"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Date of Birth
+              </label>
+              <input
+                type="text"
+                id="dob"
+                placeholder="MM/dd/YYYY"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              />
+            </div>
 
-            <Form.Group>
-              <Form.Label>Gender</Form.Label>
-              <Form.Select>
+            <div className="mb-4">
+              <label
+                htmlFor="gender"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Gender
+              </label>
+              <select
+                id="gender"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              >
                 <option value="1">Male</option>
                 <option value="2">Female</option>
                 <option value="3">Non-binary/Other</option>
                 <option value="4">Prefer not to say</option>
-              </Form.Select>
-            </Form.Group>
-          </Form>
+              </select>
+            </div>
+          </form>
         </Accordion>
 
         <Accordion title="Contact Information">
-          <Form.Group>
-            <Form.Label>Email Address</Form.Label>
-            <Form.Control type="email" />
-          </Form.Group>
+          <div className="mb-4">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+            />
+          </div>
 
-          <Form.Group>
-            <Form.Label>Discord</Form.Label>
-            <Form.Control type="text" />
-          </Form.Group>
+          <div className="mb-4">
+            <label
+              htmlFor="discord"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Discord
+            </label>
+            <input
+              type="text"
+              id="discord"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+            />
+          </div>
 
-          <Form.Group>
-            <Form.Label>Facebook</Form.Label>
-            <Form.Control type="text" />
-          </Form.Group>
+          <div className="mb-4">
+            <label
+              htmlFor="facebook"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Facebook
+            </label>
+            <input
+              type="text"
+              id="facebook"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+            />
+          </div>
 
-          <Form.Group>
-            <Form.Label>Instagram</Form.Label>
-            <Form.Control type="text" />
-          </Form.Group>
+          <div className="mb-4">
+            <label
+              htmlFor="instagram"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Instagram
+            </label>
+            <input
+              type="text"
+              id="instagram"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+            />
+          </div>
 
-          <Form.Group>
-            <Form.Label>Threads</Form.Label>
-            <Form.Control type="text" />
-          </Form.Group>
+          <div className="mb-4">
+            <label
+              htmlFor="threads"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Threads
+            </label>
+            <input
+              type="text"
+              id="threads"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+            />
+          </div>
 
-          <Form.Group>
-            <Form.Label>Twitter</Form.Label>
-            <Form.Control type="text" />
-          </Form.Group>
+          <div className="mb-4">
+            <label
+              htmlFor="twitter"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Twitter
+            </label>
+            <input
+              type="text"
+              id="twitter"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+            />
+          </div>
         </Accordion>
       </div>
     </div>

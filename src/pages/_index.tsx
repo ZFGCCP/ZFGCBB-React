@@ -1,34 +1,24 @@
 import type React from "react";
-import { styled } from "styled-components";
 import Widget from "../components/common/widgets/widget.component";
 import BBImage from "@/components/common/bbImage.component";
 import BBLink from "@/components/common/bbLink.component";
-
-const Style = {
-  FeaturedProjectImg: styled.img`
-    height: 100%;
-    width: max-content;
-    object-fit: cover;
-    flex-shrink: 0;
-  `,
-};
 
 const Home: React.FC = () => {
   return (
     <article className="container-xxl">
       <section className="row">
+        {/* Featured Project Section */}
         <div className="col-lg-6 my-2">
           <Widget widgetTitle="Featured Project">
-            <div className="row">
-              <div className="col-12 col-lg-6">
+            <div className="flex flex-wrap">
+              <div className="w-full lg:w-1/2">
                 <BBImage
-                  className="img-fluid mx-auto d-block"
+                  className="mx-auto block w-full object-cover"
                   src="images/potm/triforceSaga.png"
-                  as={Style.FeaturedProjectImg}
                   alt="FIXME: add proper alt text"
                 />
               </div>
-              <div className="border-start-0 border-lg-start border-lg-2 border-lg-black border-black col-12 col-lg-6 ">
+              <div className="border-l-0 lg:border-l-2 lg:border-black border-black w-full lg:w-1/2 p-4">
                 <h5>Triforce Saga</h5>
                 <h6>Developer: chaoazul1</h6>
               </div>
@@ -36,25 +26,25 @@ const Home: React.FC = () => {
           </Widget>
         </div>
 
+        {/* Recent Activity Section */}
         <div className="col-lg-6 my-2">
           <Widget widgetTitle="Recent Activity">
-            <>
-              <div>
-                <h6>7/23/2024 - blah blah blah</h6>
-                <div>Test content</div>
-              </div>
-            </>
+            <div>
+              <h6>7/23/2024 - blah blah blah</h6>
+              <div>Test content</div>
+            </div>
           </Widget>
         </div>
       </section>
 
+      {/* Announcements Section */}
       <div className="row">
         <div className="col-12 my-2">
           <Widget widgetTitle="Announcements">
             <article>
               <header>
-                <h1 className="fs-1">It's dangerous to go alone!</h1>
-                <h2 className="fs-6 fst-italic">Date: 04/05/2025</h2>
+                <h1 className="text-4xl">It's dangerous to go alone!</h1>
+                <h2 className="text-lg italic">Date: 04/05/2025</h2>
               </header>
               <main>
                 <p>

@@ -1,49 +1,6 @@
-import { styled } from "styled-components";
 import type React from "react";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { Pagination } from "react-bootstrap";
-import type { Theme } from "../../../types/theme";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
-
-const Styled = {
-  pagination: styled(Pagination)<{ theme: Theme }>`
-  &.pagination {
-    margin-bottom: 0;
-    display: flex;
-    gap: 0.25rem;
-
-    li.page-item {
-      scroll-snap-align: start;
-
-      &:last-child {
-        scroll-snap-align: end;
-      }
-
-      &:hover {
-        background-color: ${(props) => props.theme.backgroundColor};
-      }
-
-      a {
-        border: 0;
-      }
-
-      &
-    }
-  }
-`,
-  scrollWrapper: styled.div`
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    width: 100%;
-  `,
-};
 
 export type BBPaginatorProps = {
   numPages: number;
@@ -71,7 +28,7 @@ const BBPaginator: React.FC<BBPaginatorProps> = ({
       clearTimeout(debounceTimeout);
       debounceTimeout = setTimeout(() => {
         setMaxPageCount(window.innerWidth < 768 ? 4 : (maxPageCount ?? 10));
-      }, 250); // 200ms debounce delay
+      }, 250); // 250ms debounce delay
     };
 
     window.addEventListener("resize", handleResize);
@@ -95,22 +52,39 @@ const BBPaginator: React.FC<BBPaginatorProps> = ({
 
     for (let i = startPage; i <= endPage; i++) {
       pages.push(
-        <Pagination.Item
-          key={i}
-          active={currentPage === i}
-          onClick={() => onPageChange(i)}
-        >
-          {i}
-        </Pagination.Item>,
+        <li key={i} className="scroll-snap-start">
+          <button
+            className={`flex items-center justify-center w-8 h-8 mx-1 rounded-md ${
+              currentPage === i
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-700 hover:bg-gray-100"
+            }`}
+            onClick={() => onPageChange(i)}
+          >
+            {i}
+          </button>
+        </li>,
       );
     }
 
     // If there are more pages than we can show, add ellipsis
     if (startPage > 1 && numPages > maxToRender) {
-      pages.unshift(<Pagination.Ellipsis key="start-ellipsis" disabled />);
+      pages.unshift(
+        <li key="start-ellipsis" className="scroll-snap-start">
+          <span className="flex items-center justify-center w-8 h-8 mx-1">
+            ...
+          </span>
+        </li>,
+      );
     }
     if (endPage < numPages) {
-      pages.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
+      pages.push(
+        <li key="end-ellipsis" className="scroll-snap-start">
+          <span className="flex items-center justify-center w-8 h-8 mx-1">
+            ...
+          </span>
+        </li>,
+      );
     }
 
     return pages;
@@ -124,20 +98,50 @@ const BBPaginator: React.FC<BBPaginatorProps> = ({
   );
 
   return (
-    <Styled.scrollWrapper>
-      <Styled.pagination theme={currentTheme}>
-        <Pagination.First onClick={() => onPageChange(1)} />
-        {currentPage !== 1 && <Pagination.Prev onClick={() => shiftPage(-1)} />}
+    <div className="overflow-x-auto scroll-snap-x-mandatory w-full">
+      <ul className="flex items-center mb-0 gap-1 p-0 list-none">
+        <li className="scroll-snap-start">
+          <button
+            className="flex items-center justify-center w-8 h-8 rounded-md bg-white text-gray-700 hover:bg-gray-100"
+            onClick={() => onPageChange(1)}
+          >
+            ⟪
+          </button>
+        </li>
+        {currentPage !== 1 && (
+          <li>
+            <button
+              className="flex items-center justify-center w-8 h-8 rounded-md bg-white text-gray-700 hover:bg-gray-100"
+              onClick={() => shiftPage(-1)}
+            >
+              ⟨
+            </button>
+          </li>
+        )}
         {pages}
         {currentPage !== numPages && (
-          <Pagination.Next onClick={() => shiftPage(1)} />
+          <li>
+            <button
+              className="flex items-center justify-center w-8 h-8 rounded-md bg-white text-gray-700 hover:bg-gray-100"
+              onClick={() => shiftPage(1)}
+            >
+              ⟩
+            </button>
+          </li>
         )}
-        <Pagination.Last onClick={() => onPageChange(numPages)} />
-      </Styled.pagination>
-      <div>
+        <li className="scroll-snap-end">
+          <button
+            className="flex items-center justify-center w-8 h-8 rounded-md bg-white text-gray-700 hover:bg-gray-100"
+            onClick={() => onPageChange(numPages)}
+          >
+            ⟫
+          </button>
+        </li>
+      </ul>
+      <div className="mt-2">
         Page {currentPage} of {numPages}
       </div>
-    </Styled.scrollWrapper>
+    </div>
   );
 };
 

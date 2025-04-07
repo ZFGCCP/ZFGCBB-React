@@ -14,10 +14,13 @@ export default defineConfig(({ mode }) => {
 
   return {
     base: env["BASE_URL"],
-    plugins: [tailwindcss(), reactRouter(), generateImagePaths()],
+    plugins: [reactRouter(), tailwindcss(), generateImagePaths()],
     envPrefix: ["REACT_", "VITE_", "BASE_", "PROD"],
     build: {
       target: "esnext",
+      rollupOptions: {
+        external: ["styled-components", "react-bootstrap"],
+      },
     },
     server: {
       allowedHosts: ["zfgc.com:28080", "localhost:8080"],
