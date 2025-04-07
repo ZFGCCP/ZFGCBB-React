@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import { reactRouter } from "@react-router/dev/vite";
 import react from "@vitejs/plugin-react-swc";
+import tailwindcss from "@tailwindcss/vite";
 // import react from "@vitejs/plugin-react";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,6 +20,7 @@ export default defineConfig(({ mode }) => {
       react({
         plugins: [["@swc/plugin-styled-components", {}]],
       }),
+      tailwindcss(),
       reactRouter(),
       generateImagePaths(),
     ],
