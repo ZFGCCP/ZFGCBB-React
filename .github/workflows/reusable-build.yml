@@ -1,4 +1,3 @@
-name: Build
 on:
   workflow_call:
     inputs:
@@ -7,6 +6,11 @@ on:
         type: string
         default: ${{ github.ref_name }}
         description: "The environment to build for (e.g., main, development). Defaults to the branch name."
+      deployment_target:
+        required: false
+        default: production
+        type: string
+        description: "The deployment target to use (e.g., production,github-pages, netlify, vercel, etc.)"
     outputs:
       artifact_name:
         description: "The name of the build artifact"
@@ -17,6 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: 1
+      GITHUB_PAGES: ${{ inputs.deployment_target == 'github-pages' }}
+      VITE_MODE: ${{ inputs.deployment_target || 'production' }}
+
     outputs:
       artifact_name: ${{ inputs.environment }}-build
     steps:
@@ -34,12 +41,17 @@ jobs:
           node-version-file: .nvmrc
           cache: yarn
 
-      - run: yarn install --frozen-lockfile --immutable
+      - run: yarn install --immutable --immutable-cache
+
+      - run: yarn build --mode="${{ inputs.deployment_target }}"
       - run: yarn check
-      - run: yarn build
+
+      - if: ${{ inputs.deployment_target == 'github-pages' }}
+        name: Copy 404 page to workaround gh pages routing
+        run: cp ./.github/404.html ./build/client/404.html #see https://github.com/orgs/community/discussions/64096
 
       - name: Upload build artifact
-        if: ${{ inputs.environment == 'development' || inputs.environment == 'main' }}
+        if: ${{ inputs.deployment_target == 'github-pages' }}
         uses: actions/upload-pages-artifact@v3
         with:
           name: ${{ inputs.environment }}-build

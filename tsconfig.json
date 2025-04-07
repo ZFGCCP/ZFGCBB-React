@@ -2,24 +2,32 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "strict": true,
     "allowJs": false,
     "skipLibCheck": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "allowImportingTsExtensions": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
+    "erasableSyntaxOnly": true,
+    "noImplicitAny": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "paths": {
       "@/*": ["./src/*"],
       "~/*": ["./src/*"]
     }
   },
-  "include": ["./src"]
+  "include": [
+    "src",
+    "build/types",
+    ".react-router/types/+register.ts",
+    ".react-router/types/+virtual.d.ts"
+  ],
+  "exclude": ["node_modules", "build"]
 }

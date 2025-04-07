@@ -1,4 +1,5 @@
-import React, {
+import type React from "react";
+import {
   Suspense,
   type ElementType,
   type ComponentProps,
@@ -6,6 +7,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import Skeleton from "./skeleton.component";
 
 type ImageModule = { default: string };
 
@@ -21,6 +23,9 @@ type CacheEntry = {
   promise?: Promise<void>;
 };
 
+/**
+ * A simple in-memory cache for image URLs.
+ */
 const imageCache = new Map<string, CacheEntry>();
 
 const isValidUrl = (str: string): boolean => {
@@ -69,10 +74,7 @@ function preloadImage(path: string): CacheEntry {
     return cacheEntry;
   }
 
-  const url = path.startsWith("themes/")
-    ? `/src/assets/themes/${path.replace("themes/", "")}`
-    : `/src/assets/images/${path}`;
-  const imageLoader = images[url];
+  const imageLoader = images[`/src/assets/${path}`];
 
   if (!imageLoader) {
     if (import.meta.env.DEV) {
@@ -94,10 +96,16 @@ function preloadImage(path: string): CacheEntry {
 
   return cacheEntry;
 }
-
+/**
+ * This hook returns the path of the image file for a given path.
+ * It handles caching and preloading of images. Handles hydration mismatch by
+ * deferring client-side loading.
+ * @param path - The path of the image file.
+ * @returns The path of the image file.
+ */
 function useImage(path: string): string | undefined {
   const pathRef = useRef<string>(path);
-  const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState(import.meta.env.SSR);
   pathRef.current = path;
 
   // Handle hydration mismatch by deferring client-side loading
@@ -121,30 +129,66 @@ function useImage(path: string): string | undefined {
   }
 }
 
-type ImageLoaderProps<ComponentType extends ElementType = "img"> = {
-  path: string;
-  as?: ComponentType;
-} & Omit<ComponentProps<ComponentType>, "src">;
+/**
+ * This type represents the `src` prop of a component that uses the {@link BBImage} component.
+ * @see {@link BBImage}
+ * @see {@link BBImageProps}
+ * @see {@link HTMLImageElement}
+ */
+type ComponentWithSrcProp = {
+  src: ImagesPath | ThemesPath | `${string}://${string}/${string}`;
+};
 
+/**
+ * This type represents the props of a component that uses the {@link BBImage} component.
+ * It extends the {@link ComponentProps} type with the `src` prop. (i.e., {@link HTMLImageElement})
+ * @see {@link ComponentWithSrcProp}
+ */
+type ReactComponentWithSrcProps<ComponentType extends ElementType> =
+  "src" extends keyof ComponentProps<ComponentType>
+    ? Omit<ComponentProps<ComponentType>, "src"> & ComponentWithSrcProp
+    : never;
+
+/**
+ * This type represents the props of the {@link ImageLoader} component.
+ * @param ComponentType - The component type to render.
+ */
+type ImageLoaderProps<ComponentType extends ElementType = "img"> = {
+  src: ComponentWithSrcProp["src"];
+  as?: ComponentType;
+};
+
+/**
+ * This component is a wrapper around the {@link ImageLoader} component that handles the `src` prop.
+ * @param src - The path of the image file.
+ * @param as - The component type to render.
+ * @param props - The props to pass to the component.
+ * @returns The rendered component.
+ * @see {@link ImageLoaderProps}
+ */
 function ImageLoader<ComponentType extends ElementType = "img">({
-  path,
+  src,
   as,
   ...props
 }: ImageLoaderProps<ComponentType>): React.ReactElement | null {
-  const imageSrc = useImage(path);
+  const imageSrc = useImage(src);
   const Component = as || "img";
 
-  return imageSrc ? <Component {...props} src={imageSrc} /> : null;
+  return typeof imageSrc === "string" && imageSrc.length > 0 ? (
+    <Component {...props} src={imageSrc} />
+  ) : null;
 }
 
-type BBImageProps<ComponentType extends ElementType = "img"> = Omit<
-  ComponentProps<ComponentType>,
-  "src"
-> & {
-  fallback?: React.ReactNode;
-  path: string;
-  as?: ComponentType;
-};
+/**
+ * This type represents the props of the {@link BBImage} component.
+ * @param ComponentType - The component type to render.
+ * @extends ReactComponentWithSrcProps - Extends the {@link ReactComponentWithSrcProps} type to add the `fallback` and `as` props.
+ */
+export type BBImageProps<ComponentType extends ElementType = "img"> =
+  ReactComponentWithSrcProps<ComponentType> & {
+    fallback?: React.ReactNode;
+    as?: ComponentType;
+  };
 
 /**
  * This component is a wrapper around the <img> tag that preloads the image
@@ -156,30 +200,33 @@ type BBImageProps<ComponentType extends ElementType = "img"> = Omit<
  * Usage:
  * ```tsx
  * // With dynamic import
- * <BBImage path="folder/image.png" alt="Description" />
+ * <BBImage src="folder/image.png" alt="Description" />
  *
  * // With URL
- * <BBImage path="https://example.com/image.jpg" alt="Description" />
+ * <BBImage src="https://example.com/image.jpg" alt="Description" />
  * ```
+ * @param rest - The {@link BBImageProps} to pass to the {@link BBImage} component.
+ * @returns The rendered component.
+ * @see {@link BBImageProps}
  */
-export default function BBImage<ComponentType extends ElementType = "img">(
-  props: BBImageProps<ComponentType>,
-): React.ReactElement {
-  if (import.meta.env.DEV && !("alt" in props)) {
+export default function BBImage<ComponentType extends ElementType = "img">({
+  fallback,
+  ...rest
+}: BBImageProps<ComponentType>): React.ReactElement {
+  if (import.meta.env.DEV && !("alt" in rest)) {
     console.warn(
-      `BBImage component is missing an alt prop. This will cause a11y issues.`,
+      "BBImage component for",
+      rest.src,
+      "is missing an alt prop. This will cause a11y issue.",
     );
   }
 
-  // Use a simpler fallback during SSR to avoid hydration mismatches
-  const fallback =
-    typeof window === "undefined"
-      ? null
-      : (props.fallback ?? <div>Loading...</div>);
+  const MyAss =
+    typeof window === "undefined" ? null : (fallback ?? <Skeleton />);
 
   return (
-    <Suspense fallback={fallback}>
-      <ImageLoader {...props} path={props.path} as={props.as} />
+    <Suspense fallback={MyAss}>
+      <ImageLoader {...rest} />
     </Suspense>
   );
 }

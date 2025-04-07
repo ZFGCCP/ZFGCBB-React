@@ -1,5 +1,5 @@
 export type BaseBB = {
-  id: Number;
+  id: number;
 };
 
 export type BBPermission =

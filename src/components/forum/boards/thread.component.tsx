@@ -30,6 +30,7 @@ import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBPaginator from "../../common/paginator/bbPaginator.component";
 import { useNavigate, useSearchParams } from "react-router";
+import BBLink from "@/components/common/bbLink.component";
 
 const Style = {
   messageWrapper: styled.div<{ theme: Theme }>`
@@ -82,10 +83,10 @@ const Style = {
   `,
 };
 
-const ForumThread: React.FC<{ threadId: string; pageNo: string }> = ({
-  threadId: paramsThreadId,
-  pageNo: paramsPageNo,
-}) => {
+const ForumThread: React.FC<{
+  threadId: string;
+  pageNo: string;
+}> = ({ threadId: paramsThreadId, pageNo: paramsPageNo }) => {
   const navigate = useNavigate();
   const threadId = parseInt(paramsThreadId!);
   const currentPage = parseInt(paramsPageNo!);
@@ -151,11 +152,18 @@ const ForumThread: React.FC<{ threadId: string; pageNo: string }> = ({
     setCurrentMsg(msg);
   };
 
-  const submitPost = (msg: Message, threadId: Number) => {};
+  const submitPost = (msg: Message, threadId: number) => {};
 
   return (
     <>
       <div className="row">
+        <div className="col-12 mt-2 d-flex gap-2">
+          <BBLink to="/forum">ZFGC.com</BBLink>
+          <span>&gt;&gt;</span>
+          <BBLink to={`/forum/board/${thread?.boardId}/1`}>Board</BBLink>
+          <span>&gt;&gt;</span>
+          <span>{thread?.threadName}</span>
+        </div>
         <div className="col-12 mt-2">
           <Widget widgetTitle={thread ? thread.threadName : ""}>
             {thread?.messages?.map((msg) => {

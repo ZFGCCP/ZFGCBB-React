@@ -1,15 +1,13 @@
+import "./assets/App.css";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-import { ThemeProvider } from "./providers/theme/themeProvider";
-import { UserProvider } from "./providers/user/userProvider";
+import ThemeProvider from "./providers/theme/themeProvider";
+import UserProvider from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import "./assets/App.css";
-import ContentView from "./components/common/contentView.component";
+import RootLayout from "./rootLayout.component";
 
 export function HydrateFallback() {
-  return (
-    <img src="https://pa1.aminoapps.com/7508/074c64ca038d1e4a61d03fede5555ef1fbc047c5r1-640-640_hq.gif" />
-  );
+  return <></>;
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -20,9 +18,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <Meta />
         <Links />
+        <base href={import.meta.env.BASE_URL ?? "/"} />
       </head>
       <body id="root">
-        <ContentView children={children} />
+        {children}
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -35,12 +34,22 @@ export default function App() {
     <QueryProvider>
       <UserProvider>
         <ThemeProvider>
-          <Outlet />
+          <RootLayout children={<Outlet />} />
         </ThemeProvider>
       </UserProvider>
-      <ReactQueryDevtools />
+      {(import.meta.env.DEV && <ReactQueryDevtools />) || null}
     </QueryProvider>
   );
 }
 
-export function ErrorBoundary() {}
+export function ErrorBoundary() {
+  return (
+    <main>
+      <p>Something went wrong. Please try again later.</p>
+    </main>
+  );
+}
+
+export function meta() {
+  return [{ title: "ZFGC.com" }];
+}

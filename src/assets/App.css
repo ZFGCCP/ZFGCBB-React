@@ -1,11 +1,4 @@
-@import url("../../node_modules/bootstrap/dist/css/bootstrap.min.css");
-
-.container-xxl {
-  @media (min-width: 1400px) {
-    max-width: 145rem;
-  }
-}
-
+@import url("bootstrap/dist/css/bootstrap.min.css");
 :root {
   --bs-body-bg: none;
   --bs-link-hover-color: none;
@@ -15,6 +8,7 @@
   --linaria-2: #f15f79;
   --text: #fff;
   --bg: #204378;
+
   box-sizing: border-box;
 }
 
@@ -23,22 +17,26 @@ body,
 #root {
   height: 100dvh;
   width: 100dvw;
-}
-
-html,
-body {
   overflow: hidden;
-}
+  @media (min-width: 768px) {
+    overflow: auto;
+  }
 
-#root {
-  overflow: auto;
   background-color: var(--bg);
   color: var(--text);
+  font-family: sans-serif;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
 }
 
-body {
-  font-family: sans-serif;
+.container-xxl {
+  @media (min-width: 1400px) {
+    max-width: 145rem;
+  }
 }
+
+/** FIXME: #111 move the bbcode styles elsewhere */
 .bb-code-b {
   font-weight: bold;
 }

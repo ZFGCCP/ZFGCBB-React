@@ -85,65 +85,61 @@ const MemberListContainer: React.FC = () => {
 
   return (
     <>
-      <div className="row">
-        <div className="col-12 my-2">
-          <BBTable>
-            <thead>
-              <Style.row className="tableRow" theme={currentTheme}>
-                <th></th>
-                <th></th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Joined</th>
-                <th>Last Seen</th>
-              </Style.row>
-              <Style.row className="subRow" theme={currentTheme}>
-                <th colSpan={7}></th>
-              </Style.row>
-            </thead>
-            <tbody>
-              {(memberList &&
-                memberList.length > 0 &&
-                memberList?.map((user) => {
-                  return (
-                    <Style.row
-                      className="tableRow body"
-                      theme={currentTheme}
-                      key={`${user.id}`}
-                    >
-                      <td></td>
-                      <td></td>
-                      <td>{user.displayName}</td>
-                      <td>email</td>
-                      <td>joined</td>
-                      <td>last seen</td>
-                    </Style.row>
-                  );
-                }) && (
-                  <Style.row className="tableRow" theme={currentTheme}>
-                    <td>
-                      <Style.boardFooter theme={currentTheme}>
-                        {memberList && (
-                          <BBPaginator
-                            numPages={memberList.length / 10}
-                            currentPage={Number(currentPage)}
-                            onPageChange={loadNewPage}
-                          />
-                        )}
-                      </Style.boardFooter>
-                    </td>
-                  </Style.row>
-                )) || (
-                <Style.row className="tableRow body" theme={currentTheme}>
-                  <td colSpan={7}>
-                    <div>Sure looks like a ghost town hahahahaha! 👻</div>
-                  </td>
+      <BBTable>
+        <thead>
+          <Style.row className="tableRow" theme={currentTheme}>
+            <th></th>
+            <th></th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Joined</th>
+            <th>Last Seen</th>
+          </Style.row>
+          <Style.row className="subRow" theme={currentTheme}>
+            <th colSpan={7}></th>
+          </Style.row>
+        </thead>
+        <tbody>
+          {(memberList &&
+            memberList.length > 0 &&
+            memberList?.map((user) => {
+              return (
+                <Style.row
+                  className="tableRow body"
+                  theme={currentTheme}
+                  key={`${user.id}`}
+                >
+                  <td></td>
+                  <td></td>
+                  <td>{user.displayName}</td>
+                  <td>email</td>
+                  <td>joined</td>
+                  <td>last seen</td>
                 </Style.row>
-              )}
-            </tbody>
-          </BBTable>
-        </div>
-      </div>
+              );
+            }) && (
+              <Style.row className="tableRow" theme={currentTheme}>
+                <td>
+                  <Style.boardFooter theme={currentTheme}>
+                    {memberList && (
+                      <BBPaginator
+                        numPages={memberList.length / 10}
+                        currentPage={Number(currentPage)}
+                        onPageChange={loadNewPage}
+                      />
+                    )}
+                  </Style.boardFooter>
+                </td>
+              </Style.row>
+            )) || (
+            <Style.row className="tableRow body" theme={currentTheme}>
+              <td colSpan={7}>
+                <div>Sure looks like a ghost town hahahahaha! 👻</div>
+              </td>
+            </Style.row>
+          )}
+        </tbody>
+      </BBTable>
     </>
   );
 };
