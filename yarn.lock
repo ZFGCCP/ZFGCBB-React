@@ -1353,7 +1353,7 @@ __metadata:
     axios: "npm:^1.8.4"
     bootstrap: "npm:^5.3.5"
     html-react-parser: "npm:^5.2.3"
-    isbot: "npm:^5.1.25"
+    isbot: "npm:^5.1.26"
     prettier: "npm:3.5.3"
     react: "npm:19.1.0"
     react-bootstrap: "npm:^2.10.9"
@@ -2556,10 +2556,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isbot@npm:^5.1.25":
-  version: 5.1.25
-  resolution: "isbot@npm:5.1.25"
-  checksum: 10c0/e3ad2c4a77ea358723385345e8f3d0a39f1b20fb9095b55c96b8850ce7270633ae08c6afe81963af7c89a12a94637d612a1e8c8d2061f8bceb4ebe573549a425
+"isbot@npm:^5.1.26":
+  version: 5.1.26
+  resolution: "isbot@npm:5.1.26"
+  checksum: 10c0/4ae4477c2f2e75feac4c10c40e709371bdd360cbe369e909acbf8a1ac3faa6cea75b963b41bd46ad52277f06daee88a0a53055086375e7a9da5aff8e1332f969
   languageName: node
   linkType: hard
 
