@@ -1,11 +1,11 @@
 import type React from "react";
 import { useContext } from "react";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import type { Theme } from "../../../types/theme";
 
 const Style = {
-  widgetMain: styled.div<{ theme: Theme }>`
+  widgetMain: styled.section<{ theme: Theme }>`
     background-color: ${(props) => props.theme.headerColor};
     border: ${(props) => props.theme.borderWidth} solid black;
 

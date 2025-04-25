@@ -1,6 +1,6 @@
 import type React from "react";
 import { useContext } from "react";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import { Button } from "react-bootstrap";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import type { Theme } from "../../../types/theme";
@@ -43,6 +43,7 @@ const FooterButtons: React.FC<{ options: FooterConfig[] }> = ({ options }) => {
       {options.map((opt) => {
         return (
           <Style.FooterButton
+            key={`${opt.label}`}
             onClick={() => opt.callback()}
             className="footer-btn px-2"
             theme={currentTheme}

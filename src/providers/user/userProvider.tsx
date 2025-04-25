@@ -5,16 +5,16 @@ import type { User } from "../../types/user";
 
 const emptyUser = {
   id: 0,
-  displayName: "",
+  displayName: "Guest",
   permissions: [],
 } as User;
 
-const UserContext = createContext<User>(emptyUser);
+export const UserContext = createContext<User>(emptyUser);
 
 const UserProvider: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
-  const { data: user } = useBBQuery<User>("users/loggedInUser");
+  const { data: user } = useBBQuery<User>("/users/loggedInUser");
 
   return (
     <UserContext.Provider value={user ? user : emptyUser}>
@@ -22,5 +22,4 @@ const UserProvider: React.FC<{ children?: React.ReactNode }> = ({
     </UserContext.Provider>
   );
 };
-
-export { UserProvider, UserContext };
+export default UserProvider;

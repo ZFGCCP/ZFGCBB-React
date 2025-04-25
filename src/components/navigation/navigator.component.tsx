@@ -1,16 +1,16 @@
 import type React from "react";
-import { styled } from "@linaria/react";
-import BBLink from "../common/bbLink";
+import { styled } from "styled-components";
+import BBLink, {
+  type BBLinkProps,
+  type RoutePaths,
+} from "../common/bbLink.component";
 
 const Style = {
   subTabs: styled.div`
     background-color: #1e2b44;
   `,
 
-  wrapper: styled.div`
-    position: relative;
-    z-index: 2;
-  `,
+  wrapper: styled.nav``,
 };
 
 const NavTabStyle = {
@@ -19,19 +19,17 @@ const NavTabStyle = {
     background-color: #1e2b44;
     border-bottom: 0;
     height: 2rem;
-
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
+    border-radius: 0.5rem 0.5rem 0 0;
   `,
 };
 
-const NavTab: React.FC<{ title: String; path: `/${string}` }> = ({
+const NavTab: React.FC<Omit<BBLinkProps, "relative">> = ({
   title,
-  path,
+  ...props
 }) => {
   return (
     <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
-      <BBLink to={path} relative="path">
+      <BBLink {...props} relative="path">
         {title}
       </BBLink>
     </NavTabStyle.tab>
@@ -40,21 +38,25 @@ const NavTab: React.FC<{ title: String; path: `/${string}` }> = ({
 
 const Navigator: React.FC = () => {
   return (
-    <Style.wrapper className="d-none d-md-flex pt-3 align-items-end">
-      <NavTab title="Home" path="/" />
-      <NavTab title="Forum" path="/forum" />
+    <Style.wrapper className="d-none d-md-flex align-items-end">
+      <NavTab title="Home" to="/" />
+      <NavTab title="Forum" to="/forum" prefetch="intent" />
       <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
-        <BBLink to={"https://discord.gg/NP2nNKjun6"} relative="path">
+        <BBLink
+          to={"https://discord.gg/NP2nNKjun6"}
+          relative="path"
+          target="_blank"
+        >
           Chat
         </BBLink>
       </NavTabStyle.tab>
       <NavTabStyle.tab className="d-flex px-4 mx-1 align-items-center">
-        <BBLink to={"http://wiki.zfgc.com"} relative="path">
+        <BBLink to={"http://wiki.zfgc.com"} relative="path" target="_blank">
           Wiki
         </BBLink>
       </NavTabStyle.tab>
-      <NavTab title="Projects" path="/" />
-      <NavTab title="Resources" path="/" />
+      <NavTab title="Projects" to="/projects" />
+      <NavTab title="Resources" to="/resources" />
     </Style.wrapper>
   );
 };

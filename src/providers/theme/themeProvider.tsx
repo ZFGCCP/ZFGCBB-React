@@ -21,7 +21,7 @@ const midnightTheme = {
 const themeMap: Map<String, Theme> = new Map();
 themeMap.set("midnight", midnightTheme);
 
-const ThemeContext = createContext<ThemeWrapper>({
+export const ThemeContext = createContext<ThemeWrapper>({
   currentTheme: midnightTheme,
 });
 
@@ -47,4 +47,4 @@ const ThemeProvider: React.FC<{ children?: React.ReactNode }> = ({
   );
 };
 
-export { ThemeContext, ThemeProvider };
+export default ThemeProvider;

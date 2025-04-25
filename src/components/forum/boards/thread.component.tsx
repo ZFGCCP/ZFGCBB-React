@@ -7,7 +7,7 @@ import {
   useContext,
   useCallback,
 } from "react";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faReply,
@@ -29,6 +29,8 @@ import HasPermission from "../../common/security/HasPermission.component";
 import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBPaginator from "../../common/paginator/bbPaginator.component";
+import { useNavigate, useSearchParams } from "react-router";
+import BBLink from "@/components/common/bbLink.component";
 
 const Style = {
   messageWrapper: styled.div<{ theme: Theme }>`
@@ -44,6 +46,11 @@ const Style = {
     }
   `,
 
+  signatureWrapper: styled.div`
+    flex-grow: 1;
+    border-top: 1px solid black;
+  `,
+
   messageBody: styled.div`
     overflow-wrap: anywhere;
   `,
@@ -57,7 +64,9 @@ const Style = {
     font-size: 0.8rem;
   `,
 
-  time: styled.div``,
+  time: styled.div`
+    height: 3.3125rem;
+  `,
 
   graveDigWarning: styled.div`
     border: 0.1rem solid red;
@@ -68,32 +77,35 @@ const Style = {
   threadFooter: styled.div<{ theme: Theme }>`
     background-color: ${(props) => props.theme.footerColor};
   `,
+
+  lastEdit: styled.div`
+    font-size: 0.8rem;
+  `,
 };
 
-const ForumThread: React.FC<{ threadId: string }> = ({
-  threadId: paramsThreadId,
-}) => {
+const ForumThread: React.FC<{
+  threadId: string;
+  pageNo: string;
+}> = ({ threadId: paramsThreadId, pageNo: paramsPageNo }) => {
+  const navigate = useNavigate();
   const threadId = parseInt(paramsThreadId!);
+  const currentPage = parseInt(paramsPageNo!);
 
   const textAreaRef = useRef("");
   let cursorPosition = 0;
   const [showReplyBox, setShowReplyBox] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const [msgText, setMsgText] = useState<
     string | number | readonly string[] | undefined
   >("");
   const { data: thread } = useBBQuery<Thread>(
-    `thread/${threadId}?pageNo=${currentPage}&numPerPage=10`,
+    `/thread/${threadId}?pageNo=${currentPage}&numPerPage=10`,
   );
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
   const { currentTheme } = useContext(ThemeContext);
 
-  const loadNewPage = useCallback(
-    (pageNo: number) => {
-      setCurrentPage(pageNo);
-    },
-    [setCurrentPage],
-  );
+  const loadNewPage = (pageNo: number) => {
+    navigate(`/forum/thread/${threadId}/${pageNo}`);
+  };
 
   const footer = useMemo(() => {
     return [
@@ -140,27 +152,40 @@ const ForumThread: React.FC<{ threadId: string }> = ({
     setCurrentMsg(msg);
   };
 
-  const submitPost = (msg: Message, threadId: Number) => {};
+  const submitPost = (msg: Message, threadId: number) => {};
 
   return (
     <>
       <div className="row">
+        <div className="col-12 mt-2 d-flex gap-2">
+          <BBLink to="/forum">ZFGC.com</BBLink>
+          <span>&gt;&gt;</span>
+          <BBLink to={`/forum/board/${thread?.boardId}/1`}>Board</BBLink>
+          <span>&gt;&gt;</span>
+          <span>{thread?.threadName}</span>
+        </div>
         <div className="col-12 mt-2">
           <Widget widgetTitle={thread ? thread.threadName : ""}>
             {thread?.messages?.map((msg) => {
               return (
                 <Style.messageWrapper
                   className="d-flex flex-column flex-lg-row"
+                  key={`${msg.id}`}
                   theme={currentTheme}
                 >
                   <UserLeftPane user={msg.createdUser} />
-                  <div className="col-12 col-lg-10">
+                  <div className="d-flex flex-column col-12 col-lg-10">
                     <Style.buttonWrapper className="d-flex justify-content-between">
-                      <Style.time className="m-2 mt-0">
-                        {msg.currentMessage.createdTsAsString}
-                        <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                          {<span> - 192.168.1.1</span>}
-                        </HasPermission>
+                      <Style.time className="p-2">
+                        <div>
+                          {msg.createdTsAsString}
+                          <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                            {<span> - 192.168.1.1</span>}
+                          </HasPermission>
+                        </div>
+                        <Style.lastEdit>
+                          Last Edit: {msg.currentMessage.createdTsAsString}
+                        </Style.lastEdit>
                       </Style.time>
                       <div className="d-flex justify-content-end">
                         <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
@@ -219,6 +244,14 @@ const ForumThread: React.FC<{ threadId: string }> = ({
                     <Style.messageBody className="m-2">
                       {parse(msg.currentMessage.messageText.toString())}
                     </Style.messageBody>
+                    {msg.createdUser.bioInfo?.signature?.trim() !== "" && (
+                      <Style.signatureWrapper className="d-flex align-items-end m-2 py-2">
+                        <div>
+                          {msg.createdUser.bioInfo?.signature &&
+                            parse(msg.createdUser.bioInfo?.signature)}
+                        </div>
+                      </Style.signatureWrapper>
+                    )}
                   </div>
                 </Style.messageWrapper>
               );

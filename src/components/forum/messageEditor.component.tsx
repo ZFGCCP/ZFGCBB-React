@@ -1,10 +1,10 @@
 import type React from "react";
 import { useRef } from "react";
 import { useBBQuery } from "../../hooks/useBBQuery";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import { Button, Form } from "react-bootstrap";
 import type { Message } from "../../types/forum";
-import { useBBMutation } from "../../providers/query/useBBMutation";
+import { useBBMutation } from "../../hooks/useBBMutation";
 import type { BaseBB } from "../../types/api";
 
 const Style = {
@@ -15,10 +15,10 @@ const Style = {
   `,
 };
 
-const MessageEditor: React.FC<{ threadId: Number }> = ({ threadId }) => {
+const MessageEditor: React.FC<{ threadId: number }> = ({ threadId }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { data: currentMsg } = useBBQuery<Message>(
-    `message/template?threadId=${threadId}`,
+    `/message/template?threadId=${threadId}`,
   );
 
   const cursorPosition = useRef<number | undefined>(0);

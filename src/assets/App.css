@@ -1,5 +1,34 @@
-@import url("../../node_modules/bootstrap/dist/css/bootstrap.min.css");
-/* @import "./index.css"; FIXME: #77 This should either be removed or added. */
+@import url("bootstrap/dist/css/bootstrap.min.css");
+:root {
+  --bs-body-bg: none;
+  --bs-link-hover-color: none;
+  --bs-tertiary-bg: none;
+  --bs-link-color: none;
+  --linaria-1: #b24592;
+  --linaria-2: #f15f79;
+  --text: #fff;
+  --bg: #204378;
+
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100dvh;
+  width: 100dvw;
+  overflow: hidden;
+  @media (min-width: 768px) {
+    overflow: auto;
+  }
+
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: sans-serif;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+}
 
 .container-xxl {
   @media (min-width: 1400px) {
@@ -7,13 +36,7 @@
   }
 }
 
-:root {
-  --bs-body-bg: none;
-  --bs-link-hover-color: none;
-  --bs-tertiary-bg: none;
-  --bs-link-color: none;
-}
-
+/** FIXME: #111 move the bbcode styles elsewhere */
 .bb-code-b {
   font-weight: bold;
 }

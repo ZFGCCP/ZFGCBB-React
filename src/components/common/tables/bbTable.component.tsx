@@ -1,7 +1,7 @@
 import type React from "react";
 import { useContext } from "react";
 import { Table } from "react-bootstrap";
-import { styled } from "@linaria/react";
+import { styled } from "styled-components";
 import type { Theme } from "../../../types/theme";
 import { ThemeContext } from "../../../providers/theme/themeProvider";
 
@@ -37,11 +37,20 @@ const Style = {
   `,
 };
 
-const BBTable: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const BBTable: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className,
+}) => {
   const { currentTheme } = useContext(ThemeContext);
 
   return (
-    <Style.Table className="my-0" striped hover responsive theme={currentTheme}>
+    <Style.Table
+      className={`my-0 ${className ?? ""}`}
+      striped
+      hover
+      responsive
+      theme={currentTheme}
+    >
       {children}
     </Style.Table>
   );
