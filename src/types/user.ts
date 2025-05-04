@@ -5,7 +5,6 @@ export type User = BaseBB & {
   theme?: string;
 
   bioInfo?: UserBioInfo;
-  avatar?: Avatar;
 
   permissions?: Permission[];
 };
@@ -15,13 +14,14 @@ export type UserBioInfo = BaseBB & {
   customTitle?: string;
   userId: number;
   signature?: string;
+  avatar?: Avatar;
 };
 
 export type Avatar = BaseBB & {
   userId: number;
   id: number;
   activeFlag: boolean;
-  url: string;
+  location: string;
 };
 
 export type Permission = BaseBB & {
