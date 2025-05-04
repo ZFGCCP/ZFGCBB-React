@@ -44,7 +44,11 @@ const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
         <Style.customTitle>{user?.bioInfo?.customTitle}</Style.customTitle>
       </Style.userNameHeader>
       <div className="p-2 d-flex flex-row-reverse flex-md-column align-items-center">
-        <div>{user.bioInfo && user.bioInfo.avatar && <Style.avatar src={user.bioInfo.avatar.location} />}</div>
+        <div>
+          {user.bioInfo && user.bioInfo.avatar && (
+            <Style.avatar src={user.bioInfo.avatar.location} />
+          )}
+        </div>
         <div className="d-none d-md-block">
           <BBImage
             src={`${import.meta.env.REACT_ZFGBB_API_URL}/image/3`}
