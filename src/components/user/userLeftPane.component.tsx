@@ -20,8 +20,8 @@ const Style = {
     border-radius: 50%;
 
     @media (min-width: 992px) {
-      width: 10rem;
-      height: 10rem;
+      max-width: 10rem;
+      max-height: 10rem;
       border: 0.2rem solid black;
       border-radius: 0;
     }
@@ -44,7 +44,11 @@ const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
         <Style.customTitle>{user?.bioInfo?.customTitle}</Style.customTitle>
       </Style.userNameHeader>
       <div className="p-2 d-flex flex-row-reverse flex-md-column align-items-center">
-        <div>{user.avatar && <Style.avatar src={user.avatar.url} />}</div>
+        <div>
+          {user.bioInfo && user.bioInfo.avatar && (
+            <Style.avatar src={user.bioInfo.avatar.location} />
+          )}
+        </div>
         <div className="d-none d-md-block">
           <BBImage
             src={`${import.meta.env.REACT_ZFGBB_API_URL}/image/3`}
