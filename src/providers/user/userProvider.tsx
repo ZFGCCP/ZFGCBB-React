@@ -7,6 +7,7 @@ const emptyUser = {
   id: 0,
   displayName: "Guest",
   permissions: [],
+  theme: "midnight",
 } as User;
 
 export const UserContext = createContext<User>(emptyUser);
