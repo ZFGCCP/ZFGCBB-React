@@ -3,14 +3,14 @@ import { useContext } from "react";
 import { UserContext } from "./providers/user/userProvider";
 import Navigator from "./components/navigation/navigator.component";
 import BBLink from "./components/common/bbLink.component";
-import { ThemeContext } from "./providers/theme/themeProvider";
+// import { ThemeContext } from "./providers/theme/themeProvider";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BBImage from "./components/common/bbImage.component";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   const { displayName } = useContext(UserContext);
-  const { currentTheme } = useContext(ThemeContext);
+  // const { currentTheme } = useContext(ThemeContext);
 
   return (
     <main className="grid grid-rows-[auto_1fr_auto] w-auto h-fit md:h-auto">
@@ -43,10 +43,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         {children}
       </article>
 
-      <footer
-        className="flex md:hidden justify-around items-center h-10 w-full relative z-[100001]"
-        style={{ backgroundColor: currentTheme.black }}
-      >
+      <footer className="flex md:hidden justify-around items-center h-10 w-full relative z-[100001] bg-background">
         <BBLink to="/">Home</BBLink>
         <BBLink to="/">Wiki</BBLink>
         <BBLink to="/forum" prefetch="intent">
