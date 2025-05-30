@@ -1,8 +1,9 @@
 import type { BaseBB, BBPermission } from "./api";
+import type { Theme } from "./theme";
 
 export type User = BaseBB & {
   displayName: string;
-  theme?: string;
+  theme?: Theme;
 
   bioInfo?: UserBioInfo;
 
