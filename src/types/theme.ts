@@ -1,19 +1,3 @@
-export type Theme = {
-  borderWidth: string;
+export type Theme = "midnight" | "kikori" | "zora" | "goron";
 
-  backgroundColor: string;
-  footerColor: string;
-  headerColor: string;
-  widgetColor: string;
-  tableRow: string;
-  tableRowAlt: string;
-  textColor: string;
-  black: string;
-  white: string;
-  linkColor: string;
-  linkColorVisited: string;
-};
-
-export type ThemeWrapper = {
-  currentTheme: Theme;
-};
+export type ThemeWrapper = Theme;

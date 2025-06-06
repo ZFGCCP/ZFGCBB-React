@@ -1,0 +1,6 @@
+@layer base {
+  .theme-midnight {
+    --color-background: #204378;
+    --color-text: #fff;
+  }
+}
