@@ -1500,7 +1500,7 @@ __metadata:
     "@types/styled-components": "npm:^5.1.34"
     "@vitejs/plugin-react-swc": "patch:@vitejs/plugin-react-swc@npm%3A3.8.1#~/.yarn/patches/@vitejs-plugin-react-swc-npm-3.8.1-68d4bcd3e1.patch"
     axios: "npm:^1.9.0"
-    bootstrap: "npm:^5.3.5"
+    bootstrap: "npm:^5.3.6"
     html-react-parser: "npm:^5.2.3"
     isbot: "npm:^5.1.26"
     prettier: "npm:3.5.3"
@@ -1648,12 +1648,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap@npm:^5.3.5":
-  version: 5.3.5
-  resolution: "bootstrap@npm:5.3.5"
+"bootstrap@npm:^5.3.6":
+  version: 5.3.6
+  resolution: "bootstrap@npm:5.3.6"
   peerDependencies:
     "@popperjs/core": ^2.11.8
-  checksum: 10c0/f0da8bd5e5f743d2d5f73ef531cec2483dec1da3e7aad1ce99d8823800eaedc2982e4c199eff9faf4630d3879261952f1f50c84bcb70ca75168dd5180cfc56ac
+  checksum: 10c0/1b3f8f4f265463b3cd6aece84135b521ff55f3225a5c16c6981fdd8fb2bfb53b35b0815bff63382e5c83f6d537c017ae8392afe34366d5d547e4fd507d086e1c
   languageName: node
   linkType: hard
 
