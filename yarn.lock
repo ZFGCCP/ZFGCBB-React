@@ -786,19 +786,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-router/express@npm:7.5.2":
-  version: 7.5.2
-  resolution: "@react-router/express@npm:7.5.2"
+"@react-router/express@npm:7.6.2":
+  version: 7.6.2
+  resolution: "@react-router/express@npm:7.6.2"
   dependencies:
-    "@react-router/node": "npm:7.5.2"
+    "@react-router/node": "npm:7.6.2"
   peerDependencies:
     express: ^4.17.1 || ^5
-    react-router: 7.5.2
+    react-router: 7.6.2
     typescript: ^5.1.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/19c62aa00132947b180c0b3111291e2787b2ec10806bd1cd4f3d62e30e31abe5448c42497b961605c0325818c0977b2918b5d0e5aeacb4a45e163b86065336c4
+  checksum: 10c0/8b17da2e3642c9997b24d7c295220c723ac7112b926783dd02f6e2eaacca98f3ee12e9fee93113526fc2eb61d4cffe7ceec2f2029138857b659063531dab0b8f
   languageName: node
   linkType: hard
 
@@ -835,22 +835,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-router/serve@npm:^7.5.2":
-  version: 7.5.2
-  resolution: "@react-router/serve@npm:7.5.2"
+"@react-router/node@npm:7.6.2":
+  version: 7.6.2
+  resolution: "@react-router/node@npm:7.6.2"
   dependencies:
-    "@react-router/express": "npm:7.5.2"
-    "@react-router/node": "npm:7.5.2"
+    "@mjackson/node-fetch-server": "npm:^0.2.0"
+    source-map-support: "npm:^0.5.21"
+    stream-slice: "npm:^0.1.2"
+    undici: "npm:^6.19.2"
+  peerDependencies:
+    react-router: 7.6.2
+    typescript: ^5.1.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/d58c892525688d44e31c1846174fc450dea22b2be55314e94f0ca72e2e2fe49c98dcd5f7ed8af8ff319d64e28818479712d472f305d0cc1e05de660bba4df545
+  languageName: node
+  linkType: hard
+
+"@react-router/serve@npm:^7.6.2":
+  version: 7.6.2
+  resolution: "@react-router/serve@npm:7.6.2"
+  dependencies:
+    "@react-router/express": "npm:7.6.2"
+    "@react-router/node": "npm:7.6.2"
     compression: "npm:^1.7.4"
     express: "npm:^4.19.2"
     get-port: "npm:5.1.1"
     morgan: "npm:^1.10.0"
     source-map-support: "npm:^0.5.21"
   peerDependencies:
-    react-router: 7.5.2
+    react-router: 7.6.2
   bin:
     react-router-serve: bin.js
-  checksum: 10c0/9e89bac3cc196935f14af3fd0e80aca829c005a4a400326738b2be73bc4f28c55aff4ca6b886793bbb49908a5cbea18098717a32608c125e81c5276a44cdd1ec
+  checksum: 10c0/8649d0fc227b345db5c929f4551e7f520e5a1422df488ff7977da91fcfa2f9bdbf6a849722432326c1968556e9ec97c7996a100f379dc2e333451e7ba0353822
   languageName: node
   linkType: hard
 
@@ -1490,7 +1508,7 @@ __metadata:
     "@react-router/dev": "npm:^7.5.2"
     "@react-router/fs-routes": "npm:^7.5.2"
     "@react-router/node": "npm:^7.5.2"
-    "@react-router/serve": "npm:^7.5.2"
+    "@react-router/serve": "npm:^7.6.2"
     "@swc/plugin-styled-components": "npm:^7.1.3"
     "@tanstack/react-query": "npm:^5.74.4"
     "@tanstack/react-query-devtools": "npm:^5.74.6"
