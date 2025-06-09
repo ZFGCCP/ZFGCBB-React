@@ -802,18 +802,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-router/fs-routes@npm:^7.5.2":
-  version: 7.5.2
-  resolution: "@react-router/fs-routes@npm:7.5.2"
+"@react-router/fs-routes@npm:^7.6.2":
+  version: 7.6.2
+  resolution: "@react-router/fs-routes@npm:7.6.2"
   dependencies:
     minimatch: "npm:^9.0.0"
   peerDependencies:
-    "@react-router/dev": ^7.5.2
+    "@react-router/dev": ^7.6.2
     typescript: ^5.1.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/e41bb59291f94ce23a5213d7711adee5a9d93fa019bc0cd80a4f52806e4e70df12a49d473cea9dddcdb37502b6e4d45e3ca328a7dd9002e762fcc4aec6b9145d
+  checksum: 10c0/ca3dfa563bdcd6b35df516701345351a6994bdef758acab8fe1779bfd024743593427f11e4ff6fc995b9f1c8f522c692f9c0027de90265abc076cd5eb65abba9
   languageName: node
   linkType: hard
 
@@ -1488,7 +1488,7 @@ __metadata:
     "@fortawesome/react-fontawesome": "npm:^0.2.2"
     "@popperjs/core": "npm:^2.11.8"
     "@react-router/dev": "npm:^7.5.2"
-    "@react-router/fs-routes": "npm:^7.5.2"
+    "@react-router/fs-routes": "npm:^7.6.2"
     "@react-router/node": "npm:^7.5.2"
     "@react-router/serve": "npm:^7.5.2"
     "@swc/plugin-styled-components": "npm:^7.1.3"
