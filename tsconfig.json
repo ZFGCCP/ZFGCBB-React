@@ -23,11 +23,6 @@
       "~/*": ["./src/*"]
     }
   },
-  "include": [
-    "src",
-    "build/types",
-    ".react-router/types/+register.ts",
-    ".react-router/types/+virtual.d.ts"
-  ],
+  "include": ["src", "build/types", ".react-router/types/+routes.ts"],
   "exclude": ["node_modules", "build"]
 }
