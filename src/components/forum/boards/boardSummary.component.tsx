@@ -29,14 +29,12 @@ const Style = {
 const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
   subBoards,
 }) => {
-  const { currentTheme } = useContext(ThemeContext);
-
   return (
     <BBTable className="table align-middle">
       <tbody>
         {subBoards?.map((sb) => {
           return (
-            <Style.forumRow key={`${sb.boardId}`} className="d-flex ">
+            <tr key={`${sb.boardId}`} className="d-flex min-h-16">
               <td className="col-2 col-md-1 align-content-center">
                 <BBImage
                   className="mt-0 mb-0"
@@ -50,17 +48,15 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
                   <BBLink to={`/forum/board/${sb.boardId}/1`}>
                     {sb.boardName}
                   </BBLink>
-                  <Style.latestPostLink className="d-inline-block d-md-none ms-4">
+                  <span className="d-inline-block d-md-none ms-4 text-sm">
                     <BBLink to={`/forum/thread/${sb.latestThreadId}/1`}>
                       Latest Post
                     </BBLink>
-                  </Style.latestPostLink>
+                  </span>
                 </h6>
-                <Style.forumDesc className="d-block d-lg-none">
-                  {sb.description}
-                </Style.forumDesc>
+                <div className="d-block d-lg-none">{sb.description}</div>
                 {sb.childBoards && (
-                  <Style.forumText className="d-block d-lg-none">
+                  <div className="d-block d-lg-none text-sm">
                     Child boards:{" "}
                     {sb.childBoards.map((cb) => {
                       return (
@@ -72,21 +68,21 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
                         </BBLink>
                       );
                     })}
-                  </Style.forumText>
+                  </div>
                 )}
-                <Style.forumText className="d-inline-block d-md-none">
+                <div className="d-inline-block d-md-none text-sm">
                   Threads: {sb.threadCount}
-                </Style.forumText>
-                <Style.forumText className="ms-2 d-inline-block d-md-none">
+                </div>
+                <div className="ms-2 d-inline-block d-md-none text-sm">
                   Posts: {sb.postCount}
-                </Style.forumText>
+                </div>
               </td>
 
               <td className="d-none d-lg-table-cell col-6 align-content-center">
                 <div className="d-flex flex-column">
-                  <Style.forumDesc>{sb.description}</Style.forumDesc>
+                  <div className="text-sm">{sb.description}</div>
                   {sb.childBoards && (
-                    <Style.forumText>
+                    <div className="text-sm">
                       Child boards:{" "}
                       {sb.childBoards.map((cb) => {
                         return (
@@ -98,21 +94,21 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
                           </BBLink>
                         );
                       })}
-                    </Style.forumText>
+                    </div>
                   )}
                 </div>
               </td>
 
               <td className="d-none d-md-table-cell col-2 col-lg-1 align-content-center">
-                <div className="d-flex flex-column">
-                  <Style.forumText>Threads: {sb.threadCount}</Style.forumText>
-                  <Style.forumText>Posts: {sb.postCount}</Style.forumText>
+                <div className="d-flex flex-column text-sm">
+                  <div>Threads: {sb.threadCount}</div>
+                  <div>Posts: {sb.postCount}</div>
                 </div>
               </td>
 
               <td className="d-none d-md-table-cell col-4 col-md-2 col-lg-2 align-content-center">
-                <div className="d-flex flex-column">
-                  <Style.forumText>
+                <div className="d-flex flex-column text-sm">
+                  <div>
                     <span>Last Post by: </span>
                     {sb.latestMessageOwnerId && sb.latestMessageOwnerId > 0 ? (
                       <BBLink to={`/user/profile/${sb.latestMessageOwnerId}`}>
@@ -121,19 +117,17 @@ const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
                     ) : (
                       <span>{sb.latestMessageUserName}</span>
                     )}
-                  </Style.forumText>
-                  <Style.forumText>
+                  </div>
+                  <div>
                     in{" "}
                     <BBLink to={`/forum/thread/${sb.latestThreadId}/1`}>
                       {sb.threadName}
                     </BBLink>
-                  </Style.forumText>
-                  <Style.forumText>
-                    on {sb.latestMessageCreatedTsAsString}
-                  </Style.forumText>
+                  </div>
+                  <div>on {sb.latestMessageCreatedTsAsString}</div>
                 </div>
               </td>
-            </Style.forumRow>
+            </tr>
           );
         })}
       </tbody>

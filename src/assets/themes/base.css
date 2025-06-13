@@ -1,7 +1,19 @@
 @layer base {
   @theme {
     --color-background: var(--color-black);
+    --color-background-alternate: var(--color-neutral-900);
     --color-text: var(--color-white);
+
+    --color-link: var(--color-text);
+    --color-link-hover: var(--color-text-light);
+    --color-link-visited: var(--color-text-light);
+    --color-link-active: var(--color-text-light);
+    --color-link-disabled: var(--color-text-light);
+    --color-link-focus: var(--color-text-light);
+
+    --color-table-header-background: var(--color-background-alternate);
+    --color-table-row: var(--color-background);
+    --color-table-row-alt: var(--color-background-alternate);
   }
 
   html,
