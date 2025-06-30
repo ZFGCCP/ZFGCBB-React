@@ -1301,12 +1301,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/plugin-styled-components@npm:^7.1.3":
-  version: 7.1.3
-  resolution: "@swc/plugin-styled-components@npm:7.1.3"
+"@swc/plugin-styled-components@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "@swc/plugin-styled-components@npm:8.0.2"
   dependencies:
     "@swc/counter": "npm:^0.1.3"
-  checksum: 10c0/5567c95038e26f69d1a5ab0fb430badffbda1b8fb4eea27430442486589410dfd6805ceda28b91c88502fbba4319f82d0534c6f8f9ff581e4ace5fb031ec4917
+  checksum: 10c0/1816bc11b66f86a90328fc8a9cc409885bdffb28e6813ee0b9cced461f7d8d55478e72a333783a13bd57a5fd1beabb7d18028f450b6cd5e7db5b66e4004d6740
   languageName: node
   linkType: hard
 
@@ -1491,7 +1491,7 @@ __metadata:
     "@react-router/fs-routes": "npm:^7.5.2"
     "@react-router/node": "npm:^7.5.2"
     "@react-router/serve": "npm:^7.5.2"
-    "@swc/plugin-styled-components": "npm:^7.1.3"
+    "@swc/plugin-styled-components": "npm:^8.0.2"
     "@tanstack/react-query": "npm:^5.74.4"
     "@tanstack/react-query-devtools": "npm:^5.74.6"
     "@types/node": "npm:^22.15.0"
