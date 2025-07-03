@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import type { User } from "../../types/user";
 import BBImage from "../common/bbImage.component";
 import BBLink from "../common/bbLink.component";
+import { useMemo } from "react";
 
 const Style = {
   pane: styled.div`
@@ -33,6 +34,17 @@ const Style = {
 };
 
 const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
+  const avatarSrc = useMemo(() => {
+    if (user.bioInfo?.avatar !== null) {
+      return user.bioInfo?.avatar?.url !== null &&
+        user.bioInfo?.avatar?.url !== ""
+        ? user.bioInfo?.avatar?.url
+        : `${import.meta.env.REACT_ZFGBB_API_URL}/content/image/${user.bioInfo.avatar.contentResourceId}`;
+    }
+
+    return `${import.meta.env.REACT_ZFGBB_API_URL}/content/image/3`;
+  }, [user]);
+
   return (
     <Style.pane className="col-12 col-lg-2">
       <Style.userNameHeader className="p-2">
@@ -44,16 +56,8 @@ const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
         <Style.customTitle>{user?.bioInfo?.customTitle}</Style.customTitle>
       </Style.userNameHeader>
       <div className="p-2 d-flex flex-row-reverse flex-md-column align-items-center">
-        <div>
-          {user.bioInfo && user.bioInfo.avatar && (
-            <Style.avatar src={user.bioInfo.avatar.location} />
-          )}
-        </div>
         <div className="d-none d-md-block">
-          <BBImage
-            src={`${import.meta.env.REACT_ZFGBB_API_URL}/image/3`}
-            alt="FIXME: add proper alt text"
-          />
+          <BBImage src={avatarSrc} alt="FIXME: add proper alt text" />
         </div>
       </div>
     </Style.pane>

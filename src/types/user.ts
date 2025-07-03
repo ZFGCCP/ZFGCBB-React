@@ -21,7 +21,8 @@ export type Avatar = BaseBB & {
   userId: number;
   id: number;
   activeFlag: boolean;
-  location: string;
+  url?: string;
+  contentResourceId?: number;
 };
 
 export type Permission = BaseBB & {
