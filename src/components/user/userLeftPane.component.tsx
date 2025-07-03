@@ -34,14 +34,16 @@ const Style = {
 };
 
 const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
-
   const avatarSrc = useMemo(() => {
-    if(user.bioInfo?.avatar !== null){
-      return user.bioInfo?.avatar?.url !== null &&  user.bioInfo?.avatar?.url !== "" ? user.bioInfo?.avatar?.url : `${import.meta.env.REACT_ZFGBB_API_URL}/content/image/${user.bioInfo.avatar.contentResourceId}`;
+    if (user.bioInfo?.avatar !== null) {
+      return user.bioInfo?.avatar?.url !== null &&
+        user.bioInfo?.avatar?.url !== ""
+        ? user.bioInfo?.avatar?.url
+        : `${import.meta.env.REACT_ZFGBB_API_URL}/content/image/${user.bioInfo.avatar.contentResourceId}`;
     }
-    
+
     return `${import.meta.env.REACT_ZFGBB_API_URL}/content/image/3`;
-  },[user]);
+  }, [user]);
 
   return (
     <Style.pane className="col-12 col-lg-2">
@@ -55,10 +57,7 @@ const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
       </Style.userNameHeader>
       <div className="p-2 d-flex flex-row-reverse flex-md-column align-items-center">
         <div className="d-none d-md-block">
-          <BBImage
-            src={avatarSrc}
-            alt="FIXME: add proper alt text"
-          />
+          <BBImage src={avatarSrc} alt="FIXME: add proper alt text" />
         </div>
       </div>
     </Style.pane>
