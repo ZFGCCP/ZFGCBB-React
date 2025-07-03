@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import type { User } from "../../types/user";
 import BBImage from "../common/bbImage.component";
 import BBLink from "../common/bbLink.component";
+import { useMemo } from "react";
 
 interface UserLeftPaneProps {
   user: User;
