@@ -256,15 +256,16 @@ If you would like to avoid having to setup a development environment on your act
       5. If you are working on a test, you can name your branch `test/my-test`.
       6. You are ready to start working on your branch!
 5. Working on your changes: Use your IDE of choice to edit files and save changes.
-   1. Use the `yarn dev` command to start the development server. Make sure to run `yarn install` before running the command.
+   1. Make sure to run `yarn install` every time you check out a branch.
+   2. Use the `yarn dev` command to start the development server.
       1. If you are using VSCode, you can use the `Launch zfgc.com` launch task to do this for you.
       2. For now, if cloning the [backend](https://github.com/ZFGCCP/ZFGCBB) is too much of a hassle, you can use the `yarn dev --mode=production` command to start the development server on `zfgc.com` or `Launch zfgc.com (production) in` VSCode. <!-- FIXME: remove this note when we have a container that can be pulled down and run locally -->
-   2. Use the `yarn format` command to format the code using Prettier.
-   3. Use the `yarn check` command to run type checking, linting, and formatting checks.
-   4. Repeat steps 1-3 as needed until `yarn check` passes.
+   3. Use the `yarn format` command to format the code using Prettier.
+   4. Use the `yarn check` command to run type checking, linting, and formatting checks.
+   5. Repeat steps 1-3 as needed until `yarn check` passes.
       1. Feel free to reach out on Discord if you have any questions.
-   5. Stage and commit your changes.
-   6. Push your changes to your branch on GitHub.
+   6. Stage and commit your changes.
+   7. Push your changes to your branch on GitHub.
 6. [Create a new pull request](https://github.com/ZFGCCP/ZFGCBB-React/compare) and request a review from one of the maintainers.
    1. Add a bullet point list of changes you made.
    2. Mention the issue number you are working on.
