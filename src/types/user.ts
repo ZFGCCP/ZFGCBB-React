@@ -21,7 +21,7 @@ export type Avatar = BaseBB & {
   userId: number;
   id: number;
   activeFlag: boolean;
-  url?: string;
+  url?: `${string}://${string}/${string}`;
   contentResourceId?: number;
 };
 

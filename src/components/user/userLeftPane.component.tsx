@@ -35,14 +35,13 @@ const Style = {
 
 const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
   const avatarSrc = useMemo(() => {
-    if (user.bioInfo?.avatar !== null) {
-      return user.bioInfo?.avatar?.url !== null &&
-        user.bioInfo?.avatar?.url !== ""
-        ? user.bioInfo?.avatar?.url
-        : `${import.meta.env.REACT_ZFGBB_API_URL}/content/image/${user.bioInfo.avatar.contentResourceId}`;
+    if (user.bioInfo?.avatar) {
+      return user.bioInfo?.avatar?.url && user.bioInfo?.avatar?.url?.trim()
+        ? user.bioInfo.avatar.url
+        : (`${import.meta.env.REACT_ZFGBB_API_URL}/content/image/${user.bioInfo.avatar.contentResourceId}` as `${string}://${string}/${string}`);
     }
 
-    return `${import.meta.env.REACT_ZFGBB_API_URL}/content/image/3`;
+    return `${import.meta.env.REACT_ZFGBB_API_URL}/content/image/3` as `${string}://${string}/${string}`;
   }, [user]);
 
   return (
