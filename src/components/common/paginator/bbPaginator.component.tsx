@@ -85,19 +85,23 @@ const BBPaginator: React.FC<BBPaginatorProps> = ({
           First
         </button>
 
-        {currentPage !== 1 && (
-          <button onClick={() => shiftPage(-1)} className={buttonClass}>
-            Prev
-          </button>
-        )}
+        <button
+          onClick={() => shiftPage(-1)}
+          className={buttonClass}
+          disabled={currentPage === 1}
+        >
+          Prev
+        </button>
 
         {pages}
 
-        {currentPage !== numPages && (
-          <button onClick={() => shiftPage(1)} className={buttonClass}>
-            Next
-          </button>
-        )}
+        <button
+          onClick={() => shiftPage(1)}
+          className={buttonClass}
+          disabled={currentPage === numPages}
+        >
+          Next
+        </button>
 
         <button
           onClick={() => onPageChange(numPages)}
