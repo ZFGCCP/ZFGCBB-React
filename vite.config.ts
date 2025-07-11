@@ -1,7 +1,5 @@
 import { defineConfig, loadEnv } from "vite";
 import { reactRouter } from "@react-router/dev/vite";
-import react from "@vitejs/plugin-react-swc";
-// import react from "@vitejs/plugin-react";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateImagePaths } from "./vite/plugins/vite-plugin-generate-image-paths";
@@ -16,9 +14,9 @@ export default defineConfig(({ mode }) => {
   return {
     base: env["BASE_URL"],
     plugins: [
-      react({
-        plugins: [["@swc/plugin-styled-components", {}]],
-      }),
+      // react({
+      //   plugins: [["@swc/plugin-styled-components", {}]],
+      // }),
       reactRouter(),
       generateImagePaths(),
     ],
@@ -27,13 +25,16 @@ export default defineConfig(({ mode }) => {
       target: "esnext",
     },
     server: {
-      allowedHosts: ["zfgc.com:28080", "localhost:8080"],
+      allowedHosts: [".zfgc.com"],
     },
     resolve: {
       alias: {
         "@": resolve(__dirname, "src"),
         "~": resolve(__dirname, "src"),
       },
+    },
+    ssr: {
+      noExternal: ["styled-components"],
     },
   };
 });
