@@ -24,7 +24,7 @@ const Style = {
  * make it easier to use.
  * @see {@link https://reactrouter.com/docs/en/v6/getting-started/overview#defining-routes}
  */
-export type RouteParams = Register["params"];
+export type RouteParams = Register["pages"];
 
 /**
  * Extracts the dynamic segments from a route path and replaces them with
