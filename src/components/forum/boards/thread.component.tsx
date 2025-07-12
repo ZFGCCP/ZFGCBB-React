@@ -148,25 +148,25 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                     </div>
 
                     <div className="flex-1 flex-col shrink min-w-0">
-                      <div className="border-b border-default p-3 bg-elevated shrink-0 min-h-[76px] flex items-start">
+                      <div className="border-b border-default p-3 bg-elevated shrink-0 min-h-[76px] flex items-start ">
                         <BBFlex
                           justify="between"
                           align="center"
-                          className="gap-2"
+                          className="gap-2 overflow-hidden min-w-0 size-fit whitespace-nowrap"
+                          wrap={false}
                         >
                           <div className="text-sm">
                             <div>
                               {new Date(msg.createdTsAsString).toLocaleString()}
                               <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
                                 <span className="text-muted">
-                                  {" "}
                                   - 192.168.1.1
                                 </span>
                               </HasPermission>
                             </div>
                             {msg.currentMessage.updatedTsAsString && (
                               <div className="text-muted">
-                                Last Edit:{" "}
+                                Last Edit:
                                 {new Date(
                                   msg.currentMessage.updatedTsAsString,
                                 ).toLocaleString()}
@@ -176,7 +176,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
 
                           <BBFlex gap="gap-2" wrap={true} className="text-sm">
                             <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
-                              <button className="text-toned hover: transition-colors">
+                              <button className="text-toned hover:transition-colors">
                                 <FontAwesomeIcon
                                   icon={faReply}
                                   className="mr-1"
@@ -186,7 +186,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                             </HasPermission>
                             <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
                               <button
-                                className="text-toned hover: transition-colors"
+                                className="text-toned hover:transition-colors"
                                 onClick={() => clickModify(msg)}
                               >
                                 <FontAwesomeIcon
@@ -197,7 +197,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                               </button>
                             </HasPermission>
                             <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                              <button className="text-toned hover: transition-colors hidden sm:inline-flex">
+                              <button className="text-toned hover:transition-colors hidden sm:inline-flex">
                                 <FontAwesomeIcon
                                   icon={faTrash}
                                   className="mr-1"
@@ -206,7 +206,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                               </button>
                             </HasPermission>
                             <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                              <button className="text-toned hover: transition-colors hidden md:inline-flex">
+                              <button className="text-toned hover:transition-colors hidden md:inline-flex">
                                 <FontAwesomeIcon
                                   icon={faShuffle}
                                   className="mr-1"
@@ -215,7 +215,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                               </button>
                             </HasPermission>
                             <HasPermission perms={["ZFGC_MESSAGE_VIEWER"]}>
-                              <button className="text-toned hover: transition-colors hidden md:inline-flex">
+                              <button className="text-toned hover:transition-colors hidden md:inline-flex">
                                 <FontAwesomeIcon
                                   icon={faBook}
                                   className="mr-1"
@@ -224,7 +224,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                               </button>
                             </HasPermission>
                             <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
-                              <button className="text-toned hover: transition-colors hidden lg:inline-flex">
+                              <button className="text-toned hover:transition-colors hidden lg:inline-flex">
                                 <FontAwesomeIcon
                                   icon={faFlag}
                                   className="mr-1"
@@ -233,7 +233,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                               </button>
                             </HasPermission>
                             <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                              <button className="text-toned hover: transition-colors hidden lg:inline-flex">
+                              <button className="text-toned hover:transition-colors hidden lg:inline-flex">
                                 <FontAwesomeIcon
                                   icon={faTriangleExclamation}
                                   className="mr-1"
