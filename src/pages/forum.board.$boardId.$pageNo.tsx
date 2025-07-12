@@ -219,13 +219,15 @@ const BoardContainer: React.FC = () => {
           </Widget>
         )}
 
-      <div className="my-3">
-        <BBFlex gap="gap-2" className="">
-          <BBLink to="/forum">ZFGC.com</BBLink>
-          <span>&gt;&gt;</span>
-          <span>{boardName}</span>
-        </BBFlex>
-      </div>
+      {!isLoading && (
+        <div className="my-3">
+          <BBFlex gap="gap-2" className="">
+            <BBLink to="/forum">ZFGC.com</BBLink>
+            <span>&gt;&gt;</span>
+            <span>{boardName}</span>
+          </BBFlex>
+        </div>
+      )}
 
       <div className="bg-accented p-4 mb-4">
         <BoardTablePaginatorComponent
@@ -247,6 +249,16 @@ const BoardContainer: React.FC = () => {
           />
         </div>
       </Widget>
+
+      {!isLoading && (
+        <div className="my-3">
+          <BBFlex gap="gap-2" className="">
+            <BBLink to="/forum">ZFGC.com</BBLink>
+            <span>&gt;&gt;</span>
+            <span>{boardName}</span>
+          </BBFlex>
+        </div>
+      )}
     </>
   );
 };
