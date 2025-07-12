@@ -16,8 +16,8 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
 
   return (
     <div className="grid grid-rows-[1fr_auto] md:grid-rows-[1fr] h-dvh w-dvw overflow-hidden">
-      <main className="overflow-auto bg-default min-h-0 size-full scrollbar-color-default mx-auto scrollbar-gutter-stable pl-4 sm:pl-3 pr-2">
-        <header className="hidden md:flex justify-between items-end border-b-2 border-default bg-default">
+      <main className="overflow-auto bg-default min-h-0 size-full scrollbar-color-default scrollbar-gutter-stable px-1.5 mr-1">
+        <header className="hidden md:flex justify-between items-end border-b-2 border-default bg-default px-2">
           <div className="z-10">
             <BBImage
               src="images/logo.png"
@@ -26,7 +26,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
             />
             <Navigator />
           </div>
-          <div className="self-center p-4">
+          <div className="self-center px-2">
             <p className="mb-0">
               Welcome, {displayName}! <span>Please login or </span>
               <BBLink to="/user/auth/registration">register</BBLink>.
