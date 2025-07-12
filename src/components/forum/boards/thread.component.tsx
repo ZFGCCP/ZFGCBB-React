@@ -117,7 +117,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
         </div>
 
         {thread && !isLoading && (
-          <div className="bg-accented p-4">
+          <div className="bg-accented p-4 scrollbar-thin">
             <BBPaginator
               numPages={thread.pageCount}
               currentPage={currentPage}
@@ -145,10 +145,10 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                         <BBFlex
                           justify="between"
                           align="center"
-                          className="flex-col sm:flex-row gap-2 sm:gap-0"
+                          className="gap-2 sm:gap-0"
                         >
                           <div className="text-sm">
-                            <div className="hidden lg:block">
+                            <div>
                               {new Date(msg.createdTsAsString).toLocaleString()}
                               <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
                                 <span className="text-muted">
@@ -238,13 +238,13 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                         </BBFlex>
                       </div>
 
-                      <div className="p-3 break-words bg-elevated flex-1 min-h-64 max-h-[calc(100dvh-25dvh)] overflow-auto snap-start snap-mandatory">
+                      <div className="p-3 break-words bg-elevated flex-1 min-h-64 max-h-[calc(100dvh-25dvh)] overflow-auto snap-start snap-mandatory scrollbar-thin">
                         {parse(msg.currentMessage.messageText.toString())}
                       </div>
 
                       {msg.createdUser.bioInfo?.signature?.trim() && (
                         <div className="border-t border-default p-3 bg-muted flex-shrink-0">
-                          <div className="overflow-x-auto max-h-42">
+                          <div className="overflow-x-auto max-h-42 scrollbar-thin">
                             {msg.createdUser.bioInfo?.signature &&
                               parse(msg.createdUser.bioInfo?.signature)}
                           </div>
@@ -258,7 +258,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
           </div>
 
           {thread && !isLoading && (
-            <div className="bg-accented p-4">
+            <div className="bg-accented p-4 scrollbar-thin">
               <BBPaginator
                 numPages={thread.pageCount}
                 currentPage={currentPage}

@@ -79,7 +79,7 @@ const MemberListContainer: React.FC = () => {
       />
 
       {memberList && !isLoading && (
-        <div className="bg-accented p-4">
+        <div className="bg-accented p-4 scrollbar-thin">
           <BBPaginator
             numPages={Math.ceil(memberList.length / 10)}
             currentPage={Number(currentPage)}

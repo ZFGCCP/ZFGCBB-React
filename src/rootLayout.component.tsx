@@ -16,14 +16,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
 
   return (
     <div className="grid grid-rows-[1fr_auto] md:grid-rows-[1fr] h-dvh w-dvw overflow-hidden">
-      <main
-        className="overflow-auto bg-default min-h-0 size-full"
-        style={{
-          scrollbarGutter: "stable",
-          scrollbarColor:
-            "var(--background-color-inverted) var(--background-color-default)",
-        }}
-      >
+      <main className="overflow-auto bg-default min-h-0 size-full scrollbar-gutter-stable scrollbar-color-default">
         <header className="hidden md:flex justify-between items-end border-b-2 border-default bg-default">
           <div className="z-10">
             <BBImage

@@ -12,19 +12,15 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
     {
       key: "icon",
       label: "",
-      className: "w-8 flex-shrink-0",
-      render: () => (
-        <div className="flex justify-center">
-          <div className="theme-board-status" />
-        </div>
-      ),
+      className: "max-w-8 grow",
+      render: () => <div className="theme-board-status " />,
     },
     {
       key: "boardInfo",
       label: "Board",
-      className: "flex-1 min-w-0",
+      className: "grow",
       render: (_, board) => (
-        <div className="space-y-1 py-1">
+        <div>
           <h6 className="font-semibold">
             <BBLink to={`/forum/board/${board.boardId}/1`} prefetch="intent">
               {board.boardName}
@@ -47,13 +43,12 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
             </div>
           )}
 
-          <div className="flex gap-4 md:hidden text-sm text-highlighted">
-            <span>Threads: {board.threadCount}</span>
-            <span>Posts: {board.postCount}</span>
-          </div>
-
           <div className="md:hidden text-sm text-highlighted space-y-1">
-            <div>
+            <div className="flex gap-4 md:hidden text-sm text-highlighted">
+              <span>Threads: {board.threadCount}</span>
+              <span>Posts: {board.postCount}</span>
+            </div>
+            <div className="flex gap-4 text-sm text-highlighted">
               <span>Last post by: </span>
               {board.latestMessageOwnerId && board.latestMessageOwnerId > 0 ? (
                 <BBLink
@@ -66,7 +61,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
                 <span>{board.latestMessageUserName}</span>
               )}
             </div>
-            <div className="text-ellipsis whitespace-nowrap w-full overflow-hidden">
+            <div className="text-ellipsis whitespace-nowrap w-11/12 overflow-hidden">
               in{" "}
               <BBLink
                 to={`/forum/thread/${board.latestThreadId}/1`}
@@ -83,10 +78,10 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
     {
       key: "stats",
       label: "Stats",
-      className: "w-24 flex-shrink-0 text-center",
+      className: "grow ",
       hideOnMobile: true,
       render: (_, board) => (
-        <div className="space-y-1 text-sm">
+        <div className="space-y-1 text-sm text-right">
           <div className="text-highlighted">Threads</div>
           <div className="font-medium">{board.threadCount}</div>
           <div className="text-highlighted">Posts</div>
@@ -97,7 +92,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
     {
       key: "lastPost",
       label: "Last Post",
-      className: "w-36 flex-shrink-0",
+      className: "w-72 shrink-0",
       hideOnMobile: true,
       render: (_, board) => (
         <div className="space-y-1 text-sm">
@@ -114,7 +109,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
               <span>{board.latestMessageUserName}</span>
             )}
           </div>
-          <div className="text-highlighted overflow-hidden text-ellipsis whitespace-nowrap w-full">
+          <div className="text-highlighted overflow-hidden text-ellipsis whitespace-nowrap">
             in{" "}
             <BBLink to={`/forum/thread/${board.latestThreadId}/1`}>
               {board.threadName}
@@ -134,7 +129,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
       data={subBoards}
       emptyMessage="No boards available"
       showHeader={false}
-      rowClassName="py-2 px-4"
+      rowClassName="py-2 px-4 "
     />
   );
 };

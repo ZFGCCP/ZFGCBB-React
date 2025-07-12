@@ -24,7 +24,7 @@ function BoardTablePaginatorComponent({
   isLoading: boolean;
 } & Omit<BBPaginatorProps, "numPages">) {
   return (
-    <div className="flex justify-left">
+    <div className="flex justify-left scrollbar-thin">
       {!isLoading && board ? (
         <BBPaginator
           numPages={board.pageCount}

@@ -1,4 +1,3 @@
-import type React from "react";
 import BBFlex from "../layout/bbFlex.component";
 
 export default function BBTable<T extends object>({
@@ -10,7 +9,7 @@ export default function BBTable<T extends object>({
   onRowClick,
   emptyMessage = "No data available",
   showHeader = true,
-}: BBTableProps<T>): React.ReactElement {
+}: BBTableProps<T>) {
   const getRowClassName = (row: T, index: number): string => {
     const baseClass = "hover:bg-elevated transition-colors";
     const stripeClass = index % 2 === 0 ? "bg-muted" : "bg-elevated";

@@ -1,10 +1,6 @@
 @import "tailwindcss";
 @import "./themes.css";
 
-:root {
-  box-sizing: border-box;
-}
-
 html,
 body,
 #root {
@@ -17,7 +13,6 @@ body,
     background-color 0.2s ease,
     color 0.2s ease;
   scrollbar-width: none;
-  scrollbar-color: var(--background-color-inverted);
 }
 
 /* BBCode styles */
@@ -65,4 +60,25 @@ a {
 
 a:hover {
   text-decoration: none;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
+}
+
+.scrollbar-color-default {
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--background-color-default) 50%,
+      var(--background-color-inverted)
+    )
+    color-mix(
+      in srgb,
+      var(--background-color-default) 50%,
+      var(--text-color-muted)
+    );
 }
