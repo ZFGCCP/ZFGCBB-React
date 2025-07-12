@@ -4,7 +4,9 @@ import Widget from "../components/common/widgets/widget.component";
 const UserLogin: React.FC = () => {
   return (
     <Widget widgetTitle={"Login"}>
-      <div className="d-flex flex-column flex-md-row"></div>
+      <div className="flex flex-col md:flex-row p-4">
+        <p className="">Please enter your credentials to log in.</p>
+      </div>
     </Widget>
   );
 };

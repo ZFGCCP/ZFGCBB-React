@@ -1,96 +1,124 @@
 import type React from "react";
-import { useContext } from "react";
-import { styled } from "styled-components";
-import { Form } from "react-bootstrap";
 import Widget from "../components/common/widgets/widget.component";
 import { useBBQuery } from "../hooks/useBBQuery";
 import type { User } from "../types/user";
-import type { Theme } from "../types/theme";
 import UserLeftPane from "../components/user/userLeftPane.component";
-import { ThemeContext } from "../providers/theme/themeProvider";
 import Accordion from "../components/common/accordion/Accordion.component";
 import { useParams } from "react-router";
 
-const Style = {
-  accordionWrapper: styled.div`
-    margin: 2rem;
-  `,
-
-  accordionHeader: styled.div<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.backgroundColor};
-    border: ${(props) => props.theme.borderWidth} solid
-      ${(props) => props.theme.black};
-  `,
-};
-
-const UserProfileMaster: React.FC<{ userId: string }> = () => {
+const UserProfileMaster: React.FC = () => {
   const { userId } = useParams();
   const { data: user } = useBBQuery<User>(`/user-profile/${userId}`);
-  const { currentTheme } = useContext(ThemeContext);
 
   return (
-    <div className="d-flex flex-column flex-md-row">
+    <div className="flex flex-col md:flex-row">
       {user && <UserLeftPane user={user} />}
-      <div className="right-pane col-12 col-md-9">
+      <div className="col-span-12 md:col-span-9 w-full">
         <Accordion title="Bio Information">
-          <Form>
-            <Form.Group>
-              <Form.Label>Displayname</Form.Label>
-              <Form.Control type="text" value={user?.displayName} />
-            </Form.Group>
+          <form className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium  mb-1">
+                Displayname
+              </label>
+              <input
+                type="text"
+                value={user?.displayName || ""}
+                className="w-full p-2 bg-default border border-default "
+                readOnly
+              />
+            </div>
 
-            <Form.Group>
-              <Form.Label>Personal Text</Form.Label>
-              <Form.Control type="text" value={user?.bioInfo?.personalText} />
-            </Form.Group>
+            <div>
+              <label className="block text-sm font-medium  mb-1">
+                Personal Text
+              </label>
+              <input
+                type="text"
+                value={user?.bioInfo?.personalText || ""}
+                className="w-full p-2 bg-default border border-default "
+                readOnly
+              />
+            </div>
 
-            <Form.Group>
-              <Form.Label>Date of Birth</Form.Label>
-              <Form.Control type="text" placeholder="MM/dd/YYYY" />
-            </Form.Group>
+            <div>
+              <label className="block text-sm font-medium  mb-1">
+                Date of Birth
+              </label>
+              <input
+                type="text"
+                placeholder="MM/dd/YYYY"
+                className="w-full p-2 bg-default border border-default "
+              />
+            </div>
 
-            <Form.Group>
-              <Form.Label>Gender</Form.Label>
-              <Form.Select>
+            <div>
+              <label className="block text-sm font-medium  mb-1">Gender</label>
+              <select className="w-full p-2 bg-default border border-default ">
                 <option value="1">Male</option>
                 <option value="2">Female</option>
                 <option value="3">Non-binary/Other</option>
                 <option value="4">Prefer not to say</option>
-              </Form.Select>
-            </Form.Group>
-          </Form>
+              </select>
+            </div>
+          </form>
         </Accordion>
 
         <Accordion title="Contact Information">
-          <Form.Group>
-            <Form.Label>Email Address</Form.Label>
-            <Form.Control type="email" />
-          </Form.Group>
+          <form className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium  mb-1">
+                Email Address
+              </label>
+              <input
+                type="email"
+                className="w-full p-2 bg-default border border-default "
+              />
+            </div>
 
-          <Form.Group>
-            <Form.Label>Discord</Form.Label>
-            <Form.Control type="text" />
-          </Form.Group>
+            <div>
+              <label className="block text-sm font-medium  mb-1">Discord</label>
+              <input
+                type="text"
+                className="w-full p-2 bg-default border border-default "
+              />
+            </div>
 
-          <Form.Group>
-            <Form.Label>Facebook</Form.Label>
-            <Form.Control type="text" />
-          </Form.Group>
+            <div>
+              <label className="block text-sm font-medium  mb-1">
+                Facebook
+              </label>
+              <input
+                type="text"
+                className="w-full p-2 bg-default border border-default "
+              />
+            </div>
 
-          <Form.Group>
-            <Form.Label>Instagram</Form.Label>
-            <Form.Control type="text" />
-          </Form.Group>
+            <div>
+              <label className="block text-sm font-medium  mb-1">
+                Instagram
+              </label>
+              <input
+                type="text"
+                className="w-full p-2 bg-default border border-default "
+              />
+            </div>
 
-          <Form.Group>
-            <Form.Label>Threads</Form.Label>
-            <Form.Control type="text" />
-          </Form.Group>
+            <div>
+              <label className="block text-sm font-medium  mb-1">Threads</label>
+              <input
+                type="text"
+                className="w-full p-2 bg-default border border-default "
+              />
+            </div>
 
-          <Form.Group>
-            <Form.Label>Twitter</Form.Label>
-            <Form.Control type="text" />
-          </Form.Group>
+            <div>
+              <label className="block text-sm font-medium  mb-1">Twitter</label>
+              <input
+                type="text"
+                className="w-full p-2 bg-default border border-default "
+              />
+            </div>
+          </form>
         </Accordion>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import "./assets/App.css";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-import ThemeProvider from "./providers/theme/themeProvider";
 import UserProvider from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -15,12 +14,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
         <Meta />
         <Links />
-        <base href={import.meta.env.BASE_URL ?? "/"} />
+        <base href={import.meta.env.VITE_BASE ?? "/"} />
       </head>
-      <body id="root">
+      <body>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -33,9 +35,7 @@ export default function App() {
   return (
     <QueryProvider>
       <UserProvider>
-        <ThemeProvider>
-          <RootLayout children={<Outlet />} />
-        </ThemeProvider>
+        <RootLayout children={<Outlet />} />
       </UserProvider>
       {(import.meta.env.DEV && <ReactQueryDevtools />) || null}
     </QueryProvider>

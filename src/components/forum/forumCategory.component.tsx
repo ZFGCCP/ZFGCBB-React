@@ -3,7 +3,7 @@ import Widget from "../common/widgets/widget.component";
 import type { BoardSummary } from "../../types/forum";
 import BoardSummaryView from "./boards/boardSummary.component";
 
-const ForumCategory: React.FC<{ title: String; subBoards: BoardSummary[] }> = ({
+const ForumCategory: React.FC<{ title: string; subBoards: BoardSummary[] }> = ({
   title,
   subBoards,
 }) => {

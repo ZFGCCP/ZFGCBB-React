@@ -1,13 +1,5 @@
 import type React from "react";
-import {
-  useMemo,
-  useState,
-  useRef,
-  Suspense,
-  useContext,
-  useCallback,
-} from "react";
-import { styled } from "styled-components";
+import { useMemo, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faReply,
@@ -22,86 +14,36 @@ import parse from "html-react-parser/lib/index";
 import Widget from "../../common/widgets/widget.component";
 import { useBBQuery } from "../../../hooks/useBBQuery";
 import type { BBPermissionLabel, Message, Thread } from "../../../types/forum";
-import FooterButtons from "./footerButtons.component";
 import MessageEditor from "../messageEditor.component";
 import UserLeftPane from "../../user/userLeftPane.component";
 import HasPermission from "../../common/security/HasPermission.component";
-import type { Theme } from "../../../types/theme";
-import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBPaginator from "../../common/paginator/bbPaginator.component";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import BBLink from "@/components/common/bbLink.component";
+import BBFlex from "@/components/common/layout/bbFlex.component";
 
-const Style = {
-  messageWrapper: styled.div<{ theme: Theme }>`
-    min-height: 14rem;
-    border-bottom: 0.1rem solid black;
-
-    &:nth-child(odd) {
-      background-color: ${(props) => props.theme.tableRow};
-    }
-
-    &:nth-child(even) {
-      background-color: ${(props) => props.theme.tableRowAlt};
-    }
-  `,
-
-  signatureWrapper: styled.div`
-    flex-grow: 1;
-    border-top: 1px solid black;
-  `,
-
-  messageBody: styled.div`
-    overflow-wrap: anywhere;
-  `,
-
-  buttonWrapper: styled.div`
-    border-bottom: 0.1rem solid black;
-  `,
-
-  buttonIcon: styled.div`
-    cursor: pointer;
-    font-size: 0.8rem;
-  `,
-
-  time: styled.div`
-    height: 3.3125rem;
-  `,
-
-  graveDigWarning: styled.div`
-    border: 0.1rem solid red;
-    color: red;
-    background-color: #ffe0e0;
-  `,
-
-  threadFooter: styled.div<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.footerColor};
-  `,
-
-  lastEdit: styled.div`
-    font-size: 0.8rem;
-  `,
-};
-
-const ForumThread: React.FC<{
+interface ForumThreadProps {
   threadId: string;
   pageNo: string;
-}> = ({ threadId: paramsThreadId, pageNo: paramsPageNo }) => {
+}
+
+const ForumThread: React.FC<ForumThreadProps> = ({
+  threadId: paramsThreadId,
+  pageNo: paramsPageNo,
+}) => {
   const navigate = useNavigate();
   const threadId = parseInt(paramsThreadId!);
   const currentPage = parseInt(paramsPageNo!);
 
   const textAreaRef = useRef("");
-  let cursorPosition = 0;
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [msgText, setMsgText] = useState<
     string | number | readonly string[] | undefined
   >("");
-  const { data: thread } = useBBQuery<Thread>(
+  const { data: thread, isLoading } = useBBQuery<Thread>(
     `/thread/${threadId}?pageNo=${currentPage}&numPerPage=10`,
   );
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
-  const { currentTheme } = useContext(ThemeContext);
 
   const loadNewPage = (pageNo: number) => {
     navigate(`/forum/thread/${threadId}/${pageNo}`);
@@ -138,7 +80,7 @@ const ForumThread: React.FC<{
         ],
       },
     ] satisfies BBPermissionLabel[];
-  }, [thread]);
+  }, [showReplyBox]);
 
   const clickModify = (msg: Message) => {
     setShowReplyBox(true);
@@ -152,120 +94,174 @@ const ForumThread: React.FC<{
     setCurrentMsg(msg);
   };
 
-  const submitPost = (msg: Message, threadId: number) => {};
-
   return (
     <>
-      <div className="row">
-        <div className="col-12 mt-2 d-flex gap-2">
-          <BBLink to="/forum">ZFGC.com</BBLink>
-          <span>&gt;&gt;</span>
-          <BBLink to={`/forum/board/${thread?.boardId}/1`}>Board</BBLink>
-          <span>&gt;&gt;</span>
-          <span>{thread?.threadName}</span>
+      <div className="space-y-4">
+        <div className="mt-2">
+          <BBFlex gap="gap-2" className="">
+            <BBLink to="/forum">ZFGC.com</BBLink>
+            <span>&gt;&gt;</span>
+            <BBLink to={`/forum/board/${thread?.boardId}/1`}>Board</BBLink>
+            <span>&gt;&gt;</span>
+            <span>{thread?.threadName}</span>
+          </BBFlex>
         </div>
-        <div className="col-12 mt-2">
-          <Widget widgetTitle={thread ? thread.threadName : ""}>
-            {thread?.messages?.map((msg) => {
+
+        {thread && !isLoading && (
+          <div className="bg-accented p-4">
+            <BBPaginator
+              numPages={thread.pageCount}
+              currentPage={currentPage}
+              onPageChange={loadNewPage}
+            />
+          </div>
+        )}
+        <Widget widgetTitle={thread ? thread.threadName : ""}>
+          <div className="divide-y divide-default">
+            {thread?.messages?.map((msg, index) => {
+              const isOdd = index % 2 === 0;
               return (
-                <Style.messageWrapper
-                  className="d-flex flex-column flex-lg-row"
-                  key={`${msg.id}`}
-                  theme={currentTheme}
+                <div
+                  className={`${isOdd ? "bg-muted" : "bg-elevated"}`}
+                  key={msg.id}
                 >
-                  <UserLeftPane user={msg.createdUser} />
-                  <div className="d-flex flex-column col-12 col-lg-10">
-                    <Style.buttonWrapper className="d-flex justify-content-between">
-                      <Style.time className="p-2">
-                        <div>
-                          {msg.createdTsAsString}
-                          <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                            {<span> - 192.168.1.1</span>}
-                          </HasPermission>
-                        </div>
-                        <Style.lastEdit>
-                          Last Edit: {msg.currentMessage.createdTsAsString}
-                        </Style.lastEdit>
-                      </Style.time>
-                      <div className="d-flex justify-content-end">
-                        <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon icon={faReply} className="me-1" />
-                            Reply
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
-                          <Style.buttonIcon
-                            className="m-2"
-                            onClick={() => clickModify(msg)}
-                          >
-                            <FontAwesomeIcon icon={faPen} className="me-1" />
-                            Modify
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon icon={faTrash} className="me-1" />
-                            Remove
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon
-                              icon={faShuffle}
-                              className="me-1"
-                            />
-                            Split Thread
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_VIEWER"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon icon={faBook} className="me-1" />
-                            View History
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon icon={faFlag} className="me-1" />
-                            Report
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon
-                              icon={faTriangleExclamation}
-                              className="me-1"
-                            />
-                            Warn
-                          </Style.buttonIcon>
-                        </HasPermission>
+                  <div className="grid grid-cols-1 lg:grid-cols-[256px_1fr] min-h-56">
+                    <div className="lg:block">
+                      <div>
+                        <UserLeftPane user={msg.createdUser} />
                       </div>
-                    </Style.buttonWrapper>
-                    <Style.messageBody className="m-2">
-                      {parse(msg.currentMessage.messageText.toString())}
-                    </Style.messageBody>
-                    {msg.createdUser.bioInfo?.signature?.trim() !== "" && (
-                      <Style.signatureWrapper className="d-flex align-items-end m-2 py-2">
-                        <div>
-                          {msg.createdUser.bioInfo?.signature &&
-                            parse(msg.createdUser.bioInfo?.signature)}
+                    </div>
+
+                    <div className="grid grid-rows-[auto_1fr_auto] border-l-0 lg:border-l border-default">
+                      <div className="border-b border-default p-4 bg-elevated">
+                        <BBFlex
+                          justify="between"
+                          align="center"
+                          className="flex-col sm:flex-row gap-2 sm:gap-0"
+                        >
+                          <div className="text-sm">
+                            <div className="hidden lg:block">
+                              {msg.createdTsAsString}
+                              <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                                <span className="text-muted">
+                                  {" "}
+                                  - 192.168.1.1
+                                </span>
+                              </HasPermission>
+                            </div>
+                            <div className="text-muted">
+                              Last Edit: {msg.currentMessage.createdTsAsString}
+                            </div>
+                          </div>
+
+                          <BBFlex gap="gap-2" wrap={true} className="text-sm">
+                            <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
+                              <button className="text-toned hover: transition-colors">
+                                <FontAwesomeIcon
+                                  icon={faReply}
+                                  className="mr-1"
+                                />
+                                <span className="hidden sm:inline">Reply</span>
+                              </button>
+                            </HasPermission>
+                            <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
+                              <button
+                                className="text-toned hover: transition-colors"
+                                onClick={() => clickModify(msg)}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPen}
+                                  className="mr-1"
+                                />
+                                <span className="hidden sm:inline">Edit</span>
+                              </button>
+                            </HasPermission>
+                            <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                              <button className="text-toned hover: transition-colors hidden sm:inline-flex">
+                                <FontAwesomeIcon
+                                  icon={faTrash}
+                                  className="mr-1"
+                                />
+                                Remove
+                              </button>
+                            </HasPermission>
+                            <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                              <button className="text-toned hover: transition-colors hidden md:inline-flex">
+                                <FontAwesomeIcon
+                                  icon={faShuffle}
+                                  className="mr-1"
+                                />
+                                Split
+                              </button>
+                            </HasPermission>
+                            <HasPermission perms={["ZFGC_MESSAGE_VIEWER"]}>
+                              <button className="text-toned hover: transition-colors hidden md:inline-flex">
+                                <FontAwesomeIcon
+                                  icon={faBook}
+                                  className="mr-1"
+                                />
+                                History
+                              </button>
+                            </HasPermission>
+                            <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
+                              <button className="text-toned hover: transition-colors hidden lg:inline-flex">
+                                <FontAwesomeIcon
+                                  icon={faFlag}
+                                  className="mr-1"
+                                />
+                                Report
+                              </button>
+                            </HasPermission>
+                            <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                              <button className="text-toned hover: transition-colors hidden lg:inline-flex">
+                                <FontAwesomeIcon
+                                  icon={faTriangleExclamation}
+                                  className="mr-1"
+                                />
+                                Warn
+                              </button>
+                            </HasPermission>
+                          </BBFlex>
+                        </BBFlex>
+                      </div>
+
+                      <div className="p-4 break-words overflow-hidden bg-elevated">
+                        {parse(msg.currentMessage.messageText.toString())}
+                      </div>
+
+                      {msg.createdUser.bioInfo?.signature?.trim() && (
+                        <div className="border-t border-default p-4 bg-muted">
+                          <div className="text-muted">
+                            {msg.createdUser.bioInfo?.signature &&
+                              parse(msg.createdUser.bioInfo?.signature)}
+                          </div>
                         </div>
-                      </Style.signatureWrapper>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </Style.messageWrapper>
+                </div>
               );
             })}
-            <Style.threadFooter theme={currentTheme}>
-              {thread && (
-                <BBPaginator
-                  numPages={thread.pageCount}
-                  currentPage={currentPage}
-                  onPageChange={loadNewPage}
-                />
-              )}
-            </Style.threadFooter>
-          </Widget>
+          </div>
+
+          {thread && !isLoading && (
+            <div className="bg-accented p-4">
+              <BBPaginator
+                numPages={thread.pageCount}
+                currentPage={currentPage}
+                onPageChange={loadNewPage}
+              />
+            </div>
+          )}
+        </Widget>
+        <div className="mt-2">
+          <BBFlex gap="gap-2" className="">
+            <BBLink to="/forum">ZFGC.com</BBLink>
+            <span>&gt;&gt;</span>
+            <BBLink to={`/forum/board/${thread?.boardId}/1`}>Board</BBLink>
+            <span>&gt;&gt;</span>
+            <span>{thread?.threadName}</span>
+          </BBFlex>
         </div>
       </div>
 

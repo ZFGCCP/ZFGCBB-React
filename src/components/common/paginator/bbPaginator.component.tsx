@@ -1,5 +1,5 @@
 import type React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export type BBPaginatorProps = {
   numPages: number;
@@ -14,50 +14,50 @@ const BBPaginator: React.FC<BBPaginatorProps> = ({
   onPageChange,
   maxPageCount,
 }) => {
-  const maxPages = maxPageCount ?? 5;
+  const maxPages = maxPageCount ?? 10;
+
+  const maxToRender = useMemo(() => {
+    return numPages <= maxPages ? numPages : maxPages;
+  }, [numPages, maxPages]);
 
   const pages = useMemo(() => {
-    const pageElements: React.JSX.Element[] = [];
+    const pages: React.JSX.Element[] = [];
 
-    const startPage = Math.max(currentPage - Math.floor(maxPages / 2), 1);
-    const endPage = Math.min(startPage + maxPages - 1, numPages ?? 1);
+    const startPage = Math.max(currentPage - Math.floor(maxToRender / 2), 1);
+    const endPage = Math.min(startPage + maxToRender - 1, numPages ?? 1);
 
     for (let i = startPage; i <= endPage; i++) {
-      pageElements.push(
+      pages.push(
         <button
           key={i}
+          className={`px-3 py-2 text-sm border border-default ${
+            currentPage === i
+              ? "bg-elevated text-highlighted"
+              : "bg-muted  hover:bg-elevated"
+          }`}
           onClick={() => onPageChange(i)}
-          className={`
-            px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200
-            ${
-              currentPage === i
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-            }
-          `}
         >
           {i}
         </button>,
       );
     }
 
-    // Add ellipsis for truncated pages
-    if (startPage > 1 && numPages > maxPages) {
-      pageElements.unshift(
-        <span key="start-ellipsis" className="px-3 py-2 text-sm text-gray-500">
+    if (startPage > 1 && numPages > maxToRender) {
+      pages.unshift(
+        <span key="start-ellipsis" className="px-3 py-2 text-muted">
           ...
         </span>,
       );
     }
     if (endPage < numPages) {
-      pageElements.push(
-        <span key="end-ellipsis" className="px-3 py-2 text-sm text-gray-500">
+      pages.push(
+        <span key="end-ellipsis" className="px-3 py-2 text-muted">
           ...
         </span>,
       );
     }
 
-    return pageElements;
+    return pages;
   }, [numPages, currentPage, onPageChange, maxPages]);
 
   const shiftPage = useCallback(
@@ -67,53 +67,40 @@ const BBPaginator: React.FC<BBPaginatorProps> = ({
     [currentPage, onPageChange],
   );
 
-  const buttonClass =
-    "px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed";
-
   return (
     <div className="overflow-x-auto scroll-smooth w-full">
-      <div
-        className="flex gap-1 mb-0"
-        style={{ scrollSnapType: "x mandatory" }}
-      >
+      <div className="flex gap-1 mb-0">
         <button
+          className="px-3 py-2 text-sm border border-default bg-muted  hover:bg-elevated"
           onClick={() => onPageChange(1)}
-          disabled={currentPage === 1}
-          className={buttonClass}
-          style={{ scrollSnapAlign: "start" }}
         >
           First
         </button>
-
-        <button
-          onClick={() => shiftPage(-1)}
-          className={buttonClass}
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
-
+        {currentPage !== 1 && (
+          <button
+            className="px-3 py-2 text-sm border border-default bg-muted  hover:bg-elevated"
+            onClick={() => shiftPage(-1)}
+          >
+            Prev
+          </button>
+        )}
         {pages}
-
+        {currentPage !== numPages && (
+          <button
+            className="px-3 py-2 text-sm border border-default bg-muted  hover:bg-elevated"
+            onClick={() => shiftPage(1)}
+          >
+            Next
+          </button>
+        )}
         <button
-          onClick={() => shiftPage(1)}
-          className={buttonClass}
-          disabled={currentPage === numPages}
-        >
-          Next
-        </button>
-
-        <button
+          className="px-3 py-2 text-sm border border-default bg-muted  hover:bg-elevated"
           onClick={() => onPageChange(numPages)}
-          disabled={currentPage === numPages}
-          className={buttonClass}
-          style={{ scrollSnapAlign: "end" }}
         >
           Last
         </button>
       </div>
-
-      <div className="mt-2 text-sm text-gray-600">
+      <div className="text-sm text-muted mt-2">
         Page {currentPage} of {numPages}
       </div>
     </div>

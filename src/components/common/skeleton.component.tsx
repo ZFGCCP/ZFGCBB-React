@@ -7,7 +7,10 @@ export default function Skeleton<
   return (
     <div
       {...props}
-      className={`inline-block size-max border rounded-lg animate-pulse`}
-    ></div>
+      className={`
+        inline-block w-max h-max max-w-full max-h-full rounded-lg animate-pulse bg-gradient-to-r from-muted to-elevated
+        ${props.className || ""}
+      `}
+    />
   );
 }

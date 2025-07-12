@@ -7,14 +7,15 @@ const emptyUser = {
   id: 0,
   displayName: "Guest",
   permissions: [],
-  theme: "midnight",
 } as User;
 
 export const UserContext = createContext<User>(emptyUser);
 
-const UserProvider: React.FC<{ children?: React.ReactNode }> = ({
-  children,
-}) => {
+interface UserProviderProps {
+  children?: React.ReactNode;
+}
+
+const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const { data: user } = useBBQuery<User>("/users/loggedInUser");
 
   return (
@@ -23,4 +24,5 @@ const UserProvider: React.FC<{ children?: React.ReactNode }> = ({
     </UserContext.Provider>
   );
 };
+
 export default UserProvider;
