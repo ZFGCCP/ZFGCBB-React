@@ -88,8 +88,8 @@ function lazyImageLoader<ComponentType extends React.ElementType = "img">(
         {
           decoding: "async",
           loading: "lazy",
-          fetchpriority: "high",
-          crossorigin: "anonymous",
+          fetchPriority: "high",
+          crossOrigin: "anonymous",
         },
         componentProps,
       );
@@ -142,7 +142,6 @@ export default function BBImage<
 }
 
 if (import.meta.hot)
-  import.meta.hot.dispose(async () => {
+  import.meta.hot.dispose(() => {
     lazyImageComponentCache.clear();
-    await images.clear();
   });
