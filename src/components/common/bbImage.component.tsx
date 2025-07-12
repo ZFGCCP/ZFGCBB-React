@@ -30,6 +30,24 @@ const isValidUrl = (str: string): boolean => {
   }
 };
 
+function createImageElement(src: string) {
+  const image = new Image();
+  image.crossOrigin = "anonymous";
+  image.decoding = "async";
+  image.loading = "lazy";
+  image.fetchPriority = "high";
+  image.src = src;
+  return image;
+}
+
+async function loadImage(path: string) {
+  const imageLoader = images[`/src/assets/${path}`];
+  if (!imageLoader) return;
+
+  const { default: imageSrc } = await imageLoader();
+  return imageSrc;
+}
+
 function preloadImage(path: string): CacheEntry {
   if (imageCache.has(path)) {
     return imageCache.get(path)!;
@@ -40,25 +58,25 @@ function preloadImage(path: string): CacheEntry {
 
   // Handle URL-sourced images
   if (isValidUrl(path)) {
+    createImageElement(path);
     cacheEntry.result = path;
     cacheEntry.status = "success";
     return cacheEntry;
   }
 
-  const imageLoader = images[`/src/assets/${path}`];
+  cacheEntry.promise = loadImage(path)
+    .then((src) => {
+      if (!src) {
+        if (import.meta.env.DEV)
+          console.warn(`Image not found: ${path}. Rendering nothing.`);
 
-  if (!imageLoader) {
-    if (import.meta.env.DEV) {
-      console.warn(`Image not found: ${path}. Rendering nothing.`);
-    }
-    cacheEntry.status = "error";
-    return cacheEntry;
-  }
+        cacheEntry.status = "error";
+        return;
+      }
 
-  cacheEntry.promise = imageLoader()
-    .then((mod: ImageModule) => {
+      createImageElement(src);
       cacheEntry.status = "success";
-      cacheEntry.result = mod.default;
+      cacheEntry.result = src;
     })
     .catch((err: unknown) => {
       console.error(`Failed to load image: ${path}`, err);
