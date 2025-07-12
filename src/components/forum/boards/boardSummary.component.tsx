@@ -45,33 +45,40 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
 
           <div className="flex flex-col md:hidden text-sm text-highlighted space-y-1">
             <div className="flex flex-row gap-4 justify-end text-highlighted">
-              <span>Threads: {board.threadCount}</span>
-              <span>Posts: {board.postCount}</span>
+              <span>Threads: {board.threadCount ?? 0}</span>
+              <span>Posts: {board.postCount ?? 0}</span>
             </div>
             <div className="flex flex-row gap-4 justify-end text-highlighted">
-              <span>Last post by: </span>
               {board.latestMessageOwnerId && board.latestMessageOwnerId > 0 ? (
-                <BBLink
-                  to={`/user/profile/${board.latestMessageOwnerId}`}
-                  prefetch="intent"
-                >
-                  {board.latestMessageUserName}
-                </BBLink>
-              ) : (
-                <span>{board.latestMessageUserName}</span>
-              )}
+                <>
+                  <span>Last post by: </span>
+
+                  <BBLink
+                    to={`/user/profile/${board.latestMessageOwnerId}`}
+                    prefetch="intent"
+                  >
+                    {board.latestMessageUserName}
+                  </BBLink>
+                </>
+              ) : null}
             </div>
             <div className="flex flex-row gap-4 justify-end text-highlighted">
-              in{" "}
-              <BBLink
-                to={`/forum/thread/${board.latestThreadId}/1`}
-                prefetch="intent"
-              >
-                {board.threadName}
-              </BBLink>
+              {board.threadName ? (
+                <>
+                  in{" "}
+                  <BBLink
+                    to={`/forum/thread/${board.latestThreadId}/1`}
+                    prefetch="intent"
+                  >
+                    {board.threadName}
+                  </BBLink>
+                </>
+              ) : null}
             </div>
             <div className="flex flex-row grow gap-4 justify-end">
-              on {board.latestMessageCreatedTsAsString}
+              {board.latestMessageCreatedTsAsString ? (
+                <>on {board.latestMessageCreatedTsAsString}</>
+              ) : null}
             </div>
           </div>
         </div>
@@ -99,26 +106,32 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
       render: (_, board) => (
         <div className="space-y-1 text-sm">
           <div className="text-highlighted">
-            <span>Last post by: </span>
             {board.latestMessageOwnerId && board.latestMessageOwnerId > 0 ? (
-              <BBLink
-                to={`/user/profile/${board.latestMessageOwnerId}`}
-                prefetch="intent"
-              >
-                {board.latestMessageUserName}
-              </BBLink>
-            ) : (
-              <span>{board.latestMessageUserName}</span>
-            )}
+              <>
+                <span>Last post by: </span>
+                <BBLink
+                  to={`/user/profile/${board.latestMessageOwnerId}`}
+                  prefetch="intent"
+                >
+                  {board.latestMessageUserName}
+                </BBLink>
+              </>
+            ) : null}
           </div>
           <div className="text-highlighted overflow-hidden text-ellipsis whitespace-nowrap">
-            in{" "}
-            <BBLink to={`/forum/thread/${board.latestThreadId}/1`}>
-              {board.threadName}
-            </BBLink>
+            {board.threadName ? (
+              <>
+                in{" "}
+                <BBLink to={`/forum/thread/${board.latestThreadId}/1`}>
+                  {board.threadName}
+                </BBLink>
+              </>
+            ) : null}
           </div>
           <div className="text-highlighted">
-            on {board.latestMessageCreatedTsAsString}
+            {board.latestMessageCreatedTsAsString ? (
+              <>on {board.latestMessageCreatedTsAsString}</>
+            ) : null}
           </div>
         </div>
       ),
