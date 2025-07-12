@@ -19,7 +19,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
       <main
         className="overflow-auto bg-default min-h-0 size-full"
         style={{
-          scrollbarWidth: "thin",
+          scrollbarGutter: "stable",
           scrollbarColor:
             "var(--background-color-inverted) var(--background-color-default)",
         }}
@@ -38,7 +38,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
               Welcome, {displayName}! <span>Please login or </span>
               <BBLink to="/user/auth/registration">register</BBLink>.
             </p>
-            <p className="text-muted">Did you miss your activation email?</p>
+            <p className="text-dimmed">Did you miss your activation email?</p>
           </div>
         </header>
 
