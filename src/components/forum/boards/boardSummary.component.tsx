@@ -26,7 +26,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
       render: (_, board) => (
         <div className="space-y-1 py-1">
           <h6 className="font-semibold">
-            <BBLink to={`/forum/board/${board.boardId}/1`}>
+            <BBLink to={`/forum/board/${board.boardId}/1`} prefetch="intent">
               {board.boardName}
             </BBLink>
           </h6>
@@ -38,7 +38,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
               <span className="font-medium">Child boards: </span>
               {board.childBoards.map((cb, index) => (
                 <span key={cb.boardId}>
-                  <BBLink to={`/forum/board/${cb.boardId}/1`}>
+                  <BBLink to={`/forum/board/${cb.boardId}/1`} prefetch="intent">
                     {cb.boardName}
                   </BBLink>
                   {index < board.childBoards!.length - 1 && ", "}
@@ -56,16 +56,22 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
             <div>
               <span>Last post by: </span>
               {board.latestMessageOwnerId && board.latestMessageOwnerId > 0 ? (
-                <BBLink to={`/user/profile/${board.latestMessageOwnerId}`}>
+                <BBLink
+                  to={`/user/profile/${board.latestMessageOwnerId}`}
+                  prefetch="intent"
+                >
                   {board.latestMessageUserName}
                 </BBLink>
               ) : (
                 <span>{board.latestMessageUserName}</span>
               )}
             </div>
-            <div>
+            <div className="text-ellipsis whitespace-nowrap w-full overflow-hidden">
               in{" "}
-              <BBLink to={`/forum/thread/${board.latestThreadId}/1`}>
+              <BBLink
+                to={`/forum/thread/${board.latestThreadId}/1`}
+                prefetch="intent"
+              >
                 {board.threadName}
               </BBLink>
             </div>
@@ -98,23 +104,23 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
           <div className="text-highlighted">
             <span>Last post by: </span>
             {board.latestMessageOwnerId && board.latestMessageOwnerId > 0 ? (
-              <BBLink to={`/user/profile/${board.latestMessageOwnerId}`}>
+              <BBLink
+                to={`/user/profile/${board.latestMessageOwnerId}`}
+                prefetch="intent"
+              >
                 {board.latestMessageUserName}
               </BBLink>
             ) : (
               <span>{board.latestMessageUserName}</span>
             )}
           </div>
-          <div className="text-highlighted">
+          <div className="text-highlighted overflow-hidden text-ellipsis whitespace-nowrap w-full">
             in{" "}
-            <BBLink
-              to={`/forum/thread/${board.latestThreadId}/1`}
-              className="break-words"
-            >
+            <BBLink to={`/forum/thread/${board.latestThreadId}/1`}>
               {board.threadName}
             </BBLink>
           </div>
-          <div className="text-highlighted text-ellipsis ">
+          <div className="text-highlighted">
             on {board.latestMessageCreatedTsAsString}
           </div>
         </div>
@@ -128,7 +134,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
       data={subBoards}
       emptyMessage="No boards available"
       showHeader={false}
-      rowClassName="py-2"
+      rowClassName="py-2 px-4"
     />
   );
 };

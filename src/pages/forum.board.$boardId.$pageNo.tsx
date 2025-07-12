@@ -78,7 +78,7 @@ function BoardTableComponent({
       render: (_, thread) => (
         <div className="space-y-2">
           <h6 className="font-semibold">
-            <BBLink to={`/forum/thread/${thread.id}/1`}>
+            <BBLink to={`/forum/thread/${thread.id}/1`} prefetch="intent">
               {thread.threadName}
             </BBLink>
           </h6>
@@ -86,7 +86,10 @@ function BoardTableComponent({
           <div className="block md:hidden text-sm text-muted">
             <span>Author: </span>
             {thread.createdUserId > 0 ? (
-              <BBLink to={`/user/profile/${thread.createdUser?.id}`}>
+              <BBLink
+                to={`/user/profile/${thread.createdUser?.id}`}
+                prefetch="intent"
+              >
                 {thread.createdUser?.displayName}
               </BBLink>
             ) : (
@@ -112,7 +115,10 @@ function BoardTableComponent({
       hideOnMobile: true,
       render: (_, thread) =>
         thread.createdUserId > 0 ? (
-          <BBLink to={`/user/profile/${thread.createdUser?.id}`}>
+          <BBLink
+            to={`/user/profile/${thread.createdUser?.id}`}
+            prefetch="intent"
+          >
             {thread.createdUser?.displayName}
           </BBLink>
         ) : (
@@ -165,7 +171,10 @@ function BoardTableComponent({
             <span>by </span>
             {thread.latestMessage?.ownerId &&
             thread.latestMessage.ownerId > 0 ? (
-              <BBLink to={`/user/profile/${thread.latestMessage?.ownerId}`}>
+              <BBLink
+                to={`/user/profile/${thread.latestMessage?.ownerId}`}
+                prefetch="intent"
+              >
                 {thread.latestMessage?.ownerName}
               </BBLink>
             ) : (
@@ -193,7 +202,10 @@ function BoardTableComponent({
 
 const BoardContainer: React.FC = () => {
   const navigate = useNavigate();
-  const { boardId, pageNo } = useParams();
+  const { boardId: boardIdParam, pageNo: pageNoParam } = useParams();
+  const boardId = parseInt(boardIdParam!);
+  const pageNo = parseInt(pageNoParam!);
+
   const { data: board, isLoading } = useBBQuery<Board>(
     `/board/${boardId}?pageNo=${pageNo}`,
     0,
@@ -222,7 +234,9 @@ const BoardContainer: React.FC = () => {
       {!isLoading && (
         <div className="my-3">
           <BBFlex gap="gap-2" className="">
-            <BBLink to="/forum">ZFGC.com</BBLink>
+            <BBLink to="/forum" prefetch="render">
+              ZFGC.com
+            </BBLink>
             <span>&gt;&gt;</span>
             <span>{boardName}</span>
           </BBFlex>

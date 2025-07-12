@@ -2,8 +2,14 @@ import "./assets/App.css";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import UserProvider from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import RootLayout from "./rootLayout.component";
+import { Suspense, lazy } from "react";
+
+const TanStackQueryDevtools = lazy(() =>
+  import("@tanstack/react-query-devtools").then((mod) => ({
+    default: mod.ReactQueryDevtools,
+  })),
+);
 
 export function HydrateFallback() {
   return <></>;
@@ -37,7 +43,9 @@ export default function App() {
       <UserProvider>
         <RootLayout children={<Outlet />} />
       </UserProvider>
-      {(import.meta.env.DEV && <ReactQueryDevtools />) || null}
+      <Suspense fallback={null}>
+        <TanStackQueryDevtools />
+      </Suspense>
     </QueryProvider>
   );
 }

@@ -9,7 +9,7 @@ const ForumMain: React.FC = () => {
   const { data: forumIndex } = useBBQuery<Forum>("/board/forum");
 
   return (
-    <article className="container-xxl">
+    <article>
       <section className="grid grid-cols-1 gap-4">
         <Widget className="mb-5 my-2">
           <div className="m-4 text-center animate-pulse">
@@ -18,7 +18,7 @@ const ForumMain: React.FC = () => {
               <BBLink
                 to="https://discord.gg/NP2nNKjun6"
                 target="_blank"
-                className="text-highlighted hover:"
+                className="text-highlighted"
               >
                 Discord!
               </BBLink>

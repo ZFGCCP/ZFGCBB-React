@@ -1,16 +1,15 @@
-import type React from "react";
 import Widget from "../components/common/widgets/widget.component";
 import BBImage from "@/components/common/bbImage.component";
 import BBLink from "@/components/common/bbLink.component";
 
-const Home: React.FC = () => {
+export default () => {
   return (
-    <article className="container-xxl">
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <article>
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4   ">
         <div className="my-2">
           <Widget widgetTitle="Featured Project">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
-              <div className="flex justify-center">
+              <div className="flex justify-center w-full ">
                 <BBImage
                   className="max-w-full h-auto object-cover"
                   src="images/potm/triforceSaga.png"
@@ -59,7 +58,7 @@ const Home: React.FC = () => {
                   <BBLink
                     to="https://github.com/ZFGCCP/ZFGCBB-React"
                     target="_blank"
-                    className="text-highlighted hover:"
+                    className="text-highlighted"
                   >
                     Come join the effort!
                   </BBLink>
@@ -73,8 +72,6 @@ const Home: React.FC = () => {
     </article>
   );
 };
-
-export default Home;
 
 export function meta() {
   return [{ title: "Home" }];

@@ -1,7 +1,7 @@
 import type React from "react";
 import BBFlex from "../layout/bbFlex.component";
 
-function BBTable<T extends object>({
+export default function BBTable<T extends object>({
   columns,
   data,
   className = "",
@@ -55,7 +55,7 @@ function BBTable<T extends object>({
         ) : (
           data.map((row, index) => (
             <div
-              key={(row as any).id || index}
+              key={String((row as { [key: string]: unknown }).id ?? index)}
               className={getRowClassName(row, index)}
               onClick={() => onRowClick?.(row, index)}
             >
@@ -78,5 +78,3 @@ function BBTable<T extends object>({
     </div>
   );
 }
-
-export default BBTable;

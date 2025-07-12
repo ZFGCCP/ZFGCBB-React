@@ -20,11 +20,15 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({ user }) => {
   }, [user]);
 
   return (
-    <div className="grid grid-rows-[auto_auto_1fr] bg-muted h-full">
-      <div className="p-3 bg-elevated border-b border-default">
+    <div className="flex flex-col bg-muted h-full">
+      <div className="p-3 bg-muted border-b border-default flex-shrink-0 min-h-[76px] flex items-center">
         <div className="space-y-1">
           {user.id > 0 ? (
-            <BBLink to={`/user/profile/${user.id}`} className="font-medium">
+            <BBLink
+              to={`/user/profile/${user.id}`}
+              className="font-medium"
+              prefetch="intent"
+            >
               {user?.displayName}
             </BBLink>
           ) : (
@@ -38,15 +42,15 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({ user }) => {
         </div>
       </div>
 
-      <div className="p-4 flex justify-center">
+      <div className="p-4 flex justify-center flex-shrink-0">
         <BBImage
           src={avatarSrc}
           alt="User avatar"
-          className="w-24 h-24 rounded border border-default"
+          className="w-24 h-24 rounded border border-default object-cover"
         />
       </div>
 
-      <div className="p-3 space-y-2 text-sm">
+      <div className="p-3 space-y-2 text-sm flex-1">
         <div className="flex justify-between">
           <span className="text-muted">Posts:</span>
           <span></span>

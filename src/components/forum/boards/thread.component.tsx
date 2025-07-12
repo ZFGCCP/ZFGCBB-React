@@ -99,9 +99,18 @@ const ForumThread: React.FC<ForumThreadProps> = ({
       <div className="space-y-4">
         <div className="mt-2">
           <BBFlex gap="gap-2" className="">
-            <BBLink to="/forum">ZFGC.com</BBLink>
+            <BBLink to="/forum" prefetch="render">
+              ZFGC.com
+            </BBLink>
             <span>&gt;&gt;</span>
-            <BBLink to={`/forum/board/${thread?.boardId}/1`}>Board</BBLink>
+            {(thread && !isLoading && (
+              <BBLink
+                to={`/forum/board/${thread?.boardId}/1`}
+                prefetch="intent"
+              >
+                Board
+              </BBLink>
+            )) || <span>Loading...</span>}
             <span>&gt;&gt;</span>
             <span>{thread?.threadName}</span>
           </BBFlex>
@@ -116,6 +125,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
             />
           </div>
         )}
+
         <Widget widgetTitle={thread ? thread.threadName : ""}>
           <div className="divide-y divide-default">
             {thread?.messages?.map((msg, index) => {
@@ -125,11 +135,13 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                   className={`${isOdd ? "bg-muted" : "bg-elevated"}`}
                   key={msg.id}
                 >
-                  <div className="grid grid-cols-1 lg:grid-cols-[.25fr_1fr] content-stretch">
-                    <UserLeftPane user={msg.createdUser} />
+                  <div className="flex flex-col lg:flex-row min-h-[300px]">
+                    <div className="lg:w-64 flex-shrink-0 border-b lg:border-b-0 lg:border-r border-default">
+                      <UserLeftPane user={msg.createdUser} />
+                    </div>
 
-                    <div className="grid grid-rows-[auto_1fr_min-content] border-l-0 lg:border-l border-default content-stretch">
-                      <div className="border-b border-default p-4 bg-elevated">
+                    <div className="flex-1 flex flex-col">
+                      <div className="border-b border-default p-3 bg-elevated flex-shrink-0 min-h-[76px]  flex items-center">
                         <BBFlex
                           justify="between"
                           align="center"
@@ -137,7 +149,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                         >
                           <div className="text-sm">
                             <div className="hidden lg:block">
-                              {msg.createdTsAsString}
+                              {new Date(msg.createdTsAsString).toLocaleString()}
                               <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
                                 <span className="text-muted">
                                   {" "}
@@ -145,9 +157,14 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                                 </span>
                               </HasPermission>
                             </div>
-                            <div className="text-muted">
-                              Last Edit: {msg.currentMessage.createdTsAsString}
-                            </div>
+                            {msg.currentMessage.updatedTsAsString && (
+                              <div className="text-muted">
+                                Last Edit:{" "}
+                                {new Date(
+                                  msg.currentMessage.updatedTsAsString,
+                                ).toLocaleString()}
+                              </div>
+                            )}
                           </div>
 
                           <BBFlex gap="gap-2" wrap={true} className="text-sm">
@@ -221,13 +238,13 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                         </BBFlex>
                       </div>
 
-                      <div className="p-4 break-words overflow-hidden bg-elevated">
+                      <div className="p-3 break-words bg-elevated flex-1 min-h-64 max-h-[calc(100dvh-25dvh)] overflow-auto snap-start snap-mandatory">
                         {parse(msg.currentMessage.messageText.toString())}
                       </div>
 
                       {msg.createdUser.bioInfo?.signature?.trim() && (
-                        <div className="border-t border-default p-4 bg-muted ">
-                          <div className="text-muted overflow-x-scroll max-h-42">
+                        <div className="border-t border-default p-3 bg-muted flex-shrink-0">
+                          <div className="overflow-x-auto max-h-42">
                             {msg.createdUser.bioInfo?.signature &&
                               parse(msg.createdUser.bioInfo?.signature)}
                           </div>
@@ -250,11 +267,21 @@ const ForumThread: React.FC<ForumThreadProps> = ({
             </div>
           )}
         </Widget>
+
         <div className="mt-2">
           <BBFlex gap="gap-2" className="">
-            <BBLink to="/forum">ZFGC.com</BBLink>
+            <BBLink to="/forum" prefetch="render">
+              ZFGC.com
+            </BBLink>
             <span>&gt;&gt;</span>
-            <BBLink to={`/forum/board/${thread?.boardId}/1`}>Board</BBLink>
+            {(thread && !isLoading && (
+              <BBLink
+                to={`/forum/board/${thread?.boardId}/1`}
+                prefetch="intent"
+              >
+                Board
+              </BBLink>
+            )) || <span>Loading...</span>}
             <span>&gt;&gt;</span>
             <span>{thread?.threadName}</span>
           </BBFlex>

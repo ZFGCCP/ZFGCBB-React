@@ -3,14 +3,20 @@ import type React from "react";
 export default function Skeleton<
   PropsType extends React.HTMLAttributes<HTMLDivElement> &
     React.PropsWithChildren,
->(props: PropsType) {
+>({ className = "", style, ...rest }: PropsType) {
   return (
     <div
-      {...props}
+      {...rest}
       className={`
         inline-block w-full h-full rounded-lg animate-pulse bg-gradient-to-r from-muted to-elevated
-        ${props.className || ""}
+        ${className}
       `}
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "block",
+        ...style,
+      }}
     />
   );
 }

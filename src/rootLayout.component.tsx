@@ -15,8 +15,8 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const { displayName } = useContext(UserContext);
 
   return (
-    <div className="h-screen w-screen grid grid-rows-[1fr_auto] md:grid-rows-[1fr] overflow-hidden">
-      <main className="overflow-auto bg-default min-h-0">
+    <div className="grid grid-rows-[1fr_auto] md:grid-rows-[1fr] h-dvh w-dvw overflow-hidden">
+      <main className="overflow-auto bg-default min-h-0 size-full">
         <header className="hidden md:flex justify-between items-end border-b-2 border-default bg-default">
           <div className="z-10">
             <BBImage
@@ -41,7 +41,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           </div>
         </header>
 
-        <div className="p-2">{children}</div>
+        <div className="p-2 sm:p-3.5">{children}</div>
       </main>
 
       <nav className="md:hidden bg-elevated border-t-2 border-default">
@@ -54,7 +54,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           </BBLink>
           <BBLink
             to="/forum"
-            prefetch="intent"
+            prefetch="render"
             className="flex items-center justify-center hover:bg-muted transition-colors"
           >
             <span className="text-xs">Forum</span>

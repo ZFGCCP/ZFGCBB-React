@@ -90,6 +90,7 @@ export type MessageHistory = BaseBB & {
   unparsedText: string;
   currentFlag?: boolean;
   createdTsAsString: string;
+  updatedTsAsString: string;
 };
 
 export type BBPermissionLabel = {
