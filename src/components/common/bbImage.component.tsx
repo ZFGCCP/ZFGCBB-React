@@ -83,9 +83,19 @@ function lazyImageLoader<ComponentType extends React.ElementType = "img">(
   const lazyComponent = lazy(async () => {
     const resolvedSrc = await preloadImage(src);
     const Component = as || "img";
-    const ImageComponent = (props: ImageComponentProps) =>
-      !resolvedSrc ? null : <Component {...props} src={resolvedSrc} />;
+    const ImageComponent = (componentProps: ImageComponentProps) => {
+      const props: ImageComponentProps = Object.assign(
+        {
+          decoding: "async",
+          loading: "lazy",
+          fetchpriority: "high",
+          crossorigin: "anonymous",
+        },
+        componentProps,
+      );
 
+      return !resolvedSrc ? null : <Component {...props} src={resolvedSrc} />;
+    };
     return { default: ImageComponent };
   });
 
