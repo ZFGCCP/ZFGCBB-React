@@ -19,7 +19,7 @@ export const useBBMutation = <T extends BaseBB, U extends BaseBB>(
         }),
       );
     },
-    onSuccess: onSuccess ? onSuccess : () => {},
+    onSuccess,
     onError: () => {},
   });
 
