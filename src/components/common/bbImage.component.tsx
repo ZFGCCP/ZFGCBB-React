@@ -1,12 +1,5 @@
 import type React from "react";
-import {
-  Suspense,
-  type ElementType,
-  type ComponentProps,
-  useRef,
-  useEffect,
-  useState,
-} from "react";
+import { Suspense, type ElementType, type ComponentProps } from "react";
 import Skeleton from "./skeleton.component";
 
 type ImageModule = { default: string };
@@ -45,26 +38,17 @@ function preloadImage(path: string): CacheEntry {
   const cacheEntry: CacheEntry = { status: "pending" };
   imageCache.set(path, cacheEntry);
 
-  // Skip actual preloading on server side
-  if (typeof window === "undefined") {
-    cacheEntry.status = "success";
-    cacheEntry.result = path;
-    return cacheEntry;
-  }
-
-  if (import.meta.env.DEV)
-    console.debug(`<BBImage> Fetching image for ${path}`);
-
   // Handle URL-sourced images
   if (isValidUrl(path)) {
     cacheEntry.promise = new Promise((resolve, reject) => {
       const img = new Image();
       img.src = path;
-      img.onload = () => {
-        cacheEntry.status = "success";
-        cacheEntry.result = path;
-        resolve();
-      };
+      img.crossOrigin = "anonymous";
+
+      cacheEntry.status = "success";
+      cacheEntry.result = path;
+
+      img.onload = () => resolve();
       img.onerror = () => {
         console.error(`Failed to load image URL: ${path}`);
         cacheEntry.status = "error";
@@ -100,26 +84,11 @@ function preloadImage(path: string): CacheEntry {
  * This hook returns the path of the image file for a given path.
  * It handles caching and preloading of images. Handles hydration mismatch by
  * deferring client-side loading.
- * @param path - The path of the image file.
+ * @param incomingPath - The path of the image file.
  * @returns The path of the image file.
  */
-function useImage(path: string): string | undefined {
-  const pathRef = useRef<string>(path);
-  const [isClient, setIsClient] = useState(import.meta.env.SSR);
-  pathRef.current = path;
-
-  // Handle hydration mismatch by deferring client-side loading
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const cacheEntry = preloadImage(path);
-
-  // On server or during hydration, return the path immediately
-  if (!isClient) {
-    return path;
-  }
-
+function useImage(incomingPath: string) {
+  const cacheEntry = preloadImage(incomingPath);
   if (cacheEntry.status === "pending") {
     throw cacheEntry.promise;
   } else if (cacheEntry.status === "error") {

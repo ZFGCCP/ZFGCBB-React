@@ -15,10 +15,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+          name="viewport"
+          content="width=cover, width=device-width, initial-scale=1.0"
+        />
         <Meta />
         <Links />
-        <base href={import.meta.env.BASE_URL ?? "/"} />
+        <base href={import.meta.env.VITE_BASE ?? "/"} />
       </head>
       <body id="root">
         {children}
