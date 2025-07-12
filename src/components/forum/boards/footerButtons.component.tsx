@@ -1,55 +1,34 @@
 import type React from "react";
-import { useContext } from "react";
-import { styled } from "styled-components";
-import { Button } from "react-bootstrap";
-import { ThemeContext } from "../../../providers/theme/themeProvider";
-import type { Theme } from "../../../types/theme";
-
-const Style = {
-  FooterButton: styled(Button)<{ theme: Theme }>`
-    &.footer-btn {
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-      background-color: #25334e;
-      border: ${(props) => props.theme.borderWidth} solid
-        ${(props) => props.theme.black};
-      border-top: 0;
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;
-      border-right: 0;
-
-      &:first-child {
-        border-bottom-left-radius: 0.5rem;
-      }
-
-      &:last-child {
-        border-bottom-right-radius: 0.5rem;
-        border-right: 0.2rem solid black;
-      }
-    }
-  `,
-};
 
 export type FooterConfig = {
-  label: String;
+  label: string;
   callback: () => void;
 };
 
-const FooterButtons: React.FC<{ options: FooterConfig[] }> = ({ options }) => {
-  const { currentTheme } = useContext(ThemeContext);
+interface FooterButtonsProps {
+  options: FooterConfig[];
+}
 
+const FooterButtons: React.FC<FooterButtonsProps> = ({ options }) => {
   return (
-    <div className="d-flex justify-content-end">
-      {options.map((opt) => {
+    <div className="flex justify-end">
+      {options.map((opt, index) => {
+        const isFirst = index === 0;
+        const isLast = index === options.length - 1;
+
         return (
-          <Style.FooterButton
-            key={`${opt.label}`}
+          <button
+            key={opt.label}
             onClick={() => opt.callback()}
-            className="footer-btn px-2"
-            theme={currentTheme}
+            className={`
+              px-2 py-2 bg-elevated border-2 border-default border-t-0 
+              hover:bg-accented transition-colors
+              ${isFirst ? "rounded-bl-lg" : "border-r-0"}
+              ${isLast ? "rounded-br-lg border-r-2" : ""}
+            `}
           >
             {opt.label}
-          </Style.FooterButton>
+          </button>
         );
       })}
     </div>

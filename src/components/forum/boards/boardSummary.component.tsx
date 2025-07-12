@@ -1,137 +1,165 @@
 import type React from "react";
-import { useContext } from "react";
-import { styled } from "styled-components";
 import type { BoardSummary } from "../../../types/forum";
-import BBTable from "../../common/tables/bbTable.component";
-import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBLink from "../../common/bbLink.component";
-import type { Theme } from "../../../types/theme";
-import BBImage from "@/components/common/bbImage.component";
+import BBTable from "../../common/tables/bbTable.component";
 
-const Style = {
-  forumRow: styled.tr`
-    min-height: 4rem;
-  `,
+interface BoardSummaryViewProps {
+  subBoards: BoardSummary[];
+}
 
-  forumText: styled.div`
-    font-size: 0.8rem;
-  `,
+const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
+  const columns: BBTableColumn<BoardSummary>[] = [
+    {
+      key: "icon",
+      label: "",
+      className: "max-w-8 grow",
+      render: () => <div className="theme-board-status " />,
+    },
+    {
+      key: "boardInfo",
+      label: "Board",
+      className: "m-w-0 grow overflow-hidden",
+      render: (_, board) => (
+        <section>
+          <h6 className="font-semibold text-left">
+            <BBLink to={`/forum/board/${board.boardId}/1`} prefetch="intent">
+              {board.boardName}
+            </BBLink>
+          </h6>
 
-  forumDesc: styled.div`
-    font-size: 0.8rem;
-  `,
+          <div className="text-sm text-muted">{board.description}</div>
 
-  latestPostLink: styled.span`
-    font-size: 0.8rem;
-  `,
-};
-
-const BoardSummaryView: React.FC<{ subBoards: BoardSummary[] }> = ({
-  subBoards,
-}) => {
-  return (
-    <BBTable className="table align-middle">
-      <tbody>
-        {subBoards?.map((sb) => {
-          return (
-            <tr key={`${sb.boardId}`} className="d-flex min-h-16">
-              <td className="col-2 col-md-1 align-content-center">
-                <BBImage
-                  className="mt-0 mb-0"
-                  src="themes/midnight/images/board-summary/off.gif"
-                  alt="Off"
-                />
-              </td>
-
-              <td className="col-10 col-md-7 col-lg-2 align-content-center">
-                <h6 className="mb-0">
-                  <BBLink to={`/forum/board/${sb.boardId}/1`}>
-                    {sb.boardName}
+          {board.childBoards && board.childBoards.length > 0 && (
+            <div className="text-sm text-highlighted">
+              <span className="font-medium">Child boards: </span>
+              {board.childBoards.map((cb, index) => (
+                <span key={cb.boardId}>
+                  <BBLink to={`/forum/board/${cb.boardId}/1`} prefetch="intent">
+                    {cb.boardName}
                   </BBLink>
-                  <span className="d-inline-block d-md-none ms-4 text-sm">
-                    <BBLink to={`/forum/thread/${sb.latestThreadId}/1`}>
-                      Latest Post
-                    </BBLink>
-                  </span>
-                </h6>
-                <div className="d-block d-lg-none">{sb.description}</div>
-                {sb.childBoards && (
-                  <div className="d-block d-lg-none text-sm">
-                    Child boards:{" "}
-                    {sb.childBoards.map((cb) => {
-                      return (
-                        <BBLink
-                          key={`${cb.boardId}`}
-                          to={`/forum/board/${cb.boardId}/1`}
-                        >
-                          {cb.boardName}
-                        </BBLink>
-                      );
-                    })}
-                  </div>
-                )}
-                <div className="d-inline-block d-md-none text-sm">
-                  Threads: {sb.threadCount}
-                </div>
-                <div className="ms-2 d-inline-block d-md-none text-sm">
-                  Posts: {sb.postCount}
-                </div>
-              </td>
+                  {index < board.childBoards!.length - 1 && ", "}
+                </span>
+              ))}
+            </div>
+          )}
 
-              <td className="d-none d-lg-table-cell col-6 align-content-center">
-                <div className="d-flex flex-column">
-                  <div className="text-sm">{sb.description}</div>
-                  {sb.childBoards && (
-                    <div className="text-sm">
-                      Child boards:{" "}
-                      {sb.childBoards.map((cb) => {
-                        return (
-                          <BBLink
-                            key={`${cb.boardId}`}
-                            to={`/forum/board/${cb.boardId}/1`}
-                          >
-                            {cb.boardName}
-                          </BBLink>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </td>
+          <section className="flex flex-col sm:hidden text-sm text-highlighted space-y-1">
+            <div className="flex flex-row gap-4 justify-end text-highlighted shrink-0 overflow-hidden">
+              <span className="grow text-left">
+                Threads: {board.threadCount ?? 0}
+              </span>
+              <span className="grow text-right">
+                Posts: {board.postCount ?? 0}
+              </span>
+            </div>
+            <div className="flex flex-row gap-4 justify-end text-highlighted shrink-0 overflow-hidden text-ellipsis  whitespace-nowrap">
+              {board.latestMessageOwnerId && board.latestMessageOwnerId > 0 ? (
+                <>
+                  <span className="grow text-left">Last post by: </span>
 
-              <td className="d-none d-md-table-cell col-2 col-lg-1 align-content-center">
-                <div className="d-flex flex-column text-sm">
-                  <div>Threads: {sb.threadCount}</div>
-                  <div>Posts: {sb.postCount}</div>
-                </div>
-              </td>
+                  <BBLink
+                    to={`/user/profile/${board.latestMessageOwnerId}`}
+                    prefetch="intent"
+                  >
+                    {board.latestMessageUserName}
+                  </BBLink>
+                </>
+              ) : null}
+            </div>
+            <div className="flex flex-row gap-4 justify-end text-highlighted shrink-0">
+              {board.threadName ? (
+                <>
+                  <span className="grow text-left">in </span>
+                  <BBLink
+                    to={`/forum/thread/${board.latestThreadId}/1`}
+                    prefetch="intent"
+                    className="shrink  overflow-hidden text-ellipsis  whitespace-nowrap"
+                  >
+                    {board.threadName}
+                  </BBLink>
+                </>
+              ) : null}
+            </div>
+            <div className="flex flex-row grow gap-4 justify-end overflow-hidden text-ellipsis  whitespace-nowrap">
+              <span className="grow text-left">
+                {board.latestMessageCreatedTsAsString ? "on " : null}
+              </span>
+              <span>
+                {board.latestMessageCreatedTsAsString ? (
+                  <>
+                    {new Date(
+                      board.latestMessageCreatedTsAsString,
+                    ).toLocaleString()}
+                  </>
+                ) : null}
+              </span>
+            </div>
+          </section>
+        </section>
+      ),
+    },
+    {
+      key: "stats",
+      label: "Stats",
+      className: "shrink-0 overflow-hidden",
+      hideOnMobile: true,
+      render: (_, board) => (
+        <section className="space-y-1 text-sm text-center">
+          <div className="text-highlighted">Threads</div>
+          <div className="font-medium">{board.threadCount}</div>
+          <div className="text-highlighted">Posts</div>
+          <div className="font-medium">{board.postCount}</div>
+        </section>
+      ),
+    },
+    {
+      key: "lastPost",
+      label: "Last Post",
+      className: "max-w-1/4 grow w-full",
+      hideOnMobile: true,
+      render: (_, board) => (
+        <section className="space-y-1 text-sm ">
+          <div className="text-highlighted overflow-hidden text-ellipsis  whitespace-nowrap ">
+            {board.latestMessageOwnerId && board.latestMessageOwnerId > 0 ? (
+              <>
+                <span>Last post by: </span>
+                <BBLink
+                  to={`/user/profile/${board.latestMessageOwnerId}`}
+                  prefetch="intent"
+                >
+                  {board.latestMessageUserName}
+                </BBLink>
+              </>
+            ) : null}
+          </div>
+          <div className="text-highlighted overflow-hidden text-ellipsis  whitespace-nowrap ">
+            {board.threadName ? (
+              <>
+                in{" "}
+                <BBLink to={`/forum/thread/${board.latestThreadId}/1`}>
+                  {board.threadName}
+                </BBLink>
+              </>
+            ) : null}
+          </div>
+          <div className="text-highlighted overflow-hidden text-ellipsis  whitespace-nowrap ">
+            {board.latestMessageCreatedTsAsString ? (
+              <>on {board.latestMessageCreatedTsAsString}</>
+            ) : null}
+          </div>
+        </section>
+      ),
+    },
+  ];
 
-              <td className="d-none d-md-table-cell col-4 col-md-2 col-lg-2 align-content-center">
-                <div className="d-flex flex-column text-sm">
-                  <div>
-                    <span>Last Post by: </span>
-                    {sb.latestMessageOwnerId && sb.latestMessageOwnerId > 0 ? (
-                      <BBLink to={`/user/profile/${sb.latestMessageOwnerId}`}>
-                        {sb.latestMessageUserName}
-                      </BBLink>
-                    ) : (
-                      <span>{sb.latestMessageUserName}</span>
-                    )}
-                  </div>
-                  <div>
-                    in{" "}
-                    <BBLink to={`/forum/thread/${sb.latestThreadId}/1`}>
-                      {sb.threadName}
-                    </BBLink>
-                  </div>
-                  <div>on {sb.latestMessageCreatedTsAsString}</div>
-                </div>
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </BBTable>
+  return (
+    <BBTable
+      columns={columns}
+      data={subBoards}
+      emptyMessage="No boards available"
+      showHeader={false}
+      rowClassName="py-2 px-4"
+    />
   );
 };
 

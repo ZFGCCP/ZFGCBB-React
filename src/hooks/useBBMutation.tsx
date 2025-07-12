@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import type { BaseBB } from "../types/api";
+import { handleResponseWithJason } from "@/shared/http/response.handler";
 
 export const useBBMutation = <T extends BaseBB, U extends BaseBB>(
   config: () => [string, T],
@@ -9,13 +9,17 @@ export const useBBMutation = <T extends BaseBB, U extends BaseBB>(
   const mutator = useMutation({
     mutationFn: async () => {
       const [url, postBody] = config();
-      const resp = axios.post<U>(
-        `${import.meta.env.REACT_ZFGBB_API_URL}${url ?? "/"}`,
-        postBody,
+      return await handleResponseWithJason<U>(
+        await fetch(`${import.meta.env.REACT_ZFGBB_API_URL}${url ?? "/"}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postBody),
+        }),
       );
-      return (await resp).data;
     },
-    onSuccess: onSuccess ? onSuccess : () => {},
+    onSuccess,
     onError: () => {},
   });
 

@@ -1,14 +1,84 @@
 @import "tailwindcss";
-@import "~/assets/themes/base.css";
+@import "./themes.css";
 
-/** FIXME: #111 move the bbcode styles elsewhere */
+html,
+body,
+#root {
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--background-color-default);
+  color: var(--text-color-default);
+  font-family: sans-serif;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  scrollbar-width: none;
+}
+
+/* BBCode styles */
 .bb-code-b {
   font-weight: bold;
 }
 
-.bb-code-quote {
-  .bb-code-quote-body {
-    border: 0.2rem solid black;
-    padding: 1rem;
-  }
+.bb-code-quote .bb-code-quote-body {
+  border: 0.2rem solid black;
+  padding: 1rem;
+}
+
+/* Theme Image Classes */
+.theme-board-status {
+  background-image: var(--image-board-status-off);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.theme-post-indicator {
+  background-image: var(--image-post-indicator);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.theme-topic-normal {
+  background-image: var(--image-topic-normal);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Default hyperlink styling */
+a {
+  text-decoration: underline;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
+}
+
+.scrollbar-color-default {
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--background-color-default) 50%,
+      var(--background-color-inverted)
+    )
+    color-mix(
+      in srgb,
+      var(--background-color-default) 50%,
+      var(--text-color-muted)
+    );
 }
