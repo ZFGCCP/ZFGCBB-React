@@ -140,3 +140,9 @@ export default function BBImage<
     </Suspense>
   );
 }
+
+if (import.meta.hot)
+  import.meta.hot.dispose(async () => {
+    lazyImageComponentCache.clear();
+    await images.clear();
+  });
