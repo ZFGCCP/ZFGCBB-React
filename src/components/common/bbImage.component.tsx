@@ -40,21 +40,8 @@ function preloadImage(path: string): CacheEntry {
 
   // Handle URL-sourced images
   if (isValidUrl(path)) {
-    cacheEntry.promise = new Promise((resolve, reject) => {
-      const img = new Image();
-      img.src = path;
-      img.crossOrigin = "anonymous";
-
-      cacheEntry.status = "success";
-      cacheEntry.result = path;
-
-      img.onload = () => resolve();
-      img.onerror = () => {
-        console.error(`Failed to load image URL: ${path}`);
-        cacheEntry.status = "error";
-        reject();
-      };
-    });
+    cacheEntry.result = path;
+    cacheEntry.status = "success";
     return cacheEntry;
   }
 
