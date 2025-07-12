@@ -18,10 +18,10 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
     {
       key: "boardInfo",
       label: "Board",
-      className: "grow",
+      className: "grow w-full overflow-hidden text-ellipsis whitespace-nowrap",
       render: (_, board) => (
         <div>
-          <h6 className="font-semibold">
+          <h6 className="font-semibold md:text-left text-right">
             <BBLink to={`/forum/board/${board.boardId}/1`} prefetch="intent">
               {board.boardName}
             </BBLink>
@@ -43,12 +43,12 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
             </div>
           )}
 
-          <div className="md:hidden text-sm text-highlighted space-y-1">
-            <div className="flex gap-4 md:hidden text-sm text-highlighted">
+          <div className="flex flex-col md:hidden text-sm text-highlighted space-y-1  w-full overflow-hidden text-ellipsis whitespace-nowrap">
+            <div className="flex flex-row gap-4 justify-end text-highlighted">
               <span>Threads: {board.threadCount}</span>
               <span>Posts: {board.postCount}</span>
             </div>
-            <div className="flex gap-4 text-sm text-highlighted">
+            <div className="flex flex-row gap-4 justify-end text-highlighted">
               <span>Last post by: </span>
               {board.latestMessageOwnerId && board.latestMessageOwnerId > 0 ? (
                 <BBLink
@@ -61,7 +61,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
                 <span>{board.latestMessageUserName}</span>
               )}
             </div>
-            <div className="text-ellipsis whitespace-nowrap w-11/12 overflow-hidden">
+            <div className="flex flex-row gap-4 justify-end text-highlighted">
               in{" "}
               <BBLink
                 to={`/forum/thread/${board.latestThreadId}/1`}
@@ -70,7 +70,9 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
                 {board.threadName}
               </BBLink>
             </div>
-            <div>on {board.latestMessageCreatedTsAsString}</div>
+            <div className="flex flex-row grow gap-4 justify-end">
+              on {board.latestMessageCreatedTsAsString}
+            </div>
           </div>
         </div>
       ),
