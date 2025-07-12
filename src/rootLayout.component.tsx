@@ -3,58 +3,82 @@ import { useContext } from "react";
 import { UserContext } from "./providers/user/userProvider";
 import Navigator from "./components/navigation/navigator.component";
 import BBLink from "./components/common/bbLink.component";
-// import { ThemeContext } from "./providers/theme/themeProvider";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BBImage from "./components/common/bbImage.component";
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
+interface RootLayoutProps {
+  children: React.ReactNode;
+}
+
+const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const { displayName } = useContext(UserContext);
-  // const { currentTheme } = useContext(ThemeContext);
 
   return (
-    <main className="grid grid-rows-[auto_1fr_auto] w-auto h-fit md:h-auto">
-      <header className="hidden md:flex items-end justify-between border-b-4 border-black">
-        <div className="z-[1]">
-          <BBImage
-            src="images/logo.png"
-            className="relative z-[-1] mb-[-1.5rem] hidden md:block"
-            alt="Logo"
-          />
-          <Navigator />
-        </div>
-        <div className="self-center w-full p-4">
-          <p className="mb-0">
-            Welcome, {displayName}! <span>Please login or </span>
-            <BBLink to="/user/auth/registration">register</BBLink>.
-          </p>
-          <p>Did you miss your activation email?</p>
-        </div>
-      </header>
+    <div className="grid grid-rows-[1fr_auto] md:grid-rows-[1fr] size-full overflow-hidden">
+      <main className="overflow-auto bg-default min-h-0 size-full scrollbar-color-default scrollbar-gutter-stable px-1.5 mr-1">
+        <header className="hidden md:flex justify-between items-end border-b-2 border-default bg-default px-2">
+          <div className="z-10">
+            <BBImage
+              src="images/logo.png"
+              alt="Logo"
+              className="relative -z-10 md:mb-[-1.5rem]"
+            />
+            <Navigator />
+          </div>
+          <div className="self-center px-2">
+            <p className="mb-0">
+              Welcome, {displayName}! <span>Please login or </span>
+              <BBLink to="/user/auth/registration">register</BBLink>.
+            </p>
+            <p className="text-dimmed">Did you miss your activation email?</p>
+          </div>
+        </header>
 
-      <article className="overflow-auto h-full w-full p-2 md:overflow-hidden">
-        <div className="grid md:hidden justify-center">
-          <BBImage
-            src="images/logo.png"
-            className="w-full h-full relative z-[-1]"
-            alt="Logo"
-          />
-        </div>
-        {children}
-      </article>
+        <header className="md:hidden bg-default border-b-2 border-default">
+          <div className="flex justify-center pt-2">
+            <BBImage className="h-16 w-auto" src="images/logo.png" alt="Logo" />
+          </div>
+        </header>
 
-      <footer className="flex md:hidden justify-around items-center h-10 w-full relative z-[100001] bg-background">
-        <BBLink to="/">Home</BBLink>
-        <BBLink to="/">Wiki</BBLink>
-        <BBLink to="/forum" prefetch="intent">
-          Forum
-        </BBLink>
-        <BBLink to="/">Chat</BBLink>
-        <BBLink to="/">
-          <FontAwesomeIcon icon={faBars} />
-        </BBLink>
-      </footer>
-    </main>
+        <div className="p-2 sm:p-3.5">{children}</div>
+      </main>
+
+      <nav className="md:hidden bg-elevated border-t-2 border-default">
+        <div className="grid grid-cols-5 h-12">
+          <BBLink
+            to="/"
+            className="flex items-center justify-center hover:bg-muted transition-colors"
+          >
+            <span className="text-xs">Home</span>
+          </BBLink>
+          <BBLink
+            to="/forum"
+            prefetch="render"
+            className="flex items-center justify-center hover:bg-muted transition-colors"
+          >
+            <span className="text-xs">Forum</span>
+          </BBLink>
+          <BBLink
+            to="https://discord.gg/NP2nNKjun6"
+            target="_blank"
+            className="flex items-center justify-center hover:bg-muted transition-colors"
+          >
+            <span className="text-xs">Chat</span>
+          </BBLink>
+          <BBLink
+            to="http://wiki.zfgc.com"
+            target="_blank"
+            className="flex items-center justify-center hover:bg-muted transition-colors"
+          >
+            <span className="text-xs">Wiki</span>
+          </BBLink>
+          <button className="flex items-center justify-center hover:bg-muted transition-colors">
+            <FontAwesomeIcon icon={faBars} />
+          </button>
+        </div>
+      </nav>
+    </div>
   );
 };
 

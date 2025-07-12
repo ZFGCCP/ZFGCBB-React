@@ -1,13 +1,5 @@
 import type React from "react";
-import {
-  useMemo,
-  useState,
-  useRef,
-  Suspense,
-  useContext,
-  useCallback,
-} from "react";
-import { styled } from "styled-components";
+import { useMemo, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faReply,
@@ -22,86 +14,36 @@ import parse from "html-react-parser/lib/index";
 import Widget from "../../common/widgets/widget.component";
 import { useBBQuery } from "../../../hooks/useBBQuery";
 import type { BBPermissionLabel, Message, Thread } from "../../../types/forum";
-import FooterButtons from "./footerButtons.component";
 import MessageEditor from "../messageEditor.component";
 import UserLeftPane from "../../user/userLeftPane.component";
 import HasPermission from "../../common/security/HasPermission.component";
-import type { Theme } from "../../../types/theme";
-import { ThemeContext } from "../../../providers/theme/themeProvider";
 import BBPaginator from "../../common/paginator/bbPaginator.component";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import BBLink from "@/components/common/bbLink.component";
+import BBFlex from "@/components/common/layout/bbFlex.component";
 
-const Style = {
-  messageWrapper: styled.div<{ theme: Theme }>`
-    min-height: 14rem;
-    border-bottom: 0.1rem solid black;
-
-    &:nth-child(odd) {
-      background-color: ${(props) => props.theme.tableRow};
-    }
-
-    &:nth-child(even) {
-      background-color: ${(props) => props.theme.tableRowAlt};
-    }
-  `,
-
-  signatureWrapper: styled.div`
-    flex-grow: 1;
-    border-top: 1px solid black;
-  `,
-
-  messageBody: styled.div`
-    overflow-wrap: anywhere;
-  `,
-
-  buttonWrapper: styled.div`
-    border-bottom: 0.1rem solid black;
-  `,
-
-  buttonIcon: styled.div`
-    cursor: pointer;
-    font-size: 0.8rem;
-  `,
-
-  time: styled.div`
-    height: 3.3125rem;
-  `,
-
-  graveDigWarning: styled.div`
-    border: 0.1rem solid red;
-    color: red;
-    background-color: #ffe0e0;
-  `,
-
-  threadFooter: styled.div<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.footerColor};
-  `,
-
-  lastEdit: styled.div`
-    font-size: 0.8rem;
-  `,
-};
-
-const ForumThread: React.FC<{
+interface ForumThreadProps {
   threadId: string;
   pageNo: string;
-}> = ({ threadId: paramsThreadId, pageNo: paramsPageNo }) => {
+}
+
+const ForumThread: React.FC<ForumThreadProps> = ({
+  threadId: paramsThreadId,
+  pageNo: paramsPageNo,
+}) => {
   const navigate = useNavigate();
   const threadId = parseInt(paramsThreadId!);
   const currentPage = parseInt(paramsPageNo!);
 
   const textAreaRef = useRef("");
-  let cursorPosition = 0;
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [msgText, setMsgText] = useState<
     string | number | readonly string[] | undefined
   >("");
-  const { data: thread } = useBBQuery<Thread>(
+  const { data: thread, isLoading } = useBBQuery<Thread>(
     `/thread/${threadId}?pageNo=${currentPage}&numPerPage=10`,
   );
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
-  const { currentTheme } = useContext(ThemeContext);
 
   const loadNewPage = (pageNo: number) => {
     navigate(`/forum/thread/${threadId}/${pageNo}`);
@@ -138,7 +80,7 @@ const ForumThread: React.FC<{
         ],
       },
     ] satisfies BBPermissionLabel[];
-  }, [thread]);
+  }, [showReplyBox]);
 
   const clickModify = (msg: Message) => {
     setShowReplyBox(true);
@@ -152,121 +94,212 @@ const ForumThread: React.FC<{
     setCurrentMsg(msg);
   };
 
-  const submitPost = (msg: Message, threadId: number) => {};
-
   return (
     <>
-      <div className="row">
-        <div className="col-12 mt-2 d-flex gap-2">
-          <BBLink to="/forum">ZFGC.com</BBLink>
-          <span>&gt;&gt;</span>
-          <BBLink to={`/forum/board/${thread?.boardId}/1`}>Board</BBLink>
-          <span>&gt;&gt;</span>
-          <span>{thread?.threadName}</span>
+      <div className="space-y-4">
+        <div className="mt-2">
+          <BBFlex gap="gap-2">
+            <BBLink to="/forum" prefetch="render">
+              ZFGC.com
+            </BBLink>
+            <span>&gt;&gt;</span>
+            {(thread && !isLoading && (
+              <BBLink
+                to={`/forum/board/${thread?.boardId}/1`}
+                prefetch="intent"
+              >
+                Board
+              </BBLink>
+            )) || <span>Loading...</span>}
+            <span>&gt;&gt;</span>
+            <span>{thread?.threadName}</span>
+          </BBFlex>
         </div>
-        <div className="col-12 mt-2">
+
+        {thread && !isLoading ? (
+          <div className="bg-accented p-4 scrollbar-thin">
+            <BBPaginator
+              numPages={thread.pageCount}
+              currentPage={currentPage}
+              onPageChange={loadNewPage}
+            />
+          </div>
+        ) : null}
+
+        {thread && !isLoading ? (
           <Widget widgetTitle={thread ? thread.threadName : ""}>
-            {thread?.messages?.map((msg) => {
-              return (
-                <Style.messageWrapper
-                  className="d-flex flex-column flex-lg-row"
-                  key={`${msg.id}`}
-                  theme={currentTheme}
-                >
-                  <UserLeftPane user={msg.createdUser} />
-                  <div className="d-flex flex-column col-12 col-lg-10">
-                    <Style.buttonWrapper className="d-flex justify-content-between">
-                      <Style.time className="p-2">
-                        <div>
-                          {msg.createdTsAsString}
-                          <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                            {<span> - 192.168.1.1</span>}
-                          </HasPermission>
-                        </div>
-                        <Style.lastEdit>
-                          Last Edit: {msg.currentMessage.createdTsAsString}
-                        </Style.lastEdit>
-                      </Style.time>
-                      <div className="d-flex justify-content-end">
-                        <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon icon={faReply} className="me-1" />
-                            Reply
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
-                          <Style.buttonIcon
-                            className="m-2"
-                            onClick={() => clickModify(msg)}
-                          >
-                            <FontAwesomeIcon icon={faPen} className="me-1" />
-                            Modify
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon icon={faTrash} className="me-1" />
-                            Remove
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon
-                              icon={faShuffle}
-                              className="me-1"
-                            />
-                            Split Thread
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_VIEWER"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon icon={faBook} className="me-1" />
-                            View History
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon icon={faFlag} className="me-1" />
-                            Report
-                          </Style.buttonIcon>
-                        </HasPermission>
-                        <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                          <Style.buttonIcon className="m-2">
-                            <FontAwesomeIcon
-                              icon={faTriangleExclamation}
-                              className="me-1"
-                            />
-                            Warn
-                          </Style.buttonIcon>
-                        </HasPermission>
+            <div className="divide-y divide-default">
+              {thread?.messages?.map((msg, index) => {
+                const isOdd = index % 2 === 0;
+                return (
+                  <div
+                    className={`${isOdd ? "bg-muted" : "bg-elevated"}`}
+                    key={msg.id}
+                  >
+                    {/* gm112 note: Leaving this here for reference, in case if there's feedback regarding the mobile view being too squashed.
+                  <div className="flex flex-col xs:flex-row min-h-[300px]">
+                    <div className="sm:w-28 md:w-34 lg:w-64 shrink-0 border-b sm:border-b-0 sm:border-r border-default">
+                      <UserLeftPane user={msg.createdUser} />
+                    </div>
+                  */}
+
+                    <div className="flex flex-row min-h-[300px]">
+                      <div className="w-28 md:w-34 lg:w-64 shrink-0 border-r border-default">
+                        <UserLeftPane user={msg.createdUser} />
                       </div>
-                    </Style.buttonWrapper>
-                    <Style.messageBody className="m-2">
-                      {parse(msg.currentMessage.messageText.toString())}
-                    </Style.messageBody>
-                    {msg.createdUser.bioInfo?.signature?.trim() !== "" && (
-                      <Style.signatureWrapper className="d-flex align-items-end m-2 py-2">
-                        <div>
-                          {msg.createdUser.bioInfo?.signature &&
-                            parse(msg.createdUser.bioInfo?.signature)}
+
+                      <div className="flex-1 flex-col shrink min-w-0">
+                        <div className="border-b border-default p-3 bg-elevated shrink-0 min-h-[76px] flex items-start ">
+                          <BBFlex
+                            justify="between"
+                            align="center"
+                            className="gap-2 overflow-hidden min-w-0 size-fit whitespace-nowrap"
+                            wrap={false}
+                          >
+                            <div className="text-sm">
+                              <div>
+                                {new Date(
+                                  msg.createdTsAsString,
+                                ).toLocaleString()}
+                                <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                                  <span className="text-muted">
+                                    - 192.168.1.1
+                                  </span>
+                                </HasPermission>
+                              </div>
+                              {msg.currentMessage.updatedTsAsString && (
+                                <div className="text-muted">
+                                  Last Edit:
+                                  {new Date(
+                                    msg.currentMessage.updatedTsAsString,
+                                  ).toLocaleString()}
+                                </div>
+                              )}
+                            </div>
+
+                            <BBFlex gap="gap-2" wrap={true} className="text-sm">
+                              <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
+                                <button className="text-toned hover:transition-colors">
+                                  <FontAwesomeIcon
+                                    icon={faReply}
+                                    className="mr-1"
+                                  />
+                                  <span className="hidden sm:inline">
+                                    Reply
+                                  </span>
+                                </button>
+                              </HasPermission>
+                              <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
+                                <button
+                                  className="text-toned hover:transition-colors"
+                                  onClick={() => clickModify(msg)}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faPen}
+                                    className="mr-1"
+                                  />
+                                  <span className="hidden sm:inline">Edit</span>
+                                </button>
+                              </HasPermission>
+                              <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                                <button className="text-toned hover:transition-colors hidden sm:inline-flex">
+                                  <FontAwesomeIcon
+                                    icon={faTrash}
+                                    className="mr-1"
+                                  />
+                                  Remove
+                                </button>
+                              </HasPermission>
+                              <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                                <button className="text-toned hover:transition-colors hidden md:inline-flex">
+                                  <FontAwesomeIcon
+                                    icon={faShuffle}
+                                    className="mr-1"
+                                  />
+                                  Split
+                                </button>
+                              </HasPermission>
+                              <HasPermission perms={["ZFGC_MESSAGE_VIEWER"]}>
+                                <button className="text-toned hover:transition-colors hidden md:inline-flex">
+                                  <FontAwesomeIcon
+                                    icon={faBook}
+                                    className="mr-1"
+                                  />
+                                  History
+                                </button>
+                              </HasPermission>
+                              <HasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
+                                <button className="text-toned hover:transition-colors hidden lg:inline-flex">
+                                  <FontAwesomeIcon
+                                    icon={faFlag}
+                                    className="mr-1"
+                                  />
+                                  Report
+                                </button>
+                              </HasPermission>
+                              <HasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                                <button className="text-toned hover:transition-colors hidden lg:inline-flex">
+                                  <FontAwesomeIcon
+                                    icon={faTriangleExclamation}
+                                    className="mr-1"
+                                  />
+                                  Warn
+                                </button>
+                              </HasPermission>
+                            </BBFlex>
+                          </BBFlex>
                         </div>
-                      </Style.signatureWrapper>
-                    )}
+
+                        <div className="p-3 bg-elevated min-h-64 max-h-[calc(100dvh-25dvh)] w-full overflow-auto whitespace-pre-wrap snap-start snap-mandatory scrollbar-thin">
+                          {parse(msg.currentMessage.messageText.toString())}
+                        </div>
+
+                        {msg.createdUser.bioInfo?.signature?.trim() && (
+                          <div className="border-t border-default p-3 bg-muted shrink-0">
+                            <div className="overflow-x-auto max-h-42 scrollbar-thin">
+                              {msg.createdUser.bioInfo?.signature &&
+                                parse(msg.createdUser.bioInfo?.signature)}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </Style.messageWrapper>
-              );
-            })}
-            <Style.threadFooter theme={currentTheme}>
-              {thread && (
+                );
+              })}
+            </div>
+
+            {thread && !isLoading && (
+              <div className="bg-accented p-4 scrollbar-thin">
                 <BBPaginator
                   numPages={thread.pageCount}
                   currentPage={currentPage}
                   onPageChange={loadNewPage}
                 />
-              )}
-            </Style.threadFooter>
+              </div>
+            )}
           </Widget>
-        </div>
+        ) : null}
+
+        {thread && !isLoading ? (
+          <footer className="mt-2">
+            <BBFlex gap="gap-2">
+              <BBLink to="/forum" prefetch="render">
+                ZFGC.com
+              </BBLink>
+              <span>&gt;&gt;</span>
+
+              <BBLink
+                to={`/forum/board/${thread?.boardId}/1`}
+                prefetch="intent"
+              >
+                Board
+              </BBLink>
+              <span>&gt;&gt;</span>
+              <span>{thread?.threadName}</span>
+            </BBFlex>
+          </footer>
+        ) : null}
       </div>
 
       {showReplyBox && <MessageEditor threadId={threadId} />}

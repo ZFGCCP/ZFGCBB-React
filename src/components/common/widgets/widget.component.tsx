@@ -1,14 +1,20 @@
 import type React from "react";
 
-const Widget: React.FC<{
+interface WidgetProps {
   widgetTitle?: string;
   className?: string;
   children: React.ReactNode;
-}> = ({ widgetTitle, className = "", children }) => {
+}
+
+const Widget: React.FC<WidgetProps> = ({
+  widgetTitle,
+  className = "",
+  children,
+}) => {
   return (
-    <section className={`bg-background border border-black ${className}`}>
+    <section className={`bg-accented border-2 border-default ${className}`}>
       {widgetTitle && (
-        <h6 className="p-1 m-0 border-b border-black font-bold">
+        <h6 className="p-1 m-0 font-bold border-b-2 border-default bg-accented ">
           {widgetTitle}
         </h6>
       )}

@@ -10,3 +10,5 @@
 node_modules
 dist
 build
+build.zip
+.env
