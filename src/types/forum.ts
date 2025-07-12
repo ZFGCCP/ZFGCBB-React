@@ -3,11 +3,11 @@ import type { User } from "./user";
 
 export type Forum = BaseBB & {
   categories: Category[];
-  boardName: String;
+  boardName: string;
 };
 export type Board = BaseBB & {
-  boardName: String;
-  description: String;
+  boardName: string;
+  description: string;
   categoryId: number;
   threadCount: number;
   parentBoardId: number;
@@ -43,16 +43,16 @@ export type ChildBoard = {
 };
 
 export type Category = BaseBB & {
-  categoryName: String;
-  description: String;
+  categoryName: string;
+  description: string;
   parentCategoryId: number;
   boards: BoardSummary[];
 };
 
 export type Thread = BaseBB & {
-  threadName: String;
-  lockedFlag: Boolean;
-  pinnedFlag: Boolean;
+  threadName: string;
+  lockedFlag: boolean;
+  pinnedFlag: boolean;
   boardId: number;
   createdUserId: number;
   createdUser: User;
@@ -66,13 +66,13 @@ export type Thread = BaseBB & {
 
 export type LatestMessage = {
   threadId: number;
-  threadName: String;
+  threadName: string;
   messageId: number;
   messageHistoryId: number;
-  createdTsAsString: String;
-  ownerName: String;
+  createdTsAsString: string;
+  ownerName: string;
   ownerId: number;
-  lastPostTsAsString: String;
+  lastPostTsAsString: string;
 };
 
 export type Message = BaseBB & {
@@ -86,10 +86,11 @@ export type Message = BaseBB & {
 
 export type MessageHistory = BaseBB & {
   messageId: number;
-  messageText: String;
-  unparsedText: String;
-  currentFlag?: Boolean;
+  messageText: string;
+  unparsedText: string;
+  currentFlag?: boolean;
   createdTsAsString: string;
+  updatedTsAsString: string;
 };
 
 export type BBPermissionLabel = {

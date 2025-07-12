@@ -4,7 +4,9 @@ import Widget from "../components/common/widgets/widget.component";
 const UserLogout: React.FC = () => {
   return (
     <Widget widgetTitle={"Logout"}>
-      <div className="d-flex flex-column flex-md-row"></div>
+      <div className="flex flex-col md:flex-row p-4">
+        <p className="">You have been successfully logged out.</p>
+      </div>
     </Widget>
   );
 };

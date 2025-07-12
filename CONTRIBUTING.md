@@ -14,9 +14,17 @@ TBD. We could use some help writing this out.
   - [Development](#development)
     - [Downloading the Project](#downloading-the-project)
     - [package.json - Provided package.json scripts](#packagejson---provided-packagejson-scripts)
-      - [package.json - Usage](#packagejson---usage)
+      - [`yarn dev`: Starts the development server](#yarn-dev-starts-the-development-server)
+      - [`yarn build`: Builds the application for production](#yarn-build-builds-the-application-for-production)
+        - [Packaging for Production](#packaging-for-production)
+      - [`yarn check`: Runs type checking, linting, and formatting checks](#yarn-check-runs-type-checking-linting-and-formatting-checks)
+      - [`yarn format`: Formats the code using Prettier](#yarn-format-formats-the-code-using-prettier)
+      - [`yarn preview`: Runs the application in the production mode (SPA Mode)](#yarn-preview-runs-the-application-in-the-production-mode-spa-mode)
+      - [`yarn preview:ssr`: Runs the application in the production mode with server-side rendering](#yarn-previewssr-runs-the-application-in-the-production-mode-with-server-side-rendering)
+        - [package.json - Usage](#packagejson---usage)
         - [Troubleshooting](#troubleshooting)
           - [Why is the forum not loading?](#why-is-the-forum-not-loading)
+          - [Why is there a warning about the `ReactQueryDevtools` package?](#why-is-there-a-warning-about-the-reactquerydevtools-package)
       - [VSCode - Usage](#vscode---usage)
         - [VSCode - Recommended Extensions](#vscode---recommended-extensions)
         - [VSCode - Typescript Workspace Version](#vscode---typescript-workspace-version)
@@ -45,15 +53,101 @@ If you are not using VSCode, you can use the provided package.json scripts to ge
 
 ### [package.json](package.json) - Provided package.json scripts
 
-- `yarn dev`: Starts the development server
-- `yarn build`: Builds the application for production
-- `yarn check`: Runs type checking, linting, and formatting checks
-- `yarn format`: Formats the code using Prettier
-- `yarn preview`: Runs the application in the production mode
+The `yarn dev` and `yarn build` commands reference the [.env.local](.env.local) file or if specified, the [.env.production](.env.production) file. Utilizing the [.env.production](.env.production) file provides a method for testing the frontend against the production backend hosted on [zfgc.com](http://zfgc.com).
+
+Specifying an environment can be done by using the `--mode` flag.
+
+For example, to run the frontend in production mode, you can use the following command:
+
+```bash
+yarn dev --mode=production
+```
+
+The same flag can be used with the `yarn build` command, with the same effect.
+
+Continue reading to learn more about the package.json scripts.
+
+#### `yarn dev`: Starts the development server
+
+This command starts the development server, using [react-router/dev](https://reactrouter.com/start/framework/installation) and `vite`. `react-router` builds on top of `vite` to create a development server.
+
+Since `yarn dev` forwards to `react-router dev`, the arguments for `react-router` can be forwarded to `yarn dev` as well.
+
+```text
+  `dev` Options:
+    --clearScreen       Allow/disable clear screen when logging (boolean)
+    --config, -c        Use specified config file (string)
+    --cors              Enable CORS (boolean)
+    --force             Force the optimizer to ignore the cache and re-bundle (boolean)
+    --host              Specify hostname (string)
+    --logLevel, -l      Info | warn | error | silent (string)
+    --mode, -m          Set env mode (string)
+    --open              Open browser on startup (boolean | string)
+    --port              Specify port (number)
+    --profile           Start built-in Node.js inspector
+    --strictPort        Exit if specified port is already in use (boolean)
+```
+
+#### `yarn build`: Builds the application for production
+
+This command builds the application for production, using [react-router](https://reactrouter.com/tutorials/quickstart#build-and-run).
+
+Since `yarn build` forwards to `react-router build`, the arguments for `react-router` can be forwarded to `yarn build` as well.
+
+```text
+  `build` Options:
+    --assetsInlineLimit Static asset base64 inline threshold in bytes (default: 4096) (number)
+    --clearScreen       Allow/disable clear screen when logging (boolean)
+    --config, -c        Use specified config file (string)
+    --emptyOutDir       Force empty outDir when it's outside of root (boolean)
+    --logLevel, -l      Info | warn | error | silent (string)
+    --minify            Enable/disable minification, or specify minifier to use (default: "esbuild") (boolean | "terser" | "esbuild")
+    --mode, -m          Set env mode (string)
+    --profile           Start built-in Node.js inspector
+    --sourcemapClient   Output source maps for client build (default: false) (boolean | "inline" | "hidden")
+    --sourcemapServer   Output source maps for server build (default: false) (boolean | "inline" | "hidden")
+```
+
+##### Packaging for Production
+
+The `yarn build` command will package the application for production. The `NODE_ENV` environment variable is set to `production` by default on most systems. If you wish to override this, you can use the `--mode` flag. [See above for more information](#packagejson---provided-packagejson-scripts).
+
+```bash
+yarn build --mode=production
+```
+
+This will package the application for production and output the production build to the `build/client` directory in the project root.
+
+If you have zip installed, you can use the following command to create a zip file of the production build.
+
+```bash
+rm -f build.zip && zip -rj build.zip build/client/
+```
+
+#### `yarn check`: Runs type checking, linting, and formatting checks
+
+This commands runs type checking, linting, and formatting checks using [TypeScript](https://www.typescriptlang.org/) and [Prettier](https://prettier.io/), and [react-router](https://reactrouter.com/tutorials/quickstart#build-and-run)'s typegen command. It will throw an error if any of the checks fail.
+
+#### `yarn format`: Formats the code using Prettier
+
+This command formats the code using [Prettier](https://prettier.io/).
+
+#### `yarn preview`: Runs the application in the production mode (SPA Mode)
+
+This project supports both SPA Mode and SSR Mode. This command runs the application in [SPA Mode](https://reactrouter.com/how-to/spa), using [vite](https://vitejs.dev/).
+
+SPA Mode is the default mode for this project.
+
+#### `yarn preview:ssr`: Runs the application in the production mode with server-side rendering
+
+**NOTE:** This command is not currently supported, and should not be used for now. Use the [yarn preview](#yarn-preview-runs-the-application-in-the-production-mode-spa-mode) command instead if testing preview of a production build.
+
+This command runs the application in SSR Mode, using [react-router](https://reactrouter.com/tutorials/quickstart#build-and-run). See also documentation for [react-router SPA Mode](https://reactrouter.com/how-to/spa) for more context over the differences between SPA Mode and SSR Mode.
+
 <!-- - `yarn preview:ssr`: Runs the application in the production mode with server-side rendering
 - `yarn start`: Runs the application in production mode with server-side rendering -->
 
-#### [package.json](package.json) - Usage
+##### [package.json](package.json) - Usage
 
 1. Configure the project (Have the prequisites installed - see [README.md](README.md))
 
@@ -81,6 +175,16 @@ If you are not using VSCode, you can use the provided package.json scripts to ge
 ###### Why is the forum not loading?
 
 The default value is pointing to your local machine. While we do have dockerfiles for the backend, we haven't gotten around to streamlining using the backend in a development setting for the frontend. To run the frontend locally, pointed to `zfgc.com`, run `yarn dev --mode=production`, and that will point to the production environment. This will get you up and running! \o/
+
+###### Why is there a warning about the `ReactQueryDevtools` package?
+
+Error example:
+
+```bash
+"ReactQueryDevtools" is imported from external module "@tanstack/react-query-devtools" but never used in "src/root.tsx".
+```
+
+The `ReactQueryDevtools` package is used for debugging purposes. When using `yarn build` in production mode, the `ReactQueryDevtools` package is not included in the production build.
 
 #### VSCode - Usage
 
@@ -152,15 +256,16 @@ If you would like to avoid having to setup a development environment on your act
       5. If you are working on a test, you can name your branch `test/my-test`.
       6. You are ready to start working on your branch!
 5. Working on your changes: Use your IDE of choice to edit files and save changes.
-   1. Use the `yarn dev` command to start the development server. Make sure to run `yarn install` before running the command.
+   1. Make sure to run `yarn install` every time you check out a branch.
+   2. Use the `yarn dev` command to start the development server.
       1. If you are using VSCode, you can use the `Launch zfgc.com` launch task to do this for you.
       2. For now, if cloning the [backend](https://github.com/ZFGCCP/ZFGCBB) is too much of a hassle, you can use the `yarn dev --mode=production` command to start the development server on `zfgc.com` or `Launch zfgc.com (production) in` VSCode. <!-- FIXME: remove this note when we have a container that can be pulled down and run locally -->
-   2. Use the `yarn format` command to format the code using Prettier.
-   3. Use the `yarn check` command to run type checking, linting, and formatting checks.
-   4. Repeat steps 1-3 as needed until `yarn check` passes.
+   3. Use the `yarn format` command to format the code using Prettier.
+   4. Use the `yarn check` command to run type checking, linting, and formatting checks.
+   5. Repeat steps 1-3 as needed until `yarn check` passes.
       1. Feel free to reach out on Discord if you have any questions.
-   5. Stage and commit your changes.
-   6. Push your changes to your branch on GitHub.
+   6. Stage and commit your changes.
+   7. Push your changes to your branch on GitHub.
 6. [Create a new pull request](https://github.com/ZFGCCP/ZFGCBB-React/compare) and request a review from one of the maintainers.
    1. Add a bullet point list of changes you made.
    2. Mention the issue number you are working on.

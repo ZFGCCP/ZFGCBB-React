@@ -3,7 +3,7 @@ import { Outlet, useNavigation } from "react-router";
 export default function ForumBoardLayout() {
   const navigation = useNavigation();
   return (
-    <article className="container-xxl">
+    <article>
       <section className="row">
         <div className="col-12 my-2">
           {navigation.state === "loading" ? (
