@@ -50,7 +50,7 @@ function BoardTableComponent({
     {
       key: "icon",
       label: "",
-      className: "w-12 flex-shrink-0",
+      className: "w-12 shrink-0",
       render: () => (
         <div className="flex flex-col items-center gap-2">
           <div className="theme-topic-normal" />
@@ -63,7 +63,7 @@ function BoardTableComponent({
     {
       key: "postIndicator",
       label: "",
-      className: "w-8 flex-shrink-0",
+      className: "w-8 shrink-0",
       hideOnMobile: true,
       render: () => (
         <div className="flex justify-center">
@@ -111,7 +111,7 @@ function BoardTableComponent({
     {
       key: "author",
       label: "Author",
-      className: "w-24 flex-shrink-0 text-center text-ellipsis overflow-hidden",
+      className: "w-24 shrink-0 text-center text-ellipsis overflow-hidden",
       hideOnMobile: true,
       render: (_, thread) =>
         thread.createdUserId > 0 ? (
@@ -128,7 +128,7 @@ function BoardTableComponent({
     {
       key: "replies",
       label: "Replies",
-      className: "w-20 flex-shrink-0 text-center",
+      className: "w-20 shrink-0 text-center",
       hideOnMobile: true,
       hideOnTablet: true,
       render: (_, thread) => (
@@ -138,7 +138,7 @@ function BoardTableComponent({
     {
       key: "views",
       label: "Views",
-      className: "w-20 flex-shrink-0 text-center",
+      className: "w-20 shrink-0 text-center",
       hideOnMobile: true,
       hideOnTablet: true,
       render: (_, thread) => (
@@ -148,7 +148,7 @@ function BoardTableComponent({
     {
       key: "stats",
       label: "Stats",
-      className: "w-24 flex-shrink-0 text-center hidden md:block lg:hidden",
+      className: "w-24 shrink-0 text-center hidden md:block lg:hidden",
       render: (_, thread) => (
         <div className="space-y-1">
           <div className="text-sm text-highlighted">
@@ -163,7 +163,7 @@ function BoardTableComponent({
     {
       key: "lastPost",
       label: "Latest Post",
-      className: "w-48 flex-shrink-0",
+      className: "w-48 shrink-0",
       hideOnMobile: true,
       render: (_, thread) => (
         <div className="space-y-1 text-sm">

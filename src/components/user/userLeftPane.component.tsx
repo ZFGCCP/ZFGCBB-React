@@ -20,9 +20,9 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({ user }) => {
   }, [user]);
 
   return (
-    <div className="flex flex-col bg-muted h-full">
-      <div className="p-3 bg-muted border-b border-default flex-shrink-0 min-h-[76px] flex items-center">
-        <div className="space-y-1">
+    <div className="flex-1 flex-col shrink bg-muted h-full">
+      <div className="p-3 bg-muted border-b border-default shrink-0 min-h-[76px] flex items-start">
+        <div className="space-y-0.5 leading-tight font-medium truncate block max-w-[160px]">
           {user.id > 0 ? (
             <BBLink
               to={`/user/profile/${user.id}`}
@@ -42,7 +42,7 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({ user }) => {
         </div>
       </div>
 
-      <div className="p-4 flex justify-center flex-shrink-0">
+      <div className="p-4 flex justify-center shrink-0">
         <BBImage
           src={avatarSrc}
           alt="User avatar"

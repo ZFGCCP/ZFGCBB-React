@@ -135,17 +135,24 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                   className={`${isOdd ? "bg-muted" : "bg-elevated"}`}
                   key={msg.id}
                 >
-                  <div className="flex flex-col lg:flex-row min-h-[300px]">
-                    <div className="lg:w-64 flex-shrink-0 border-b lg:border-b-0 lg:border-r border-default">
+                  {/* gm112 note: Leaving this here for reference, in case if there's feedback regarding the mobile view being too squashed.
+                  <div className="flex flex-col xs:flex-row min-h-[300px]">
+                    <div className="sm:w-28 md:w-34 lg:w-64 shrink-0 border-b sm:border-b-0 sm:border-r border-default">
+                      <UserLeftPane user={msg.createdUser} />
+                    </div>
+                  */}
+
+                  <div className="flex flex-row min-h-[300px]">
+                    <div className="w-28 md:w-34 lg:w-64 shrink-0 border-r border-default">
                       <UserLeftPane user={msg.createdUser} />
                     </div>
 
-                    <div className="flex-1 flex flex-col">
-                      <div className="border-b border-default p-3 bg-elevated flex-shrink-0 min-h-[76px]  flex items-center">
+                    <div className="flex-1 flex-col shrink min-w-0">
+                      <div className="border-b border-default p-3 bg-elevated shrink-0 min-h-[76px] flex items-start">
                         <BBFlex
                           justify="between"
                           align="center"
-                          className="gap-2 sm:gap-0"
+                          className="gap-2"
                         >
                           <div className="text-sm">
                             <div>
@@ -238,12 +245,12 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                         </BBFlex>
                       </div>
 
-                      <div className="p-3 break-words bg-elevated flex-1 min-h-64 max-h-[calc(100dvh-25dvh)] overflow-auto snap-start snap-mandatory scrollbar-thin">
+                      <div className="p-3 bg-elevated min-h-64 max-h-[calc(100dvh-25dvh)] w-full overflow-auto whitespace-pre-wrap snap-start snap-mandatory scrollbar-thin">
                         {parse(msg.currentMessage.messageText.toString())}
                       </div>
 
                       {msg.createdUser.bioInfo?.signature?.trim() && (
-                        <div className="border-t border-default p-3 bg-muted flex-shrink-0">
+                        <div className="border-t border-default p-3 bg-muted shrink-0">
                           <div className="overflow-x-auto max-h-42 scrollbar-thin">
                             {msg.createdUser.bioInfo?.signature &&
                               parse(msg.createdUser.bioInfo?.signature)}

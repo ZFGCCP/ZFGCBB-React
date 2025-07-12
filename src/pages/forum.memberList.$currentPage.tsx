@@ -21,19 +21,19 @@ const MemberListContainer: React.FC = () => {
     {
       key: "avatar",
       label: "",
-      className: "flex-shrink-0 w-8",
+      className: "shrink-0 w-8",
       render: () => <div className="w-8 h-8 bg-muted rounded-full"></div>,
     },
     {
       key: "status",
       label: "",
-      className: "flex-shrink-0 w-8",
+      className: "shrink-0 w-8",
       render: () => <div className="w-2 h-2 bg-green-500 rounded-full"></div>,
     },
     {
       key: "username",
       label: "Username",
-      className: "flex-grow",
+      className: "grow",
       render: (_, user: User) => (
         <div className="flex flex-col">
           <span className="font-medium">{user.displayName}</span>

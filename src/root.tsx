@@ -44,7 +44,7 @@ export default function App() {
         <RootLayout children={<Outlet />} />
       </UserProvider>
       <Suspense fallback={null}>
-        <TanStackQueryDevtools />
+        <TanStackQueryDevtools buttonPosition="top-left" />
       </Suspense>
     </QueryProvider>
   );
