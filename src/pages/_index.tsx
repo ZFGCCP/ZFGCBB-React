@@ -5,21 +5,21 @@ import BBLink from "@/components/common/bbLink.component";
 export default () => {
   return (
     <article>
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4   ">
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="my-2">
           <Widget widgetTitle="Featured Project">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
-              <div className="flex justify-center w-full ">
+              <section className="flex justify-center w-full">
                 <BBImage
-                  className="max-w-full h-auto object-cover"
+                  className="max-w-full h-auto object-cover border-default rounded border"
                   src="images/potm/triforceSaga.png"
                   alt="Triforce Saga project screenshot"
                 />
-              </div>
-              <div className="border-l-0 lg:border-l-2 lg:border-default lg:pl-4">
+              </section>
+              <section>
                 <h5 className="text-highlighted">Triforce Saga</h5>
                 <h6 className="text-muted">Developer: chaoazul1</h6>
-              </div>
+              </section>
             </div>
           </Widget>
         </div>
@@ -27,10 +27,8 @@ export default () => {
         <div className="my-2">
           <Widget widgetTitle="Recent Activity">
             <div className="p-4">
-              <div>
-                <h6 className="text-highlighted">7/23/2024 - blah blah blah</h6>
-                <div>Test content</div>
-              </div>
+              <h6 className="text-highlighted">7/23/2024 - blah blah blah</h6>
+              <div>Test content</div>
             </div>
           </Widget>
         </div>

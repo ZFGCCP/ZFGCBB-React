@@ -94,7 +94,17 @@ function lazyImageLoader<ComponentType extends React.ElementType = "img">(
         componentProps,
       );
 
-      return !resolvedSrc ? null : <Component {...props} src={resolvedSrc} />;
+      return !resolvedSrc ? null : (
+        <>
+          <link
+            rel="preload"
+            href={resolvedSrc}
+            crossOrigin="anonymous"
+            as="image"
+          />
+          <Component {...props} src={resolvedSrc} />
+        </>
+      );
     };
     return { default: ImageComponent };
   });

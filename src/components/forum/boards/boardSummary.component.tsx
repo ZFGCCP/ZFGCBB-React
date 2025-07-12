@@ -18,9 +18,9 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
     {
       key: "boardInfo",
       label: "Board",
-      className: "grow w-full overflow-hidden text-ellipsis whitespace-nowrap",
+      className: "m-w-0 grow overflow-hidden",
       render: (_, board) => (
-        <div>
+        <div className=" text-ellipsis whitespace-nowrap">
           <h6 className="font-semibold md:text-left text-right">
             <BBLink to={`/forum/board/${board.boardId}/1`} prefetch="intent">
               {board.boardName}
@@ -43,7 +43,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
             </div>
           )}
 
-          <div className="flex flex-col md:hidden text-sm text-highlighted space-y-1  w-full overflow-hidden text-ellipsis whitespace-nowrap">
+          <div className="flex flex-col md:hidden text-sm text-highlighted space-y-1">
             <div className="flex flex-row gap-4 justify-end text-highlighted">
               <span>Threads: {board.threadCount}</span>
               <span>Posts: {board.postCount}</span>
