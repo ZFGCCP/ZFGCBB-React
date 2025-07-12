@@ -16,6 +16,8 @@ body,
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
+  scrollbar-width: none;
+  scrollbar-color: var(--background-color-inverted);
 }
 
 /* BBCode styles */
