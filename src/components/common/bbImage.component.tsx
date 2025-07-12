@@ -58,7 +58,7 @@ function preloadImage(path: string): CacheEntry {
 
   // Handle URL-sourced images
   if (isValidUrl(path)) {
-    createImageElement(path);
+    if (!import.meta.env.SSR) createImageElement(path);
     cacheEntry.result = path;
     cacheEntry.status = "success";
     return cacheEntry;
@@ -74,7 +74,7 @@ function preloadImage(path: string): CacheEntry {
         return;
       }
 
-      createImageElement(src);
+      if (!import.meta.env.SSR) createImageElement(path);
       cacheEntry.status = "success";
       cacheEntry.result = src;
     })
