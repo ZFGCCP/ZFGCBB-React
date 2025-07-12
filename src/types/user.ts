@@ -1,9 +1,8 @@
 import type { BaseBB, BBPermission } from "./api";
-import type { Theme } from "./theme";
 
 export type User = BaseBB & {
   displayName: string;
-  theme?: Theme;
+  theme?: string;
 
   bioInfo?: UserBioInfo;
 
@@ -22,7 +21,7 @@ export type Avatar = BaseBB & {
   userId: number;
   id: number;
   activeFlag: boolean;
-  url?: string;
+  url?: `${string}://${string}/${string}`;
   contentResourceId?: number;
 };
 

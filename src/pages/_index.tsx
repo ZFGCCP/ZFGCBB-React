@@ -1,62 +1,54 @@
-import type React from "react";
-import { styled } from "styled-components";
 import Widget from "../components/common/widgets/widget.component";
 import BBImage from "@/components/common/bbImage.component";
 import BBLink from "@/components/common/bbLink.component";
+import Skeleton from "@/components/common/skeleton.component";
 
-const Style = {
-  FeaturedProjectImg: styled.img`
-    height: 100%;
-    width: max-content;
-    object-fit: cover;
-    flex-shrink: 0;
-  `,
-};
-
-const Home: React.FC = () => {
+export default () => {
   return (
-    <article className="container-xxl">
-      <section className="row">
-        <div className="col-lg-6 my-2">
+    <article>
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="my-2">
           <Widget widgetTitle="Featured Project">
-            <div className="row">
-              <div className="col-12 col-lg-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
+              <section className="flex justify-center w-full">
                 <BBImage
-                  className="img-fluid mx-auto d-block"
+                  className="max-w-full h-auto max-h-38 object-cover border-default rounded border"
                   src="images/potm/triforceSaga.png"
-                  as={Style.FeaturedProjectImg}
-                  alt="FIXME: add proper alt text"
+                  alt="Triforce Saga project screenshot"
+                  fallback={<Skeleton className="size-full min-h-38" />}
                 />
-              </div>
-              <div className="border-start-0 border-lg-start border-lg-2 border-lg-black border-black col-12 col-lg-6 ">
-                <h5>Triforce Saga</h5>
-                <h6>Developer: chaoazul1</h6>
-              </div>
+              </section>
+              <section>
+                <h5 className="text-highlighted">Triforce Saga</h5>
+                <h6 className="text-dimmed">Developer: chaoazul1</h6>
+              </section>
             </div>
           </Widget>
         </div>
 
-        <div className="col-lg-6 my-2">
+        <div className="my-2">
           <Widget widgetTitle="Recent Activity">
-            <>
-              <div>
-                <h6>7/23/2024 - blah blah blah</h6>
-                <div>Test content</div>
-              </div>
-            </>
+            <div className="p-4">
+              <h6 className="text-highlighted">7/23/2024 - blah blah blah</h6>
+              <div>Test content</div>
+            </div>
           </Widget>
         </div>
       </section>
 
-      <div className="row">
-        <div className="col-12 my-2">
+      <div className="grid grid-cols-1 gap-4">
+        <div className="my-2">
           <Widget widgetTitle="Announcements">
-            <article>
+            <article className="p-4">
               <header>
-                <h1 className="fs-1">It's dangerous to go alone!</h1>
-                <h2 className="fs-6 fst-italic">Date: 04/05/2025</h2>
+                <h1 className="text-4xl text-highlighted">
+                  It's dangerous to go alone!
+                </h1>
+                <h2 className="text-base italic text-muted">
+                  Date: 04/05/2025
+                </h2>
               </header>
-              <main>
+              <main className="mt-4">
                 <p>
                   Slowly the site is coming back together. We could use your
                   help! If you're interested, check out the repo on GitHub and
@@ -66,6 +58,7 @@ const Home: React.FC = () => {
                   <BBLink
                     to="https://github.com/ZFGCCP/ZFGCBB-React"
                     target="_blank"
+                    className="text-highlighted"
                   >
                     Come join the effort!
                   </BBLink>
@@ -79,8 +72,6 @@ const Home: React.FC = () => {
     </article>
   );
 };
-
-export default Home;
 
 export function meta() {
   return [{ title: "Home" }];

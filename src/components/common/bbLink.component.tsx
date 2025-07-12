@@ -44,9 +44,10 @@ export type RoutePaths = ReplaceParamsWithString<RouteKeys>;
 export type BBLinkProps = Omit<LinkProps, "to"> & {
   to: RoutePaths | `${string}://${string}/${string}`;
 };
+
 /**
- * This component is a wrapper around the {@link Link}  component that provides
- * a styled link component with the current theme applied.
+ * This component is a wrapper around the {@link Link} component that provides
+ * a styled link component with consistent styling.
  * It also supports dynamic routes, e.g., `/forum/:boardId`.
  *
  * Usage:
@@ -54,11 +55,9 @@ export type BBLinkProps = Omit<LinkProps, "to"> & {
  * <BBLink to="/forum/board/19/1">Forum</BBLink>
  * ```
  * @param {BBLinkProps} props - The {@link BBLinkProps} to pass to the {@link BBLink} component.
- * @extends Link - Extends the {@link Link}  component to add the `to` prop.
+ * @extends Link - Extends the {@link Link} component to add the `to` prop.
  * @see {@link BBLinkProps}
  */
-const BBLink: React.FC<BBLinkProps> = (props) => {
-  return <Link {...props} />;
-};
-
-export default BBLink;
+export default ({ className = "", ...props }: BBLinkProps) => (
+  <Link {...props} className={className} />
+);

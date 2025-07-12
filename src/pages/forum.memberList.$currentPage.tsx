@@ -1,81 +1,15 @@
 import type React from "react";
-import { useContext, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { styled } from "styled-components";
-import { Button, Pagination } from "react-bootstrap";
-import BBTable from "../components/common/tables/bbTable.component";
 import { useBBQuery } from "../hooks/useBBQuery";
-import { ThemeContext } from "../providers/theme/themeProvider";
-import type { Theme } from "../types/theme";
 import type { User } from "../types/user";
 import BBPaginator from "@/components/common/paginator/bbPaginator.component";
-
-const Style = {
-  forumDesc: styled.div`
-    font-size: 0.8rem;
-  `,
-
-  boardFooter: styled.div<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.footerColor};
-  `,
-
-  row: styled.tr<{ theme: Theme }>`
-    &.subRow {
-      th {
-        background-color: ${(props) => props.theme.black};
-        color: ${(props) => props.theme.textColor};
-        font-size: 0.75rem;
-        border: 0;
-      }
-    }
-  `,
-
-  FooterButton: styled(Button)<{ theme: Theme }>`
-    &.footer-btn {
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-      background-color: #25334e;
-      border-top: 0;
-      border: ${(props) => props.theme.borderWidth} solid
-        ${(props) => props.theme.black};
-      padding-right: 0.2rem;
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;
-      border-right: 0;
-
-      &:first-child {
-        border-bottom-left-radius: 0.5rem;
-      }
-
-      &:last-child {
-        border-bottom-right-radius: 0.5rem;
-        border-right: 0.2rem solid black;
-      }
-    }
-  `,
-
-  pagination: styled(Pagination)<{ theme: Theme }>`
-    &.pagination {
-      margin-bottom: 0;
-
-      li.page-item {
-        &:hover {
-          background-color: ${(props) => props.theme.backgroundColor};
-        }
-
-        a {
-          border: 0;
-        }
-      }
-    }
-  `,
-};
+import Widget from "@/components/common/widgets/widget.component";
+import BBTable from "@/components/common/tables/bbTable.component";
 
 const MemberListContainer: React.FC = () => {
   const navigate = useNavigate();
-  const { currentTheme } = useContext(ThemeContext);
   const { currentPage } = useParams();
-  const { data: memberList } = useBBQuery<User[]>(
+  const { data: memberList, isLoading } = useBBQuery<User[]>(
     `/user/memberList?pageNo=${currentPage}`,
   );
 
@@ -83,64 +17,77 @@ const MemberListContainer: React.FC = () => {
     navigate(`/forum/member-list/${pageNo}`);
   };
 
+  const columns: BBTableColumn<User>[] = [
+    {
+      key: "avatar",
+      label: "",
+      className: "shrink-0 w-8",
+      render: () => <div className="w-8 h-8 bg-muted rounded-full"></div>,
+    },
+    {
+      key: "status",
+      label: "",
+      className: "shrink-0 w-8",
+      render: () => <div className="w-2 h-2 bg-green-500 rounded-full"></div>,
+    },
+    {
+      key: "username",
+      label: "Username",
+      className: "grow",
+      render: (_, user: User) => (
+        <div className="flex flex-col">
+          <span className="font-medium">{user.displayName}</span>
+          <div className="md:hidden text-sm text-muted mt-1">
+            <div>Email: email@example.com</div>
+            <div>Joined: Jan 2024</div>
+            <div>Last seen: Yesterday</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "email",
+      label: "Email",
+      className: "min-w-32",
+      hideOnMobile: true,
+      render: () => <span className="text-muted">email@example.com</span>,
+    },
+    {
+      key: "joined",
+      label: "Joined",
+      className: "min-w-24",
+      hideOnMobile: true,
+      hideOnTablet: true,
+      render: () => <span className="text-muted">Jan 2024</span>,
+    },
+    {
+      key: "lastSeen",
+      label: "Last Seen",
+      className: "min-w-24",
+      hideOnMobile: true,
+      hideOnTablet: true,
+      render: () => <span className="text-muted">Yesterday</span>,
+    },
+  ];
+
   return (
-    <>
-      <BBTable>
-        <thead>
-          <Style.row className="tableRow" theme={currentTheme}>
-            <th></th>
-            <th></th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Joined</th>
-            <th>Last Seen</th>
-          </Style.row>
-          <Style.row className="subRow" theme={currentTheme}>
-            <th colSpan={7}></th>
-          </Style.row>
-        </thead>
-        <tbody>
-          {(memberList &&
-            memberList.length > 0 &&
-            memberList?.map((user) => {
-              return (
-                <Style.row
-                  className="tableRow body"
-                  theme={currentTheme}
-                  key={`${user.id}`}
-                >
-                  <td></td>
-                  <td></td>
-                  <td>{user.displayName}</td>
-                  <td>email</td>
-                  <td>joined</td>
-                  <td>last seen</td>
-                </Style.row>
-              );
-            }) && (
-              <Style.row className="tableRow" theme={currentTheme}>
-                <td>
-                  <Style.boardFooter theme={currentTheme}>
-                    {memberList && (
-                      <BBPaginator
-                        numPages={memberList.length / 10}
-                        currentPage={Number(currentPage)}
-                        onPageChange={loadNewPage}
-                      />
-                    )}
-                  </Style.boardFooter>
-                </td>
-              </Style.row>
-            )) || (
-            <Style.row className="tableRow body" theme={currentTheme}>
-              <td colSpan={7}>
-                <div>Sure looks like a ghost town hahahahaha! 👻</div>
-              </td>
-            </Style.row>
-          )}
-        </tbody>
-      </BBTable>
-    </>
+    <Widget widgetTitle="Member List">
+      <BBTable
+        columns={columns}
+        data={memberList || []}
+        emptyMessage="Sure looks like a ghost town hahahahaha! 👻"
+      />
+
+      {memberList && !isLoading && (
+        <div className="bg-accented p-4 scrollbar-thin">
+          <BBPaginator
+            numPages={Math.ceil(memberList.length / 10)}
+            currentPage={Number(currentPage)}
+            onPageChange={loadNewPage}
+          />
+        </div>
+      )}
+    </Widget>
   );
 };
 
