@@ -5,9 +5,7 @@ const UserRegistration: React.FC = () => {
   return (
     <Widget widgetTitle={"Registration"}>
       <div className="flex flex-col md:flex-row p-4">
-        <p className="">
-          Please fill out the form below to register your account.
-        </p>
+        <p>Please fill out the form below to register your account.</p>
       </div>
     </Widget>
   );

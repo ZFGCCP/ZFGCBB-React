@@ -98,7 +98,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
     <>
       <div className="space-y-4">
         <div className="mt-2">
-          <BBFlex gap="gap-2" className="">
+          <BBFlex gap="gap-2">
             <BBLink to="/forum" prefetch="render">
               ZFGC.com
             </BBLink>
@@ -276,7 +276,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
         </Widget>
 
         <div className="mt-2">
-          <BBFlex gap="gap-2" className="">
+          <BBFlex gap="gap-2">
             <BBLink to="/forum" prefetch="render">
               ZFGC.com
             </BBLink>

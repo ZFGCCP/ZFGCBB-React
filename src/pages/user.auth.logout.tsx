@@ -5,7 +5,7 @@ const UserLogout: React.FC = () => {
   return (
     <Widget widgetTitle={"Logout"}>
       <div className="flex flex-col md:flex-row p-4">
-        <p className="">You have been successfully logged out.</p>
+        <p>You have been successfully logged out.</p>
       </div>
     </Widget>
   );

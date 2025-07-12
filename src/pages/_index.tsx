@@ -49,7 +49,7 @@ export default () => {
                 </h2>
               </header>
               <main className="mt-4">
-                <p className="">
+                <p>
                   Slowly the site is coming back together. We could use your
                   help! If you're interested, check out the repo on GitHub and
                   join the ZFGC Community Project (ZFGCCP) effort in rewriting

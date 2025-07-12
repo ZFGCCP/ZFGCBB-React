@@ -233,7 +233,7 @@ const BoardContainer: React.FC = () => {
 
       {!isLoading && (
         <div className="my-3">
-          <BBFlex gap="gap-2" className="">
+          <BBFlex gap="gap-2">
             <BBLink to="/forum" prefetch="render">
               ZFGC.com
             </BBLink>
@@ -266,7 +266,7 @@ const BoardContainer: React.FC = () => {
 
       {!isLoading && (
         <div className="my-3">
-          <BBFlex gap="gap-2" className="">
+          <BBFlex gap="gap-2">
             <BBLink to="/forum">ZFGC.com</BBLink>
             <span>&gt;&gt;</span>
             <span>{boardName}</span>
