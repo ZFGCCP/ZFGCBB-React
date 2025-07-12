@@ -11,7 +11,7 @@ import { useBBQuery } from "../hooks/useBBQuery";
 import type { Board, Thread } from "../types/forum";
 import Skeleton from "@/components/common/skeleton.component";
 import BBFlex from "@/components/common/layout/bbFlex.component";
-import BBTable from "../components/common/table/bbTable.component";
+import BBTable from "../components/common/tables/bbTable.component";
 
 function BoardTablePaginatorComponent({
   board,
@@ -74,7 +74,7 @@ function BoardTableComponent({
     {
       key: "subject",
       label: "Subject",
-      className: "flex-1 min-w-0",
+      className: "flex-1 content-center min-w-0",
       render: (_, thread) => (
         <div className="space-y-2">
           <h6 className="font-semibold">
@@ -94,12 +94,12 @@ function BoardTableComponent({
             )}
           </div>
 
-          <div className="flex gap-4 md:hidden text-sm text-toned">
+          <div className="flex content-center  gap-4 md:hidden text-sm text-highlighted">
             <span>Replies: {thread.postCount.toString()}</span>
             <span>Views: {thread.viewCount.toString()}</span>
           </div>
 
-          <div className="block md:hidden text-sm text-toned">
+          <div className="block md:hidden text-sm text-highlighted">
             Latest Post by: {thread.latestMessage?.ownerName}
           </div>
         </div>
@@ -108,7 +108,7 @@ function BoardTableComponent({
     {
       key: "author",
       label: "Author",
-      className: "w-24 flex-shrink-0 text-center",
+      className: "w-24 flex-shrink-0 text-center text-ellipsis overflow-hidden",
       hideOnMobile: true,
       render: (_, thread) =>
         thread.createdUserId > 0 ? (
@@ -126,7 +126,7 @@ function BoardTableComponent({
       hideOnMobile: true,
       hideOnTablet: true,
       render: (_, thread) => (
-        <span className="text-toned">{thread.postCount.toString()}</span>
+        <span className="text-dimmed">{thread.postCount.toString()}</span>
       ),
     },
     {
@@ -136,7 +136,7 @@ function BoardTableComponent({
       hideOnMobile: true,
       hideOnTablet: true,
       render: (_, thread) => (
-        <span className="text-toned">{thread.viewCount.toString()}</span>
+        <span className="text-dimmed">{thread.viewCount.toString()}</span>
       ),
     },
     {
@@ -145,10 +145,10 @@ function BoardTableComponent({
       className: "w-24 flex-shrink-0 text-center hidden md:block lg:hidden",
       render: (_, thread) => (
         <div className="space-y-1">
-          <div className="text-sm text-toned">
+          <div className="text-sm text-highlighted">
             Replies: {thread.postCount.toString()}
           </div>
-          <div className="text-sm text-toned">
+          <div className="text-sm text-highlighted">
             Views: {thread.viewCount.toString()}
           </div>
         </div>
@@ -161,7 +161,7 @@ function BoardTableComponent({
       hideOnMobile: true,
       render: (_, thread) => (
         <div className="space-y-1 text-sm">
-          <div className="text-sm text-toned">
+          <div className="text-sm text-highlighted">
             <span>by </span>
             {thread.latestMessage?.ownerId &&
             thread.latestMessage.ownerId > 0 ? (
@@ -172,7 +172,7 @@ function BoardTableComponent({
               <span>{thread.latestMessage?.ownerName}</span>
             )}
           </div>
-          <div className="text-sm text-toned">
+          <div className="text-sm text-dimmed">
             on {thread.latestMessage?.lastPostTsAsString}
           </div>
         </div>

@@ -58,13 +58,11 @@ export type BBLinkProps = Omit<LinkProps, "to"> & {
  * @extends Link - Extends the {@link Link} component to add the `to` prop.
  * @see {@link BBLinkProps}
  */
-const BBLink: React.FC<BBLinkProps> = ({ className = "", ...props }) => {
-  return (
-    <Link
-      {...props}
-      className={`text-highlighted hover: transition-colors ${className}`}
-    />
-  );
+const BBLink: React.FC<BBLinkProps> = ({
+  className = "",
+  ...props
+}: BBLinkProps) => {
+  return <Link {...props} className={className} />;
 };
 
 export default BBLink;

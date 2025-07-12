@@ -125,14 +125,10 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                   className={`${isOdd ? "bg-muted" : "bg-elevated"}`}
                   key={msg.id}
                 >
-                  <div className="grid grid-cols-1 lg:grid-cols-[256px_1fr] min-h-56">
-                    <div className="lg:block">
-                      <div>
-                        <UserLeftPane user={msg.createdUser} />
-                      </div>
-                    </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-[.25fr_1fr] content-stretch">
+                    <UserLeftPane user={msg.createdUser} />
 
-                    <div className="grid grid-rows-[auto_1fr_auto] border-l-0 lg:border-l border-default">
+                    <div className="grid grid-rows-[auto_1fr_min-content] border-l-0 lg:border-l border-default content-stretch">
                       <div className="border-b border-default p-4 bg-elevated">
                         <BBFlex
                           justify="between"
@@ -230,8 +226,8 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                       </div>
 
                       {msg.createdUser.bioInfo?.signature?.trim() && (
-                        <div className="border-t border-default p-4 bg-muted">
-                          <div className="text-muted">
+                        <div className="border-t border-default p-4 bg-muted ">
+                          <div className="text-muted overflow-x-scroll max-h-42">
                             {msg.createdUser.bioInfo?.signature &&
                               parse(msg.createdUser.bioInfo?.signature)}
                           </div>
