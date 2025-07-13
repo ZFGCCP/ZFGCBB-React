@@ -19,9 +19,15 @@ function BoardTablePaginatorComponent({
   isLoading,
   currentPage,
   maxPageCount,
+  className = "",
+  skeletonContainerClassName = "",
+  skeletonClassName = "",
 }: {
   board?: Board;
   isLoading: boolean;
+  className?: string;
+  skeletonContainerClassName?: string;
+  skeletonClassName?: string;
 } & Omit<BBPaginatorProps, "numPages">) {
   return (
     <div className="flex justify-left scrollbar-thin">
@@ -31,9 +37,12 @@ function BoardTablePaginatorComponent({
           currentPage={currentPage}
           maxPageCount={maxPageCount}
           onPageChange={onPageChange}
+          className={className}
         />
       ) : (
-        <Skeleton />
+        <span className={skeletonContainerClassName}>
+          <Skeleton className={skeletonClassName} />
+        </span>
       )}
     </div>
   );
@@ -200,12 +209,18 @@ function BoardTableComponent({
   ];
 
   return isLoading && !board ? (
-    <BBTable columns={columns} data={[]} emptyMessage="Loading..." />
+    <BBTable
+      columns={columns}
+      data={[]}
+      emptyMessage="Loading..."
+      headerClassName="hidden md:block"
+    />
   ) : (
     <BBTable
       columns={columns}
       data={board?.unStickyThreads || []}
       emptyMessage="No threads available"
+      headerClassName="hidden md:block"
     />
   );
 }
@@ -255,31 +270,27 @@ const BoardContainer: React.FC = () => {
         </BBFlex>
       </div>
 
-      {!isLoading ? (
-        <div className="bg-accented p-4 mb-4">
-          <BoardTablePaginatorComponent
-            board={board}
-            onPageChange={loadNewPage}
-            isLoading={isLoading}
-            currentPage={Number(pageNo)}
-          />
-        </div>
-      ) : (
-        <span className="p-4 mb-4">
-          <Skeleton className="p-12" />
-        </span>
-      )}
+      <BoardTablePaginatorComponent
+        board={board}
+        onPageChange={loadNewPage}
+        isLoading={isLoading}
+        currentPage={Number(pageNo)}
+        className="bg-accented p-4 mb-4"
+        skeletonContainerClassName="bg-accented p-4 mb-4 w-full"
+        skeletonClassName="p-8"
+      />
 
       <Widget widgetTitle={boardName}>
         <BoardTableComponent board={board} isLoading={isLoading} />
-        <div className="bg-accented p-4">
-          <BoardTablePaginatorComponent
-            board={board}
-            onPageChange={loadNewPage}
-            isLoading={isLoading}
-            currentPage={Number(pageNo)}
-          />
-        </div>
+        <BoardTablePaginatorComponent
+          board={board}
+          onPageChange={loadNewPage}
+          isLoading={isLoading}
+          currentPage={Number(pageNo)}
+          className="bg-accented p-4"
+          skeletonContainerClassName="w-full p-4 mb-2"
+          skeletonClassName="p-8"
+        />
       </Widget>
 
       {!isLoading ? (

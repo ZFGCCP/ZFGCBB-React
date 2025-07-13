@@ -6,6 +6,7 @@ export type BBPaginatorProps = {
   currentPage: number;
   maxPageCount?: number;
   onPageChange: (pageNo: number) => void;
+  className?: string;
 };
 
 const BBPaginator: React.FC<BBPaginatorProps> = ({
@@ -13,6 +14,7 @@ const BBPaginator: React.FC<BBPaginatorProps> = ({
   currentPage,
   onPageChange,
   maxPageCount,
+  className = "",
 }) => {
   const maxPages = maxPageCount ?? 10;
 
@@ -68,7 +70,7 @@ const BBPaginator: React.FC<BBPaginatorProps> = ({
   );
 
   return (
-    <div className="overflow-x-auto scroll-smooth w-full">
+    <div className={`overflow-x-auto scroll-smooth w-full ${className}`}>
       <div className="flex gap-1 mb-0">
         <button
           className="px-3 py-2 text-sm border border-default bg-muted  hover:bg-elevated"
