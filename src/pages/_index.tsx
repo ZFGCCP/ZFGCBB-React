@@ -1,6 +1,7 @@
 import Widget from "../components/common/widgets/widget.component";
 import BBImage from "@/components/common/bbImage.component";
 import BBLink from "@/components/common/bbLink.component";
+import Skeleton from "@/components/common/skeleton.component";
 
 export default () => {
   return (
@@ -14,6 +15,11 @@ export default () => {
                   className="max-w-full h-auto object-cover border-default rounded border"
                   src="images/potm/triforceSaga.png"
                   alt="Triforce Saga project screenshot"
+                  fallback={
+                    <span className="h-38 w-full">
+                      <Skeleton />
+                    </span>
+                  }
                 />
               </section>
               <section>
