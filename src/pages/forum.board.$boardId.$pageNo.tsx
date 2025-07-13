@@ -74,16 +74,16 @@ function BoardTableComponent({
     {
       key: "subject",
       label: "Subject",
-      className: "flex-1 content-center min-w-0",
+      className: "min-w-0 grow",
       render: (_, thread) => (
-        <div className="space-y-2">
+        <div className="space-y-2 p-1">
           <h6 className="font-semibold">
             <BBLink to={`/forum/thread/${thread.id}/1`} prefetch="intent">
               {thread.threadName}
             </BBLink>
           </h6>
 
-          <div className="block md:hidden text-sm text-muted">
+          <div className="block md:hidden text-sm text-dimmed">
             <span>Author: </span>
             {thread.createdUserId > 0 ? (
               <BBLink
@@ -113,6 +113,7 @@ function BoardTableComponent({
       label: "Author",
       className: "w-24 shrink-0 text-center text-ellipsis overflow-hidden",
       hideOnMobile: true,
+      hideOnTablet: true,
       render: (_, thread) =>
         thread.createdUserId > 0 ? (
           <BBLink
@@ -128,9 +129,9 @@ function BoardTableComponent({
     {
       key: "replies",
       label: "Replies",
-      className: "w-20 shrink-0 text-center",
-      hideOnMobile: true,
-      hideOnTablet: true,
+      className: "w-20 shrink-0 text-center hidden lg:block",
+      hideOnMobile: false,
+      hideOnTablet: false,
       render: (_, thread) => (
         <span className="text-dimmed">{thread.postCount.toString()}</span>
       ),
