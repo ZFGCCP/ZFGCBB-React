@@ -11,8 +11,12 @@ const UserProfileMaster: React.FC = () => {
   const { data: user } = useBBQuery<User>(`/user-profile/${userId}`);
 
   return (
-    <div className="flex flex-col md:flex-row">
-      {user && <UserLeftPane user={user} />}
+    <div className="flex flex-col md:flex-row ">
+      {user ? (
+        <span className="lg:w-1/4">
+          <UserLeftPane user={user} />
+        </span>
+      ) : null}
       <div className="col-span-12 md:col-span-9 w-full">
         <Accordion title="Bio Information">
           <form className="space-y-4">

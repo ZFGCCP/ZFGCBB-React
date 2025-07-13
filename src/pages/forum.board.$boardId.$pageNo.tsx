@@ -190,7 +190,7 @@ function BoardTableComponent({
   ];
 
   return isLoading && !board ? (
-    <Skeleton />
+    <BBTable columns={columns} data={[]} emptyMessage="Loading..." />
   ) : (
     <BBTable
       columns={columns}
@@ -223,15 +223,15 @@ const BoardContainer: React.FC = () => {
   return (
     <>
       {!isLoading &&
-        board &&
-        board.childBoards &&
-        board?.childBoards?.length > 0 && (
-          <Widget widgetTitle={"Child Boards"}>
-            <BoardSummaryView subBoards={board.childBoards} />
-          </Widget>
-        )}
+      board &&
+      board.childBoards &&
+      board?.childBoards?.length > 0 ? (
+        <Widget widgetTitle={"Child Boards"}>
+          <BoardSummaryView subBoards={board.childBoards} />
+        </Widget>
+      ) : null}
 
-      {!isLoading && (
+      {!isLoading ? (
         <div className="my-3">
           <BBFlex gap="gap-2">
             <BBLink to="/forum" prefetch="render">
@@ -241,16 +241,20 @@ const BoardContainer: React.FC = () => {
             <span>{boardName}</span>
           </BBFlex>
         </div>
-      )}
+      ) : null}
 
-      <div className="bg-accented p-4 mb-4">
-        <BoardTablePaginatorComponent
-          board={board}
-          onPageChange={loadNewPage}
-          isLoading={isLoading}
-          currentPage={Number(pageNo)}
-        />
-      </div>
+      {!isLoading ? (
+        <div className="bg-accented p-4 mb-4">
+          <BoardTablePaginatorComponent
+            board={board}
+            onPageChange={loadNewPage}
+            isLoading={isLoading}
+            currentPage={Number(pageNo)}
+          />
+        </div>
+      ) : (
+        <span className="p-4"></span>
+      )}
 
       <Widget widgetTitle={boardName}>
         <BoardTableComponent board={board} isLoading={isLoading} />
@@ -264,7 +268,7 @@ const BoardContainer: React.FC = () => {
         </div>
       </Widget>
 
-      {!isLoading && (
+      {!isLoading ? (
         <div className="my-3">
           <BBFlex gap="gap-2">
             <BBLink to="/forum">ZFGC.com</BBLink>
@@ -272,7 +276,7 @@ const BoardContainer: React.FC = () => {
             <span>{boardName}</span>
           </BBFlex>
         </div>
-      )}
+      ) : null}
     </>
   );
 };

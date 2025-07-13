@@ -20,8 +20,8 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
       label: "Board",
       className: "m-w-0 grow overflow-hidden",
       render: (_, board) => (
-        <div className=" text-ellipsis whitespace-nowrap">
-          <h6 className="font-semibold md:text-left text-right">
+        <section>
+          <h6 className="font-semibold text-left">
             <BBLink to={`/forum/board/${board.boardId}/1`} prefetch="intent">
               {board.boardName}
             </BBLink>
@@ -43,15 +43,19 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
             </div>
           )}
 
-          <div className="flex flex-col md:hidden text-sm text-highlighted space-y-1">
-            <div className="flex flex-row gap-4 justify-end text-highlighted">
-              <span>Threads: {board.threadCount ?? 0}</span>
-              <span>Posts: {board.postCount ?? 0}</span>
+          <section className="flex flex-col sm:hidden text-sm text-highlighted space-y-1">
+            <div className="flex flex-row gap-4 justify-end text-highlighted shrink-0 overflow-hidden">
+              <span className="grow text-left">
+                Threads: {board.threadCount ?? 0}
+              </span>
+              <span className="grow text-right">
+                Posts: {board.postCount ?? 0}
+              </span>
             </div>
-            <div className="flex flex-row gap-4 justify-end text-highlighted">
+            <div className="flex flex-row gap-4 justify-end text-highlighted shrink-0 overflow-hidden text-ellipsis  whitespace-nowrap">
               {board.latestMessageOwnerId && board.latestMessageOwnerId > 0 ? (
                 <>
-                  <span>Last post by: </span>
+                  <span className="grow text-left">Last post by: </span>
 
                   <BBLink
                     to={`/user/profile/${board.latestMessageOwnerId}`}
@@ -62,50 +66,58 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
                 </>
               ) : null}
             </div>
-            <div className="flex flex-row gap-4 justify-end text-highlighted">
+            <div className="flex flex-row gap-4 justify-end text-highlighted shrink-0">
               {board.threadName ? (
                 <>
-                  in{" "}
+                  <span className="grow text-left">in </span>
                   <BBLink
                     to={`/forum/thread/${board.latestThreadId}/1`}
                     prefetch="intent"
+                    className="shrink  overflow-hidden text-ellipsis  whitespace-nowrap"
                   >
                     {board.threadName}
                   </BBLink>
                 </>
               ) : null}
             </div>
-            <div className="flex flex-row grow gap-4 justify-end">
-              {board.latestMessageCreatedTsAsString ? (
-                <>on {board.latestMessageCreatedTsAsString}</>
-              ) : null}
+            <div className="flex flex-row grow gap-4 justify-end overflow-hidden text-ellipsis  whitespace-nowrap">
+              <span className="grow text-left">on </span>
+              <span>
+                {board.latestMessageCreatedTsAsString ? (
+                  <>
+                    {new Date(
+                      board.latestMessageCreatedTsAsString,
+                    ).toLocaleString()}
+                  </>
+                ) : null}
+              </span>
             </div>
-          </div>
-        </div>
+          </section>
+        </section>
       ),
     },
     {
       key: "stats",
       label: "Stats",
-      className: "grow ",
+      className: "shrink-0 overflow-hidden",
       hideOnMobile: true,
       render: (_, board) => (
-        <div className="space-y-1 text-sm text-right">
+        <section className="space-y-1 text-sm text-center">
           <div className="text-highlighted">Threads</div>
           <div className="font-medium">{board.threadCount}</div>
           <div className="text-highlighted">Posts</div>
           <div className="font-medium">{board.postCount}</div>
-        </div>
+        </section>
       ),
     },
     {
       key: "lastPost",
       label: "Last Post",
-      className: "w-72 shrink-0",
+      className: "max-w-1/4 grow w-full",
       hideOnMobile: true,
       render: (_, board) => (
-        <div className="space-y-1 text-sm">
-          <div className="text-highlighted">
+        <section className="space-y-1 text-sm ">
+          <div className="text-highlighted overflow-hidden text-ellipsis  whitespace-nowrap ">
             {board.latestMessageOwnerId && board.latestMessageOwnerId > 0 ? (
               <>
                 <span>Last post by: </span>
@@ -118,7 +130,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
               </>
             ) : null}
           </div>
-          <div className="text-highlighted overflow-hidden text-ellipsis whitespace-nowrap">
+          <div className="text-highlighted overflow-hidden text-ellipsis  whitespace-nowrap ">
             {board.threadName ? (
               <>
                 in{" "}
@@ -128,12 +140,12 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
               </>
             ) : null}
           </div>
-          <div className="text-highlighted">
+          <div className="text-highlighted overflow-hidden text-ellipsis  whitespace-nowrap ">
             {board.latestMessageCreatedTsAsString ? (
               <>on {board.latestMessageCreatedTsAsString}</>
             ) : null}
           </div>
-        </div>
+        </section>
       ),
     },
   ];
@@ -144,7 +156,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
       data={subBoards}
       emptyMessage="No boards available"
       showHeader={false}
-      rowClassName="py-2 px-4 "
+      rowClassName="py-2 px-4"
     />
   );
 };
