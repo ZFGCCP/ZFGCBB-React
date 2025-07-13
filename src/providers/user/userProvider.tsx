@@ -1,5 +1,5 @@
 import type React from "react";
-import { createContext, useState } from "react";
+import { createContext, useState, useMemo } from "react";
 import { useBBQuery } from "../../hooks/useBBQuery";
 import type { User } from "../../types/user";
 
@@ -20,20 +20,43 @@ const FloatingThemeSwitcher: React.FC<FloatingThemeSwitcherProps> = ({
   theme,
   setCurrentTheme,
 }) => {
+  const themes = import.meta.glob("~/assets/themes/*.css");
+
+  const ThemeSelector: React.FC<FloatingThemeSwitcherProps> = ({
+    theme,
+    setCurrentTheme,
+  }) => {
+    const themeOptions = useMemo(() => {
+      return Object.keys(themes).map((key) =>
+        key.replace("/src/assets/themes/", "").replace(".css", ""),
+      );
+    }, []);
+
+    return (
+      <select
+        className="bg-default border border-default rounded-md p-1 capitalize"
+        value={theme}
+        onChange={(e) => setCurrentTheme(e.target.value)}
+      >
+        {themeOptions.map((themeName) => (
+          <option
+            key={String(themeName)}
+            className="capitalize"
+            value={`theme-${themeName}`}
+          >
+            {themeName}
+          </option>
+        ))}
+      </select>
+    );
+  };
+
   return (
     <>
       <div className="z-50 p-1 bg-elevated border-t border-default">
         <div className="flex gap-2 items-center">
           <label className="text-dimmed">Theme:</label>
-          <select
-            className="bg-default border border-default rounded-md p-1"
-            value={theme}
-            onChange={(e) => setCurrentTheme(e.target.value)}
-          >
-            <option value="theme-goron">Goron</option>
-            <option value="theme-kikori">Kikori</option>
-            <option value="theme-midnight">Midnight</option>
-          </select>
+          <ThemeSelector theme={theme} setCurrentTheme={setCurrentTheme} />
         </div>
       </div>
     </>
@@ -52,12 +75,12 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     <UserContext.Provider value={user ? user : emptyUser}>
       <div id="root" className={currentTheme}>
         {children}
-        {import.meta.env.DEV && (
+        {import.meta.env.DEV ? (
           <FloatingThemeSwitcher
             theme={currentTheme}
             setCurrentTheme={setCurrentTheme}
           />
-        )}
+        ) : null}
       </div>
     </UserContext.Provider>
   );

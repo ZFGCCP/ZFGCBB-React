@@ -1,6 +1,7 @@
 @import "./themes/midnight.css";
 @import "./themes/kikori.css";
 @import "./themes/goron.css";
+@import "./themes/sheik.css";
 
 /* Base theme rules */
 @theme {
