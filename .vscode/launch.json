@@ -5,44 +5,79 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch zfgc.com",
+      "name": "Debug zfgc.com (local/dev)",
       "request": "launch",
-      "runtimeExecutable": "yarn",
-      "runtimeArgs": ["dev"],
       "type": "node",
-      "env": {
-        "NO_COLOR": "true"
+      "cascadeTerminateToConfigurations": ["Browser Debug"],
+      "internalConsoleOptions": "openOnSessionStart",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": ["yarn", "dev", "--mode=production"],
+      "preLaunchTask": "yarn install",
+      "serverReadyAction": {
+        "action": "debugWithChrome",
+        "pattern": "Local:\\s+http://localhost:(\\d+)/",
+        "uriFormat": "http://localhost:%s",
+        "webRoot": "${workspaceFolder}"
       },
       "autoAttachChildProcesses": true,
       "smartStep": true,
-      "cascadeTerminateToConfigurations": ["Browser Debug"],
-      "internalConsoleOptions": "openOnSessionStart",
-      "serverReadyAction": {
-        "action": "debugWithChrome",
-        "pattern": "Local:   http://localhost:([0-9]+)/",
-        "uriFormat": "http://localhost:%s"
-      },
-      "preLaunchTask": "yarn install"
+      "sourceMaps": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**",
+        "**/.yarn/**",
+        "**/.pnpm-store/**"
+      ]
     },
     {
-      "name": "Launch zfgc.com (production)",
+      "name": "Debug zfgc.com (live/dev)",
       "request": "launch",
-      "runtimeExecutable": "yarn",
-      "runtimeArgs": ["dev", "--mode=production"],
       "type": "node",
-      "env": {
-        "NO_COLOR": "true"
+      "cascadeTerminateToConfigurations": ["Browser Debug"],
+      "internalConsoleOptions": "openOnSessionStart",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": ["yarn", "dev", "--mode=production"],
+      "preLaunchTask": "yarn install",
+      "serverReadyAction": {
+        "action": "debugWithChrome",
+        "pattern": "Local:\\s+http://localhost:(\\d+)/",
+        "uriFormat": "http://localhost:%s",
+        "webRoot": "${workspaceFolder}"
       },
       "autoAttachChildProcesses": true,
       "smartStep": true,
+      "sourceMaps": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**",
+        "**/.yarn/**",
+        "**/.pnpm-store/**"
+      ]
+    },
+    {
+      "name": "Debug zfgc.com (local/production)",
+      "request": "launch",
+      "type": "node",
       "cascadeTerminateToConfigurations": ["Browser Debug"],
       "internalConsoleOptions": "openOnSessionStart",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": ["yarn", "preview"],
+      "preLaunchTask": "yarn build",
       "serverReadyAction": {
         "action": "debugWithChrome",
-        "pattern": "Local:   http://localhost:([0-9]+)/",
-        "uriFormat": "http://localhost:%s"
+        "pattern": "Local:\\s+http://localhost:(\\d+)/",
+        "uriFormat": "http://localhost:%s",
+        "webRoot": "${workspaceFolder}"
       },
-      "preLaunchTask": "yarn install"
+      "autoAttachChildProcesses": true,
+      "smartStep": true,
+      "sourceMaps": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**",
+        "**/.yarn/**",
+        "**/.pnpm-store/**"
+      ]
     }
   ]
 }
