@@ -231,17 +231,19 @@ const BoardContainer: React.FC = () => {
         </Widget>
       ) : null}
 
-      {!isLoading ? (
-        <div className="my-3">
-          <BBFlex gap="gap-2">
-            <BBLink to="/forum" prefetch="render">
-              ZFGC.com
-            </BBLink>
-            <span>&gt;&gt;</span>
+      <div className="my-3">
+        <BBFlex gap="gap-2">
+          <BBLink to="/forum" prefetch="render">
+            ZFGC.com
+          </BBLink>
+          <span>&gt;&gt;</span>
+          {!isLoading && board ? (
             <span>{boardName}</span>
-          </BBFlex>
-        </div>
-      ) : null}
+          ) : (
+            <span>Loading...</span>
+          )}
+        </BBFlex>
+      </div>
 
       {!isLoading ? (
         <div className="bg-accented p-4 mb-4">
@@ -253,7 +255,9 @@ const BoardContainer: React.FC = () => {
           />
         </div>
       ) : (
-        <span className="p-4"></span>
+        <span className="p-4 mb-4">
+          <Skeleton className="p-12" />
+        </span>
       )}
 
       <Widget widgetTitle={boardName}>
