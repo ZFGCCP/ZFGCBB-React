@@ -20,7 +20,7 @@ export default () => {
               </section>
               <section>
                 <h5 className="text-highlighted">Triforce Saga</h5>
-                <h6 className="text-muted">Developer: chaoazul1</h6>
+                <h6 className="text-dimmed">Developer: chaoazul1</h6>
               </section>
             </div>
           </Widget>
