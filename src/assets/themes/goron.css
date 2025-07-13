@@ -1,53 +1,16 @@
 @layer base {
   .theme-goron {
-    --text-color-dimmed: #9ca3af;
-    --text-color-muted: #6b7280;
-    --text-color-toned: #374151;
-    --text-color-default: #ffffff;
-    --text-color-highlighted: #f3f4f6;
-    --text-color-inverted: #1f2937;
-
     --background-color-default: #651918;
     --background-color-muted: #4b1312;
     --background-color-elevated: #541716;
     --background-color-accented: #3a0f0e;
-    --background-color-inverted: #ffffff;
 
-    --border-color-default: #000000;
-    --border-color-muted: #374151;
     --border-color-accented: #4b1312;
-    --border-color-inverted: #ffffff;
-    --border-color-bg: #651918;
 
-    --ring-color-default: #000000;
-    --ring-color-muted: #374151;
     --ring-color-accented: #4b1312;
-    --ring-color-inverted: #ffffff;
-    --ring-color-bg: #651918;
 
-    --ring-offset-color-default: #000000;
-    --ring-offset-color-muted: #374151;
     --ring-offset-color-accented: #4b1312;
-    --ring-offset-color-inverted: #ffffff;
-    --ring-offset-color-bg: #651918;
 
-    --divide-color-default: #000000;
-    --divide-color-muted: #374151;
     --divide-color-accented: #4b1312;
-    --divide-color-inverted: #ffffff;
-    --divide-color-bg: #651918;
-
-    --outline-color-default: #000000;
-    --outline-color-inverted: #ffffff;
-
-    --stroke-color-default: #000000;
-    --stroke-color-inverted: #ffffff;
-
-    --fill-color-default: #000000;
-    --fill-color-inverted: #ffffff;
-
-    --image-board-status-off: url("/src/assets/themes/midnight/images/board-summary/off.gif");
-    --image-post-indicator: url("/src/assets/themes/midnight/images/post/xx.gif");
-    --image-topic-normal: url("/src/assets/themes/midnight/images/topic/normal_post.gif");
   }
 }
