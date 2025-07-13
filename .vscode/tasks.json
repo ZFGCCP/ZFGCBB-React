@@ -2,18 +2,35 @@
   "version": "2.0.0",
   "tasks": [
     {
-      // This will run yarn install
       "label": "yarn install",
       "type": "shell",
-      "command": "corepack enable && yarn install",
-      "problemMatcher": ["$tsc"],
-      "group": {
-        "kind": "build"
-      },
+      "command": "corepack enable && corepack yarn install",
+      "problemMatcher": [],
+      "group": { "kind": "build" },
       "presentation": {
         "close": true,
         "group": "build",
-        "reveal": "never"
+        "reveal": "never",
+        "clear": true
+      }
+    },
+    {
+      "label": "yarn build",
+      "type": "shell",
+      "command": "corepack yarn build",
+      "problemMatcher": [],
+      "dependsOn": ["yarn install"],
+      "group": {
+        "kind": "build"
+      },
+      "icon": {
+        "color": "terminal.ansiBlue",
+        "id": "squirrel"
+      },
+      "presentation": {
+        "clear": true,
+        "reveal": "always",
+        "panel": "shared"
       }
     }
   ]
