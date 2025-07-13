@@ -98,8 +98,8 @@ function BoardTableComponent({
           </div>
 
           <div className="flex content-center  gap-4 md:hidden text-sm text-highlighted">
-            <span>Replies: {thread.postCount.toString()}</span>
-            <span>Views: {thread.viewCount.toString()}</span>
+            <span>Replies: {thread.postCount}</span>
+            <span>Views: {thread.viewCount}</span>
           </div>
 
           <div className="block md:hidden text-sm text-highlighted">
@@ -133,7 +133,7 @@ function BoardTableComponent({
       hideOnMobile: false,
       hideOnTablet: false,
       render: (_, thread) => (
-        <span className="text-dimmed">{thread.postCount.toString()}</span>
+        <span className="text-dimmed">{thread.postCount}</span>
       ),
     },
     {
@@ -143,7 +143,7 @@ function BoardTableComponent({
       hideOnMobile: true,
       hideOnTablet: true,
       render: (_, thread) => (
-        <span className="text-dimmed">{thread.viewCount.toString()}</span>
+        <span className="text-dimmed">{thread.viewCount}</span>
       ),
     },
     {
@@ -153,10 +153,10 @@ function BoardTableComponent({
       render: (_, thread) => (
         <div className="space-y-1">
           <div className="text-sm text-highlighted">
-            Replies: {thread.postCount.toString()}
+            Replies: {thread.postCount}
           </div>
           <div className="text-sm text-highlighted">
-            Views: {thread.viewCount.toString()}
+            Views: {thread.viewCount}
           </div>
         </div>
       ),
@@ -183,7 +183,16 @@ function BoardTableComponent({
             )}
           </div>
           <div className="text-sm text-dimmed">
-            on {thread.latestMessage?.lastPostTsAsString}
+            {thread.latestMessage?.lastPostTsAsString ? (
+              <>
+                <span>on </span>
+                <span>
+                  {new Date(
+                    thread.latestMessage?.lastPostTsAsString,
+                  ).toLocaleString()}
+                </span>
+              </>
+            ) : null}
           </div>
         </div>
       ),

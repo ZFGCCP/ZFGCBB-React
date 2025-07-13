@@ -81,7 +81,9 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
               ) : null}
             </div>
             <div className="flex flex-row grow gap-4 justify-end overflow-hidden text-ellipsis  whitespace-nowrap">
-              <span className="grow text-left">on </span>
+              <span className="grow text-left">
+                {board.latestMessageCreatedTsAsString ? "on " : null}
+              </span>
               <span>
                 {board.latestMessageCreatedTsAsString ? (
                   <>
