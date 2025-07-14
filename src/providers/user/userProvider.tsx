@@ -20,17 +20,19 @@ const FloatingThemeSwitcher: React.FC<FloatingThemeSwitcherProps> = ({
   theme,
   setCurrentTheme,
 }) => {
-  const themes = import.meta.glob("~/assets/themes/*.css");
+  // const themes = import.meta.glob("~/assets/themes/*.css");
 
   const ThemeSelector: React.FC<FloatingThemeSwitcherProps> = ({
     theme,
     setCurrentTheme,
   }) => {
-    const themeOptions = useMemo(() => {
-      return Object.keys(themes).map((key) =>
-        key.replace("/src/assets/themes/", "").replace(".css", ""),
-      );
-    }, []);
+    // gm112 note: I just removed the dynamic theme options for now.
+    const themeOptions = ["Midnight", "Kikori", "Goron", "Sheik"];
+    // const themeOptions = useMemo(() => {
+    //   return Object.keys(themes).map((key) =>
+    //     key.replace("/src/assets/themes/", "").replace(".css", ""),
+    //   );
+    // }, []);
 
     return (
       <select
@@ -42,7 +44,7 @@ const FloatingThemeSwitcher: React.FC<FloatingThemeSwitcherProps> = ({
           <option
             key={String(themeName)}
             className="capitalize"
-            value={`theme-${themeName}`}
+            value={`theme-${themeName.toLowerCase()}`}
           >
             {themeName}
           </option>
