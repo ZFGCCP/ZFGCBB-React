@@ -17,7 +17,7 @@ if (
 
 export default {
   appDirectory: "src",
-  ssr: false,
+  ssr: env["VITE_ENABLE_SSR"] === "true",
   basename: env["VITE_BASE"] ?? "/",
   future: {
     unstable_viteEnvironmentApi: true,

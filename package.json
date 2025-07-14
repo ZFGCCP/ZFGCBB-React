@@ -11,8 +11,8 @@
     "format": "prettier . --write",
     "build": "react-router build",
     "dev": "react-router dev",
-    "preview": "vite preview",
-    "preview:ssr": "react-router-serve ./build/server/index.js",
+    "preview": "vite preview --port 5173",
+    "preview:ssr": "PORT=5173 react-router-serve ./build/server/index.js",
     "start": "react-router-serve ./build/server/index.js"
   },
   "dependencies": {
