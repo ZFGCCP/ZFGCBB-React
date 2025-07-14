@@ -55,14 +55,14 @@ If you are not using VSCode, you can use the provided package.json scripts to ge
 
 #### [package.json](package.json) - Usage (Quick Start)
 
-1. Configure the project (Have the prequisites installed - see [README.md](README.md))
+1. Configure the project (Have the prequisites installed - see [Downloading the Project](#downloading-the-project))
 
    ```bash
    npm install -g corepack@latest
    corepack enable
    ```
 
-   **_NOTE: If you are using [VSCode](#vscode---running-the-application-launch-tasks), you can use the `Debug zfgc.com (local/dev)` launch task to do this for you. This will also let you set breakpoints and debug your code in VSCode._**
+   **_NOTE: If you are using [VSCode](#vscode---usage), you can use the `Debug zfgc.com (local/dev)` launch task to do this for you. This will also let you set breakpoints and debug your code in VSCode._**
 
 2. Install the dependencies
 
