@@ -1,5 +1,8 @@
 @layer base {
   .theme-kikori {
+    --text-color-muted: #b0b4bf;
+    --text-color-toned: #8e95a4;
+
     --background-color-default: #207842;
     --background-color-muted: #1e4438;
     --background-color-elevated: #25584a;
