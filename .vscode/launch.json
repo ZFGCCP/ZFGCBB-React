@@ -9,7 +9,8 @@
       "request": "launch",
       "type": "node",
       "cascadeTerminateToConfigurations": ["Browser Debug"],
-      "internalConsoleOptions": "openOnSessionStart",
+      "internalConsoleOptions": "neverOpen",
+      "console": "integratedTerminal",
       "runtimeExecutable": "corepack",
       "runtimeArgs": ["yarn", "dev", "--mode=production"],
       "preLaunchTask": "yarn install",
@@ -17,7 +18,8 @@
         "action": "debugWithChrome",
         "pattern": "Local:\\s+http://localhost:(\\d+)/",
         "uriFormat": "http://localhost:%s",
-        "webRoot": "${workspaceFolder}"
+        "webRoot": "${workspaceFolder}",
+        "killOnServerStop": true
       },
       "autoAttachChildProcesses": true,
       "smartStep": true,
@@ -34,7 +36,8 @@
       "request": "launch",
       "type": "node",
       "cascadeTerminateToConfigurations": ["Browser Debug"],
-      "internalConsoleOptions": "openOnSessionStart",
+      "internalConsoleOptions": "neverOpen",
+      "console": "integratedTerminal",
       "runtimeExecutable": "corepack",
       "runtimeArgs": ["yarn", "dev", "--mode=production"],
       "preLaunchTask": "yarn install",
@@ -42,7 +45,8 @@
         "action": "debugWithChrome",
         "pattern": "Local:\\s+http://localhost:(\\d+)/",
         "uriFormat": "http://localhost:%s",
-        "webRoot": "${workspaceFolder}"
+        "webRoot": "${workspaceFolder}",
+        "killOnServerStop": true
       },
       "autoAttachChildProcesses": true,
       "smartStep": true,
@@ -59,7 +63,8 @@
       "request": "launch",
       "type": "node",
       "cascadeTerminateToConfigurations": ["Browser Debug"],
-      "internalConsoleOptions": "openOnSessionStart",
+      "internalConsoleOptions": "neverOpen",
+      "console": "integratedTerminal",
       "runtimeExecutable": "corepack",
       "runtimeArgs": ["yarn", "preview"],
       "preLaunchTask": "yarn build",
@@ -67,7 +72,8 @@
         "action": "debugWithChrome",
         "pattern": "Local:\\s+http://localhost:(\\d+)/",
         "uriFormat": "http://localhost:%s",
-        "webRoot": "${workspaceFolder}"
+        "webRoot": "${workspaceFolder}",
+        "killOnServerStop": true
       },
       "autoAttachChildProcesses": true,
       "smartStep": true,
