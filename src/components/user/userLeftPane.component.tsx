@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import type { User } from "../../types/user";
 import BBImage from "../common/bbImage.component";
 import BBLink from "../common/bbLink.component";
+import { useLocation } from "react-router";
 
 interface UserLeftPaneProps {
   user: User;
@@ -19,6 +20,8 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({
     avatarContainer: "bg-muted",
   },
 }) => {
+  const { state } = useLocation();
+  console.log("userleftpane", state);
   const avatarSrc = useMemo(() => {
     if (user.bioInfo?.avatar) {
       return user.bioInfo?.avatar?.url && user.bioInfo?.avatar?.url?.trim()
@@ -40,6 +43,7 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({
           {user.id > 0 ? (
             <BBLink
               to={`/user/profile/${user.id}`}
+              state={state}
               className="font-medium"
               prefetch="intent"
             >

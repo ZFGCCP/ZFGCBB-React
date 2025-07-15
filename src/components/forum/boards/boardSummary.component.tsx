@@ -2,12 +2,20 @@ import type React from "react";
 import type { BoardSummary } from "../../../types/forum";
 import BBLink from "../../common/bbLink.component";
 import BBTable from "../../common/tables/bbTable.component";
+import { useLocation } from "react-router";
 
 interface BoardSummaryViewProps {
+  currentPageNumber?: number;
   subBoards: BoardSummary[];
 }
 
-const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
+const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({
+  subBoards,
+  currentPageNumber = 1,
+}) => {
+  const route = useLocation();
+  const from = { ...route };
+
   const columns: BBTableColumn<BoardSummary>[] = [
     {
       key: "icon",
@@ -22,7 +30,11 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
       render: (_, board) => (
         <section>
           <h6 className="font-semibold text-left">
-            <BBLink to={`/forum/board/${board.boardId}/1`} prefetch="intent">
+            <BBLink
+              to={`/forum/board/${board.boardId}/${currentPageNumber < 1 ? 1 : currentPageNumber}`}
+              state={{ board, from }}
+              prefetch="intent"
+            >
               {board.boardName}
             </BBLink>
           </h6>
@@ -34,7 +46,11 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
               <span className="font-medium">Child boards: </span>
               {board.childBoards.map((cb, index) => (
                 <span key={cb.boardId}>
-                  <BBLink to={`/forum/board/${cb.boardId}/1`} prefetch="intent">
+                  <BBLink
+                    to={`/forum/board/${cb.boardId}/1`}
+                    state={{ board, from, cb }}
+                    prefetch="intent"
+                  >
                     {cb.boardName}
                   </BBLink>
                   {index < board.childBoards!.length - 1 && ", "}
@@ -59,6 +75,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
 
                   <BBLink
                     to={`/user/profile/${board.latestMessageOwnerId}`}
+                    state={{ board, from }}
                     prefetch="intent"
                   >
                     {board.latestMessageUserName}
@@ -72,6 +89,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
                   <span className="grow text-left">in </span>
                   <BBLink
                     to={`/forum/thread/${board.latestThreadId}/1`}
+                    state={{ board, from }}
                     prefetch="intent"
                     className="shrink  overflow-hidden text-ellipsis  whitespace-nowrap"
                   >
@@ -125,6 +143,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
                 <span>Last post by: </span>
                 <BBLink
                   to={`/user/profile/${board.latestMessageOwnerId}`}
+                  state={{ board, from }}
                   prefetch="intent"
                 >
                   {board.latestMessageUserName}
@@ -136,7 +155,10 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
             {board.threadName ? (
               <>
                 in{" "}
-                <BBLink to={`/forum/thread/${board.latestThreadId}/1`}>
+                <BBLink
+                  to={`/forum/thread/${board.latestThreadId}/1`}
+                  state={{ board, from }}
+                >
                   {board.threadName}
                 </BBLink>
               </>
