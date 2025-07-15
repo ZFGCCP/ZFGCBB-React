@@ -45,12 +45,6 @@
         "Browser Debug",
         "Dev Server: Live Environment"
       ],
-      // "serverReadyAction": {
-      //   "pattern": "Local:\\s+http://localhost:(\\d+)/",
-      //   "action": "debugWithChrome",
-      //   "uriFormat": "http://localhost:%s",
-      //   "webRoot": "${workspaceFolder}"
-      // },
       "smartStep": true,
       "autoAttachChildProcesses": true,
       "sourceMaps": true,
@@ -67,15 +61,45 @@
     },
 
     {
-      "name": "Preview Server",
+      "name": "Preview Server (local)",
       "type": "node",
       "request": "launch",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "runtimeExecutable": "corepack",
-      "runtimeArgs": ["yarn", "preview", "--strictPort"],
+      "runtimeArgs": ["yarn", "preview:ssr", "--strictPort"],
       "preLaunchTask": "yarn build",
-      "cascadeTerminateToConfigurations": ["Browser Debug", "Preview Server"],
+      "cascadeTerminateToConfigurations": [
+        "Browser Debug",
+        "Preview Server (local)"
+      ],
+      "smartStep": true,
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**",
+        "**/.yarn/**",
+        "**/.pnpm-store/**"
+      ],
+      "presentation": {
+        "hidden": true,
+        "group": "dev-server"
+      }
+    },
+    {
+      "name": "Preview Server (Production)",
+      "type": "node",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": ["yarn", "preview", "--strictPort", "--mode=production"],
+      "preLaunchTask": "yarn build --mode=production",
+      "cascadeTerminateToConfigurations": [
+        "Browser Debug",
+        "Preview Server (Production)"
+      ],
       "smartStep": true,
       "autoAttachChildProcesses": true,
       "sourceMaps": true,
@@ -128,7 +152,13 @@
     },
     {
       "name": "Debug zfgc.com (local/production)",
-      "configurations": ["Preview Server", "Browser Debug"],
+      "configurations": ["Preview Server (Production)", "Browser Debug"],
+      "stopAll": true,
+      "preLaunchTask": "yarn install"
+    },
+    {
+      "name": "Preview zfgc.com in SSR Mode (local/dev)",
+      "configurations": ["Preview Server (local)", "Browser Debug"],
       "stopAll": true,
       "preLaunchTask": "yarn install"
     }

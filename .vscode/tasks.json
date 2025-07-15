@@ -82,6 +82,27 @@
         "showReuseMessage": false,
         "close": true
       }
+    },
+    {
+      "label": "yarn build --mode=production",
+      "type": "shell",
+      "command": "corepack yarn build --mode=production",
+      "problemMatcher": [],
+      "dependsOn": ["yarn install"],
+      "group": {
+        "kind": "build"
+      },
+      "icon": {
+        "color": "terminal.ansiBlue",
+        "id": "squirrel"
+      },
+      "presentation": {
+        "clear": true,
+        "reveal": "never",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "close": true
+      }
     }
   ]
 }
