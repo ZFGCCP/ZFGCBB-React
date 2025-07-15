@@ -2,16 +2,57 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "wait-for-server",
+      "type": "shell",
+      "command": "corepack yarn exec wait-port 5173",
+      "problemMatcher": [],
+      "group": { "kind": "build" },
+      "icon": {
+        "color": "terminal.ansiBlue",
+        "id": "squirrel"
+      },
+      "presentation": {
+        "close": true,
+        "group": "build",
+        "reveal": "never",
+        "clear": true,
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "cleanup-server",
+      "type": "shell",
+      "command": "corepack yarn exec kill-port 5173 --protocol tcp",
+      "problemMatcher": [],
+      "group": { "kind": "build" },
+      "icon": {
+        "color": "terminal.ansiBlue",
+        "id": "squirrel"
+      },
+      "presentation": {
+        "close": true,
+        "group": "build",
+        "reveal": "never",
+        "clear": true,
+        "showReuseMessage": false
+      }
+    },
+    {
       "label": "yarn install",
       "type": "shell",
       "command": "corepack enable && corepack yarn install",
       "problemMatcher": [],
       "group": { "kind": "build" },
+      "icon": {
+        "color": "terminal.ansiBlue",
+        "id": "squirrel"
+      },
       "presentation": {
         "close": true,
         "group": "build",
         "reveal": "never",
-        "clear": true
+        "clear": true,
+        "showReuseMessage": false
       }
     },
     {
@@ -29,8 +70,10 @@
       },
       "presentation": {
         "clear": true,
-        "reveal": "always",
-        "panel": "shared"
+        "reveal": "never",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "close": true
       }
     }
   ]
