@@ -4,7 +4,7 @@
     {
       "label": "wait-for-server",
       "type": "shell",
-      "command": "corepack yarn exec wait-port 5173",
+      "command": "corepack yarn exec wait-on tcp:5173",
       "problemMatcher": [],
       "group": { "kind": "build" },
       "icon": {
@@ -22,7 +22,7 @@
     {
       "label": "cleanup-server",
       "type": "shell",
-      "command": "corepack yarn exec kill-port 5173 --protocol tcp",
+      "command": "corepack yarn exec kill-port 5173",
       "problemMatcher": [],
       "group": { "kind": "build" },
       "icon": {
