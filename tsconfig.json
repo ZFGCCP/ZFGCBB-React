@@ -17,6 +17,7 @@
     "noImplicitAny": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "composite": true,
     "jsx": "react-jsx",
     "paths": {
       "@/*": ["./src/*"],

@@ -7,7 +7,7 @@
   "type": "module",
   "homepage": "https://zfgccp.github.io/ZFGCBB-React/",
   "scripts": {
-    "check": "react-router typegen  && tsc --noEmit  --project tsconfig.json --composite false && prettier . --check --experimental-cli",
+    "check": "react-router typegen  && tsc --noEmit && prettier . --check --experimental-cli",
     "format": "prettier . --write ",
     "build": "react-router build",
     "dev": "react-router dev",
