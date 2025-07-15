@@ -1,27 +1,103 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug zfgc.com (local/dev)",
-      "request": "launch",
+      "name": "Dev Server: Local Environment",
       "type": "node",
-      "cascadeTerminateToConfigurations": ["Browser Debug"],
-      "internalConsoleOptions": "neverOpen",
+      "request": "launch",
       "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
       "runtimeExecutable": "corepack",
-      "runtimeArgs": ["yarn", "dev", "--mode=production"],
-      "preLaunchTask": "yarn install",
-      "serverReadyAction": {
-        "action": "debugWithChrome",
-        "pattern": "Local:\\s+http://localhost:(\\d+)/",
-        "uriFormat": "http://localhost:%s",
-        "webRoot": "${workspaceFolder}",
-        "killOnServerStop": true
-      },
+      "runtimeArgs": ["yarn", "dev", "--strictPort"],
+      "cascadeTerminateToConfigurations": [
+        "Browser Debug",
+        "Dev Server: Local Environment"
+      ],
+      // "serverReadyAction": {
+      //   "pattern": "Local:\\s+http://localhost:(\\d+)/",
+      //   "action": "debugWithChrome",
+      //   "uriFormat": "http://localhost:%s",
+      //   "webRoot": "${workspaceFolder}"
+      // },
+      "smartStep": true,
       "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**",
+        "**/.yarn/**",
+        "**/.pnpm-store/**"
+      ],
+      "presentation": {
+        "hidden": true,
+        "group": "dev-server"
+      }
+    },
+    {
+      "name": "Dev Server: Live Environment",
+      "type": "node",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": ["yarn", "dev", "--mode=production", "--strictPort"],
+      "cascadeTerminateToConfigurations": [
+        "Browser Debug",
+        "Dev Server: Live Environment"
+      ],
+      // "serverReadyAction": {
+      //   "pattern": "Local:\\s+http://localhost:(\\d+)/",
+      //   "action": "debugWithChrome",
+      //   "uriFormat": "http://localhost:%s",
+      //   "webRoot": "${workspaceFolder}"
+      // },
+      "smartStep": true,
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**",
+        "**/.yarn/**",
+        "**/.pnpm-store/**"
+      ],
+      "presentation": {
+        "hidden": true,
+        "group": "dev-server"
+      }
+    },
+
+    {
+      "name": "Preview Server",
+      "type": "node",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": ["yarn", "preview", "--strictPort"],
+      "preLaunchTask": "yarn build",
+      "cascadeTerminateToConfigurations": ["Browser Debug", "Preview Server"],
+      "smartStep": true,
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**",
+        "**/.yarn/**",
+        "**/.pnpm-store/**"
+      ],
+      "presentation": {
+        "hidden": true,
+        "group": "dev-server"
+      }
+    },
+    {
+      "name": "Browser Debug",
+      "type": "chrome",
+      "request": "launch",
+      "webRoot": "${workspaceFolder}",
+      "url": "http://localhost:5173",
+      "preLaunchTask": "wait-for-server",
+      "postDebugTask": "cleanup-server",
       "smartStep": true,
       "sourceMaps": true,
       "skipFiles": [
@@ -29,61 +105,32 @@
         "**/node_modules/**",
         "**/.yarn/**",
         "**/.pnpm-store/**"
-      ]
+      ],
+      "presentation": {
+        "hidden": true,
+        "group": "dev-server"
+      }
+    }
+  ],
+
+  "compounds": [
+    {
+      "name": "Debug zfgc.com (local/dev)",
+      "configurations": ["Dev Server: Local Environment", "Browser Debug"],
+      "stopAll": true,
+      "preLaunchTask": "yarn install"
     },
     {
       "name": "Debug zfgc.com (live/dev)",
-      "request": "launch",
-      "type": "node",
-      "cascadeTerminateToConfigurations": ["Browser Debug"],
-      "internalConsoleOptions": "neverOpen",
-      "console": "integratedTerminal",
-      "runtimeExecutable": "corepack",
-      "runtimeArgs": ["yarn", "dev", "--mode=production"],
-      "preLaunchTask": "yarn install",
-      "serverReadyAction": {
-        "action": "debugWithChrome",
-        "pattern": "Local:\\s+http://localhost:(\\d+)/",
-        "uriFormat": "http://localhost:%s",
-        "webRoot": "${workspaceFolder}",
-        "killOnServerStop": true
-      },
-      "autoAttachChildProcesses": true,
-      "smartStep": true,
-      "sourceMaps": true,
-      "skipFiles": [
-        "<node_internals>/**",
-        "**/node_modules/**",
-        "**/.yarn/**",
-        "**/.pnpm-store/**"
-      ]
+      "configurations": ["Dev Server: Live Environment", "Browser Debug"],
+      "stopAll": true,
+      "preLaunchTask": "yarn install"
     },
     {
       "name": "Debug zfgc.com (local/production)",
-      "request": "launch",
-      "type": "node",
-      "cascadeTerminateToConfigurations": ["Browser Debug"],
-      "internalConsoleOptions": "neverOpen",
-      "console": "integratedTerminal",
-      "runtimeExecutable": "corepack",
-      "runtimeArgs": ["yarn", "preview"],
-      "preLaunchTask": "yarn build",
-      "serverReadyAction": {
-        "action": "debugWithChrome",
-        "pattern": "Local:\\s+http://localhost:(\\d+)/",
-        "uriFormat": "http://localhost:%s",
-        "webRoot": "${workspaceFolder}",
-        "killOnServerStop": true
-      },
-      "autoAttachChildProcesses": true,
-      "smartStep": true,
-      "sourceMaps": true,
-      "skipFiles": [
-        "<node_internals>/**",
-        "**/node_modules/**",
-        "**/.yarn/**",
-        "**/.pnpm-store/**"
-      ]
+      "configurations": ["Preview Server", "Browser Debug"],
+      "stopAll": true,
+      "preLaunchTask": "yarn install"
     }
   ]
 }
