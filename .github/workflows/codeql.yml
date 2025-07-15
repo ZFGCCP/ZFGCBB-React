@@ -41,7 +41,7 @@ jobs:
         with:
           node-version-file: .nvmrc
           # cache: yarn FIXME: uncomment when https://github.com/actions/setup-node/issues/531 is closed.
-      - run: corepack enable
+      - run: npm install -g corepack@latest && corepack enable
 
       - name: Use Node.js (yarn cache workaround) # FIXME: uncomment when https://github.com/actions/setup-node/issues/531 is closed.
         id: yarn-cache
