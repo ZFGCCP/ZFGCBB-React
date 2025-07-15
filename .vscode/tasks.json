@@ -7,6 +7,10 @@
       "command": "corepack yarn exec wait-port 5173",
       "problemMatcher": [],
       "group": { "kind": "build" },
+      "icon": {
+        "color": "terminal.ansiBlue",
+        "id": "squirrel"
+      },
       "presentation": {
         "close": true,
         "group": "build",
@@ -21,6 +25,10 @@
       "command": "corepack yarn exec kill-port 5173 --protocol tcp",
       "problemMatcher": [],
       "group": { "kind": "build" },
+      "icon": {
+        "color": "terminal.ansiBlue",
+        "id": "squirrel"
+      },
       "presentation": {
         "close": true,
         "group": "build",
@@ -35,6 +43,10 @@
       "command": "corepack enable && corepack yarn install",
       "problemMatcher": [],
       "group": { "kind": "build" },
+      "icon": {
+        "color": "terminal.ansiBlue",
+        "id": "squirrel"
+      },
       "presentation": {
         "close": true,
         "group": "build",
