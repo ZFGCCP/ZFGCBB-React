@@ -4,7 +4,7 @@
     {
       "label": "wait-for-server",
       "type": "shell",
-      "command": "corepack yarn exec wait-on tcp:5173",
+      "command": "corepack yarn dlx wait-on tcp:5173",
       "problemMatcher": [],
       "group": { "kind": "build" },
       "icon": {
@@ -22,7 +22,14 @@
     {
       "label": "cleanup-server",
       "type": "shell",
-      "command": "corepack yarn exec kill-port 5173",
+      "command": "(corepack yarn dlx wait-on tcp:5173 -t 250ms; corepack yarn dlx kill-port-process 5173) > /dev/null 2>&1 || true",
+      "windows": {
+        "command": "cmd",
+        "args": [
+          "/c",
+          "corepack yarn dlx wait-on tcp:5173 -t 250ms && corepack yarn dlx kill-port-process 5173 > NUL 2>&1 || exit 0"
+        ]
+      },
       "problemMatcher": [],
       "group": { "kind": "build" },
       "icon": {
