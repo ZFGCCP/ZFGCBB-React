@@ -61,6 +61,7 @@
   .bb-code-quote .bb-code-quote-body {
     border: 0.2rem solid black;
     padding: 1rem;
+    @apply size-full overflow-auto;
   }
 
   /* Theme Image Classes */
