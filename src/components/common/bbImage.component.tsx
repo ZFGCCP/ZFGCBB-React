@@ -10,6 +10,8 @@ import Skeleton from "./skeleton.component";
 
 type ImageProps = JSX.IntrinsicElements["img"];
 type AsComponent = ("img" | "image") | ComponentType<Partial<ImageProps>>;
+// gm112 note: Just an FYI, ImagesPath and ThemesPath  come from ../../../build/types/image-paths.d.ts and the custom vite plugin at ../../../vite/plugins/vite-plugin-image-paths.ts
+// This is so that we can get auto-complete for the image paths in the IDE.
 type SrcPath = ImagesPath | ThemesPath | `${string}://${string}/${string}`;
 
 /**
