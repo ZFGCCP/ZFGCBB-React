@@ -1,6 +1,6 @@
 import type React from "react";
 import { Suspense, useMemo, type JSX } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import BBLink from "../components/common/bbLink.component";
 import BBPaginator, {
   type BBPaginatorProps,
@@ -55,6 +55,17 @@ function BoardTableComponent({
   board?: Board;
   isLoading?: boolean;
 }) {
+  const route = useLocation();
+  route.state ??= {};
+  route.state.board = board;
+  route.state.from = {
+    pathname: route.pathname,
+    hash: route.hash,
+    search: route.search,
+    title: board?.boardName,
+  };
+  console.log(route.state);
+
   const columns: BBTableColumn<Thread>[] = [
     {
       key: "icon",
@@ -87,7 +98,11 @@ function BoardTableComponent({
       render: (_, thread) => (
         <div className="space-y-2 p-1">
           <h6 className="font-semibold">
-            <BBLink to={`/forum/thread/${thread.id}/1`} prefetch="intent">
+            <BBLink
+              to={`/forum/thread/${thread.id}/1`}
+              state={route.state}
+              prefetch="intent"
+            >
               {thread.threadName}
             </BBLink>
           </h6>
@@ -97,6 +112,7 @@ function BoardTableComponent({
             {thread.createdUserId > 0 ? (
               <BBLink
                 to={`/user/profile/${thread.createdUser?.id}`}
+                state={route.state}
                 prefetch="intent"
               >
                 {thread.createdUser?.displayName}
@@ -127,6 +143,7 @@ function BoardTableComponent({
         thread.createdUserId > 0 ? (
           <BBLink
             to={`/user/profile/${thread.createdUser?.id}`}
+            state={route.state}
             prefetch="intent"
           >
             {thread.createdUser?.displayName}
@@ -183,6 +200,7 @@ function BoardTableComponent({
             thread.latestMessage.ownerId > 0 ? (
               <BBLink
                 to={`/user/profile/${thread.latestMessage?.ownerId}`}
+                state={route.state}
                 prefetch="intent"
               >
                 {thread.latestMessage?.ownerName}
@@ -252,7 +270,10 @@ const BoardContainer: React.FC = () => {
       board.childBoards &&
       board?.childBoards?.length > 0 ? (
         <Widget widgetTitle={"Child Boards"}>
-          <BoardSummaryView subBoards={board.childBoards} />
+          <BoardSummaryView
+            subBoards={board.childBoards}
+            currentPageNumber={pageNo}
+          />
         </Widget>
       ) : null}
 

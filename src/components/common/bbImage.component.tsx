@@ -114,7 +114,7 @@ function lazyImageLoader(src: SrcPath, as: AsComponent = "img") {
  * @param as - Optional component type to render (defaults to `<img>`).
  * @param rest - Other props passed to the rendered component.
  */
-export default function BBImage({ src, fallback, as, ...rest }: BBImageProps) {
+const BBImage = ({ src, fallback, as, ...rest }: BBImageProps) => {
   if (import.meta.env.DEV && !("alt" in rest))
     console.warn(
       `BBImage component for ${src} is missing an alt prop. This will cause a11y issue.`,
@@ -128,7 +128,8 @@ export default function BBImage({ src, fallback, as, ...rest }: BBImageProps) {
       <LazyImage {...rest} src={src} key={`${src}::${as ?? "img"}`} />
     </Suspense>
   );
-}
+};
+export default BBImage;
 
 if (import.meta.hot)
   import.meta.hot.dispose(() => lazyImageComponentCache.clear());

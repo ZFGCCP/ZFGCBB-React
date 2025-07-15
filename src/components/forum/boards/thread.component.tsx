@@ -18,18 +18,20 @@ import MessageEditor from "../messageEditor.component";
 import UserLeftPane from "../../user/userLeftPane.component";
 import HasPermission from "../../common/security/HasPermission.component";
 import BBPaginator from "../../common/paginator/bbPaginator.component";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import BBLink from "@/components/common/bbLink.component";
 import BBFlex from "@/components/common/layout/bbFlex.component";
 
 interface ForumThreadProps {
   threadId: string;
   pageNo: string;
+  boardName: string;
 }
 
 const ForumThread: React.FC<ForumThreadProps> = ({
   threadId: paramsThreadId,
   pageNo: paramsPageNo,
+  boardName,
 }) => {
   const navigate = useNavigate();
   const threadId = parseInt(paramsThreadId!);
@@ -46,7 +48,14 @@ const ForumThread: React.FC<ForumThreadProps> = ({
   const [currentMsg, setCurrentMsg] = useState<Message>({} as Message);
 
   const loadNewPage = (pageNo: number) => {
-    navigate(`/forum/thread/${threadId}/${pageNo}`);
+    navigate(
+      `/forum/thread/${threadId}/${pageNo}`,
+      boardName
+        ? {
+            state: { board: { boardName } },
+          }
+        : undefined,
+    );
   };
 
   const footer = useMemo(() => {
@@ -94,6 +103,15 @@ const ForumThread: React.FC<ForumThreadProps> = ({
     setCurrentMsg(msg);
   };
 
+  const route = useLocation();
+  route.state ??= {};
+  route.state.from = {
+    pathname: route.pathname,
+    hash: route.hash,
+    search: route.search,
+    title: isLoading && !thread ? "Loading..." : thread?.threadName,
+  };
+
   return (
     <>
       <div className="space-y-4">
@@ -108,7 +126,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                 to={`/forum/board/${thread?.boardId}/1`}
                 prefetch="intent"
               >
-                Board
+                {boardName ?? "Board"}
               </BBLink>
             )) || <span>Loading...</span>}
             <span>&gt;&gt;</span>
