@@ -22,6 +22,7 @@ export type BBImageProps = Partial<ImageProps> & {
   fallback?: ReactElement;
   as?: AsComponent;
 };
+
 type BBImageComponentType = FC<BBImageProps>;
 type BBImageLazyComponentType = ReturnType<typeof lazy>;
 const lazyImageComponentCache = new Map<string, BBImageLazyComponentType>();
@@ -29,8 +30,8 @@ const lazyImageComponentCache = new Map<string, BBImageLazyComponentType>();
 type ImageModule = { default: string };
 const images: Record<string, () => Promise<ImageModule>> =
   import.meta.glob<ImageModule>([
-    `/src/assets/images/**/*`,
-    `/src/assets/themes/**/*`,
+    `/src/assets/images/**/*.{jpg,jpeg,png,gif}`,
+    `/src/assets/themes/**/*.{jpg,jpeg,png,gif}`,
   ]);
 
 /**

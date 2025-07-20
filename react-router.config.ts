@@ -21,6 +21,7 @@ if (env["VITE_BASE"] && env["VITE_BASE"] !== "/" && mode !== "github-pages")
 export default {
   appDirectory: "src",
   ssr: env["VITE_ENABLE_SSR"] === "true",
+  prerender: true,
   basename: env["VITE_BASE"] ?? "/",
   future: {
     unstable_viteEnvironmentApi: true,
