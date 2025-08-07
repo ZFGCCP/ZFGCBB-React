@@ -3,7 +3,7 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import UserProvider from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
 import RootLayout from "./rootLayout.component";
-import { Suspense, lazy } from "react";
+import { StrictMode, Suspense, lazy } from "react";
 
 const TanStackQueryDevtools = import.meta.env.DEV
   ? lazy(() =>
@@ -41,16 +41,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <QueryProvider>
-      <UserProvider>
-        <RootLayout children={<Outlet />} />
-      </UserProvider>
-      {import.meta.env.DEV && TanStackQueryDevtools ? (
-        <Suspense fallback={null}>
-          <TanStackQueryDevtools buttonPosition="top-left" />
-        </Suspense>
-      ) : null}
-    </QueryProvider>
+    <StrictMode>
+      <QueryProvider>
+        <UserProvider>
+          <RootLayout children={<Outlet />} />
+        </UserProvider>
+        {import.meta.env.DEV && TanStackQueryDevtools ? (
+          <Suspense fallback={null}>
+            <TanStackQueryDevtools buttonPosition="top-left" />
+          </Suspense>
+        ) : null}
+      </QueryProvider>
+    </StrictMode>
   );
 }
 

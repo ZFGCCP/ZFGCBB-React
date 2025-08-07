@@ -6,14 +6,10 @@ import { useLocation, useParams } from "react-router";
 const ForumThreadPage: React.FC = () => {
   const { threadId, pageNo } = useParams();
   const route = useLocation();
-  const boardName = route.state?.board?.boardName ?? "";
+  const board = route.state?.board;
   return (
     <>
-      <ForumThread
-        threadId={threadId!}
-        pageNo={pageNo!}
-        boardName={boardName}
-      />
+      <ForumThread threadId={threadId!} pageNo={pageNo!} board={board} />
     </>
   );
 };

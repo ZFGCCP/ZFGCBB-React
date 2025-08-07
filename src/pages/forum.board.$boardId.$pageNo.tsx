@@ -51,20 +51,24 @@ function BoardTablePaginatorComponent({
 function BoardTableComponent({
   board,
   isLoading,
+  currentPageNumber,
 }: {
   board?: Board;
   isLoading?: boolean;
+  currentPageNumber: number;
 }) {
   const route = useLocation();
   route.state ??= {};
-  route.state.board = board;
+  route.state.board = {
+    ...board,
+    currentPageNumber,
+  };
   route.state.from = {
     pathname: route.pathname,
     hash: route.hash,
     search: route.search,
     title: board?.boardName,
   };
-  console.log(route.state);
 
   const columns: BBTableColumn<Thread>[] = [
     {
@@ -302,7 +306,11 @@ const BoardContainer: React.FC = () => {
       />
 
       <Widget widgetTitle={boardName}>
-        <BoardTableComponent board={board} isLoading={isLoading} />
+        <BoardTableComponent
+          currentPageNumber={pageNo}
+          board={board}
+          isLoading={isLoading}
+        />
         <BoardTablePaginatorComponent
           board={board}
           onPageChange={loadNewPage}

@@ -5,7 +5,7 @@ import { Outlet, useLocation } from "react-router";
 
 export default function UserProfile() {
   const route = useLocation();
-  const { title, pathname, state } = route.state?.from;
+  const { title, pathname, state } = route.state?.from ?? {};
   return (
     <article>
       <section className="col-12 my-2">

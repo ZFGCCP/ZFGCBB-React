@@ -8,6 +8,10 @@ import { generateImagePaths } from "./vite/plugins/vite-plugin-generate-image-pa
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const srcDirectory = resolve(__dirname, "src");
+const reactRouterTypesDirectory = resolve(
+  __dirname,
+  ".react-router/types/src/+types",
+);
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -18,6 +22,7 @@ export default defineConfig(({ mode }) => {
     envPrefix: ["REACT_", "VITE_"],
     build: {
       target: "esnext",
+      assetsInlineLimit: 0,
     },
     server: {
       allowedHosts: [".zfgc.com"],
@@ -26,11 +31,8 @@ export default defineConfig(({ mode }) => {
       alias: {
         "@": srcDirectory,
         "~": srcDirectory,
+        $: reactRouterTypesDirectory,
       },
-    },
-    ssr: {
-      // Fixes build for styled-components.
-      noExternal: ["styled-components"],
     },
   };
 });

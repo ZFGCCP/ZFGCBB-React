@@ -13,7 +13,12 @@ import {
 import parse from "html-react-parser/lib/index";
 import Widget from "../../common/widgets/widget.component";
 import { useBBQuery } from "../../../hooks/useBBQuery";
-import type { BBPermissionLabel, Message, Thread } from "../../../types/forum";
+import type {
+  BBPermissionLabel,
+  Board,
+  Message,
+  Thread,
+} from "../../../types/forum";
 import MessageEditor from "../messageEditor.component";
 import UserLeftPane from "../../user/userLeftPane.component";
 import HasPermission from "../../common/security/HasPermission.component";
@@ -25,17 +30,18 @@ import BBFlex from "@/components/common/layout/bbFlex.component";
 interface ForumThreadProps {
   threadId: string;
   pageNo: string;
-  boardName: string;
+  board?: Board & { currentPageNumber: number };
 }
 
 const ForumThread: React.FC<ForumThreadProps> = ({
   threadId: paramsThreadId,
   pageNo: paramsPageNo,
-  boardName,
+  board,
 }) => {
   const navigate = useNavigate();
   const threadId = parseInt(paramsThreadId!);
   const currentPage = parseInt(paramsPageNo!);
+  const boardName = board?.boardName;
 
   const textAreaRef = useRef("");
   const [showReplyBox, setShowReplyBox] = useState(false);
@@ -123,7 +129,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
             <span>&gt;&gt;</span>
             {(thread && !isLoading && (
               <BBLink
-                to={`/forum/board/${thread?.boardId}/1`}
+                to={`/forum/board/${thread?.boardId}/${board?.currentPageNumber ?? 1}`}
                 prefetch="intent"
               >
                 {boardName ?? "Board"}

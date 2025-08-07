@@ -21,7 +21,6 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({
   },
 }) => {
   const { state } = useLocation();
-  console.log("userleftpane", state);
   const avatarSrc = useMemo(() => {
     if (user.bioInfo?.avatar) {
       return user.bioInfo?.avatar?.url && user.bioInfo?.avatar?.url?.trim()
