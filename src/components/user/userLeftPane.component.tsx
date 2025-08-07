@@ -1,66 +1,84 @@
 import type React from "react";
-import { styled } from "styled-components";
+import { useMemo } from "react";
 import type { User } from "../../types/user";
 import BBImage from "../common/bbImage.component";
 import BBLink from "../common/bbLink.component";
-import { useMemo } from "react";
 
-const Style = {
-  pane: styled.div`
-    border-right: 0.2rem solid black;
-  `,
+interface UserLeftPaneProps {
+  user: User;
+  backgrounds?: {
+    avatarContainer?: ThemeBackgroundClass;
+    profileInfoContainer?: ThemeBackgroundClass;
+  };
+}
 
-  userNameHeader: styled.div`
-    border-bottom: 1px solid black;
-    height: 3.3125rem;
-  `,
-
-  avatar: styled.img`
-    width: 5rem;
-    height: 5rem;
-    border-radius: 50%;
-
-    @media (min-width: 992px) {
-      max-width: 10rem;
-      max-height: 10rem;
-      border: 0.2rem solid black;
-      border-radius: 0;
-    }
-  `,
-
-  customTitle: styled.div`
-    font-size: 0.8rem;
-  `,
-};
-
-const UserLeftPane: React.FC<{ user: User }> = ({ user }) => {
+const UserLeftPane: React.FC<UserLeftPaneProps> = ({
+  user,
+  backgrounds = {
+    profileInfoContainer: "bg-muted",
+    avatarContainer: "bg-muted",
+  },
+}) => {
   const avatarSrc = useMemo(() => {
-    if (user.bioInfo?.avatar !== null) {
-      return user.bioInfo?.avatar?.url !== null &&
-        user.bioInfo?.avatar?.url !== ""
-        ? user.bioInfo?.avatar?.url
-        : `${import.meta.env.REACT_ZFGBB_API_URL}/content/image/${user.bioInfo.avatar.contentResourceId}`;
+    if (user.bioInfo?.avatar) {
+      return user.bioInfo?.avatar?.url && user.bioInfo?.avatar?.url?.trim()
+        ? user.bioInfo.avatar.url
+        : (`${import.meta.env.REACT_ZFGBB_API_URL}/content/image/${user.bioInfo.avatar.contentResourceId}` as `${string}://${string}/${string}`);
     }
 
-    return `${import.meta.env.REACT_ZFGBB_API_URL}/content/image/3`;
+    return `${import.meta.env.REACT_ZFGBB_API_URL}/content/image/3` as `${string}://${string}/${string}`;
   }, [user]);
 
   return (
-    <Style.pane className="col-12 col-lg-2">
-      <Style.userNameHeader className="p-2">
-        {user.id > 0 ? (
-          <BBLink to={`/user/profile/${user.id}`}>{user?.displayName}</BBLink>
-        ) : (
-          <span>{user?.displayName}</span>
-        )}
-        <Style.customTitle>{user?.bioInfo?.customTitle}</Style.customTitle>
-      </Style.userNameHeader>
-      <div className="p-2 d-flex flex-row-reverse flex-md-column align-items-center">
-        <div className="d-none d-md-block">
-          <BBImage src={avatarSrc} alt="FIXME: add proper alt text" />
+    <div
+      className={`flex-1 flex-col shrink ${backgrounds.avatarContainer} h-full`}
+    >
+      <div
+        className={`p-3 border-b border-default shrink-0 min-h-[76px] flex items-start ${backgrounds.profileInfoContainer}`}
+      >
+        <div className="space-y-0.5 leading-tight font-medium truncate max-w-[160px]">
+          {user.id > 0 ? (
+            <BBLink
+              to={`/user/profile/${user.id}`}
+              className="font-medium"
+              prefetch="intent"
+            >
+              {user?.displayName}
+            </BBLink>
+          ) : (
+            <span className="font-medium">{user?.displayName}</span>
+          )}
+          {user?.bioInfo?.customTitle && (
+            <div className="text-sm text-muted">
+              {user?.bioInfo?.customTitle}
+            </div>
+          )}
         </div>
       </div>
-    </Style.pane>
+
+      <div className="p-4 flex justify-center shrink-0">
+        <BBImage
+          src={avatarSrc}
+          alt="User avatar"
+          className="w-24 h-24 rounded border border-default object-cover"
+        />
+      </div>
+
+      <div className="p-3 space-y-2 text-sm flex-1">
+        <div className="flex justify-between">
+          <span className="text-muted">Posts:</span>
+          <span></span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted">Joined:</span>
+          <span></span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted">Status:</span>
+          <span></span>
+        </div>
+      </div>
+    </div>
   );
 };
 

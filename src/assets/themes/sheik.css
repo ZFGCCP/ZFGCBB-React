@@ -1,0 +1,20 @@
+@layer base {
+  .theme-sheik {
+    --text-color-dimmed: #bfc3ce;
+    --text-color-muted: #d8dce6;
+    --text-color-highlighted: #e5e7eb;
+
+    --background-color-default: #7371d8;
+    --background-color-muted: #5a59b3;
+    --background-color-elevated: #8583e0;
+    --background-color-accented: #3c3a8f;
+
+    --border-color-accented: #5a59b3;
+
+    --ring-color-accented: var(--text-color-highlighted);
+
+    --ring-offset-color-accented: #2a2959;
+
+    --divide-color-accented: #5a59b3;
+  }
+}

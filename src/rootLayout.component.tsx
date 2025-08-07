@@ -1,114 +1,84 @@
 import type React from "react";
 import { useContext } from "react";
 import { UserContext } from "./providers/user/userProvider";
-import { styled } from "styled-components";
 import Navigator from "./components/navigation/navigator.component";
 import BBLink from "./components/common/bbLink.component";
-import { ThemeContext } from "./providers/theme/themeProvider";
-import type { Theme } from "./types/theme";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BBImage from "./components/common/bbImage.component";
 
-const Style = {
-  MainContent: styled.main`
-    grid-template-rows: auto 1fr auto;
-    height: fit-content;
-    @media (max-width: 768px) {
-      height: 100%;
-    }
-    width: auto;
-  `,
+interface RootLayoutProps {
+  children: React.ReactNode;
+}
 
-  header: styled.header`
-    place-content: stretch space-between;
-    place-items: end;
-    border-bottom: 0.2rem solid black;
-    @media (max-width: 768px) {
-      border-bottom: 0;
-    }
-  `,
-
-  pageWrapper: styled.article`
-    overflow: hidden auto;
-    height: 100%;
-    width: 100%;
-    @media (min-width: 768px) {
-      overflow: hidden;
-    }
-  `,
-
-  headerImg: styled.img`
-    position: relative;
-    z-index: -1; /* Send the image behind the content */
-    @media (min-width: 768px) {
-      margin-bottom: -1.5rem;
-    }
-  `,
-
-  mobileNavWrapper: styled.footer<{ theme: Theme }>`
-    background-color: ${(props) => props.theme.black};
-    height: 2.5rem;
-    width: 100%;
-    position: relative;
-    z-index: 100001; /* This magic number is for tanstack/react-query-devtools */
-    align-items: center;
-    place-self: end;
-  `,
-
-  userGreetingWrapper: styled.div`
-    place-self: center stretch;
-    padding: 1rem;
-  `,
-};
-
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
+const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const { displayName } = useContext(UserContext);
-  const { currentTheme } = useContext(ThemeContext);
 
   return (
-    <Style.MainContent className="d-grid">
-      <Style.header className="d-none d-md-flex">
-        <div className="z-1">
-          <BBImage src="images/logo.png" as={Style.headerImg} alt="Logo" />
-          <Navigator />
-        </div>
-        <Style.userGreetingWrapper>
-          <p className="mb-0">
-            Welcome, {displayName}! <span>Please login or </span>
-            <BBLink to="/user/auth/registration">register</BBLink>.
-          </p>
-          <p>Did you miss your activation email?</p>
-        </Style.userGreetingWrapper>
-      </Style.header>
+    <div className="grid grid-rows-[1fr_auto] md:grid-rows-[1fr] size-full overflow-hidden">
+      <main className="overflow-auto bg-default min-h-0 size-full scrollbar-color-default scrollbar-gutter-stable px-1.5 mr-1">
+        <header className="hidden md:flex justify-between items-end border-b-2 border-default bg-default px-2">
+          <div className="z-10">
+            <BBImage
+              src="images/logo.png"
+              alt="Logo"
+              className="relative -z-10 md:mb-[-1.5rem]"
+            />
+            <Navigator />
+          </div>
+          <div className="self-center px-2">
+            <p className="mb-0">
+              Welcome, {displayName}! <span>Please login or </span>
+              <BBLink to="/user/auth/registration">register</BBLink>.
+            </p>
+            <p className="text-dimmed">Did you miss your activation email?</p>
+          </div>
+        </header>
 
-      <Style.pageWrapper className="p-2">
-        <div className="d-grid d-md-none justify-content-center">
-          <BBImage
-            className="w-100 h-100 z-1"
-            src="images/logo.png"
-            as={Style.headerImg}
-            alt="Logo"
-          />
-        </div>
-        {children}
-      </Style.pageWrapper>
+        <header className="md:hidden bg-default border-b-2 border-default">
+          <div className="flex justify-center pt-2">
+            <BBImage className="h-16 w-auto" src="images/logo.png" alt="Logo" />
+          </div>
+        </header>
 
-      <Style.mobileNavWrapper
-        theme={currentTheme}
-        className="d-flex d-md-none justify-content-around"
-      >
-        <BBLink to="/">Home</BBLink>
-        <BBLink to="/">Wiki</BBLink>
-        <BBLink to="/forum" prefetch="intent">
-          Forum
-        </BBLink>
-        <BBLink to="/">Chat</BBLink>
-        <BBLink to="/">
-          <FontAwesomeIcon icon={faBars} />
-        </BBLink>
-      </Style.mobileNavWrapper>
-    </Style.MainContent>
+        <div className="p-2 sm:p-3.5">{children}</div>
+      </main>
+
+      <nav className="md:hidden bg-elevated border-t-2 border-default">
+        <div className="grid grid-cols-5 h-12">
+          <BBLink
+            to="/"
+            className="flex items-center justify-center hover:bg-muted transition-colors"
+          >
+            <span className="text-xs">Home</span>
+          </BBLink>
+          <BBLink
+            to="/forum"
+            prefetch="render"
+            className="flex items-center justify-center hover:bg-muted transition-colors"
+          >
+            <span className="text-xs">Forum</span>
+          </BBLink>
+          <BBLink
+            to="https://discord.gg/NP2nNKjun6"
+            target="_blank"
+            className="flex items-center justify-center hover:bg-muted transition-colors"
+          >
+            <span className="text-xs">Chat</span>
+          </BBLink>
+          <BBLink
+            to="http://wiki.zfgc.com"
+            target="_blank"
+            className="flex items-center justify-center hover:bg-muted transition-colors"
+          >
+            <span className="text-xs">Wiki</span>
+          </BBLink>
+          <button className="flex items-center justify-center hover:bg-muted transition-colors">
+            <FontAwesomeIcon icon={faBars} />
+          </button>
+        </div>
+      </nav>
+    </div>
   );
 };
 

@@ -1,0 +1,19 @@
+@layer base {
+  .theme-goron {
+    --text-color-muted: #b0b4bf;
+    --text-color-toned: #8e95a4;
+
+    --background-color-default: #651918;
+    --background-color-muted: #4b1312;
+    --background-color-elevated: #541716;
+    --background-color-accented: #3a0f0e;
+
+    --border-color-accented: #3a0f0e;
+
+    --ring-color-accented: #ff7033;
+
+    --ring-offset-color-accented: #290a0a;
+
+    --divide-color-accented: #3a0f0e;
+  }
+}

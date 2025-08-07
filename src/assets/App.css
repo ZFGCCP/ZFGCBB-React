@@ -1,49 +1,57 @@
-@import url("bootstrap/dist/css/bootstrap.min.css");
-:root {
-  --bs-body-bg: none;
-  --bs-link-hover-color: none;
-  --bs-tertiary-bg: none;
-  --bs-link-color: none;
-  --linaria-1: #b24592;
-  --linaria-2: #f15f79;
-  --text: #fff;
-  --bg: #204378;
-
-  box-sizing: border-box;
-}
+@import "tailwindcss";
+@import "./themes.css";
 
 html,
 body,
 #root {
-  height: 100dvh;
-  width: 100dvw;
-  overflow: hidden;
-  @media (min-width: 768px) {
-    overflow: auto;
-  }
-
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: sans-serif;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--background-color-default);
+  color: var(--text-color-default);
+  font-family: var(--font-sans);
   transition:
-    background-color 0.2s ease-in-out,
-    color 0.2s ease-in-out;
+    background-color 0.2s ease,
+    color 0.2s ease;
+  scrollbar-width: none;
+  accent-color: var(--ring-color-default);
 }
 
-.container-xxl {
-  @media (min-width: 1400px) {
-    max-width: 145rem;
-  }
+button:focus-visible,
+a:focus-visible,
+link:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  @apply outline-none rounded-md ring-accented/75 ring-2;
 }
 
-/** FIXME: #111 move the bbcode styles elsewhere */
-.bb-code-b {
-  font-weight: bold;
+/* Default hyperlink styling */
+a {
+  text-decoration: underline;
+  @apply font-serif;
 }
 
-.bb-code-quote {
-  .bb-code-quote-body {
-    border: 0.2rem solid black;
-    padding: 1rem;
-  }
+a:hover {
+  text-decoration: none;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
+}
+
+.scrollbar-color-default {
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--background-color-default) 50%,
+      var(--background-color-inverted)
+    )
+    color-mix(
+      in srgb,
+      var(--background-color-default) 50%,
+      var(--text-color-muted)
+    );
 }

@@ -1,30 +1,11 @@
-import { styled } from "styled-components";
-import type React from "react";
-import { useContext } from "react";
 import { Link, type LinkProps, type Register } from "react-router";
-import type { Theme } from "../../types/theme";
-import { ThemeContext } from "../../providers/theme/themeProvider";
-
-const Style = {
-  link: styled.span<{ theme: Theme }>`
-    a {
-      &:visited {
-        color: ${(props) => props.theme.linkColorVisited};
-      }
-
-      &:link {
-        color: ${(props) => props.theme.linkColorVisited};
-      }
-    }
-  `,
-};
 
 /**
  * React-Router generates a type for the routes, so we alias {@link Register} to
  * make it easier to use.
- * @see {@link https://reactrouter.com/docs/en/v6/getting-started/overview#defining-routes}
+ * @see {@link https://reactrouter.com/7.6.3/start/framework/routing}
  */
-export type RouteParams = Register["params"];
+export type RouteParams = Register["pages"];
 
 /**
  * Extracts the dynamic segments from a route path and replaces them with
@@ -62,9 +43,10 @@ export type RoutePaths = ReplaceParamsWithString<RouteKeys>;
 export type BBLinkProps = Omit<LinkProps, "to"> & {
   to: RoutePaths | `${string}://${string}/${string}`;
 };
+
 /**
- * This component is a wrapper around the {@link Link}  component that provides
- * a styled link component with the current theme applied.
+ * This component is a wrapper around the {@link Link} component that provides
+ * a styled link component with consistent styling.
  * It also supports dynamic routes, e.g., `/forum/:boardId`.
  *
  * Usage:
@@ -72,17 +54,7 @@ export type BBLinkProps = Omit<LinkProps, "to"> & {
  * <BBLink to="/forum/board/19/1">Forum</BBLink>
  * ```
  * @param {BBLinkProps} props - The {@link BBLinkProps} to pass to the {@link BBLink} component.
- * @extends Link - Extends the {@link Link}  component to add the `to` prop.
+ * @extends Link - Extends the {@link Link} component to add the `to` prop.
  * @see {@link BBLinkProps}
  */
-const BBLink: React.FC<BBLinkProps> = (props) => {
-  const { currentTheme } = useContext(ThemeContext);
-
-  return (
-    <Style.link theme={currentTheme}>
-      <Link {...props} />
-    </Style.link>
-  );
-};
-
-export default BBLink;
+export default (props: BBLinkProps) => <Link {...props} />;

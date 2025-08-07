@@ -1,21 +1,15 @@
 import type React from "react";
 import { useRef } from "react";
 import { useBBQuery } from "../../hooks/useBBQuery";
-import { styled } from "styled-components";
-import { Button, Form } from "react-bootstrap";
 import type { Message } from "../../types/forum";
 import { useBBMutation } from "../../hooks/useBBMutation";
 import type { BaseBB } from "../../types/api";
 
-const Style = {
-  graveDigWarning: styled.div`
-    border: 0.1rem solid red;
-    color: red;
-    background-color: #ffe0e0;
-  `,
-};
+interface MessageEditorProps {
+  threadId: number;
+}
 
-const MessageEditor: React.FC<{ threadId: number }> = ({ threadId }) => {
+const MessageEditor: React.FC<MessageEditorProps> = ({ threadId }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { data: currentMsg } = useBBQuery<Message>(
     `/message/template?threadId=${threadId}`,
@@ -30,24 +24,44 @@ const MessageEditor: React.FC<{ threadId: number }> = ({ threadId }) => {
 
   return (
     <div className="mt-3">
-      <Style.graveDigWarning className="p-4 mb-4">
+      <div className="p-4 mb-4 border-2 border-red-500 text-red-600 bg-red-50">
         Warning: this topic has not been posted in for at least 14 days. Unless
         you're sure you want to reply, please consider starting a new topic.
-      </Style.graveDigWarning>
+      </div>
 
-      <Form>
-        <div>
-          <Button>B</Button>
-          <Button>I</Button>
-          <Button>U</Button>
-          <Button>S</Button>
-          <span>|</span>
+      <form className="space-y-4">
+        <div className="flex gap-2">
+          <button
+            type="button"
+            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
+          >
+            B
+          </button>
+          <button
+            type="button"
+            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
+          >
+            I
+          </button>
+          <button
+            type="button"
+            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
+          >
+            U
+          </button>
+          <button
+            type="button"
+            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
+          >
+            S
+          </button>
+          <span className="text-muted">|</span>
         </div>
-        <Form.Group>
-          <Form.Control
-            as="textarea"
-            rows={15}
+        <div>
+          <textarea
             ref={textAreaRef}
+            rows={15}
+            className="w-full p-3 bg-default border border-default  resize-y focus:outline-none focus:ring-2 focus:ring-accented"
             onBlur={() =>
               (cursorPosition.current = textAreaRef?.current?.selectionStart)
             }
@@ -57,9 +71,15 @@ const MessageEditor: React.FC<{ threadId: number }> = ({ threadId }) => {
               }
             }}
           />
-        </Form.Group>
-        <div onClick={() => newPostMutator.mutate()}>test</div>
-      </Form>
+        </div>
+        <button
+          type="button"
+          onClick={() => newPostMutator.mutate()}
+          className="px-4 py-2 bg-accented border border-default  hover:bg-elevated"
+        >
+          Submit Post
+        </button>
+      </form>
     </div>
   );
 };
