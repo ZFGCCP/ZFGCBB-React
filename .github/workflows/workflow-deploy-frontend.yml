@@ -27,7 +27,6 @@ concurrency:
 env:
   CI: 1
   GITHUB_PAGES: "true"
-  VITE_BASE: "/ZFGCBB-React/"
 
 jobs:
   build:
