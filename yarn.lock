@@ -920,18 +920,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-router/fs-routes@npm:^7.6.3":
-  version: 7.6.3
-  resolution: "@react-router/fs-routes@npm:7.6.3"
+"@react-router/fs-routes@npm:^7.8.2":
+  version: 7.8.2
+  resolution: "@react-router/fs-routes@npm:7.8.2"
   dependencies:
     minimatch: "npm:^9.0.0"
   peerDependencies:
-    "@react-router/dev": ^7.6.3
+    "@react-router/dev": ^7.8.2
     typescript: ^5.1.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/f8dcd9e1c1d3515ed0c8cbca7f40b647f2edfba30482529252e25f1f25a5a415cdc88d2b49cd5da9ecf470e3544cb140f6b4435c8a193d3b8de9bdd85c169c7e
+  checksum: 10c0/fa882d34d4f868d04bdf36e6ad38b42e499ffc3d5f85c78fb53f0639d033407ec6a550b960f270c551d7d56cbfdb66e8ea847d029f81b4c93bb8b1a38a14428a
   languageName: node
   linkType: hard
 
@@ -1373,7 +1373,7 @@ __metadata:
     "@fortawesome/react-fontawesome": "npm:^0.2.2"
     "@prettier/plugin-oxc": "npm:^0.0.4"
     "@react-router/dev": "npm:^7.6.3"
-    "@react-router/fs-routes": "npm:^7.6.3"
+    "@react-router/fs-routes": "npm:^7.8.2"
     "@react-router/node": "npm:^7.6.3"
     "@react-router/serve": "npm:^7.6.3"
     "@tailwindcss/vite": "npm:^4.1.11"
