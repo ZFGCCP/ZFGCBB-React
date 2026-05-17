@@ -9,7 +9,7 @@ export default function UserLogin() {
 
   const loginMutation = useMutation<User, Error, LoginForm>({
     mutationFn: async (values) => {
-      const response = await fetch(`${getApiBaseUrl()}/users/auth/login`, {
+      const response = await apiFetch(`${getApiBaseUrl()}/users/auth/login`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

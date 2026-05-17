@@ -5,6 +5,7 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { getApiBaseUrl } from "@/shared/http/api";
+import { apiFetch } from "@/shared/http/apiFetch";
 import { getResponseStatus } from "@/shared/http/response.handler";
 
 let refreshState: "idle" | "refreshing" | "stale" = "idle";
@@ -14,7 +15,7 @@ async function tryRefresh() {
   if (import.meta.env.SSR) return;
   refreshState = "refreshing";
   try {
-    const response = await fetch(`${getApiBaseUrl()}/users/auth/refresh`, {
+    const response = await apiFetch(`${getApiBaseUrl()}/users/auth/refresh`, {
       method: "POST",
       credentials: "include",
     });

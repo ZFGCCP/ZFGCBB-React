@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import type { BaseBB } from "../types/api";
 import { getApiBaseUrl } from "../shared/http/api";
+import { apiFetch } from "../shared/http/apiFetch";
 
 type MutationOptions = {
   method?: string;
@@ -24,7 +25,7 @@ export const useBBMutation = <T extends BaseBB, U extends BaseBB = BaseBB>(
       };
       const hasBody = method !== "DELETE" && method !== "GET";
       return await handleResponseWithJason<U>(
-        await fetch(`${getApiBaseUrl()}${url ?? "/"}`, {
+        await apiFetch(`${getApiBaseUrl()}${url ?? "/"}`, {
           method,
           credentials: "include",
           headers,

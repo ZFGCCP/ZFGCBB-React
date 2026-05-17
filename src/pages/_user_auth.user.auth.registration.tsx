@@ -79,7 +79,7 @@ export default function UserRegistration() {
 
   const registrationMutation = useMutation<User, Error, RegistrationForm>({
     mutationFn: async (values) => {
-      const response = await fetch(`${getApiBaseUrl()}/users/register`, {
+      const response = await apiFetch(`${getApiBaseUrl()}/users/register`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

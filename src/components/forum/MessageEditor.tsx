@@ -35,12 +35,15 @@ function MessageEditorForm({
           unparsedText: values.body,
         },
       };
-      const response = await fetch(`${getApiBaseUrl()}/message/${threadId}`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      const response = await apiFetch(
+        `${getApiBaseUrl()}/message/${threadId}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        },
+      );
       return handleResponseWithJason<unknown>(response);
     },
   });
