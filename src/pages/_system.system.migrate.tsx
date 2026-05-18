@@ -105,11 +105,14 @@ export default function SystemMigrate() {
     mutationFn: async (file) => {
       const formData = new FormData();
       formData.append("file", file);
-      const response = await fetch(`${getApiBaseUrl()}/system/migrate/upload`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
+      const response = await apiFetch(
+        `${getApiBaseUrl()}/system/migrate/upload`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        },
+      );
       return handleResponseWithJason<MigrateUploadResponse>(response);
     },
     onSuccess: (data) => setUploadResult(data),
@@ -117,12 +120,15 @@ export default function SystemMigrate() {
 
   const startJobMutation = useMutation<unknown, Error, MigrateJobRequest>({
     mutationFn: async (body) => {
-      const response = await fetch(`${getApiBaseUrl()}/system/migrate/jobs`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      const response = await apiFetch(
+        `${getApiBaseUrl()}/system/migrate/jobs`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        },
+      );
       return handleResponseWithJason<unknown>(response);
     },
     onSuccess: () => setPollJobs(true),

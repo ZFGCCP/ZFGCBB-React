@@ -22,7 +22,7 @@ export default function SystemInstall() {
   const installMutation = useMutation<InstallResponse, Error, InstallForm>({
     mutationFn: async (values) => {
       const { installToken, ...body } = values;
-      const response = await fetch(`${getApiBaseUrl()}/system/install`, {
+      const response = await apiFetch(`${getApiBaseUrl()}/system/install`, {
         method: "POST",
         credentials: "include",
         headers: {
