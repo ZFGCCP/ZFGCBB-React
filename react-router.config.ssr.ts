@@ -8,11 +8,9 @@ export function presetSsr(): Preset {
       ssr: true,
       serverModuleFormat: "esm",
       subResourceIntegrity: true,
+      splitRouteModules: false,
       future: {
         unstable_optimizeDeps: true,
-        v8_splitRouteModules: false,
-        v8_viteEnvironmentApi: true,
-        v8_middleware: true,
       },
     }),
   };

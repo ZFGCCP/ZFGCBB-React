@@ -17,6 +17,7 @@ const FooterButtons: React.FC<FooterButtonsProps> = ({ options }) => {
         return (
           <button
             key={opt.label}
+            type="button"
             onClick={() => opt.callback()}
             className={`
               px-2 py-2 bg-elevated border-2 border-default border-t-0 

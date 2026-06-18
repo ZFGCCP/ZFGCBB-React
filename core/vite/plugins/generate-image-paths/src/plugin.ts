@@ -102,14 +102,16 @@ async function initFileCache(options: Required<ImagePathPluginOptions>) {
       `[vite-plugin-generate-image-paths] Initializing cache from ${assetsAbsPath}`,
     );
 
-  for (const subDir of options.includeAssetDirs) {
-    const fullDir = path.join(assetsAbsPath, subDir);
-    const files = await walk(fullDir);
-    const relativeFiles = files.map((filePath) =>
-      path.relative(assetsAbsPath, filePath).replace(/\\/g, "/"),
-    );
-    cache.set(subDir, new Set(relativeFiles));
-  }
+  await Promise.all(
+    options.includeAssetDirs.map(async (subDir) => {
+      const fullDir = path.join(assetsAbsPath, subDir);
+      const files = await walk(fullDir);
+      const relativeFiles = files.map((filePath) =>
+        path.relative(assetsAbsPath, filePath).replace(/\\/g, "/"),
+      );
+      cache.set(subDir, new Set(relativeFiles));
+    }),
+  );
 
   if (options.debug)
     console.debug(

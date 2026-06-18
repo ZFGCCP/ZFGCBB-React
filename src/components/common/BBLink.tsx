@@ -57,4 +57,5 @@ export type BBLinkProps = Omit<LinkProps, "to"> & {
  * @extends Link - Extends the {@link Link} component to add the `to` prop.
  * @see {@link BBLinkProps}
  */
-export default (props: BBLinkProps) => <Link {...props} />;
+const BBLink = (props: BBLinkProps) => <Link {...props} />;
+export default BBLink;

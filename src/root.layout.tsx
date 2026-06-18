@@ -63,7 +63,9 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
 
       {isMenuOpen && (
         <>
-          <div
+          <button
+            type="button"
+            aria-label="Close menu"
             className="fixed inset-0 z-40"
             onClick={() => setIsMenuOpen(false)}
           />
@@ -137,6 +139,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
             <span className="text-xs">Wiki</span>
           </BBLink>
           <button
+            type="button"
             className="flex items-center justify-center hover:bg-muted transition-colors"
             onClick={() => setIsMenuOpen((o) => !o)}
           >

@@ -23,14 +23,23 @@ export interface BBTableProps<T> {
   showHeader?: boolean;
 }
 
+const EMPTY_FLEX_OPTIONS: Omit<BBFlexProps, "children"> = {};
+
+function getColumnVisibilityClass<T>(column: BBTableColumn<T>): string {
+  let classes = "";
+  if (column.hideOnMobile) classes += "hidden sm:block ";
+  if (column.hideOnTablet) classes += "hidden md:block ";
+  return classes.trim();
+}
+
 export default function BBTable<T extends object>({
   columns,
   data,
   className = "",
   headerClassName = "",
-  headerOuterFlexOptions = {},
+  headerOuterFlexOptions = EMPTY_FLEX_OPTIONS,
   rowClassName = "",
-  rowOuterFlexOptions = {},
+  rowOuterFlexOptions = EMPTY_FLEX_OPTIONS,
   onRowClick,
   emptyMessage = "No data available",
   showHeader = true,
@@ -48,13 +57,6 @@ export default function BBTable<T extends object>({
     const clickableClass = onRowClick ? "cursor-pointer" : "";
 
     return `${baseClass} ${stripeClass} ${customClass} ${clickableClass}`.trim();
-  };
-
-  const getColumnVisibilityClass = (column: BBTableColumn<T>): string => {
-    let classes = "";
-    if (column.hideOnMobile) classes += "hidden sm:block ";
-    if (column.hideOnTablet) classes += "hidden md:block ";
-    return classes.trim();
   };
 
   return (
@@ -85,12 +87,11 @@ export default function BBTable<T extends object>({
         {data.length === 0 ? (
           <div className="p-8 text-center bg-muted">{emptyMessage}</div>
         ) : (
-          data.map((row, index) => (
-            <div
-              key={String((row as { [key: string]: unknown }).id ?? index)}
-              className={getRowClassName(row, index)}
-              onClick={() => onRowClick?.(row, index)}
-            >
+          data.map((row, index) => {
+            const rowKey = String(
+              (row as { [key: string]: unknown }).id ?? index,
+            );
+            const rowContent = (
               <BBFlex align="center" justify="center" {...rowOuterFlexOptions}>
                 {columns.map((column) => (
                   <div
@@ -103,8 +104,34 @@ export default function BBTable<T extends object>({
                   </div>
                 ))}
               </BBFlex>
-            </div>
-          ))
+            );
+
+            if (!onRowClick) {
+              return (
+                <div key={rowKey} className={getRowClassName(row, index)}>
+                  {rowContent}
+                </div>
+              );
+            }
+
+            return (
+              <div
+                key={rowKey}
+                className={getRowClassName(row, index)}
+                role="button"
+                tabIndex={0}
+                onClick={() => onRowClick(row, index)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onRowClick(row, index);
+                  }
+                }}
+              >
+                {rowContent}
+              </div>
+            );
+          })
         )}
       </div>
     </div>

@@ -33,8 +33,8 @@ export async function handleResponseError(response: Response) {
 }
 
 export async function handleResponseWithJason<T>(response: Response) {
-  await handleResponseError(response);
   if (response.status === 204) return undefined as T;
+  await handleResponseError(response);
   return (await response.json()) as T;
 }
 

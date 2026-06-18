@@ -12,6 +12,8 @@ export const useBBMutation = <T extends BaseBB, U extends BaseBB = BaseBB>(
   config: () => [string, T] | [string, T, MutationOptions],
   onSuccess?: (data: U) => void,
 ) => {
+  // Generic wrapper: cache invalidation is delegated to each caller's
+  // `onSuccess`, since only the caller knows which queryKey(s) to invalidate.
   const mutator = useMutation({
     mutationFn: async () => {
       const result = config();

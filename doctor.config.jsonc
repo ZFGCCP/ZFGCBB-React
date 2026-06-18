@@ -1,0 +1,14 @@
+{
+  "$schema": "https://react.doctor/schema/config.json",
+  "deadCode": false,
+
+  "ignore": {
+    "rules": ["react-doctor/jsx-no-undef"],
+    "overrides": [
+      {
+        "files": ["src/pages/**", "src/root.tsx"],
+        "rules": ["react-doctor/only-export-components"],
+      },
+    ],
+  },
+}
