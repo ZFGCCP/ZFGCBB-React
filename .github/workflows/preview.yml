@@ -28,6 +28,7 @@ jobs:
       - uses: ZeldaFanGameCentral/github-common/actions/setup-node-yarn@main
       - run: rm -rf build
       - run: yarn build --mode=github-pages
+      - run: cp build/client/__spa-fallback.html build/client/404.html
       - run: yarn check
       - uses: actions/upload-pages-artifact@v5
         with:

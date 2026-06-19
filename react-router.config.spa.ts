@@ -8,7 +8,7 @@ export function presetSpa(): Preset {
       ssr: false,
       serverModuleFormat: "esm",
       subResourceIntegrity: true,
-      splitRouteModules: true,
+      splitRouteModules: false,
       future: {
         unstable_optimizeDeps: true,
       },
