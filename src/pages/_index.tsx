@@ -1,4 +1,4 @@
-export default () => {
+export default function Home() {
   return (
     <article>
       <BBGrid columns="1 lg:grid-cols-2" as="section">
@@ -65,7 +65,7 @@ export default () => {
       </BBGrid>
     </article>
   );
-};
+}
 
 export function meta() {
   return [{ title: "Home" }];

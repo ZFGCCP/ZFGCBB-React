@@ -152,13 +152,17 @@ const ForumThread: React.FC<ForumThreadProps> = ({
 
                           <BBFlex gap="gap-2" wrap={true} className="text-sm">
                             <BBHasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
-                              <button className="text-toned hover:transition-colors">
+                              <button
+                                type="button"
+                                className="text-toned hover:transition-colors"
+                              >
                                 <Fa6SolidReply className="mr-1" />
                                 <span className="hidden sm:inline">Reply</span>
                               </button>
                             </BBHasPermission>
                             <BBHasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
                               <button
+                                type="button"
                                 className="text-toned hover:transition-colors"
                                 onClick={() => clickModify(msg)}
                               >
@@ -167,30 +171,45 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                               </button>
                             </BBHasPermission>
                             <BBHasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                              <button className="text-toned hover:transition-colors hidden sm:inline-flex">
+                              <button
+                                type="button"
+                                className="text-toned hover:transition-colors hidden sm:inline-flex"
+                              >
                                 <Fa6SolidTrashCan className="mr-1" />
                                 Remove
                               </button>
                             </BBHasPermission>
                             <BBHasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                              <button className="text-toned hover:transition-colors hidden md:inline-flex">
+                              <button
+                                type="button"
+                                className="text-toned hover:transition-colors hidden md:inline-flex"
+                              >
                                 Split
                               </button>
                             </BBHasPermission>
                             <BBHasPermission perms={["ZFGC_MESSAGE_VIEWER"]}>
-                              <button className="text-toned hover:transition-colors hidden md:inline-flex">
+                              <button
+                                type="button"
+                                className="text-toned hover:transition-colors hidden md:inline-flex"
+                              >
                                 <Fa6SolidShuffle className="mr-1" />
                                 History
                               </button>
                             </BBHasPermission>
                             <BBHasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
-                              <button className="text-toned hover:transition-colors hidden lg:inline-flex">
+                              <button
+                                type="button"
+                                className="text-toned hover:transition-colors hidden lg:inline-flex"
+                              >
                                 <Fa6SolidFlag className="mr-1" />
                                 Report
                               </button>
                             </BBHasPermission>
                             <BBHasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
-                              <button className="text-toned hover:transition-colors hidden lg:inline-flex">
+                              <button
+                                type="button"
+                                className="text-toned hover:transition-colors hidden lg:inline-flex"
+                              >
                                 <Fa6SolidTriangleExclamation className="mr-1" />
                                 Warn
                               </button>

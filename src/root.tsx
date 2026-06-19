@@ -82,7 +82,9 @@ export default function App({ loaderData }: Route.ComponentProps) {
     <QueryProvider>
       <HydrationBoundary state={loaderData?.dehydratedState}>
         <UserProvider>
-          <RootLayout children={<Outlet />} />
+          <RootLayout>
+            <Outlet />
+          </RootLayout>
         </UserProvider>
         {import.meta.env.DEV && TanStackQueryDevtools ? (
           <Suspense fallback={null}>

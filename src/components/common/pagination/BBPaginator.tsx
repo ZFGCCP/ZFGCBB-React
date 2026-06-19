@@ -17,9 +17,7 @@ export default function BBPaginator({
   const totalPages = Math.max(numPages, 1);
   const current = Math.min(Math.max(currentPage, 1), totalPages);
 
-  const maxToRender = useMemo(() => {
-    return totalPages <= maxPages ? totalPages : maxPages;
-  }, [totalPages, maxPages]);
+  const maxToRender = totalPages <= maxPages ? totalPages : maxPages;
 
   const baseButtonClass =
     "px-3 py-2 text-sm border border-default bg-muted hover:bg-elevated " +
@@ -38,7 +36,8 @@ export default function BBPaginator({
       const isCurrent = current === i;
       pages.push(
         <button
-          key={i}
+          key={`page-${i}`}
+          type="button"
           disabled={isCurrent}
           className={`px-3 py-2 text-sm border border-default ${
             isCurrent
@@ -87,6 +86,7 @@ export default function BBPaginator({
     <div className={`overflow-x-auto scroll-smooth w-full ${className}`}>
       <div className="flex gap-1 mb-0">
         <button
+          type="button"
           className={baseButtonClass}
           disabled={isFirst}
           onClick={() => onPageChange(1)}
@@ -94,6 +94,7 @@ export default function BBPaginator({
           First
         </button>
         <button
+          type="button"
           className={baseButtonClass}
           disabled={isFirst}
           onClick={() => shiftPage(-1)}
@@ -102,6 +103,7 @@ export default function BBPaginator({
         </button>
         {pages}
         <button
+          type="button"
           className={baseButtonClass}
           disabled={isLast}
           onClick={() => shiftPage(1)}
@@ -109,6 +111,7 @@ export default function BBPaginator({
           Next
         </button>
         <button
+          type="button"
           className={baseButtonClass}
           disabled={isLast}
           onClick={() => onPageChange(totalPages)}

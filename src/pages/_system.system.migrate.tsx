@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import { UserContext } from "@/providers/user/userProvider";
 import {
@@ -65,6 +65,7 @@ function JobRow({
       )}
       {canCancel && (
         <button
+          type="button"
           className="ml-auto px-2 py-1 border border-default text-sm"
           disabled={cancelMutation.isPending}
           onClick={() => cancelMutation.mutate()}
@@ -90,6 +91,7 @@ export default function SystemMigrate() {
   const [pollJobs, setPollJobs] = useState(false);
   const [uploadResult, setUploadResult] =
     useState<MigrateUploadResponse | null>(null);
+  const queryClient = useQueryClient();
 
   const { data: jobs, refetch } = useBBQuery<Job[]>("/system/migrate/jobs", {
     retry: 0,
@@ -101,6 +103,8 @@ export default function SystemMigrate() {
     schema: JobListSchema,
   });
 
+  // No cache invalidation needed: the upload summary is surfaced via local
+  // `uploadResult` state; it doesn't change any cached query.
   const uploadMutation = useMutation<MigrateUploadResponse, Error, File>({
     mutationFn: async (file) => {
       const formData = new FormData();
@@ -131,7 +135,11 @@ export default function SystemMigrate() {
       );
       return handleResponseWithJason<unknown>(response);
     },
-    onSuccess: () => setPollJobs(true),
+    onSuccess: () => {
+      setPollJobs(true);
+      // Refresh the jobs list immediately instead of waiting for the 2s poll.
+      void queryClient.invalidateQueries({ queryKey: ["migrate-jobs"] });
+    },
   });
 
   const form = useForm({
@@ -229,6 +237,7 @@ export default function SystemMigrate() {
                 <input
                   type="file"
                   accept=".zip"
+                  aria-label="Upload migration zip"
                   className="text-sm"
                   disabled={uploadMutation.isPending}
                   onChange={(e) => {

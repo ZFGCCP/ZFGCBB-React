@@ -31,11 +31,18 @@ function UserProfileContent() {
               align="start"
               className="sm:flex-row sm:items-center"
             >
-              <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+              <label
+                htmlFor="profile-display-name"
+                className="block text-md font-medium mb-1 flex-auto md:flex-1/2"
+              >
                 Display Name
               </label>
               <span className="flex-1/2">
-                <BBInput value={user?.displayName || ""} disabled={true} />
+                <BBInput
+                  name="profile-display-name"
+                  value={user?.displayName || ""}
+                  disabled={true}
+                />
               </span>
             </BBFlex>
 
@@ -44,11 +51,15 @@ function UserProfileContent() {
               align="start"
               className="sm:flex-row sm:items-center"
             >
-              <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+              <label
+                htmlFor="profile-personal-text"
+                className="block text-md font-medium mb-1 flex-auto md:flex-1/2"
+              >
                 Personal Text
               </label>
               <span className="flex-1/2">
                 <BBInput
+                  name="profile-personal-text"
                   value={user?.bioInfo?.personalText || ""}
                   disabled={true}
                 />
@@ -60,11 +71,15 @@ function UserProfileContent() {
               align="start"
               className="sm:flex-row sm:items-center"
             >
-              <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+              <label
+                htmlFor="profile-custom-title"
+                className="block text-md font-medium mb-1 flex-auto md:flex-1/2"
+              >
                 Custom Title
               </label>
               <span className="flex-1/2">
                 <BBInput
+                  name="profile-custom-title"
                   value={user?.bioInfo?.customTitle || ""}
                   disabled={true}
                 />
@@ -76,11 +91,15 @@ function UserProfileContent() {
               align="start"
               className="sm:flex-row sm:items-center"
             >
-              <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+              <label
+                htmlFor="profile-date-of-birth"
+                className="block text-md font-medium mb-1 flex-auto md:flex-1/2"
+              >
                 Date of Birth
               </label>
               <span className="flex-1/2">
                 <BBInput
+                  name="profile-date-of-birth"
                   type="date"
                   placeholder="MM/dd/YYYY"
                   disabled={true}
@@ -94,10 +113,16 @@ function UserProfileContent() {
               align="start"
               className="sm:flex-row sm:items-center"
             >
-              <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+              <label
+                htmlFor="profile-gender"
+                className="block text-md font-medium mb-1 flex-auto md:flex-1/2"
+              >
                 Gender
               </label>
-              <select className="w-full p-2 bg-default border border-default flex-1/2">
+              <select
+                id="profile-gender"
+                className="w-full p-2 bg-default border border-default flex-1/2"
+              >
                 <option value="1">Male</option>
                 <option value="2">Female</option>
                 <option value="3">Non-binary/Other</option>
@@ -106,9 +131,9 @@ function UserProfileContent() {
             </BBFlex>
 
             <div className="flex flex-col">
-              <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+              <span className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
                 Signature
-              </label>
+              </span>
               <UserSignature user={user} />
             </div>
           </form>
@@ -118,11 +143,15 @@ function UserProfileContent() {
           <form className="space-y-4">
             {user?.bioInfo?.hideEmailFlag === true && (
               <div className="flex flex-col sm:flex-row items-start sm:items-center">
-                <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+                <label
+                  htmlFor="profile-email-address"
+                  className="block text-md font-medium mb-1 flex-auto md:flex-1/2"
+                >
                   Email Address
                 </label>
                 <span className="flex-1/2">
                   <BBInput
+                    name="profile-email-address"
                     value={user?.contactInfo?.emailAddress?.emailAddress || ""}
                     disabled={true}
                   />
@@ -131,47 +160,62 @@ function UserProfileContent() {
             )}
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center">
-              <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+              <label
+                htmlFor="profile-discord"
+                className="block text-md font-medium mb-1 flex-auto md:flex-1/2"
+              >
                 Discord
               </label>
               <span className="flex-1/2">
-                <BBInput value={""} disabled={true} />
+                <BBInput name="profile-discord" value={""} disabled={true} />
               </span>
             </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center">
-              <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+              <label
+                htmlFor="profile-facebook"
+                className="block text-md font-medium mb-1 flex-auto md:flex-1/2"
+              >
                 Facebook
               </label>
               <span className="flex-1/2">
-                <BBInput value={""} disabled={true} />
+                <BBInput name="profile-facebook" value={""} disabled={true} />
               </span>
             </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center">
-              <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+              <label
+                htmlFor="profile-instagram"
+                className="block text-md font-medium mb-1 flex-auto md:flex-1/2"
+              >
                 Instagram
               </label>
               <span className="flex-1/2">
-                <BBInput value={""} disabled={true} />
+                <BBInput name="profile-instagram" value={""} disabled={true} />
               </span>
             </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center">
-              <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+              <label
+                htmlFor="profile-threads"
+                className="block text-md font-medium mb-1 flex-auto md:flex-1/2"
+              >
                 Threads
               </label>
               <span className="flex-1/2">
-                <BBInput value={""} disabled={true} />
+                <BBInput name="profile-threads" value={""} disabled={true} />
               </span>
             </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center">
-              <label className="block text-md font-medium mb-1 flex-auto md:flex-1/2">
+              <label
+                htmlFor="profile-twitter"
+                className="block text-md font-medium mb-1 flex-auto md:flex-1/2"
+              >
                 Twitter
               </label>
               <span className="flex-1/2">
-                <BBInput value={""} disabled={true} />
+                <BBInput name="profile-twitter" value={""} disabled={true} />
               </span>
             </div>
           </form>

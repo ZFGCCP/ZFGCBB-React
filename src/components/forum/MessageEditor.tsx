@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import { MessageEditorSchema, type MessageEditor } from "@/schemas/forum";
 import type { Message } from "../../types/forum";
@@ -26,6 +26,7 @@ function MessageEditorForm({
   threadId: number;
   template: Message;
 }) {
+  const queryClient = useQueryClient();
   const newPostMutator = useMutation<unknown, Error, MessageEditor>({
     mutationFn: async (values) => {
       const body: Message = {
@@ -45,6 +46,14 @@ function MessageEditorForm({
         },
       );
       return handleResponseWithJason<unknown>(response);
+    },
+    // Refresh the thread (any page) so the newly posted message shows.
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        predicate: (query) =>
+          typeof query.queryKey[0] === "string" &&
+          query.queryKey[0].startsWith(`/thread/${threadId}`),
+      });
     },
   });
 

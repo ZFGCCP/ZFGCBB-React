@@ -13,7 +13,7 @@ const PollResults: React.FC<{
     const dec = answer.votes / totalVotes;
     const percent = dec * 100.0;
     return (
-      <BBFlex direction="col" className="md:flex-row">
+      <BBFlex key={answer.seqno} direction="col" className="md:flex-row">
         <div className="md:w-sm lg:w-lg">
           {answer.seqno + 1}. {answer.choiceText}: {answer.votes}
         </div>

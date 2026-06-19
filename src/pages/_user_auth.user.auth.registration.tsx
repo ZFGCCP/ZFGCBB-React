@@ -77,6 +77,8 @@ function AgreementText() {
 export default function UserRegistration() {
   const navigate = useNavigate();
 
+  // No cache invalidation needed: on success we navigate to /login and the
+  // user isn't logged in yet, so no cached query becomes stale.
   const registrationMutation = useMutation<User, Error, RegistrationForm>({
     mutationFn: async (values) => {
       const response = await apiFetch(`${getApiBaseUrl()}/users/register`, {
