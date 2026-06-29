@@ -1,0 +1,155 @@
+.spr {
+  display: inline-block;
+  vertical-align: middle;
+  background-image: var(--sprite-icons);
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  width: 20px;
+  height: 20px;
+}
+.spr-search {
+  background-position: -0px -0px;
+}
+.spr-close {
+  background-position: -20px -0px;
+}
+.spr-quote {
+  background-position: -40px -0px;
+}
+.spr-reply {
+  background-position: -60px -0px;
+}
+.spr-modify {
+  background-position: -80px -0px;
+}
+.spr-delete {
+  background-position: -100px -0px;
+}
+.spr-split {
+  background-position: -120px -0px;
+}
+.spr-approve {
+  background-position: -140px -0px;
+}
+.spr-merge {
+  background-position: -0px -20px;
+}
+.spr-clip {
+  background-position: -20px -20px;
+}
+.spr-valid {
+  background-position: -40px -20px;
+}
+.spr-invalid {
+  background-position: -60px -20px;
+}
+.spr-lock {
+  background-position: -80px -20px;
+}
+.spr-sticky {
+  background-position: -100px -20px;
+}
+.spr-move {
+  background-position: -120px -20px;
+}
+.spr-remove {
+  background-position: -140px -20px;
+}
+.spr-info {
+  background-position: -0px -40px;
+}
+.spr-members {
+  background-position: -20px -40px;
+}
+.spr-calendar {
+  background-position: -40px -40px;
+}
+.spr-lastpost {
+  background-position: -60px -40px;
+}
+.spr-online {
+  background-position: -80px -40px;
+}
+.spr-suspect {
+  background-position: -100px -40px;
+}
+.spr-sort-up {
+  background-position: -120px -40px;
+}
+.spr-sort-down {
+  background-position: -140px -40px;
+}
+.spr-useron {
+  background-position: -0px -60px;
+}
+.spr-useroff {
+  background-position: -20px -60px;
+}
+.spr-warn {
+  background-position: -40px -60px;
+}
+.spr-male {
+  background-position: -60px -60px;
+}
+.spr-female {
+  background-position: -80px -60px;
+}
+.spr-history {
+  background-position: -100px -60px;
+}
+.spr-arrow {
+  background-position: -120px -60px;
+}
+.spr-nav {
+  background-position: -140px -60px;
+}
+.spr-topic {
+  background-position: -0px -80px;
+}
+.spr-unread {
+  background-position: -20px -80px;
+}
+/* chest band (24x25); hover/active co-located here so the cascade stays unlayered */
+.spr-download {
+  width: 24px;
+  height: 25px;
+  background-position: 0 -100px;
+}
+.theme-chest:hover .spr-download {
+  background-position: -24px -100px;
+}
+.theme-chest:active .spr-download {
+  background-position: -48px -100px;
+}
+.spr-board {
+  width: 24px;
+  height: 25px;
+  background-position: -48px -100px;
+}
+.badge {
+  display: inline-block;
+  vertical-align: middle;
+  background-image: var(--sprite-badges);
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  width: 82px;
+  height: 24px;
+}
+.badge-member {
+  background-position: 0 -0px;
+}
+.badge-mod {
+  background-position: 0 -24px;
+}
+.badge-gmod {
+  background-position: 0 -48px;
+}
+.badge-admin {
+  background-position: 0 -72px;
+}
+.badge-staff {
+  background-position: 0 -96px;
+}
+.badge-journalist {
+  background-position: 0 -120px;
+}

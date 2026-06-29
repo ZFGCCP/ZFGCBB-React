@@ -12,12 +12,12 @@ export type RouteParams = Register["pages"];
  * strings. This is used to build the `to` prop for the `BBLink` component.
  * @see {@link RouteParams}
  */
-type ReplaceParamsWithString<T extends string> =
-  T extends `${infer Start}:${infer Param}/${infer Rest}` // Recursively process segments with dynamic parts
+type ReplaceParamsWithString<TPath extends string> =
+  TPath extends `${infer Start}:${infer Param}/${infer Rest}` // Recursively process segments with dynamic parts
     ? `${Start}:${Param}/${ReplaceParamsWithString<Rest>}` // Replace dynamic part and recurse into the rest
-    : T extends `${infer Start}:${infer Param}` // Handle the last dynamic part (e.g., `/forum/:boardId`)
+    : TPath extends `${infer Start}:${infer Param}` // Handle the last dynamic part (e.g., `/forum/:boardId`)
       ? `${Start}:${Param}` // Replace the dynamic segment with string
-      : T | (string & {}); // Return the path as is if no dynamic segments
+      : TPath | (string & {}); // Return the path as is if no dynamic segments
 
 /**
  * This type extracts the keys from the {@link RouteParams} type to build a string.

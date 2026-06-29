@@ -2,6 +2,7 @@ import "./assets/App.css";
 import UserProvider from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
 import RootLayout from "./root.layout";
+import GlobalSearchProvider from "./components/search/GlobalSearchProvider";
 import {
   isRouteErrorResponse,
   useRouteError,
@@ -82,9 +83,11 @@ export default function App({ loaderData }: Route.ComponentProps) {
     <QueryProvider>
       <HydrationBoundary state={loaderData?.dehydratedState}>
         <UserProvider>
-          <RootLayout>
-            <Outlet />
-          </RootLayout>
+          <GlobalSearchProvider>
+            <RootLayout>
+              <Outlet />
+            </RootLayout>
+          </GlobalSearchProvider>
         </UserProvider>
         {import.meta.env.DEV && TanStackQueryDevtools ? (
           <Suspense fallback={null}>

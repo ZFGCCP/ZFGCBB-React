@@ -1,6 +1,7 @@
 import { Navigate } from "react-router";
 import { UserContext } from "./providers/user/userProvider";
 import { useInstallStatus } from "./hooks/useInstallStatus";
+import { useGlobalSearch } from "./components/search/GlobalSearchProvider";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { pathname } = useLocation();
   const { data: installStatus } = useInstallStatus();
+  const { open: openSearch } = useGlobalSearch();
 
   if (installStatus?.installed === false && !pathname.startsWith("/system")) {
     return <Navigate to="/system/install" replace />;
@@ -70,7 +72,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
             onClick={() => setIsMenuOpen(false)}
           />
           <nav className="fixed bottom-12 left-0 right-0 z-50 bg-elevated border-t-2 border-default md:hidden">
-            <BBHasPermission perms={["ZFGC_SITE_ADMIN"]}>
+            <BBHasPermission requiredPermissions={["ZFGC_SITE_ADMIN"]}>
               <BBLink
                 to="/admin"
                 onClick={() => setIsMenuOpen(false)}
@@ -124,16 +126,16 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           >
             <span className="text-xs">Forum</span>
           </BBLink>
-          <BBLink
-            to="https://discord.gg/NP2nNKjun6"
-            target="_blank"
+          <button
+            type="button"
+            onClick={openSearch}
+            aria-label="Search"
             className="flex items-center justify-center hover:bg-muted transition-colors"
           >
-            <span className="text-xs">Chat</span>
-          </BBLink>
+            <BBIcon name="search" />
+          </button>
           <BBLink
-            to="http://wiki.zfgc.com"
-            target="_blank"
+            to="/wiki/Main_Page"
             className="flex items-center justify-center hover:bg-muted transition-colors"
           >
             <span className="text-xs">Wiki</span>
@@ -141,7 +143,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           <button
             type="button"
             className="flex items-center justify-center hover:bg-muted transition-colors"
-            onClick={() => setIsMenuOpen((o) => !o)}
+            onClick={() => setIsMenuOpen((isOpen) => !isOpen)}
           >
             <Fa6SolidBars />
           </button>

@@ -11,7 +11,7 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
       key: "icon",
       label: "",
       className: "max-w-8 grow",
-      render: () => <div className="theme-board-status " />,
+      render: () => <BBIcon name="board" />,
     },
     {
       key: "boardInfo",
@@ -30,10 +30,13 @@ const BoardSummaryView: React.FC<BoardSummaryViewProps> = ({ subBoards }) => {
           {board.childBoards && board.childBoards.length > 0 && (
             <div className="text-sm text-highlighted">
               <span className="font-medium">Child boards: </span>
-              {board.childBoards.map((cb, index) => (
-                <span key={cb.boardId}>
-                  <BBLink to={`/forum/board/${cb.boardId}/1`} prefetch="intent">
-                    {cb.boardName}
+              {board.childBoards.map((childBoard, index) => (
+                <span key={childBoard.boardId}>
+                  <BBLink
+                    to={`/forum/board/${childBoard.boardId}/1`}
+                    prefetch="intent"
+                  >
+                    {childBoard.boardName}
                   </BBLink>
                   {index < board.childBoards!.length - 1 && ", "}
                 </span>

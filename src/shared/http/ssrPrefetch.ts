@@ -4,21 +4,25 @@ import {
   type DehydratedState,
 } from "@tanstack/react-query";
 import { bbQueryOptions } from "@/hooks/bbQueryOptions";
-import type { BaseBB } from "@/types/api";
 
 /**
  * Prefetches a query for SSR with the current request's cookies forwarded so
  * the response reflects the user's auth, then returns a payload suitable for
  * a route loader's return value (consumed by `<HydrationBoundary state=...>`).
  */
-export async function prefetchQueryDehydrated<T extends BaseBB | BaseBB[]>(
+export async function prefetchQueryDehydrated<TData extends object>(
   request: Request,
-  url: `/${string}`,
+  url: `/${string}` | `/${string}`[],
 ): Promise<{ dehydratedState: DehydratedState }> {
   const cookie = request.headers.get("Cookie") ?? "";
+  const headers = cookie ? { Cookie: cookie } : undefined;
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery(
-    bbQueryOptions<T>(url, undefined, cookie ? { Cookie: cookie } : undefined),
+  await Promise.all(
+    (Array.isArray(url) ? url : [url]).map((target) =>
+      queryClient.prefetchQuery(
+        bbQueryOptions<TData>(target, undefined, headers),
+      ),
+    ),
   );
   return { dehydratedState: dehydrate(queryClient) };
 }

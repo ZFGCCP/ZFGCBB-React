@@ -15,10 +15,13 @@ const { mode } = parseArgs({
 const env = loadEnv(`${mode}`, process.cwd(), ["REACT_", "VITE_"]);
 const ssrEnabled = env["VITE_ENABLE_SSR"] === "true";
 
+const nonPrerenderablePaths = ["/content"];
+
 export default {
   appDirectory: "src",
   prerender: ssrEnabled
-    ? true
+    ? ({ getStaticPaths }) =>
+        getStaticPaths().filter((path) => !nonPrerenderablePaths.includes(path))
     : [
         "/",
         "/forum",

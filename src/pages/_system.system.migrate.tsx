@@ -5,10 +5,12 @@ import {
   JOB_TYPES,
   JobListSchema,
   MigrateJobFormSchema,
+  MigrationConflictListSchema,
   type Job,
   type MigrateJobForm,
   type MigrateJobRequest,
   type MigrateUploadResponse,
+  type MigrationConflict,
 } from "@/schemas/system";
 import type { BaseBB } from "@/types/api";
 
@@ -19,7 +21,7 @@ function stateClass(state: Job["state"]): string {
     case "COMPLETED":
       return "text-highlighted";
     case "FAILED":
-      return "text-highlighted font-semibold";
+      return "text-error font-semibold";
     case "CANCELLED":
       return "text-dimmed";
     default:
@@ -59,7 +61,7 @@ function JobRow({
         <BBDate dateStr={job.finishedAt} />
       </span>
       {job.error && (
-        <span className="flex-1 text-highlighted truncate" title={job.error}>
+        <span className="flex-1 text-error truncate" title={job.error}>
           {job.error}
         </span>
       )}
@@ -82,13 +84,139 @@ const JOB_TYPE_OPTIONS = JOB_TYPES.map((type) => ({
   label: type,
 }));
 
+function ConflictsPanel() {
+  const { data: conflicts, refetch } = useBBQuery<MigrationConflict[]>(
+    "/system/migrate/conflicts?status=OPEN",
+    {
+      retry: 0,
+      gcTime: 0,
+      staleTime: 0,
+      queryKey: "migrate-conflicts",
+      schema: MigrationConflictListSchema,
+    },
+  );
+
+  const scan = useMutation({
+    mutationFn: async () => {
+      const response = await apiFetch(
+        `${getApiBaseUrl()}/system/migrate/conflicts/scan`,
+        { method: "POST", credentials: "include" },
+      );
+      return handleResponseWithJason<{ detected: number }>(response);
+    },
+    onSuccess: () => refetch(),
+  });
+
+  const resolve = useMutation<
+    unknown,
+    Error,
+    { id: number; sourceType: string }
+  >({
+    mutationFn: async ({ id, sourceType }) => {
+      const response = await apiFetch(
+        `${getApiBaseUrl()}/system/migrate/conflicts/${id}/resolve`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sourceType }),
+        },
+      );
+      return handleResponseWithJason<unknown>(response);
+    },
+    onSuccess: () => refetch(),
+  });
+
+  const dismiss = useMutation<unknown, Error, number>({
+    mutationFn: async (id) => {
+      const response = await apiFetch(
+        `${getApiBaseUrl()}/system/migrate/conflicts/${id}/dismiss`,
+        { method: "POST", credentials: "include" },
+      );
+      return handleResponseWithJason<unknown>(response);
+    },
+    onSuccess: () => refetch(),
+  });
+
+  return (
+    <BBWidget widgetTitle="Data Conflicts">
+      <div className="space-y-3 p-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <BBButton onClick={() => scan.mutate()} disabled={scan.isPending}>
+            {scan.isPending ? "Scanning…" : "Scan for conflicts"}
+          </BBButton>
+          {scan.data && (
+            <span className="text-sm text-dimmed">
+              Detected {scan.data.detected} conflict(s).
+            </span>
+          )}
+          <span className="ml-auto text-sm text-dimmed">
+            {conflicts?.length ?? 0} open
+          </span>
+        </div>
+        {!conflicts || conflicts.length === 0 ? (
+          <p className="text-sm text-dimmed">
+            No open conflicts. Run a scan to detect disagreements between a
+            record&apos;s sources.
+          </p>
+        ) : (
+          <ul className="space-y-2">
+            {conflicts.map((conflict) => (
+              <BBPanel as="li" key={conflict.id} className="p-2.5">
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="font-bold text-highlighted">
+                    {conflict.entityLabel ??
+                      `${conflict.entityType} ${conflict.entityId}`}
+                  </span>
+                  <span className="text-xs text-dimmed">
+                    · conflicting {conflict.fieldName.replace(/_/g, " ")} — pick
+                    the source to keep:
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => dismiss.mutate(conflict.id)}
+                    className="ml-auto text-xs text-dimmed hover:text-highlighted cursor-pointer"
+                  >
+                    dismiss
+                  </button>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {conflict.candidates.map((candidate) => (
+                    <BBButton
+                      key={candidate.sourceRef}
+                      title={candidate.label}
+                      disabled={resolve.isPending}
+                      onClick={() =>
+                        resolve.mutate({
+                          id: conflict.id,
+                          sourceType: candidate.sourceType,
+                        })
+                      }
+                    >
+                      <span className="text-[10px] font-bold tracking-widest text-dimmed">
+                        {candidate.sourceType}
+                      </span>
+                      <span className="ml-1.5 text-default">
+                        {candidate.value}
+                      </span>
+                    </BBButton>
+                  ))}
+                </div>
+              </BBPanel>
+            ))}
+          </ul>
+        )}
+      </div>
+    </BBWidget>
+  );
+}
+
 export default function SystemMigrate() {
   const user = useContext(UserContext);
   const isSiteAdmin = user.permissions?.some(
     (p) => p.permissionCode === "ZFGC_SITE_ADMIN",
   );
 
-  const [pollJobs, setPollJobs] = useState(false);
   const [uploadResult, setUploadResult] =
     useState<MigrateUploadResponse | null>(null);
   const queryClient = useQueryClient();
@@ -98,13 +226,16 @@ export default function SystemMigrate() {
     gcTime: 0,
     staleTime: 0,
     queryKey: "migrate-jobs",
-    refetchInterval: 2000,
-    enabled: isSiteAdmin && pollJobs,
+    refetchInterval: (query) =>
+      query.state.data?.some(
+        (job) => job.state === "QUEUED" || job.state === "RUNNING",
+      )
+        ? 2000
+        : false,
+    enabled: isSiteAdmin,
     schema: JobListSchema,
   });
 
-  // No cache invalidation needed: the upload summary is surfaced via local
-  // `uploadResult` state; it doesn't change any cached query.
   const uploadMutation = useMutation<MigrateUploadResponse, Error, File>({
     mutationFn: async (file) => {
       const formData = new FormData();
@@ -136,8 +267,6 @@ export default function SystemMigrate() {
       return handleResponseWithJason<unknown>(response);
     },
     onSuccess: () => {
-      setPollJobs(true);
-      // Refresh the jobs list immediately instead of waiting for the 2s poll.
       void queryClient.invalidateQueries({ queryKey: ["migrate-jobs"] });
     },
   });
@@ -154,6 +283,8 @@ export default function SystemMigrate() {
       smfLegacyHost: "",
       attachmentsSourcePath: "",
       attachmentsTargetPath: "",
+      cmsFilesSourcePath: "",
+      wikiImagesSourcePath: "",
       force: false,
     } as MigrateJobForm,
     validators: {
@@ -177,6 +308,8 @@ export default function SystemMigrate() {
           undefined,
         attachmentsTargetPath: value.attachmentsTargetPath || undefined,
         avatarsSourcePath: uploadResult?.avatarsSourcePath || undefined,
+        cmsFilesSourcePath: value.cmsFilesSourcePath || undefined,
+        wikiImagesSourcePath: value.wikiImagesSourcePath || undefined,
         force: value.force || undefined,
       };
       await startJobMutation.mutateAsync(body);
@@ -266,7 +399,7 @@ export default function SystemMigrate() {
                 </div>
               )}
               {uploadMutation.isError && (
-                <p className="text-sm text-highlighted">
+                <p className="text-sm text-error">
                   Upload failed: {uploadMutation.error?.message}
                 </p>
               )}
@@ -281,6 +414,18 @@ export default function SystemMigrate() {
                 name="attachmentsSourcePath"
                 placeholder="/path/to/smf/attachments"
                 helperText="Only needed if not using zip upload. Overrides the zip's extracted path."
+              />
+              <BBField
+                label="CMS files source path"
+                name="cmsFilesSourcePath"
+                placeholder="/path/to/public_html/files"
+                helperText="The old CodeIgniter files/ directory (projects, projects/gallery, projects/downloads, resources). Needed for the CMS migration jobs; leave empty to skip project/resource assets."
+              />
+              <BBField
+                label="Wiki images source path"
+                name="wikiImagesSourcePath"
+                placeholder="/path/to/wiki/images"
+                helperText="The MediaWiki images/ directory (hashed layout). Leave empty to skip wiki image migration."
               />
             </div>
           </div>
@@ -334,6 +479,8 @@ export default function SystemMigrate() {
           </div>
         )}
       </BBWidget>
+
+      <ConflictsPanel />
     </div>
   );
 }

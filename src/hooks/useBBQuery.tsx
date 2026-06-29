@@ -7,17 +7,17 @@ import { getApiBaseUrl } from "@/shared/http/api";
 import { getResponseStatus } from "@/shared/http/response.handler";
 import * as v from "valibot";
 
-export type UseBBQueryOptions<T> = Omit<
-  UseQueryOptions<T, Error, T, QueryKey>,
+export type UseBBQueryOptions<TData> = Omit<
+  UseQueryOptions<TData, Error, TData, QueryKey>,
   "queryKey" | "queryFn"
 > & {
   queryKey?: string;
-  schema?: v.GenericSchema<unknown, T>;
+  schema?: v.GenericSchema<unknown, TData>;
 };
 
-export const useBBQuery = <T,>(
+export const useBBQuery = <TData,>(
   url: `/${string}`,
-  options: UseBBQueryOptions<T> = {},
+  options: UseBBQueryOptions<TData> = {},
 ) => {
   const {
     queryKey,
@@ -30,7 +30,7 @@ export const useBBQuery = <T,>(
     ...rest
   } = options;
 
-  return useQuery<T, Error, T, QueryKey>({
+  return useQuery<TData, Error, TData, QueryKey>({
     queryKey: [queryKey ?? url],
     queryFn: async () => {
       const response = await fetch(`${getApiBaseUrl()}${url ?? "/"}`, {
@@ -41,7 +41,7 @@ export const useBBQuery = <T,>(
         },
       });
       const data = await handleResponseWithJason<unknown>(response);
-      return schema ? v.parse(schema, data) : (data as T);
+      return schema ? v.parse(schema, data) : (data as TData);
     },
     retry,
     gcTime,

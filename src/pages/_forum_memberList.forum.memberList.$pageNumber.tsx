@@ -1,23 +1,23 @@
 import type { BBTableColumn } from "@/components/common/layout/BBTable";
 import type { User } from "../types/user";
-import type { Route } from "./+types/_forum_memberList.forum.memberList.$currentPage";
+import type { Route } from "./+types/_forum_memberList.forum.memberList.$pageNumber";
 import { getQueryClient } from "@/providers/query/queryProvider";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   await getQueryClient().prefetchQuery(
-    bbQueryOptions<User[]>(`/user/memberList?pageNo=${params.currentPage}`),
+    bbQueryOptions<User[]>(`/user/memberList?page=${params.pageNumber}`),
   );
 }
 
 const MemberListContainer: React.FC = () => {
   const navigate = useNavigate();
-  const { currentPage } = useParams();
+  const { pageNumber } = useParams();
   const { data: memberList, isLoading } = useBBQuery<User[]>(
-    `/user/memberList?pageNo=${currentPage}`,
+    `/user/memberList?page=${pageNumber}`,
   );
 
-  const loadNewPage = (pageNo: number) => {
-    navigate(`/forum/member-list/${pageNo}`);
+  const loadNewPage = (pageNumber: number) => {
+    navigate(`/forum/memberList/${pageNumber}`);
   };
 
   const columns: BBTableColumn<User>[] = [
@@ -86,7 +86,7 @@ const MemberListContainer: React.FC = () => {
         <div className="bg-accented p-4 scrollbar-thin">
           <BBPaginator
             numPages={Math.ceil(memberList.length / 10)}
-            currentPage={Number(currentPage)}
+            currentPage={Number(pageNumber)}
             onPageChange={loadNewPage}
           />
         </div>

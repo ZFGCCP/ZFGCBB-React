@@ -4,6 +4,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { useState } from "react";
 import { getApiBaseUrl } from "@/shared/http/api";
 import { apiFetch } from "@/shared/http/apiFetch";
 import { getResponseStatus } from "@/shared/http/response.handler";
@@ -35,19 +36,23 @@ function on401(error: unknown) {
   void tryRefresh();
 }
 
-const queryClient = new QueryClient({
-  queryCache: new QueryCache({ onError: on401 }),
-  mutationCache: new MutationCache({ onError: on401 }),
-});
+const makeQueryClient = () =>
+  new QueryClient({
+    queryCache: new QueryCache({ onError: on401 }),
+    mutationCache: new MutationCache({ onError: on401 }),
+  });
+
+const queryClient = makeQueryClient();
 
 export const getQueryClient = () => queryClient;
 
 const QueryProvider: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  const [client] = useState(() =>
+    import.meta.env.SSR ? makeQueryClient() : queryClient,
   );
+  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
 };
 
 export default QueryProvider;

@@ -1,19 +1,10 @@
 import type { FileAttachment } from "@/types/forum";
-import { getPublicApiBaseUrl } from "@/shared/http/api";
+import { contentUrl } from "@/shared/http/api";
+import { formatFileSize } from "@/shared/format";
 
 interface MessageAttachmentsProps {
   attachments: FileAttachment[];
   isEven: boolean;
-}
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function contentUrl(contentResourceId: number): string {
-  return `${getPublicApiBaseUrl()}/content/image/${contentResourceId}`;
 }
 
 export default function MessageAttachments({
@@ -22,8 +13,12 @@ export default function MessageAttachments({
 }: MessageAttachmentsProps) {
   if (!attachments || attachments.length === 0) return null;
 
-  const images = attachments.filter((a) => a.mimeType?.startsWith("image/"));
-  const files = attachments.filter((a) => !a.mimeType?.startsWith("image/"));
+  const images = attachments.filter((attachment) =>
+    attachment.mimeType?.startsWith("image/"),
+  );
+  const files = attachments.filter(
+    (attachment) => !attachment.mimeType?.startsWith("image/"),
+  );
 
   return (
     <div

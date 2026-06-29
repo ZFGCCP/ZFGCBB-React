@@ -2,6 +2,7 @@
   .theme-goron {
     --text-color-muted: #b0b4bf;
     --text-color-toned: #8e95a4;
+    --text-color-error: #ffb3a0;
 
     --background-color-default: #651918;
     --background-color-muted: #4b1312;

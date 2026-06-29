@@ -1,6 +1,6 @@
-function safeJsonParse<T>(json: string): T | undefined {
+function safeJsonParse<TValue>(json: string): TValue | undefined {
   try {
-    return JSON.parse(json) as T;
+    return JSON.parse(json) as TValue;
   } catch (e) {
     return;
   }
@@ -32,10 +32,10 @@ export async function handleResponseError(response: Response) {
   });
 }
 
-export async function handleResponseWithJason<T>(response: Response) {
-  if (response.status === 204) return undefined as T;
+export async function handleResponseWithJason<TData>(response: Response) {
+  if (response.status === 204) return undefined as TData;
   await handleResponseError(response);
-  return (await response.json()) as T;
+  return (await response.json()) as TData;
 }
 
 export function getResponseStatus(error: unknown): number | undefined {

@@ -4,13 +4,13 @@ import type { AnyFormApi } from "@tanstack/react-form";
 const BBFormContext = createContext<AnyFormApi | null>(null);
 
 export function useBBFormContext(): AnyFormApi {
-  const ctx = use(BBFormContext);
-  if (!ctx) {
+  const formContext = use(BBFormContext);
+  if (!formContext) {
     throw new Error(
       "BB form components must be rendered inside a <BBForm> with a `form` prop.",
     );
   }
-  return ctx;
+  return formContext;
 }
 
 type BBFormProps = {

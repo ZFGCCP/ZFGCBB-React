@@ -1,38 +1,42 @@
 import type { BBFlexProps } from "./BBFlex";
 
-export interface BBTableColumn<T> {
-  key: keyof T | string;
+export interface BBTableColumn<TRow> {
+  key: keyof TRow | string;
   label: string;
   className?: string;
   hideOnMobile?: boolean;
   hideOnTablet?: boolean;
-  render?: (value: T[keyof T], row: T, index: number) => React.ReactNode;
+  render?: (
+    value: TRow[keyof TRow],
+    row: TRow,
+    index: number,
+  ) => React.ReactNode;
 }
 
 // oxlint-disable-next-line no-unused-vars
-export interface BBTableProps<T> {
-  columns: BBTableColumn<T>[];
-  data: T[];
+export interface BBTableProps<TRow> {
+  columns: BBTableColumn<TRow>[];
+  data: TRow[];
   className?: string;
   headerClassName?: string;
   headerOuterFlexOptions?: Omit<BBFlexProps, "children">;
-  rowClassName?: string | ((row: T, index: number) => string);
+  rowClassName?: string | ((row: TRow, index: number) => string);
   rowOuterFlexOptions?: Omit<BBFlexProps, "children">;
-  onRowClick?: (row: T, index: number) => void;
+  onRowClick?: (row: TRow, index: number) => void;
   emptyMessage?: string;
   showHeader?: boolean;
 }
 
 const EMPTY_FLEX_OPTIONS: Omit<BBFlexProps, "children"> = {};
 
-function getColumnVisibilityClass<T>(column: BBTableColumn<T>): string {
+function getColumnVisibilityClass<TRow>(column: BBTableColumn<TRow>): string {
   let classes = "";
   if (column.hideOnMobile) classes += "hidden sm:block ";
   if (column.hideOnTablet) classes += "hidden md:block ";
   return classes.trim();
 }
 
-export default function BBTable<T extends object>({
+export default function BBTable<TRow extends object>({
   columns,
   data,
   className = "",
@@ -43,8 +47,8 @@ export default function BBTable<T extends object>({
   onRowClick,
   emptyMessage = "No data available",
   showHeader = true,
-}: BBTableProps<T>) {
-  const getRowClassName = (row: T, index: number): string => {
+}: BBTableProps<TRow>) {
+  const getRowClassName = (row: TRow, index: number): string => {
     const baseClass = "transition-colors";
     const stripeClass =
       index % 2 === 0
@@ -99,8 +103,8 @@ export default function BBTable<T extends object>({
                     className={`${column.className || ""} ${getColumnVisibilityClass(column)}`}
                   >
                     {column.render
-                      ? column.render(row[column.key as keyof T], row, index)
-                      : String(row[column.key as keyof T] || "")}
+                      ? column.render(row[column.key as keyof TRow], row, index)
+                      : String(row[column.key as keyof TRow] || "")}
                   </div>
                 ))}
               </BBFlex>
@@ -115,21 +119,14 @@ export default function BBTable<T extends object>({
             }
 
             return (
-              <div
+              <button
+                type="button"
                 key={rowKey}
-                className={getRowClassName(row, index)}
-                role="button"
-                tabIndex={0}
+                className={`${getRowClassName(row, index)} block w-full text-left`}
                 onClick={() => onRowClick(row, index)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    onRowClick(row, index);
-                  }
-                }}
               >
                 {rowContent}
-              </div>
+              </button>
             );
           })
         )}

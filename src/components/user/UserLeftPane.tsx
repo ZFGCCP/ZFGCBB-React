@@ -1,5 +1,5 @@
 import type { User } from "../../types/user";
-import { getPublicApiBaseUrl } from "@/shared/http/api";
+import { contentUrl } from "@/shared/http/api";
 
 interface UserLeftPaneProps {
   user?: User;
@@ -24,10 +24,12 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({
     if (user?.bioInfo?.avatar) {
       return user.bioInfo?.avatar?.url && user.bioInfo?.avatar?.url?.trim()
         ? user.bioInfo.avatar.url
-        : (`${getPublicApiBaseUrl()}/content/image/${user.bioInfo.avatar.contentResourceId}` as `${string}://${string}/${string}`);
+        : (contentUrl(
+            user.bioInfo.avatar.contentResourceId!,
+          ) as `${string}://${string}/${string}`);
     }
 
-    return `${getPublicApiBaseUrl()}/content/image/3` as `${string}://${string}/${string}`;
+    return contentUrl(3) as `${string}://${string}/${string}`;
   }, [user]);
 
   return (
@@ -60,6 +62,7 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({
               {user?.bioInfo?.customTitle}
             </BBMutedText>
           )}
+          {user && <BBRankBadge name={rankBadgeFor(user)} />}
         </BBFlex>
       </BBFlex>
 

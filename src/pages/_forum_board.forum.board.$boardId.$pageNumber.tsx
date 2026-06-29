@@ -1,20 +1,21 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { BBTableColumn } from "@/components/common/layout/BBTable";
 import type { Board, Thread } from "../types/forum";
-import type { Route } from "./+types/_forum_board.forum.board.$boardId.$pageNo";
+import type { Route } from "./+types/_forum_board.forum.board.$boardId.$pageNumber";
 import { getQueryClient } from "@/providers/query/queryProvider";
 import { useForumIndex } from "@/hooks/useForumIndex";
 import { prefetchQueryDehydrated } from "@/shared/http/ssrPrefetch";
+import BBBreadcrumb, { type Crumb } from "@/components/common/BBBreadcrumb";
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
   prefetchQueryDehydrated<Board>(
     request,
-    `/board/${params.boardId}?pageNo=${params.pageNo}`,
+    `/board/${params.boardId}?page=${params.pageNumber}`,
   );
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   await getQueryClient().prefetchQuery(
-    bbQueryOptions<Board>(`/board/${params.boardId}?pageNo=${params.pageNo}`),
+    bbQueryOptions<Board>(`/board/${params.boardId}?page=${params.pageNumber}`),
   );
 }
 
@@ -64,12 +65,12 @@ function BoardTableComponent({
       render: (_, thread) => (
         <div className="flex flex-col items-center gap-2">
           {thread.pinnedFlag ? (
-            <Fa6SolidFlag className="text-highlighted w-6 h-6" />
+            <BBIcon name="sticky" />
           ) : (
-            <div className="theme-topic-normal" />
+            <BBIcon name="topic" />
           )}
           <div className="block sm:hidden">
-            <div className="theme-post-indicator" />
+            <BBIcon name="unread" />
           </div>
         </div>
       ),
@@ -81,7 +82,7 @@ function BoardTableComponent({
       hideOnMobile: true,
       render: () => (
         <div className="flex justify-center">
-          <div className="theme-post-indicator" />
+          <BBIcon name="unread" />
         </div>
       ),
     },
@@ -241,13 +242,13 @@ function BoardTableComponent({
 
 function BoardContainer() {
   const navigate = useNavigate();
-  const { boardId: boardIdParam, pageNo: pageNoParam } = useParams();
+  const { boardId: boardIdParam, pageNumber: pageNumberParam } = useParams();
   const boardId = parseInt(boardIdParam!);
-  const pageNo = parseInt(pageNoParam!);
+  const pageNumber = parseInt(pageNumberParam!);
 
   const { data: board, isLoading } = useBBQuery<Board>(
-    `/board/${boardId}?pageNo=${pageNo}`,
-    { retry: 0, gcTime: 0 },
+    `/board/${boardId}?page=${pageNumber}`,
+    { retry: 0 },
   );
 
   const { data: forumIndex } = useForumIndex();
@@ -261,6 +262,11 @@ function BoardContainer() {
     navigate(`/forum/board/${boardId}/${currentPageNumber}`);
   };
 
+  const breadcrumbs: Crumb[] = [
+    { label: siteName, to: "/forum", prefetch: "render" },
+    { label: boardName },
+  ];
+
   return (
     <>
       {!isLoading &&
@@ -272,23 +278,13 @@ function BoardContainer() {
         </BBWidget>
       ) : null}
 
-      <BBFlex gap="gap-2">
-        <BBLink to="/forum" prefetch="render">
-          {siteName}
-        </BBLink>
-        <span>&gt;&gt;</span>
-        {!isLoading && board ? (
-          <span>{boardName}</span>
-        ) : (
-          <span>Loading...</span>
-        )}
-      </BBFlex>
+      <BBBreadcrumb crumbs={breadcrumbs} />
 
       <BoardTablePaginatorComponent
         board={board}
         onPageChange={loadNewPage}
         isLoading={isLoading}
-        currentPage={Number(pageNo)}
+        currentPage={Number(pageNumber)}
         className="bg-accented p-4 my-4"
         skeletonContainerClassName="bg-accented p-4 mb-4 w-full"
         skeletonClassName="p-8 size-full"
@@ -300,22 +296,14 @@ function BoardContainer() {
           board={board}
           onPageChange={loadNewPage}
           isLoading={isLoading}
-          currentPage={Number(pageNo)}
+          currentPage={Number(pageNumber)}
           className="bg-accented p-4"
           skeletonContainerClassName="w-full p-4 mb-2"
           skeletonClassName="p-8 size-full"
         />
       </BBWidget>
 
-      {!isLoading ? (
-        <div className="my-3">
-          <BBFlex gap="gap-2">
-            <BBLink to="/forum">{siteName}</BBLink>
-            <span>&gt;&gt;</span>
-            <span>{boardName}</span>
-          </BBFlex>
-        </div>
-      ) : null}
+      {!isLoading ? <BBBreadcrumb crumbs={breadcrumbs} /> : null}
     </>
   );
 }

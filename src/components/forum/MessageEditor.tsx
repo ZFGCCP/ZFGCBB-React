@@ -8,15 +8,15 @@ interface MessageEditorProps {
 }
 
 const MessageEditor: React.FC<MessageEditorProps> = ({ threadId }) => {
-  const { data: currentMsg, isLoading } = useBBQuery<Message>(
+  const { data: currentMessage, isLoading } = useBBQuery<Message>(
     `/message/template?threadId=${threadId}`,
   );
 
-  if (isLoading || !currentMsg) {
+  if (isLoading || !currentMessage) {
     return null;
   }
 
-  return <MessageEditorForm threadId={threadId} template={currentMsg} />;
+  return <MessageEditorForm threadId={threadId} template={currentMessage} />;
 };
 
 function MessageEditorForm({

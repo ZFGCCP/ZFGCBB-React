@@ -41,6 +41,11 @@ export default function AdminDashboard() {
             to="/system/migrate"
           />
           <AdminCard
+            title="CMS Merge Center"
+            description="Link projects and resources to wiki articles and forum threads, and merge duplicates."
+            to="/admin/merge"
+          />
+          <AdminCard
             title="User Management"
             description="View, edit, and moderate user accounts."
             to="/admin/users"

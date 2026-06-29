@@ -2,6 +2,7 @@
   .theme-midnight {
     --text-color-muted: #b0b4bf;
     --text-color-toned: #8e95a4;
+    --text-color-error: #ff8f8f;
 
     --background-color-default: #204378;
     --background-color-muted: #1e2b44;

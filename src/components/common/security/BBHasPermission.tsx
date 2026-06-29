@@ -2,20 +2,20 @@ import { UserContext } from "../../../providers/user/userProvider";
 import type { BBPermission } from "../../../types/api";
 
 export interface BBHasPermissionProps {
-  perms: BBPermission[];
+  requiredPermissions: BBPermission[];
   children: React.ReactNode;
 }
 
 export default function BBHasPermission({
-  perms,
+  requiredPermissions,
   children,
 }: BBHasPermissionProps) {
   const { permissions } = useContext(UserContext);
-  const hasPerm = useMemo(() => {
+  const hasPermission = useMemo(() => {
     return permissions
-      ?.map((p) => p.permissionCode as BBPermission)
-      .some((p) => perms.includes(p));
-  }, [perms, permissions]);
+      ?.map((permission) => permission.permissionCode as BBPermission)
+      .some((permissionCode) => requiredPermissions.includes(permissionCode));
+  }, [requiredPermissions, permissions]);
 
-  return <>{hasPerm && children}</>;
+  return <>{hasPermission && children}</>;
 }

@@ -1,13 +1,14 @@
 import type { Message, Thread } from "@/types/forum";
 import { useForumIndex } from "@/hooks/useForumIndex";
+import BBBreadcrumb, { type Crumb } from "@/components/common/BBBreadcrumb";
 
 export interface ForumThreadProps {
-  pageNo: string;
+  pageNumber: string;
   thread?: Thread;
 }
 
 const ForumThread: React.FC<ForumThreadProps> = ({
-  pageNo: paramsPageNo,
+  pageNumber: paramsPageNo,
   thread,
 }) => {
   const navigate = useNavigate();
@@ -18,14 +19,14 @@ const ForumThread: React.FC<ForumThreadProps> = ({
 
   // const textAreaRef = useRef("");
   const [showReplyBox, setShowReplyBox] = useState(false);
-  const [, setMsgText] = useState<
+  const [, setMessageText] = useState<
     string | number | readonly string[] | undefined
   >("");
 
-  const [, setCurrentMsg] = useState<Message>({} as Message);
+  const [, setCurrentMessage] = useState<Message>({} as Message);
 
-  const loadNewPage = (pageNo: number) => {
-    navigate(`/forum/thread/${threadId}/${pageNo}`);
+  const loadNewPage = (pageNumber: number) => {
+    navigate(`/forum/thread/${threadId}/${pageNumber}`);
   };
 
   // const footer = useMemo(() => {
@@ -61,36 +62,34 @@ const ForumThread: React.FC<ForumThreadProps> = ({
   //   ] satisfies BBPermissionLabel[];
   // }, [showReplyBox]);
 
-  const clickModify = (msg: Message) => {
+  const clickModify = (message: Message) => {
     setShowReplyBox(true);
-    setMsgText(
-      msg.currentMessage.unparsedText as
+    setMessageText(
+      message.currentMessage.unparsedText as
         | string
         | number
         | readonly string[]
         | undefined,
     );
-    setCurrentMsg(msg);
+    setCurrentMessage(message);
   };
+
+  const breadcrumbs: Crumb[] = [
+    { label: siteName || "Loading...", to: "/forum", prefetch: "render" },
+    thread
+      ? {
+          label: thread.boardName,
+          to: `/forum/board/${thread.boardId}/1`,
+          prefetch: "intent",
+        }
+      : { label: "Loading..." },
+    { label: thread?.threadName ?? "Loading..." },
+  ];
 
   return (
     <>
       <div className="space-y-4">
-        <div className="mt-2">
-          <BBFlex gap="gap-2">
-            <BBLink to="/forum" prefetch="render">
-              {siteName || "Loading..."}
-            </BBLink>
-            <span>&gt;&gt;</span>
-            {(thread && (
-              <BBLink to={`/forum/board/${thread.boardId}/1`} prefetch="intent">
-                {thread.boardName}
-              </BBLink>
-            )) || <span>Loading...</span>}
-            <span>&gt;&gt;</span>
-            <span>{thread?.threadName ?? "Loading..."}</span>
-          </BBFlex>
-        </div>
+        <BBBreadcrumb crumbs={breadcrumbs} />
         <div className="bg-accented p-4 scrollbar-thin">
           <BBPaginator
             numPages={thread?.pageCount ?? currentPage}
@@ -104,16 +103,16 @@ const ForumThread: React.FC<ForumThreadProps> = ({
         )}
         <BBWidget widgetTitle={thread?.threadName}>
           <div className="divide-y divide-default">
-            {thread?.messages?.map((msg, index) => {
+            {thread?.messages?.map((message, index) => {
               const isEven = index % 2 === 0;
               return (
-                <div key={msg.id}>
+                <div key={message.id}>
                   <div className="flex flex-row min-h-[300px]">
                     <div
                       className={`w-28 md:w-34 lg:w-64 shrink-0 border-r ${isEven ? "bg-elevated" : "bg-muted"} border-default`}
                     >
                       <UserLeftPane
-                        user={msg.createdUser ?? undefined}
+                        user={message.createdUser ?? undefined}
                         backgrounds={{
                           profileInfoContainer: `${isEven ? "bg-elevated" : "bg-muted"}`,
                         }}
@@ -133,25 +132,31 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                         >
                           <div className="text-sm">
                             <div>
-                              <BBDate dateStr={msg.createdTsAsString} />
-                              <BBHasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                              <BBDate dateStr={message.createdTsAsString} />
+                              <BBHasPermission
+                                requiredPermissions={["ZFGC_MESSAGE_ADMIN"]}
+                              >
                                 <span className="text-muted">
                                   - 192.168.1.1
                                 </span>
                               </BBHasPermission>
                             </div>
-                            {msg.currentMessage.updatedTsAsString && (
+                            {message.currentMessage.updatedTsAsString && (
                               <div className="text-muted">
                                 Last Edit:{" "}
                                 <BBDate
-                                  dateStr={msg.currentMessage.updatedTsAsString}
+                                  dateStr={
+                                    message.currentMessage.updatedTsAsString
+                                  }
                                 />
                               </div>
                             )}
                           </div>
 
                           <BBFlex gap="gap-2" wrap={true} className="text-sm">
-                            <BBHasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
+                            <BBHasPermission
+                              requiredPermissions={["ZFGC_MESSAGE_EDITOR"]}
+                            >
                               <button
                                 type="button"
                                 className="text-toned hover:transition-colors"
@@ -160,57 +165,70 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                                 <span className="hidden sm:inline">Reply</span>
                               </button>
                             </BBHasPermission>
-                            <BBHasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
+                            <BBHasPermission
+                              requiredPermissions={["ZFGC_MESSAGE_EDITOR"]}
+                            >
                               <button
                                 type="button"
                                 className="text-toned hover:transition-colors"
-                                onClick={() => clickModify(msg)}
+                                onClick={() => clickModify(message)}
                               >
-                                <Fa6SolidPen className="mr-1" />
+                                <BBIcon name="modify" className="mr-1" />
                                 <span className="hidden sm:inline">Edit</span>
                               </button>
                             </BBHasPermission>
-                            <BBHasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                            <BBHasPermission
+                              requiredPermissions={["ZFGC_MESSAGE_ADMIN"]}
+                            >
                               <button
                                 type="button"
                                 className="text-toned hover:transition-colors hidden sm:inline-flex"
                               >
-                                <Fa6SolidTrashCan className="mr-1" />
+                                <BBIcon name="delete" className="mr-1" />
                                 Remove
                               </button>
                             </BBHasPermission>
-                            <BBHasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                            <BBHasPermission
+                              requiredPermissions={["ZFGC_MESSAGE_ADMIN"]}
+                            >
                               <button
                                 type="button"
                                 className="text-toned hover:transition-colors hidden md:inline-flex"
                               >
+                                <BBIcon name="split" className="mr-1" />
                                 Split
                               </button>
                             </BBHasPermission>
-                            <BBHasPermission perms={["ZFGC_MESSAGE_VIEWER"]}>
+                            <BBHasPermission
+                              requiredPermissions={["ZFGC_MESSAGE_VIEWER"]}
+                            >
                               <button
                                 type="button"
                                 className="text-toned hover:transition-colors hidden md:inline-flex"
                               >
-                                <Fa6SolidShuffle className="mr-1" />
+                                <BBIcon name="history" className="mr-1" />
                                 History
                               </button>
                             </BBHasPermission>
-                            <BBHasPermission perms={["ZFGC_MESSAGE_EDITOR"]}>
+                            <BBHasPermission
+                              requiredPermissions={["ZFGC_MESSAGE_EDITOR"]}
+                            >
                               <button
                                 type="button"
                                 className="text-toned hover:transition-colors hidden lg:inline-flex"
                               >
-                                <Fa6SolidFlag className="mr-1" />
+                                <BBIcon name="suspect" className="mr-1" />
                                 Report
                               </button>
                             </BBHasPermission>
-                            <BBHasPermission perms={["ZFGC_MESSAGE_ADMIN"]}>
+                            <BBHasPermission
+                              requiredPermissions={["ZFGC_MESSAGE_ADMIN"]}
+                            >
                               <button
                                 type="button"
                                 className="text-toned hover:transition-colors hidden lg:inline-flex"
                               >
-                                <Fa6SolidTriangleExclamation className="mr-1" />
+                                <BBIcon name="warn" className="mr-1" />
                                 Warn
                               </button>
                             </BBHasPermission>
@@ -219,15 +237,15 @@ const ForumThread: React.FC<ForumThreadProps> = ({
                       </div>
 
                       <UserMessage
-                        messageText={msg.currentMessage.messageText}
+                        messageText={message.currentMessage.messageText}
                         isEven={isEven}
                       />
                       <MessageAttachments
-                        attachments={msg.fileAttachments ?? []}
+                        attachments={message.fileAttachments ?? []}
                         isEven={isEven}
                       />
                       <UserSignature
-                        user={msg.createdUser ?? undefined}
+                        user={message.createdUser ?? undefined}
                         isEven={isEven}
                       />
                     </div>
@@ -245,25 +263,7 @@ const ForumThread: React.FC<ForumThreadProps> = ({
             />
           </div>
         </BBWidget>
-        {thread ? (
-          <footer className="mt-2">
-            <BBFlex gap="gap-2">
-              <BBLink to="/forum" prefetch="render">
-                {siteName || "Loading..."}
-              </BBLink>
-              <span>&gt;&gt;</span>
-
-              <BBLink
-                to={`/forum/board/${thread?.boardId}/1`}
-                prefetch="intent"
-              >
-                {thread.boardName}
-              </BBLink>
-              <span>&gt;&gt;</span>
-              <span>{thread?.threadName}</span>
-            </BBFlex>
-          </footer>
-        ) : null}
+        {thread ? <BBBreadcrumb crumbs={breadcrumbs} /> : null}
       </div>
 
       {showReplyBox && threadId && <MessageEditor threadId={threadId} />}

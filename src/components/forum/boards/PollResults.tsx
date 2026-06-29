@@ -10,8 +10,8 @@ const PollResults: React.FC<{
   // Stevegetable - a brand new take on baseball hotdogs
   const totalVotes = poll.votes;
   const pollData = pollAnswers.map((answer) => {
-    const dec = answer.votes / totalVotes;
-    const percent = dec * 100.0;
+    const voteFraction = answer.votes / totalVotes;
+    const percent = voteFraction * 100.0;
     return (
       <BBFlex key={answer.seqno} direction="col" className="md:flex-row">
         <div className="md:w-sm lg:w-lg">

@@ -18,6 +18,10 @@ export const JOB_TYPES = [
   "POLL_CHOICES",
   "USER_POLL_CHOICES",
   "KARMA",
+  "WIKI_PAGES",
+  "PROJECTS",
+  "RESOURCES",
+  "MIGRATE_CMS_INSTALLATION",
 ] as const;
 
 export const JobTypeSchema = v.picklist(JOB_TYPES);
@@ -78,6 +82,8 @@ export const MigrateJobFormSchema = v.object({
   smfLegacyHost: v.string(),
   attachmentsSourcePath: v.string(),
   attachmentsTargetPath: v.string(),
+  cmsFilesSourcePath: v.string(),
+  wikiImagesSourcePath: v.string(),
   force: v.boolean(),
 });
 
@@ -96,6 +102,8 @@ export type MigrateJobRequest = {
   attachmentsSourcePath?: string;
   attachmentsTargetPath?: string;
   avatarsSourcePath?: string;
+  cmsFilesSourcePath?: string;
+  wikiImagesSourcePath?: string;
   force?: boolean;
 };
 
@@ -104,6 +112,36 @@ export type MigrateUploadResponse = {
   attachmentsSourcePath: string | null;
   avatarsSourcePath: string | null;
 };
+
+export const ConflictCandidateSchema = v.object({
+  sourceType: v.string(),
+  sourceRef: v.string(),
+  value: v.string(),
+  label: v.string(),
+});
+export type ConflictCandidate = v.InferOutput<typeof ConflictCandidateSchema>;
+
+export const MigrationConflictSchema = v.object({
+  id: v.number(),
+  entityType: v.string(),
+  entityId: v.number(),
+  entityLabel: v.nullable(v.string()),
+  fieldName: v.string(),
+  candidates: v.array(ConflictCandidateSchema),
+  status: v.string(),
+});
+export type MigrationConflict = v.InferOutput<typeof MigrationConflictSchema>;
+
+export const MigrationConflictListSchema = v.array(MigrationConflictSchema);
+
+export const CmsConfigFormSchema = v.object({
+  discussionBoardId: v.pipe(
+    v.string(),
+    v.nonEmpty("Discussion board id is required."),
+    v.regex(/^\d+$/, "Discussion board id must be a number."),
+  ),
+});
+export type CmsConfigForm = v.InferOutput<typeof CmsConfigFormSchema>;
 
 export const InstallFormSchema = v.object({
   installToken: v.pipe(v.string(), v.nonEmpty("Install token is required.")),

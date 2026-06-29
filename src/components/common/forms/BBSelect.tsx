@@ -13,9 +13,9 @@ const BBSelect: React.FC<{
       value={value}
       onChange={onChange}
     >
-      {options.map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
         </option>
       ))}
     </select>

@@ -8,9 +8,12 @@ type MutationOptions = {
   headers?: Record<string, string>;
 };
 
-export const useBBMutation = <T extends BaseBB, U extends BaseBB = BaseBB>(
-  config: () => [string, T] | [string, T, MutationOptions],
-  onSuccess?: (data: U) => void,
+export const useBBMutation = <
+  TVariables extends BaseBB,
+  TData extends BaseBB = BaseBB,
+>(
+  config: () => [string, TVariables] | [string, TVariables, MutationOptions],
+  onSuccess?: (data: TData) => void,
 ) => {
   // Generic wrapper: cache invalidation is delegated to each caller's
   // `onSuccess`, since only the caller knows which queryKey(s) to invalidate.
@@ -26,7 +29,7 @@ export const useBBMutation = <T extends BaseBB, U extends BaseBB = BaseBB>(
         ...options?.headers,
       };
       const hasBody = method !== "DELETE" && method !== "GET";
-      return await handleResponseWithJason<U>(
+      return await handleResponseWithJason<TData>(
         await apiFetch(`${getApiBaseUrl()}${url ?? "/"}`, {
           method,
           credentials: "include",

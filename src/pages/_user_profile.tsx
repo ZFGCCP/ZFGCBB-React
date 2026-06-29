@@ -1,19 +1,19 @@
 import { useForumIndex } from "@/hooks/useForumIndex";
+import BBBreadcrumb, { type Crumb } from "@/components/common/BBBreadcrumb";
 
 export default function UserProfile() {
   const { data: forumIndex } = useForumIndex();
   const siteName = forumIndex?.boardName ?? "Loading...";
 
+  const breadcrumbs: Crumb[] = [
+    { label: siteName, to: "/forum", prefetch: "render" },
+    { label: "Profile" },
+  ];
+
   return (
     <article>
       <section className="col-12 my-2">
-        <BBFlex gap="gap-2">
-          <BBLink to="/forum" prefetch="render">
-            {siteName}
-          </BBLink>
-          <span>&gt;&gt;</span>
-          <span>Profile</span>
-        </BBFlex>
+        <BBBreadcrumb crumbs={breadcrumbs} />
 
         <div className="my-3">
           <BBWidget widgetTitle={"Profile Summary"}>
@@ -21,13 +21,7 @@ export default function UserProfile() {
           </BBWidget>
         </div>
 
-        <BBFlex gap="gap-2">
-          <BBLink to="/forum" prefetch="render">
-            {siteName}
-          </BBLink>
-          <span>&gt;&gt;</span>
-          <span>Profile</span>
-        </BBFlex>
+        <BBBreadcrumb crumbs={breadcrumbs} />
       </section>
     </article>
   );

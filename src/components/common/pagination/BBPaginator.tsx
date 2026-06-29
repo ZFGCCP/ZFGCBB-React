@@ -27,16 +27,16 @@ export default function BBPaginator({
   const isLast = current >= totalPages;
 
   const pages = useMemo(() => {
-    const pages: React.JSX.Element[] = [];
+    const pageButtons: React.JSX.Element[] = [];
 
     const startPage = Math.max(current - Math.floor(maxToRender / 2), 1);
     const endPage = Math.min(startPage + maxToRender - 1, totalPages);
 
-    for (let i = startPage; i <= endPage; i++) {
-      const isCurrent = current === i;
-      pages.push(
+    for (let page = startPage; page <= endPage; page++) {
+      const isCurrent = current === page;
+      pageButtons.push(
         <button
-          key={`page-${i}`}
+          key={`page-${page}`}
           type="button"
           disabled={isCurrent}
           className={`px-3 py-2 text-sm border border-default ${
@@ -44,15 +44,15 @@ export default function BBPaginator({
               ? "bg-elevated text-highlighted cursor-default"
               : "bg-muted hover:bg-elevated"
           }`}
-          onClick={() => onPageChange(i)}
+          onClick={() => onPageChange(page)}
         >
-          {i}
+          {page}
         </button>,
       );
     }
 
     if (startPage > 1 && totalPages > maxToRender) {
-      pages.unshift(
+      pageButtons.unshift(
         <span
           key="start-ellipsis"
           className={`px-3 py-2 text-muted hidden sm:inline-flex`}
@@ -62,7 +62,7 @@ export default function BBPaginator({
       );
     }
     if (endPage < totalPages) {
-      pages.push(
+      pageButtons.push(
         <span
           key="end-ellipsis"
           className={`px-3 py-2 text-muted hidden sm:inline-flex`}
@@ -72,18 +72,20 @@ export default function BBPaginator({
       );
     }
 
-    return pages;
+    return pageButtons;
   }, [totalPages, current, onPageChange, maxToRender]);
 
   const shiftPage = useCallback(
-    (inc: number) => {
-      onPageChange(current + inc);
+    (delta: number) => {
+      onPageChange(current + delta);
     },
     [current, onPageChange],
   );
 
   return (
-    <div className={`overflow-x-auto scroll-smooth w-full ${className}`}>
+    <div
+      className={`overflow-x-auto motion-safe:scroll-smooth w-full ${className}`}
+    >
       <div className="flex gap-1 mb-0">
         <button
           type="button"

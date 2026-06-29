@@ -36,10 +36,13 @@ function ForumContent() {
           </div>
         </BBWidget>
 
-        {forumIndex?.categories?.map((cat) => {
+        {forumIndex?.categories?.map((category) => {
           return (
-            <div key={cat.id} className="my-2">
-              <ForumCategory title={cat.categoryName} subBoards={cat.boards} />
+            <div key={category.id} className="my-2">
+              <ForumCategory
+                title={category.categoryName}
+                subBoards={category.boards}
+              />
             </div>
           );
         })}
