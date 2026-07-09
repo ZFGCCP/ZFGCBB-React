@@ -214,7 +214,7 @@ function ConflictsPanel() {
 export default function SystemMigrate() {
   const user = useContext(UserContext);
   const isSiteAdmin = user.permissions?.some(
-    (p) => p.permissionCode === "ZFGC_SITE_ADMIN",
+    (permission) => permission.permissionCode === "ZFGC_SITE_ADMIN",
   );
 
   const [uploadResult, setUploadResult] =
@@ -372,8 +372,8 @@ export default function SystemMigrate() {
                   aria-label="Upload migration zip"
                   className="text-sm"
                   disabled={uploadMutation.isPending}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
                     if (file) uploadMutation.mutate(file);
                   }}
                 />

@@ -45,15 +45,15 @@ export default function SearchPalette({ onClose }: { onClose: () => void }) {
     navigate(hit.url);
   };
 
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
       setActive(Math.min(active + 1, Math.max(flatHits.length - 1, 0)));
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
       setActive(Math.max(active - 1, 0));
-    } else if (e.key === "Enter") {
-      e.preventDefault();
+    } else if (event.key === "Enter") {
+      event.preventDefault();
       if (flatHits[active]) openHit(flatHits[active]);
       else if (enabled) {
         onClose();
@@ -100,9 +100,9 @@ export default function SearchPalette({ onClose }: { onClose: () => void }) {
           <input
             ref={inputRef}
             value={term}
-            onChange={(e) => {
-              setTerm(e.target.value);
-              debounceSearch(e.target.value);
+            onChange={(event) => {
+              setTerm(event.target.value);
+              debounceSearch(event.target.value);
             }}
             onKeyDown={onKeyDown}
             placeholder="Search threads, articles, projects, resources…"

@@ -46,7 +46,7 @@ export function AllPages() {
       <div className="space-y-3 p-4">
         <form
           role="search"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={(event) => event.preventDefault()}
           className="flex flex-wrap gap-1.5"
         >
           <input

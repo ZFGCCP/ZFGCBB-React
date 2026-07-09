@@ -8,76 +8,16 @@ const emptyUser = {
 
 export const UserContext = createContext<User>(emptyUser);
 
-interface FloatingThemeSwitcherProps {
-  theme: string;
-  setCurrentTheme: (theme: string) => void;
-}
-
-// gm112 note: I just removed the dynamic theme options for now.
-const THEME_OPTIONS = ["Midnight", "Kikori", "Goron", "Sheik"];
-
-const ThemeSelector: React.FC<FloatingThemeSwitcherProps> = ({
-  theme,
-  setCurrentTheme,
-}) => {
-  return (
-    <select
-      id="theme-selector"
-      className="bg-default border border-default rounded-md p-1 capitalize"
-      value={theme}
-      onChange={(e) => setCurrentTheme(e.target.value)}
-    >
-      {THEME_OPTIONS.map((themeName) => (
-        <option
-          key={String(themeName)}
-          className="capitalize"
-          value={`theme-${themeName.toLowerCase()}`}
-        >
-          {themeName}
-        </option>
-      ))}
-    </select>
-  );
-};
-
-const FloatingThemeSwitcher: React.FC<FloatingThemeSwitcherProps> = ({
-  theme,
-  setCurrentTheme,
-}) => {
-  // const themes = import.meta.glob("~/assets/themes/*.css");
-
-  return (
-    <>
-      <div className="z-50 p-1 bg-elevated border-t border-default">
-        <div className="flex gap-2 items-center">
-          <label htmlFor="theme-selector" className="text-dimmed">
-            Theme:
-          </label>
-          <ThemeSelector theme={theme} setCurrentTheme={setCurrentTheme} />
-        </div>
-      </div>
-    </>
-  );
-};
-
 interface UserProviderProps {
   children?: React.ReactNode;
 }
+
 const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const { data: user } = useBBQuery<User>("/users/loggedInUser");
-  const initialTheme = user?.theme ? `theme-${user.theme}` : "theme-midnight";
-  const [currentTheme, setCurrentTheme] = useState(initialTheme);
 
   return (
     <UserContext.Provider value={user ? user : emptyUser}>
       {children}
-      {import.meta.env.DEV ||
-      import.meta.env.REACT_ZFGBB_FEATURE_FLAG_ENABLE_THEME_PICKER ? (
-        <FloatingThemeSwitcher
-          theme={currentTheme}
-          setCurrentTheme={setCurrentTheme}
-        />
-      ) : null}
     </UserContext.Provider>
   );
 };

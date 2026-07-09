@@ -76,11 +76,12 @@ function ResourceDetail({ slug }: { slug: string }) {
           <div className="flex flex-wrap items-center gap-3">
             {resource.downloadContentResourceId ? (
               <>
-                <a
-                  href={contentUrl(resource.downloadContentResourceId)}
-                  className="theme-chest inline-flex items-center gap-2 border-2 border-default bg-elevated px-4 py-2 font-bold text-highlighted hover:bg-muted"
+                <BBDownloadLink
+                  contentResourceId={resource.downloadContentResourceId}
+                  filename={resource.downloadFilename}
+                  className="inline-flex items-center gap-2 border-2 border-default bg-elevated px-4 py-2 font-bold text-highlighted hover:bg-muted"
                 >
-                  <BBIcon name="download" /> Download{" "}
+                  Download{" "}
                   {resource.downloadFilename && (
                     <span className="font-normal">
                       {resource.downloadFilename}
@@ -91,7 +92,7 @@ function ResourceDetail({ slug }: { slug: string }) {
                       ({formatFileSize(resource.fileSize)})
                     </span>
                   )}
-                </a>
+                </BBDownloadLink>
                 {resource.downloadFilename?.toLowerCase().endsWith(".zip") && (
                   <BBArchiveContents
                     contentResourceId={resource.downloadContentResourceId}

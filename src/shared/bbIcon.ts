@@ -51,7 +51,8 @@ export const RANK_BADGE_NAMES = [
 export type RankBadgeName = (typeof RANK_BADGE_NAMES)[number];
 
 export function rankBadgeFor(user: User | null | undefined): RankBadgeName {
-  const perms = user?.permissions?.map((p) => p.permissionName) ?? [];
+  const perms =
+    user?.permissions?.map((permission) => permission.permissionName) ?? [];
   if (perms.includes("ZFGC_SITE_ADMIN")) return "admin";
   if (perms.includes("ZFGC_SITE_MODERATOR")) return "gmod";
   if (perms.includes("ZFGC_WIKI_MODERATOR")) return "mod";

@@ -41,7 +41,7 @@ export default function BBSelectField({
           showError ? "border-highlighted" : "border-default"
         }`}
         value={String(field.state.value ?? "")}
-        onChange={(e) => field.handleChange(e.target.value)}
+        onChange={(event) => field.handleChange(event.target.value)}
         onBlur={field.handleBlur}
       >
         {options.map((option) => (

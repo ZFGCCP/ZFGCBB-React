@@ -39,7 +39,7 @@ export default function BBTextareaField({
           showError ? "border-highlighted" : "border-default"
         } resize-y focus:outline-none focus:ring-2 focus:ring-accented`}
         value={String(field.state.value ?? "")}
-        onChange={(e) => field.handleChange(e.target.value)}
+        onChange={(event) => field.handleChange(event.target.value)}
         onBlur={field.handleBlur}
       />
       {showError ? (

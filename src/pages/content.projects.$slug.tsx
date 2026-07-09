@@ -318,13 +318,13 @@ function ProjectDetail({ slug }: { slug: string }) {
             <ul className="space-y-2 text-sm">
               {downloads.map((download) => (
                 <li key={download.contentResourceId}>
-                  <a
-                    href={contentUrl(download.contentResourceId!)}
-                    className="theme-chest text-highlighted"
+                  <BBDownloadLink
+                    contentResourceId={download.contentResourceId!}
+                    filename={download.filename}
+                    className="text-highlighted"
                   >
-                    <BBIcon name="download" />{" "}
                     {download.label || download.filename || "Download"}
-                  </a>
+                  </BBDownloadLink>
                   {download.label && download.filename && (
                     <span className="text-xs text-dimmed">
                       {" "}

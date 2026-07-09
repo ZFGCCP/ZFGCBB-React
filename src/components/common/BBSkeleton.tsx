@@ -1,7 +1,6 @@
 export default function BBSkeleton<
-  PropsType extends React.HTMLAttributes<HTMLDivElement> &
-    React.PropsWithChildren,
->({ className = "", style, ...rest }: PropsType) {
+  TProps extends React.HTMLAttributes<HTMLDivElement> & React.PropsWithChildren,
+>({ className = "", style, ...rest }: TProps) {
   return (
     <div
       {...rest}

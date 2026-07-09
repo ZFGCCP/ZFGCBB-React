@@ -1,6 +1,6 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { Paged, Resource } from "@/types/content";
-import { resourceCatalog } from "@/components/cms/catalogs/resourceCatalog";
+import { resourceCatalog } from "@/shared/catalogs/resourceCatalog";
 import { catalogListUrl } from "@/hooks/useCatalog";
 import { getQueryClient } from "@/providers/query/queryProvider";
 import { prefetchQueryDehydrated } from "@/shared/http/ssrPrefetch";

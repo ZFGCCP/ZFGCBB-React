@@ -76,8 +76,8 @@ function SearchResultsView() {
       <BBPanel>
         <form
           className="flex items-center gap-2 border-b-2 border-default bg-accented px-3 py-2.5"
-          onSubmit={(e) => {
-            e.preventDefault();
+          onSubmit={(event) => {
+            event.preventDefault();
             const value = inputRef.current?.value.trim() ?? "";
             if (value.length >= 2)
               navigate(`/search/${encodeURIComponent(value)}`);

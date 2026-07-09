@@ -51,14 +51,15 @@ export default function MessageAttachments({
       {files.length > 0 && (
         <div className="flex flex-col gap-1">
           {files.map((file) => (
-            <a
+            <BBDownloadLink
               key={file.contentResourceId}
-              href={contentUrl(file.contentResourceId)}
+              contentResourceId={file.contentResourceId}
+              filename={file.filename}
+              icon={false}
               className="text-sm text-highlighted hover:underline"
-              download={file.filename}
             >
               {file.filename} ({formatFileSize(file.fileSize)})
-            </a>
+            </BBDownloadLink>
           ))}
         </div>
       )}

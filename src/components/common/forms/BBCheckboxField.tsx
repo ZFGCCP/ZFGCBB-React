@@ -29,7 +29,7 @@ export default function BBCheckboxField({
           name={name}
           type="checkbox"
           checked={Boolean(field.state.value)}
-          onChange={(e) => field.handleChange(e.target.checked)}
+          onChange={(event) => field.handleChange(event.target.checked)}
           onBlur={field.handleBlur}
         />
         <label

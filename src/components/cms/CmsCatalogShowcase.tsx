@@ -2,7 +2,7 @@ import type { Showcase } from "@/types/content";
 import type {
   CmsCatalogDescriptor,
   RailSource,
-} from "@/components/cms/catalogDescriptor";
+} from "@/types/catalogDescriptor";
 
 export function CmsCatalogShowcase<
   TItem extends RailSource,

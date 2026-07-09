@@ -36,7 +36,7 @@ export default function BBField({
       helperText={helperText}
       error={showError ? error : undefined}
       value={(field.state.value as string | number | undefined) ?? ""}
-      onChange={(e) => field.handleChange(e.target.value)}
+      onChange={(event) => field.handleChange(event.target.value)}
       onBlur={field.handleBlur}
     />
   );

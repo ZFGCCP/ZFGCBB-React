@@ -10,7 +10,9 @@ import {
 } from "react-router";
 import { getResponseStatus } from "./shared/http/response.handler";
 import { bbQueryOptions } from "./hooks/bbQueryOptions";
+import { useTheme } from "./hooks/useTheme";
 import BBForbidden from "./components/common/BBForbidden";
+import ThemePicker from "./components/common/ThemePicker";
 import {
   HydrationBoundary,
   QueryClient,
@@ -56,9 +58,12 @@ export function HydrateFallback() {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const data = useRouteLoaderData("root") as { theme?: string } | undefined;
-  const themeClass = `theme-${data?.theme ?? "midnight"}`;
+  const { theme, setTheme } = useTheme(data?.theme ?? "midnight");
+  const showThemePicker =
+    import.meta.env.DEV ||
+    import.meta.env.REACT_ZFGBB_FEATURE_FLAG_ENABLE_THEME_PICKER;
   return (
-    <html lang="en" className={themeClass}>
+    <html lang="en" className={`theme-${theme}`}>
       <head>
         <base href={import.meta.env.VITE_BASE ?? "/"} />
         <meta charSet="UTF-8" />
@@ -75,6 +80,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        {showThemePicker && <ThemePicker theme={theme} setTheme={setTheme} />}
         <ScrollRestoration />
         <Scripts />
       </body>

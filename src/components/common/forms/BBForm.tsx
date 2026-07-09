@@ -35,14 +35,14 @@ export default function BBForm({
       className={className ?? "space-y-3"}
       role={role ?? "form"}
       noValidate
-      onSubmit={(e) => {
+      onSubmit={(event) => {
         if (form) {
-          e.preventDefault();
-          e.stopPropagation();
+          event.preventDefault();
+          event.stopPropagation();
           void form.handleSubmit();
           return;
         }
-        onSubmit?.(e);
+        onSubmit?.(event);
       }}
     >
       {errorMessage && (

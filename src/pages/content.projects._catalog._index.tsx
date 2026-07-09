@@ -1,4 +1,4 @@
-import { projectCatalog } from "@/components/cms/catalogs/projectCatalog";
+import { projectCatalog } from "@/shared/catalogs/projectCatalog";
 
 export default function ProjectsShowcasePage() {
   return <CmsCatalogShowcase descriptor={projectCatalog} />;

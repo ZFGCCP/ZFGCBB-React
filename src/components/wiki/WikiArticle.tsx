@@ -187,13 +187,13 @@ function WikiFile({ file }: { file: WikiFileRef }) {
         </p>
       )}
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-t-2 border-default pt-2 text-xs text-dimmed">
-        <a
-          href={contentUrl(file.contentResourceId)}
-          className="theme-chest font-bold text-highlighted"
-          download={file.filename ?? undefined}
+        <BBDownloadLink
+          contentResourceId={file.contentResourceId}
+          filename={file.filename}
+          className="font-bold text-highlighted"
         >
-          <BBIcon name="download" /> Download original
-        </a>
+          Download original
+        </BBDownloadLink>
         {file.filename && <span className="text-default">{file.filename}</span>}
         {file.mimeType && <span>{file.mimeType}</span>}
         {file.fileSize != null && <span>{formatFileSize(file.fileSize)}</span>}
