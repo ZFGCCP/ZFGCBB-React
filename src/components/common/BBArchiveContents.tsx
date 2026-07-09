@@ -43,6 +43,7 @@ export default function BBArchiveContents({
               </span>
               <button
                 type="button"
+                aria-label="Close"
                 className="px-2 cursor-pointer hover:text-highlighted"
                 onClick={() => setOpen(false)}
               >

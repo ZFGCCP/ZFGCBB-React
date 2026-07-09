@@ -16,7 +16,7 @@ export default function BBBreadcrumb({ crumbs }: { crumbs: Crumb[] }) {
         const isLast = index === crumbs.length - 1;
         return (
           <span
-            key={`${crumb.label}-${index}`}
+            key={crumb.to ?? crumb.label}
             className="flex items-center gap-2"
           >
             {index > 0 && (

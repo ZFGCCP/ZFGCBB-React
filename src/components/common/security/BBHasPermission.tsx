@@ -12,9 +12,10 @@ export default function BBHasPermission({
 }: BBHasPermissionProps) {
   const { permissions } = useContext(UserContext);
   const hasPermission = useMemo(() => {
-    return permissions
-      ?.map((permission) => permission.permissionCode as BBPermission)
-      .some((permissionCode) => requiredPermissions.includes(permissionCode));
+    const required = new Set(requiredPermissions);
+    return permissions?.some((permission) =>
+      required.has(permission.permissionCode as BBPermission),
+    );
   }, [requiredPermissions, permissions]);
 
   return <>{hasPermission && children}</>;
