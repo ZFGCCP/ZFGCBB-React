@@ -5,7 +5,7 @@ import {
   useMemo,
   useSyncExternalStore,
 } from "react";
-import SearchPalette from "./SearchPalette";
+import SearchPalette from "@/components/search/SearchPalette";
 
 type GlobalSearchContextValue = {
   open: () => void;

@@ -1,32 +1,13 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import { useLocation } from "react-router";
 import type {
-  Paged,
   Resource,
   ResourceFacets,
   ResourceShowcase,
 } from "@/types/content";
-import { catalogLoaderUrls, type CatalogParamMap } from "@/hooks/useCatalog";
-import type { CmsCatalogDescriptor } from "@/components/cms/CmsCatalog";
-import type { Route } from "./+types/content.resources._index";
-import { getQueryClient } from "@/providers/query/queryProvider";
-import { prefetchQueryDehydrated } from "@/shared/http/ssrPrefetch";
+import type { CatalogParamMap } from "@/hooks/useCatalog";
+import type { CmsCatalogDescriptor } from "@/components/cms/catalogDescriptor";
 
-const CATALOG: CatalogParamMap = { filter: "type" };
-
-export const loader = ({ request }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated<Paged<Resource>>(
-    request,
-    catalogLoaderUrls("/resources", CATALOG, request),
-  );
-
-export async function clientLoader({ request }: Route.ClientLoaderArgs) {
-  await Promise.all(
-    catalogLoaderUrls("/resources", CATALOG, request).map((url) =>
-      getQueryClient().prefetchQuery(bbQueryOptions<Paged<Resource>>(url)),
-    ),
-  );
-}
+const RESOURCE_PARAMS: CatalogParamMap = { filter: "type" };
 
 function ResourceCardBody({ resource }: { resource: Resource }) {
   const location = useLocation();
@@ -87,7 +68,7 @@ function ResourceCardBody({ resource }: { resource: Resource }) {
   );
 }
 
-const DESCRIPTOR: CmsCatalogDescriptor<
+export const resourceCatalog: CmsCatalogDescriptor<
   Resource,
   ResourceShowcase,
   ResourceFacets
@@ -96,7 +77,7 @@ const DESCRIPTOR: CmsCatalogDescriptor<
   crumb: "Resources",
   api: "/resources",
   basePath: "/content/resources",
-  params: CATALOG,
+  params: RESOURCE_PARAMS,
   searchPlaceholder: "Search resources by title…",
   sortOptions: [
     { value: "", label: "A - Z" },
@@ -139,11 +120,3 @@ const DESCRIPTOR: CmsCatalogDescriptor<
     `${(resource.downloadCount ?? 0).toLocaleString()} downloads · ${resource.resourceType ?? "resource"}`,
   facetOptions: (facets) => ({ filterOptions: facets?.types ?? [] }),
 };
-
-export default function ResourcesPage({ loaderData }: Route.ComponentProps) {
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <CmsCatalog descriptor={DESCRIPTOR} />
-    </HydrationBoundary>
-  );
-}

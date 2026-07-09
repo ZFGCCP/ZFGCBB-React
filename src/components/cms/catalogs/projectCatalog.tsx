@@ -1,32 +1,9 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import { useLocation } from "react-router";
-import type {
-  Paged,
-  Project,
-  ProjectFacets,
-  ProjectShowcase,
-} from "@/types/content";
-import { catalogLoaderUrls, type CatalogParamMap } from "@/hooks/useCatalog";
-import type { CmsCatalogDescriptor } from "@/components/cms/CmsCatalog";
-import type { Route } from "./+types/content.projects._index";
-import { getQueryClient } from "@/providers/query/queryProvider";
-import { prefetchQueryDehydrated } from "@/shared/http/ssrPrefetch";
+import type { Project, ProjectFacets, ProjectShowcase } from "@/types/content";
+import type { CatalogParamMap } from "@/hooks/useCatalog";
+import type { CmsCatalogDescriptor } from "@/components/cms/catalogDescriptor";
 
-const CATALOG: CatalogParamMap = { filter: "status", language: "lang" };
-
-export const loader = ({ request }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated<Paged<Project>>(
-    request,
-    catalogLoaderUrls("/projects", CATALOG, request),
-  );
-
-export async function clientLoader({ request }: Route.ClientLoaderArgs) {
-  await Promise.all(
-    catalogLoaderUrls("/projects", CATALOG, request).map((url) =>
-      getQueryClient().prefetchQuery(bbQueryOptions<Paged<Project>>(url)),
-    ),
-  );
-}
+const PROJECT_PARAMS: CatalogParamMap = { filter: "status", language: "lang" };
 
 function ProjectCardBody({ project }: { project: Project }) {
   const location = useLocation();
@@ -97,7 +74,7 @@ function ProjectCardBody({ project }: { project: Project }) {
   );
 }
 
-const DESCRIPTOR: CmsCatalogDescriptor<
+export const projectCatalog: CmsCatalogDescriptor<
   Project,
   ProjectShowcase,
   ProjectFacets
@@ -106,7 +83,7 @@ const DESCRIPTOR: CmsCatalogDescriptor<
   crumb: "Projects",
   api: "/projects",
   basePath: "/content/projects",
-  params: CATALOG,
+  params: PROJECT_PARAMS,
   searchPlaceholder: "Search projects by title…",
   sortOptions: [
     { value: "", label: "A - Z" },
@@ -150,11 +127,3 @@ const DESCRIPTOR: CmsCatalogDescriptor<
     languageOptions: facets?.languages,
   }),
 };
-
-export default function ProjectsPage({ loaderData }: Route.ComponentProps) {
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <CmsCatalog descriptor={DESCRIPTOR} />
-    </HydrationBoundary>
-  );
-}

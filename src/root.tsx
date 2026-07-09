@@ -2,7 +2,7 @@ import "./assets/App.css";
 import UserProvider from "./providers/user/userProvider";
 import QueryProvider from "./providers/query/queryProvider";
 import RootLayout from "./root.layout";
-import GlobalSearchProvider from "./components/search/GlobalSearchProvider";
+import GlobalSearchProvider from "./providers/search/globalSearchProvider";
 import {
   isRouteErrorResponse,
   useRouteError,

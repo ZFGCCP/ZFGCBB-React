@@ -8,7 +8,7 @@ export type CatalogParamMap = {
   language?: string;
 };
 
-function browseKeys(paramMap: CatalogParamMap) {
+function filterKeys(paramMap: CatalogParamMap) {
   return [
     "q",
     "author",
@@ -17,16 +17,6 @@ function browseKeys(paramMap: CatalogParamMap) {
     "files",
     "sort",
   ];
-}
-
-export function isCatalogBrowsing(
-  params: URLSearchParams,
-  paramMap: CatalogParamMap,
-) {
-  return (
-    params.get("browse") === "1" ||
-    browseKeys(paramMap).some((key) => params.get(key))
-  );
 }
 
 export function catalogListUrl(
@@ -49,26 +39,13 @@ export function catalogListUrl(
   return `${basePath}?${query.toString()}`;
 }
 
-export function catalogLoaderUrls(
-  apiBase: `/${string}`,
-  paramMap: CatalogParamMap,
-  request: Request,
-): `/${string}`[] {
-  const params = new URL(request.url).searchParams;
-  return isCatalogBrowsing(params, paramMap)
-    ? [catalogListUrl(apiBase, paramMap, params), `${apiBase}/facets`]
-    : [`${apiBase}/showcase`];
-}
-
 export function useCatalog<TItem>(
   basePath: `/${string}`,
   paramMap: CatalogParamMap,
 ) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const browsing = isCatalogBrowsing(searchParams, paramMap);
   const { data } = useBBQuery<Paged<TItem>>(
     catalogListUrl(basePath, paramMap, searchParams),
-    { enabled: browsing },
   );
 
   const apply = (next: CatalogQuery & { page?: number }) => {
@@ -84,7 +61,7 @@ export function useCatalog<TItem>(
           merged.set("files", next.availability);
         if (next.sort !== undefined) merged.set("sort", next.sort);
         merged.set("page", String(next.page ?? 1));
-        for (const key of browseKeys(paramMap))
+        for (const key of filterKeys(paramMap))
           if (!merged.get(key)) merged.delete(key);
         if (merged.get("page") === "1") merged.delete("page");
         return merged;
@@ -97,5 +74,5 @@ export function useCatalog<TItem>(
     ? Math.max(1, Math.ceil(data.total / data.pageSize))
     : 1;
 
-  return { searchParams, browsing, data, apply, totalPages };
+  return { searchParams, data, apply, totalPages };
 }

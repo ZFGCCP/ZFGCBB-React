@@ -1,5 +1,5 @@
 import BBNavTab from "@/components/common/BBNavTab";
-import { useGlobalSearch } from "@/components/search/GlobalSearchProvider";
+import { useGlobalSearch } from "@/providers/search/globalSearchProvider";
 
 const HeaderNavigation: React.FC = () => {
   const { open } = useGlobalSearch();

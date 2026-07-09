@@ -1,7 +1,7 @@
 import { Navigate } from "react-router";
 import { UserContext } from "./providers/user/userProvider";
 import { useInstallStatus } from "./hooks/useInstallStatus";
-import { useGlobalSearch } from "./components/search/GlobalSearchProvider";
+import { useGlobalSearch } from "./providers/search/globalSearchProvider";
 
 interface RootLayoutProps {
   children: React.ReactNode;
