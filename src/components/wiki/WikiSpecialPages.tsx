@@ -1,17 +1,25 @@
 import { useState } from "react";
 import { Navigate, useSearchParams } from "react-router";
+import { mergeParams, parsePage, toQuery } from "@/shared/searchParams";
+
+export function wikiPagesListUrl(params: URLSearchParams): `/${string}` {
+  const query = toQuery({
+    namespace: params.get("ns"),
+    search: params.get("q"),
+    page: parsePage(params.get("page")),
+    pageSize: 50,
+  });
+  return `/wiki/meta/pages?${query.toString()}`;
+}
 
 export function AllPages() {
   const { data: config } = useWikiConfig();
   const [searchParams, setSearchParams] = useSearchParams();
   const namespace = searchParams.get("ns") ?? "";
   const filterText = searchParams.get("q") ?? "";
-  const pageNo = Number(searchParams.get("page") ?? "1");
-  const query = new URLSearchParams({ page: String(pageNo), pageSize: "50" });
-  if (namespace) query.set("namespace", namespace);
-  if (filterText) query.set("search", filterText);
+  const pageNo = parsePage(searchParams.get("page"));
   const { data } = useBBQuery<Paged<WikiPageRef>>(
-    `/wiki/meta/pages?${query.toString()}`,
+    wikiPagesListUrl(searchParams),
   );
   const totalPages = data
     ? Math.max(1, Math.ceil(data.total / data.pageSize))
@@ -23,15 +31,12 @@ export function AllPages() {
     page?: number;
   }) => {
     setSearchParams(
-      (params) => {
-        const merged = new URLSearchParams(params);
-        if (next.namespace !== undefined) merged.set("ns", next.namespace);
-        if (next.filterText !== undefined) merged.set("q", next.filterText);
-        merged.set("page", String(next.page ?? 1));
-        for (const key of ["ns", "q"]) if (!merged.get(key)) merged.delete(key);
-        if (merged.get("page") === "1") merged.delete("page");
-        return merged;
-      },
+      (params) =>
+        mergeParams(
+          params,
+          { ns: next.namespace, q: next.filterText, page: next.page ?? 1 },
+          { page: "1" },
+        ),
       { replace: true },
     );
   };
