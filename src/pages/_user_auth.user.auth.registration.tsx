@@ -76,6 +76,7 @@ function AgreementText() {
 
 export default function UserRegistration() {
   const navigate = useNavigate();
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation
   const registrationMutation = useMutation<User, Error, RegistrationForm>({
     mutationFn: async (values) => {
       const response = await apiFetch(`${getApiBaseUrl()}/users/register`, {

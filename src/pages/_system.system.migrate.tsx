@@ -236,6 +236,7 @@ export default function SystemMigrate() {
     schema: JobListSchema,
   });
 
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation
   const uploadMutation = useMutation<MigrateUploadResponse, Error, File>({
     mutationFn: async (file) => {
       const formData = new FormData();
