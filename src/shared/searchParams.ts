@@ -19,10 +19,10 @@ export function mergeParams(
   const merged = new URLSearchParams(prev);
   for (const [key, value] of Object.entries(updates)) {
     if (value === undefined) continue;
-    merged.set(key, String(value));
+    const next = String(value);
+    if (next === "") merged.delete(key);
+    else merged.set(key, next);
   }
-  for (const key of merged.keys()) if (!merged.get(key)) merged.delete(key);
-
   for (const [key, value] of Object.entries(dropDefaults))
     if (merged.get(key) === value) merged.delete(key);
 

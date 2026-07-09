@@ -1,35 +1,30 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useBBQuery } from "@/hooks/useBBQuery";
+import { useDebouncedCallback } from "@/hooks/useDebouncedCallback";
 import type { SearchHit, SearchResults } from "@/types/search";
-
-function useDebounced(value: string, ms: number) {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const id = setTimeout(() => setDebounced(value), ms);
-    return () => clearTimeout(id);
-  }, [value, ms]);
-  return debounced;
-}
 
 export default function SearchPalette({ onClose }: { onClose: () => void }) {
   const [term, setTerm] = useState("");
+  const [debounced, setDebounced] = useState("");
   const [filter, setFilter] = useState("");
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const showModal = useCallback((node: HTMLDialogElement | null) => {
-    if (node && !node.open) node.showModal();
+    if (node && !node.open) {
+      node.showModal();
+      inputRef.current?.focus();
+    }
   }, []);
-  const debounced = useDebounced(term, 220);
+  const debounceSearch = useDebouncedCallback(
+    (value: string) => setDebounced(value),
+    220,
+  );
 
   const scope = `${debounced} ${filter}`;
   const [selection, setSelection] = useState({ scope, index: 0 });
   const active = selection.scope === scope ? selection.index : 0;
   const setActive = (index: number) => setSelection({ scope, index });
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
 
   const query = new URLSearchParams({ q: debounced });
   if (filter) query.set("types", filter);
@@ -78,7 +73,7 @@ export default function SearchPalette({ onClose }: { onClose: () => void }) {
       ref={showModal}
       aria-label="Site search"
       onClose={onClose}
-      className="fixed inset-0 z-[100] m-0 flex h-full max-h-none w-full max-w-none items-start justify-center border-0 bg-transparent px-4 pt-[8vh] sm:pt-[12vh]"
+      className="fixed inset-0 z-100 m-0 flex h-full max-h-none w-full max-w-none items-start justify-center border-0 bg-transparent px-4 pt-[8vh] sm:pt-[12vh]"
     >
       <button
         type="button"
@@ -105,7 +100,10 @@ export default function SearchPalette({ onClose }: { onClose: () => void }) {
           <input
             ref={inputRef}
             value={term}
-            onChange={(e) => setTerm(e.target.value)}
+            onChange={(e) => {
+              setTerm(e.target.value);
+              debounceSearch(e.target.value);
+            }}
             onKeyDown={onKeyDown}
             placeholder="Search threads, articles, projects, resources…"
             className="min-w-0 grow border-2 border-default bg-default px-2.5 py-1.5 text-sm text-highlighted placeholder:text-dimmed focus:bg-elevated focus:outline-none"

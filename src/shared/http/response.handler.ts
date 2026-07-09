@@ -1,7 +1,7 @@
 function safeJsonParse<TValue>(json: string): TValue | undefined {
   try {
     return JSON.parse(json) as TValue;
-  } catch (e) {
+  } catch {
     return;
   }
 }

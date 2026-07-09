@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCarouselScroll } from "@/hooks/useCarouselScroll";
 import { Link } from "react-router";
 
 export function SectionBar({
@@ -268,32 +268,8 @@ export function ShowcaseCarousel({
   viewAllLabel?: string;
   slides: CarouselSlide[];
 }) {
-  const trackRef = useRef<HTMLUListElement>(null);
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
-
-  const sync = useCallback(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    setAtStart(el.scrollLeft <= 2);
-    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 2);
-  }, []);
-
-  const attachTrack = useCallback(
-    (node: HTMLUListElement | null) => {
-      trackRef.current = node;
-      if (node) sync();
-    },
-    [sync, slides.length],
-  );
-
-  const nudge = (dir: -1 | 1) => {
-    const el = trackRef.current;
-    if (!el) return;
-    el.scrollBy({
-      left: dir * Math.round(el.clientWidth * 0.85),
-    });
-  };
+  const { ref, onScroll, atStart, atEnd, nudge } =
+    useCarouselScroll<HTMLUListElement>();
 
   return (
     <section aria-label={title}>
@@ -321,8 +297,8 @@ export function ShowcaseCarousel({
       />
       <div className="border-2 border-default bg-default p-3">
         <ul
-          ref={attachTrack}
-          onScroll={sync}
+          ref={ref}
+          onScroll={onScroll}
           className="motion-safe:showcase-stagger flex snap-x snap-mandatory gap-3 overflow-x-auto motion-safe:scroll-smooth pb-1 [scrollbar-width:thin]"
         >
           {slides.map((slide) => (
