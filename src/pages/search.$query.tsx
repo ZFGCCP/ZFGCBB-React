@@ -1,11 +1,7 @@
 import { HydrationBoundary } from "@tanstack/react-query";
-import { useRef } from "react";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router";
-import { useBBQuery } from "@/hooks/useBBQuery";
 import type { SearchRealm, SearchResults } from "@/types/search";
 import type { Route } from "./+types/search.$query";
 import { getQueryClient } from "@/providers/query/queryProvider";
-import { prefetchQueryDehydrated } from "@/shared/http/ssrPrefetch";
 
 export const loader = ({ request }: Route.LoaderArgs) =>
   prefetchQueryDehydrated<SearchRealm[]>(request, "/search/realms");

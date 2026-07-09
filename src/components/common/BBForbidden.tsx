@@ -1,6 +1,3 @@
-import BBWidget from "@/components/common/widgets/BBWidget";
-import BBLink from "@/components/common/BBLink";
-
 export interface BBForbiddenProps {
   title?: string;
   description?: string;

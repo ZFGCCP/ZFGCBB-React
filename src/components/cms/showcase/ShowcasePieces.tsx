@@ -1,6 +1,3 @@
-import { useCarouselScroll } from "@/hooks/useCarouselScroll";
-import { Link } from "react-router";
-
 export function SectionBar({
   title,
   hint,

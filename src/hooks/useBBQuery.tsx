@@ -3,8 +3,6 @@ import {
   type QueryKey,
   type UseQueryOptions,
 } from "@tanstack/react-query";
-import { getApiBaseUrl } from "@/shared/http/api";
-import { getResponseStatus } from "@/shared/http/response.handler";
 import * as v from "valibot";
 
 export type UseBBQueryOptions<TData> = Omit<

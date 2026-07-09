@@ -1,4 +1,3 @@
-import { useLocation } from "react-router";
 import type { RoutePaths } from "@/components/common/BBLink";
 
 export function CmsDetailShell({

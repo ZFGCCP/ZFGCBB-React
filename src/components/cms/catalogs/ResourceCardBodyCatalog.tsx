@@ -1,4 +1,3 @@
-import { useLocation } from "react-router";
 import type { Resource } from "@/types/content";
 
 export function ResourceCardBodyCatalog({ resource }: { resource: Resource }) {

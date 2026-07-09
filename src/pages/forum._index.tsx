@@ -2,8 +2,6 @@ import { HydrationBoundary } from "@tanstack/react-query";
 import type { Forum } from "@/types/forum";
 import type { Route } from "./+types/forum._index";
 import { getQueryClient } from "@/providers/query/queryProvider";
-import { useForumIndex } from "@/hooks/useForumIndex";
-import { prefetchQueryDehydrated } from "@/shared/http/ssrPrefetch";
 
 export const loader = ({ request }: Route.LoaderArgs) =>
   prefetchQueryDehydrated<Forum>(request, "/board/forum");

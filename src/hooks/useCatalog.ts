@@ -1,8 +1,5 @@
-import { useSearchParams } from "react-router";
-import { useBBQuery } from "@/hooks/useBBQuery";
 import type { Paged } from "@/types/content";
 import type { CatalogQuery } from "@/components/common/BBCatalogToolbar";
-import { mergeParams, parsePage, toQuery } from "@/shared/searchParams";
 
 export type CatalogParamMap = {
   filter: string;

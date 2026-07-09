@@ -1,9 +1,6 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { Paged, Project } from "@/types/content";
-import { projectCatalog } from "@/shared/catalogs/projectCatalog";
-import { catalogListUrl } from "@/hooks/useCatalog";
 import { getQueryClient } from "@/providers/query/queryProvider";
-import { prefetchQueryDehydrated } from "@/shared/http/ssrPrefetch";
 import type { Route } from "./+types/content.projects._catalog.list";
 
 function listUrls(request: Request): `/${string}`[] {

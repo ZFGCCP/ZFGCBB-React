@@ -1,7 +1,3 @@
-import { createContext, use, useCallback, useMemo, useState } from "react";
-import SearchPalette from "@/components/search/SearchPalette";
-import { useKeyDown } from "@/hooks/useKeyDown";
-
 type GlobalSearchContextValue = {
   open: () => void;
   close: () => void;

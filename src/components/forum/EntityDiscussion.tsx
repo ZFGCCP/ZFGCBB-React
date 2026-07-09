@@ -1,13 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Thread } from "@/types/forum";
-import { apiFetch } from "@/shared/http/apiFetch";
-import { getApiBaseUrl } from "@/shared/http/api";
-import {
-  getResponseStatus,
-  handleResponseWithJason,
-} from "@/shared/http/response.handler";
-import BBHtml from "@/components/common/BBHtml";
-import BBDate from "@/components/common/BBDate";
 
 interface EntityDiscussionProps {
   entityPath: `/${string}`;

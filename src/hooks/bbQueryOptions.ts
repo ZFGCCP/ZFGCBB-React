@@ -1,7 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
 import type { UseQueryOptions } from "@tanstack/react-query";
-import { handleResponseWithJason } from "@/shared/http/response.handler";
-import { getApiBaseUrl } from "@/shared/http/api";
 
 export const bbQueryOptions = <TData extends object>(
   url: `/${string}`,

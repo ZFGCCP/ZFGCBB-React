@@ -1,6 +1,4 @@
 import type { FileAttachment } from "@/types/forum";
-import { contentUrl } from "@/shared/http/api";
-import { formatFileSize } from "@/shared/format";
 
 interface MessageAttachmentsProps {
   attachments: FileAttachment[];

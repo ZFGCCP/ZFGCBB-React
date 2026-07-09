@@ -1,5 +1,3 @@
-import { contentUrl } from "@/shared/http/api";
-
 interface CmsMastheadProps {
   steveId?: number | null;
   title: string;

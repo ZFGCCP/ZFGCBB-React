@@ -1,7 +1,4 @@
-import BBLink, {
-  type BBLinkProps,
-  type RoutePaths,
-} from "@/components/common/BBLink";
+import { type BBLinkProps, type RoutePaths } from "@/components/common/BBLink";
 
 export type Crumb = {
   label: string;

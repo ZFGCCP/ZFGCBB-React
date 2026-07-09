@@ -4,7 +4,6 @@ import parse, {
   type DOMNode,
   type HTMLReactParserOptions,
 } from "html-react-parser/lib/index";
-import { getPublicApiBaseUrl } from "@/shared/http/api";
 import type { RoutePaths } from "@/components/common/BBLink";
 
 const PARSE_OPTIONS: HTMLReactParserOptions = {

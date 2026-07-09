@@ -1,5 +1,3 @@
-import { useEffect, useRef } from "react";
-
 export function useKeyDown(
   handler: (event: KeyboardEvent) => void,
   enabled = true,

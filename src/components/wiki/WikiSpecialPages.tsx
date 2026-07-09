@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { Navigate, useSearchParams } from "react-router";
-import { mergeParams, parsePage, toQuery } from "@/shared/searchParams";
+import { Navigate } from "react-router";
 
 export function wikiPagesListUrl(params: URLSearchParams): `/${string}` {
   const query = toQuery({

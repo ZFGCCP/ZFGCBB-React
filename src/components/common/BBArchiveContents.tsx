@@ -1,6 +1,4 @@
-import { useState } from "react";
 import type { ArchiveEntry } from "@/types/content";
-import { formatFileSize } from "@/shared/format";
 
 interface BBArchiveContentsProps {
   contentResourceId: number;

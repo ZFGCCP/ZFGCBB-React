@@ -1,5 +1,4 @@
 import { getQueryClient } from "@/providers/query/queryProvider";
-import { logoutRequest } from "@/shared/http/auth";
 import type { Route } from "./+types/_user_auth.user.auth.logout";
 
 export async function clientLoader(_: Route.ClientLoaderArgs) {

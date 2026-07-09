@@ -1,6 +1,3 @@
-import { useCallback, useState } from "react";
-import { contentUrl } from "@/shared/http/api";
-
 export interface BBGalleryImage {
   contentResourceId: number;
   caption?: string | null;

@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Navigate, useSearchParams } from "react-router";
+import { Navigate } from "react-router";
 import type { TrailSegment } from "./WikiShell";
 
 const TOC_INDENT = ["", "pl-3", "pl-6", "pl-9", "pl-12", "pl-15"];

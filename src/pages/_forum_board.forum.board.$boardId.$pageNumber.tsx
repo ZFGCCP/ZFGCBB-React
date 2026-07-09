@@ -3,9 +3,7 @@ import type { BBTableColumn } from "@/components/common/layout/BBTable";
 import type { Board, Thread } from "../types/forum";
 import type { Route } from "./+types/_forum_board.forum.board.$boardId.$pageNumber";
 import { getQueryClient } from "@/providers/query/queryProvider";
-import { useForumIndex } from "@/hooks/useForumIndex";
-import { prefetchQueryDehydrated } from "@/shared/http/ssrPrefetch";
-import BBBreadcrumb, { type Crumb } from "@/components/common/BBBreadcrumb";
+import { type Crumb } from "@/components/common/BBBreadcrumb";
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
   prefetchQueryDehydrated<Board>(

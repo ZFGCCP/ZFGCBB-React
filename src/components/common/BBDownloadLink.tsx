@@ -1,5 +1,3 @@
-import { contentUrl } from "@/shared/http/api";
-
 interface BBDownloadLinkProps {
   contentResourceId: number;
   filename?: string | null;

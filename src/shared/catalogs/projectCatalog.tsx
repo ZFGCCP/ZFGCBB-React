@@ -1,7 +1,6 @@
 import type { Project, ProjectFacets, ProjectShowcase } from "@/types/content";
 import type { CatalogParamMap } from "@/hooks/useCatalog";
 import type { CmsCatalogDescriptor } from "@/types/catalogDescriptor";
-import { ProjectCardBodyCatalog } from "@/components/cms/catalogs/ProjectCardBodyCatalog";
 
 const PROJECT_PARAMS: CatalogParamMap = { filter: "status", language: "lang" };
 

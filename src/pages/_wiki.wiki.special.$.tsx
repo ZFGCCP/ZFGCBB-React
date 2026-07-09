@@ -1,9 +1,6 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import { Navigate } from "react-router";
 import type { Route } from "./+types/_wiki.wiki.special.$";
-import { prefetchQueryDehydrated } from "@/shared/http/ssrPrefetch";
-import { WikiShell } from "@/components/wiki/WikiShell";
-import { UnknownSpecialPage } from "@/components/wiki/WikiSpecialPages";
 import type { RoutePaths } from "@/components/common/BBLink";
 import type { WikiPage } from "@/types/content";
 

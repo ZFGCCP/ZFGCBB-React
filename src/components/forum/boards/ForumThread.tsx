@@ -1,6 +1,5 @@
 import type { Message, Thread } from "@/types/forum";
-import { useForumIndex } from "@/hooks/useForumIndex";
-import BBBreadcrumb, { type Crumb } from "@/components/common/BBBreadcrumb";
+import { type Crumb } from "@/components/common/BBBreadcrumb";
 
 export interface ForumThreadProps {
   pageNumber: string;

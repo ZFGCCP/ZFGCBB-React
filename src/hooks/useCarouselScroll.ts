@@ -1,5 +1,3 @@
-import { useCallback, useRef, useState } from "react";
-
 export function useCarouselScroll<TElement extends HTMLElement>() {
   const trackRef = useRef<TElement>(null);
   const [atStart, setAtStart] = useState(true);

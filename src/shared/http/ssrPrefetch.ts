@@ -3,7 +3,6 @@ import {
   dehydrate,
   type DehydratedState,
 } from "@tanstack/react-query";
-import { bbQueryOptions } from "@/hooks/bbQueryOptions";
 
 /**
  * Prefetches a query for SSR with the current request's cookies forwarded so

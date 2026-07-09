@@ -1,5 +1,4 @@
 import { HydrationBoundary } from "@tanstack/react-query";
-import { useState } from "react";
 import type { Route } from "./+types/content.projects.$slug";
 import { getQueryClient } from "@/providers/query/queryProvider";
 

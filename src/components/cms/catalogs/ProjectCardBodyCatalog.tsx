@@ -1,4 +1,3 @@
-import { useLocation } from "react-router";
 import type { Project } from "@/types/content";
 
 export function ProjectCardBodyCatalog({ project }: { project: Project }) {

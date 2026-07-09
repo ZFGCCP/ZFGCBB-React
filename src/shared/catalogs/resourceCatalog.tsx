@@ -5,7 +5,6 @@ import type {
 } from "@/types/content";
 import type { CatalogParamMap } from "@/hooks/useCatalog";
 import type { CmsCatalogDescriptor } from "@/types/catalogDescriptor";
-import { ResourceCardBodyCatalog } from "@/components/cms/catalogs/ResourceCardBodyCatalog";
 
 const RESOURCE_PARAMS: CatalogParamMap = { filter: "type" };
 

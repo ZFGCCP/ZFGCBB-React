@@ -1,5 +1,5 @@
 import type { LinkProps } from "react-router";
-import BBLink, { type RoutePaths } from "@/components/common/BBLink";
+import { type RoutePaths } from "@/components/common/BBLink";
 
 interface BBNavTabProps {
   title: string;

@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export function useSyncedDraft(value: string) {
   const [draft, setDraft] = useState(value);
   const [committed, setCommitted] = useState(value);

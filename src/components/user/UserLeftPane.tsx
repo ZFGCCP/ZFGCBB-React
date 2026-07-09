@@ -1,5 +1,4 @@
 import type { User } from "../../types/user";
-import { contentUrl } from "@/shared/http/api";
 
 interface UserLeftPaneProps {
   user?: User;

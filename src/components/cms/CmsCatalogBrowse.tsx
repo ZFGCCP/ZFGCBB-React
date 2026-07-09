@@ -1,4 +1,3 @@
-import { useCatalog } from "@/hooks/useCatalog";
 import type { Showcase } from "@/types/content";
 import type {
   CmsCatalogDescriptor,

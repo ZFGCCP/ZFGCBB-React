@@ -1,7 +1,3 @@
-import { useCallback, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router";
-import { useBBQuery } from "@/hooks/useBBQuery";
-import { useDebouncedCallback } from "@/hooks/useDebouncedCallback";
 import type { SearchHit, SearchResults } from "@/types/search";
 
 export default function SearchPalette({ onClose }: { onClose: () => void }) {

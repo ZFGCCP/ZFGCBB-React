@@ -2,7 +2,6 @@ import { HydrationBoundary } from "@tanstack/react-query";
 import type { User } from "../types/user";
 import type { Route } from "./+types/_user_profile.user.profile.$userId";
 import { getQueryClient } from "@/providers/query/queryProvider";
-import { prefetchQueryDehydrated } from "@/shared/http/ssrPrefetch";
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
   prefetchQueryDehydrated<User>(request, `/user-profile/${params.userId}`);

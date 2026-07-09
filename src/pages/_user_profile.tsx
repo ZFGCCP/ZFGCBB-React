@@ -1,5 +1,4 @@
-import { useForumIndex } from "@/hooks/useForumIndex";
-import BBBreadcrumb, { type Crumb } from "@/components/common/BBBreadcrumb";
+import { type Crumb } from "@/components/common/BBBreadcrumb";
 
 export default function UserProfile() {
   const { data: forumIndex } = useForumIndex();

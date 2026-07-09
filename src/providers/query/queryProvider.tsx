@@ -4,10 +4,6 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { useState } from "react";
-import { getApiBaseUrl } from "@/shared/http/api";
-import { apiFetch } from "@/shared/http/apiFetch";
-import { getResponseStatus } from "@/shared/http/response.handler";
 
 let refreshState: "idle" | "refreshing" | "stale" = "idle";
 
