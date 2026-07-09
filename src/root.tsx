@@ -65,6 +65,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="msapplication-TileColor" content="#000000" />
         <meta name="theme-color" content="#000000" />
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content="object-src 'none'; frame-src 'self'"
+        />
         <title>ZFGC.com</title>
         <Meta />
         <Links />

@@ -57,5 +57,11 @@ export type BBLinkProps = Omit<LinkProps, "to"> & {
  * @extends Link - Extends the {@link Link} component to add the `to` prop.
  * @see {@link BBLinkProps}
  */
-const BBLink = (props: BBLinkProps) => <Link {...props} />;
+const BBLink = ({ target, rel, ...props }: BBLinkProps) => (
+  <Link
+    {...props}
+    target={target}
+    rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)}
+  />
+);
 export default BBLink;

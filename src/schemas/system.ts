@@ -98,7 +98,6 @@ export type MigrateJobRequest = {
   smfPassword: string;
   smfTablePrefix?: string;
   smfLegacyHost?: string;
-  appBaseUrl?: string;
   attachmentsSourcePath?: string;
   attachmentsTargetPath?: string;
   avatarsSourcePath?: string;

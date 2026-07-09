@@ -58,6 +58,11 @@ function ResourceDetail({ slug }: { slug: string }) {
   const { data: resource } = useBBQuery<Resource>(`/resources/${slug}`);
   if (!resource) return null;
 
+  const externalUrl =
+    resource.downloadUrl && /^https?:\/\//i.test(resource.downloadUrl)
+      ? resource.downloadUrl
+      : null;
+
   return (
     <CmsDetailShell
       sectionLabel="Resources"
@@ -94,9 +99,9 @@ function ResourceDetail({ slug }: { slug: string }) {
                   />
                 )}
               </>
-            ) : resource.downloadUrl ? (
+            ) : externalUrl ? (
               <a
-                href={resource.downloadUrl}
+                href={externalUrl}
                 className="theme-chest inline-flex items-center gap-2 border-2 border-default bg-elevated px-4 py-2 font-bold text-highlighted hover:bg-muted"
                 target="_blank"
                 rel="noreferrer"
