@@ -19,19 +19,17 @@ const nonPrerenderablePaths = ["/content"];
 
 export default {
   appDirectory: "src",
-  prerender: ssrEnabled
-    ? ({ getStaticPaths }) =>
-        getStaticPaths().filter((path) => !nonPrerenderablePaths.includes(path))
-    : [
-        "/",
-        "/forum",
-        "/healthz",
-        "/user/auth/login",
-        "/user/auth/registration",
-        "/forum/board/0/1",
-        "/forum/thread/0/1",
-        "/user/profile/0",
-      ],
+  prerender: ({ getStaticPaths }) => [
+    ...getStaticPaths().filter((path) => !nonPrerenderablePaths.includes(path)),
+    "/forum/board/0/1",
+    "/forum/thread/0/1",
+    "/user/profile/0",
+    "/content/resources/steve",
+    "/content/projects/steve",
+    "/search/data",
+    "/wiki/wiki/steve",
+    "/wiki/special/steve",
+  ],
   basename: env["VITE_BASE"] ?? "/",
   presets: [ssrEnabled ? presetSsr() : presetSpa()],
 } satisfies Config;
