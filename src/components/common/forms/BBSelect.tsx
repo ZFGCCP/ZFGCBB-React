@@ -1,17 +1,15 @@
-import type { BBLookup } from "../../../types/forum";
+type BBSelectProps = Omit<
+  React.SelectHTMLAttributes<HTMLSelectElement>,
+  "children"
+> & {
+  options: readonly { value: string | number; label: string }[];
+};
 
-const BBSelect: React.FC<{
-  disabled?: boolean;
-  value: number | undefined;
-  options: BBLookup[];
-  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
-}> = ({ disabled, value, options, onChange }) => {
+const BBSelect: React.FC<BBSelectProps> = ({ options, className, ...rest }) => {
   return (
     <select
-      className="w-full p-2 bg-default border border-default flex-1/2"
-      disabled={disabled || false}
-      value={value}
-      onChange={onChange}
+      className={`w-full p-2 bg-default border ${className ?? "border-default"}`}
+      {...rest}
     >
       {options.map((option) => (
         <option key={option.value} value={option.value}>

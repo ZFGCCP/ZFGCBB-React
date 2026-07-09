@@ -33,23 +33,16 @@ export default function BBSelectField({
       <label htmlFor={name} className="block text-sm font-medium text-muted">
         {label}
       </label>
-      <select
+      <BBSelect
         id={name}
         name={name}
         disabled={disabled}
-        className={`w-full p-2 bg-default border ${
-          showError ? "border-highlighted" : "border-default"
-        }`}
+        className={showError ? "border-highlighted" : undefined}
         value={String(field.state.value ?? "")}
         onChange={(event) => field.handleChange(event.target.value)}
         onBlur={field.handleBlur}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+        options={options}
+      />
       {showError ? (
         <p className="text-xs text-highlighted">{error}</p>
       ) : helperText ? (
