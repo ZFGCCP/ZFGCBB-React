@@ -3,8 +3,8 @@ import type { Route } from "./+types/_wiki.wiki.special.recentchanges";
 
 export const loader = ({ request }: Route.LoaderArgs) =>
   prefetchQueryDehydrated(request, [
-    "/wiki/meta/config",
-    "/wiki/meta/recentchanges",
+    { url: "/wiki/meta/config", schema: WikiConfigSchema },
+    { url: "/wiki/meta/recentchanges", schema: WikiRevisionRefListSchema },
   ]);
 
 export default function SpecialRecentChangesRoute({

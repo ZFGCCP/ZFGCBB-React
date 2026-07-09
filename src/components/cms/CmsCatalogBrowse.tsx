@@ -13,11 +13,14 @@ export function CmsCatalogBrowse<
 }: {
   descriptor: CmsCatalogDescriptor<TItem, TShowcase, TFacets>;
 }) {
-  const { searchParams, data, apply, totalPages } = useCatalog<TItem>(
+  const { searchParams, data, query, apply, totalPages } = useCatalog<TItem>(
     descriptor.api,
     descriptor.params,
+    descriptor.itemSchema,
   );
-  const { data: facets } = useBBQuery<TFacets>(`${descriptor.api}/facets`);
+  const { data: facets } = useBBQuery(`${descriptor.api}/facets`, {
+    schema: descriptor.facetsSchema,
+  });
   const { filterOptions, languageOptions } = descriptor.facetOptions(facets);
   const label = descriptor.crumb.toLowerCase();
 
@@ -41,18 +44,25 @@ export function CmsCatalogBrowse<
         searchPlaceholder={descriptor.searchPlaceholder}
         onChange={apply}
       />
-      <ul className="grid list-none grid-cols-1 gap-3 p-4 md:grid-cols-3">
-        {(data?.items ?? []).map((item) => (
-          <li key={item.slug} className="flex">
-            {descriptor.card(item)}
-          </li>
-        ))}
-        {data && data.items.length === 0 && (
-          <li className="col-span-full py-8 text-center text-sm text-dimmed">
-            No {label} match — try clearing the search or filters.
-          </li>
+      <BBQueryBoundary
+        query={query}
+        isEmpty={(page) => page.items.length === 0}
+        empty={
+          <BBEmpty
+            message={`No ${label} match — try clearing the search or filters.`}
+          />
+        }
+      >
+        {(page) => (
+          <ul className="grid list-none grid-cols-1 gap-3 p-4 md:grid-cols-3">
+            {page.items.map((item) => (
+              <li key={item.slug} className="flex">
+                {descriptor.card(item)}
+              </li>
+            ))}
+          </ul>
         )}
-      </ul>
+      </BBQueryBoundary>
       {totalPages > 1 && (
         <nav
           aria-label={`${descriptor.crumb} catalog pages`}

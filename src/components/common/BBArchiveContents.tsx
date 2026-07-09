@@ -1,5 +1,3 @@
-import type { ArchiveEntry } from "@/types/content";
-
 interface BBArchiveContentsProps {
   contentResourceId: number;
   filename?: string | null;
@@ -10,10 +8,10 @@ export default function BBArchiveContents({
   filename,
 }: BBArchiveContentsProps) {
   const [open, setOpen] = useState(false);
-  const { data: entries, isLoading } = useBBQuery<ArchiveEntry[]>(
-    `/content/archive/${contentResourceId}`,
-    { enabled: open },
-  );
+  const query = useBBQuery(`/content/archive/${contentResourceId}`, {
+    enabled: open,
+    schema: ArchiveEntryListSchema,
+  });
 
   return (
     <>
@@ -51,25 +49,27 @@ export default function BBArchiveContents({
               </button>
             </div>
             <div className="p-3 text-sm">
-              {isLoading && <p className="text-dimmed">Loading…</p>}
-              {entries && entries.length === 0 && (
-                <p className="text-dimmed">This archive is empty.</p>
-              )}
-              {entries && entries.length > 0 && (
-                <ul className="space-y-1">
-                  {entries.map((entry) => (
-                    <li key={entry.name} className="flex justify-between gap-4">
-                      <span className="break-all">{entry.name}</span>
-                      <span className="text-dimmed whitespace-nowrap">
-                        {formatFileSize(entry.size)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {!isLoading && !entries && (
-                <p className="text-dimmed">Could not read this archive.</p>
-              )}
+              <BBQueryBoundary
+                query={query}
+                isEmpty={(entries) => entries.length === 0}
+                empty={<BBEmpty message="This archive is empty." />}
+              >
+                {(entries) => (
+                  <ul className="space-y-1">
+                    {entries.map((entry) => (
+                      <li
+                        key={entry.name}
+                        className="flex justify-between gap-4"
+                      >
+                        <span className="break-all">{entry.name}</span>
+                        <span className="text-dimmed whitespace-nowrap">
+                          {formatFileSize(entry.size)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </BBQueryBoundary>
             </div>
           </dialog>
         </div>

@@ -1,19 +1,22 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { BBTableColumn } from "@/components/common/layout/BBTable";
-import type { Board, Thread } from "../types/forum";
+import type { Board, ThreadSummary } from "../types/forum";
 import type { Route } from "./+types/_forum_board.forum.board.$boardId.$pageNumber";
 import { getQueryClient } from "@/providers/query/queryProvider";
 import { type Crumb } from "@/components/common/BBBreadcrumb";
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated<Board>(
+  prefetchQueryDehydrated(
     request,
     `/board/${params.boardId}?page=${params.pageNumber}`,
+    BoardSchema,
   );
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   await getQueryClient().prefetchQuery(
-    bbQueryOptions<Board>(`/board/${params.boardId}?page=${params.pageNumber}`),
+    bbQueryOptions(`/board/${params.boardId}?page=${params.pageNumber}`, {
+      schema: BoardSchema,
+    }),
   );
 }
 
@@ -48,14 +51,8 @@ function BoardTablePaginatorComponent({
   );
 }
 
-function BoardTableComponent({
-  board,
-  isLoading,
-}: {
-  board?: Board;
-  isLoading?: boolean;
-}) {
-  const columns: BBTableColumn<Thread>[] = [
+function BoardTableComponent({ board }: { board: Board }) {
+  const columns: BBTableColumn<ThreadSummary>[] = [
     {
       key: "icon",
       label: "",
@@ -215,19 +212,11 @@ function BoardTableComponent({
   ];
 
   const allThreads = [
-    ...(board?.stickyThreads || []),
-    ...(board?.unStickyThreads || []),
+    ...(board.stickyThreads || []),
+    ...(board.unStickyThreads || []),
   ];
 
-  return isLoading && !board ? (
-    <BBTable
-      columns={columns}
-      data={[]}
-      emptyMessage="Loading..."
-      headerClassName="hidden md:block"
-      rowOuterFlexOptions={{ gap: "gap-4" }}
-    />
-  ) : (
+  return (
     <BBTable
       columns={columns}
       data={allThreads}
@@ -244,21 +233,28 @@ function BoardContainer() {
   const boardId = parseInt(boardIdParam!);
   const pageNumber = parseInt(pageNumberParam!);
 
-  const { data: board, isLoading } = useBBQuery<Board>(
-    `/board/${boardId}?page=${pageNumber}`,
-    { retry: 0 },
-  );
+  const query = useBBQuery(`/board/${boardId}?page=${pageNumber}`, {
+    retry: 0,
+    schema: BoardSchema,
+  });
 
-  const { data: forumIndex } = useForumIndex();
-  const siteName = forumIndex?.boardName ?? "Loading...";
-
-  const boardName = useMemo(() => {
-    return board?.boardName ?? "Loading...";
-  }, [board]);
+  const { data: siteInfo } = useSiteInfo();
+  const siteName = siteInfo?.siteName ?? "Loading...";
 
   const loadNewPage = (currentPageNumber: number) => {
     navigate(`/forum/board/${boardId}/${currentPageNumber}`);
   };
+
+  if (query.isError)
+    return (
+      <BBError
+        error={query.error ?? undefined}
+        onRetry={() => void query.refetch()}
+      />
+    );
+  if (!query.data) return <BBSkeleton className="h-40 w-full rounded" />;
+  const board = query.data;
+  const boardName = board.boardName;
 
   const breadcrumbs: Crumb[] = [
     { label: siteName, to: "/forum", prefetch: "render" },
@@ -267,10 +263,7 @@ function BoardContainer() {
 
   return (
     <>
-      {!isLoading &&
-      board &&
-      board.childBoards &&
-      board?.childBoards?.length > 0 ? (
+      {board.childBoards && board.childBoards.length > 0 ? (
         <BBWidget widgetTitle={"Child Boards"}>
           <BoardSummaryView subBoards={board.childBoards} />
         </BBWidget>
@@ -281,7 +274,7 @@ function BoardContainer() {
       <BoardTablePaginatorComponent
         board={board}
         onPageChange={loadNewPage}
-        isLoading={isLoading}
+        isLoading={false}
         currentPage={Number(pageNumber)}
         className="bg-accented p-4 my-4"
         skeletonContainerClassName="bg-accented p-4 mb-4 w-full"
@@ -289,11 +282,11 @@ function BoardContainer() {
       />
 
       <BBWidget widgetTitle={boardName}>
-        <BoardTableComponent board={board} isLoading={isLoading} />
+        <BoardTableComponent board={board} />
         <BoardTablePaginatorComponent
           board={board}
           onPageChange={loadNewPage}
-          isLoading={isLoading}
+          isLoading={false}
           currentPage={Number(pageNumber)}
           className="bg-accented p-4"
           skeletonContainerClassName="w-full p-4 mb-2"
@@ -301,7 +294,7 @@ function BoardContainer() {
         />
       </BBWidget>
 
-      {!isLoading ? <BBBreadcrumb crumbs={breadcrumbs} /> : null}
+      <BBBreadcrumb crumbs={breadcrumbs} />
     </>
   );
 }

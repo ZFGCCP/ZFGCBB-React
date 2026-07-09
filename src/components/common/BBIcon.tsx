@@ -1,4 +1,4 @@
-import type { BBIconName, RankBadgeName } from "@/shared/bbIcon";
+import type { BBIconName } from "@/shared/bbIcon";
 
 export function BBIcon({
   name,
@@ -11,21 +11,6 @@ export function BBIcon({
     <span
       aria-hidden
       className={`spr spr-${name}${className ? ` ${className}` : ""}`}
-    />
-  );
-}
-
-export function BBRankBadge({
-  name,
-  className,
-}: {
-  name: RankBadgeName;
-  className?: string;
-}) {
-  return (
-    <span
-      aria-hidden
-      className={`badge badge-${name}${className ? ` ${className}` : ""}`}
     />
   );
 }

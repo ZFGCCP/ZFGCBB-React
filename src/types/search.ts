@@ -1,25 +1,6 @@
-export type SearchHit = {
-  type: string;
-  title: string;
-  snippet: string | null;
-  context: string | null;
-  url: string;
-};
+import * as v from "valibot";
 
-export type SearchGroup = {
-  type: string;
-  label: string;
-  total: number;
-  hits: SearchHit[];
-};
-
-export type SearchResults = {
-  query: string;
-  total: number;
-  groups: SearchGroup[];
-};
-
-export type SearchRealm = {
-  type: string;
-  label: string;
-};
+export type SearchHit = v.InferOutput<typeof SearchHitSchema>;
+export type SearchGroup = v.InferOutput<typeof SearchGroupSchema>;
+export type SearchResults = v.InferOutput<typeof SearchResultsSchema>;
+export type SearchRealm = v.InferOutput<typeof SearchRealmSchema>;

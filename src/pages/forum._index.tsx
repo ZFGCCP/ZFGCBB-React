@@ -1,13 +1,14 @@
 import { HydrationBoundary } from "@tanstack/react-query";
-import type { Forum } from "@/types/forum";
 import type { Route } from "./+types/forum._index";
 import { getQueryClient } from "@/providers/query/queryProvider";
 
 export const loader = ({ request }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated<Forum>(request, "/board/forum");
+  prefetchQueryDehydrated(request, "/board/forum", ForumSchema);
 
 export async function clientLoader(_: Route.ClientLoaderArgs) {
-  await getQueryClient().prefetchQuery(bbQueryOptions<Forum>("/board/forum"));
+  await getQueryClient().prefetchQuery(
+    bbQueryOptions("/board/forum", { schema: ForumSchema }),
+  );
 }
 
 export function HydrateFallback() {
@@ -15,7 +16,7 @@ export function HydrateFallback() {
 }
 
 function ForumContent() {
-  const { data: forumIndex } = useForumIndex();
+  const query = useForumIndex();
   return (
     <article>
       <section className="grid grid-cols-1 gap-4">
@@ -34,16 +35,22 @@ function ForumContent() {
           </div>
         </BBWidget>
 
-        {forumIndex?.categories?.map((category) => {
-          return (
-            <div key={category.id} className="my-2">
-              <ForumCategory
-                title={category.categoryName}
-                subBoards={category.boards}
-              />
-            </div>
-          );
-        })}
+        <BBQueryBoundary
+          query={query}
+          isEmpty={(forum) => !forum.categories?.length}
+          empty={<BBEmpty message="No boards here yet. Check back soon!" />}
+        >
+          {(forumIndex) =>
+            forumIndex.categories?.map((category) => (
+              <div key={category.id} className="my-2">
+                <ForumCategory
+                  title={category.categoryName}
+                  subBoards={category.boards}
+                />
+              </div>
+            ))
+          }
+        </BBQueryBoundary>
       </section>
     </article>
   );

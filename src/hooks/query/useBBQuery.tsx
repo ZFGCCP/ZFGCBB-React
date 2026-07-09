@@ -5,17 +5,24 @@ import {
 } from "@tanstack/react-query";
 import * as v from "valibot";
 
-export type UseBBQueryOptions<TData> = Omit<
-  UseQueryOptions<TData, Error, TData, QueryKey>,
+export type UseBBQueryOptions<TSchema extends v.GenericSchema> = Omit<
+  UseQueryOptions<
+    v.InferOutput<TSchema>,
+    Error,
+    v.InferOutput<TSchema>,
+    QueryKey
+  >,
   "queryKey" | "queryFn"
 > & {
   queryKey?: string;
-  schema?: v.GenericSchema<unknown, TData>;
+  schema?: TSchema;
 };
 
-export const useBBQuery = <TData,>(
+export const useBBQuery = <
+  TSchema extends v.GenericSchema = v.GenericSchema<unknown, unknown>,
+>(
   url: `/${string}`,
-  options: UseBBQueryOptions<TData> = {},
+  options: UseBBQueryOptions<TSchema> = {},
 ) => {
   const {
     queryKey,
@@ -28,7 +35,12 @@ export const useBBQuery = <TData,>(
     ...rest
   } = options;
 
-  return useQuery<TData, Error, TData, QueryKey>({
+  return useQuery<
+    v.InferOutput<TSchema>,
+    Error,
+    v.InferOutput<TSchema>,
+    QueryKey
+  >({
     queryKey: [queryKey ?? url],
     queryFn: async () => {
       const response = await fetch(`${getApiBaseUrl()}${url ?? "/"}`, {
@@ -38,8 +50,7 @@ export const useBBQuery = <TData,>(
           "Content-Type": "application/json",
         },
       });
-      const data = await handleResponseWithJason<unknown>(response);
-      return schema ? v.parse(schema, data) : (data as TData);
+      return handleResponseWithJason(response, schema);
     },
     retry,
     gcTime,

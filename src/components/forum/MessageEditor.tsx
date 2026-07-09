@@ -1,15 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
-import { MessageEditorSchema, type MessageEditor } from "@/schemas/forum";
-import type { Message } from "../../types/forum";
 
 interface MessageEditorProps {
   threadId: number;
 }
 
 const MessageEditor: React.FC<MessageEditorProps> = ({ threadId }) => {
-  const { data: currentMessage, isLoading } = useBBQuery<Message>(
+  const { data: currentMessage, isLoading } = useBBQuery(
     `/message/template?threadId=${threadId}`,
+    { schema: MessageSchema },
   );
 
   if (isLoading || !currentMessage) {
@@ -27,7 +26,7 @@ function MessageEditorForm({
   template: Message;
 }) {
   const queryClient = useQueryClient();
-  const newPostMutator = useMutation<unknown, Error, MessageEditor>({
+  const newPostMutator = useMutation<unknown, Error, MessageForm>({
     mutationFn: async (values) => {
       const body: Message = {
         ...template,
@@ -60,10 +59,10 @@ function MessageEditorForm({
   const form = useForm({
     defaultValues: {
       body: template.currentMessage.unparsedText ?? "",
-    } as MessageEditor,
+    } as MessageForm,
     validators: {
-      onBlur: MessageEditorSchema,
-      onSubmit: MessageEditorSchema,
+      onBlur: MessageFormSchema,
+      onSubmit: MessageFormSchema,
     },
     onSubmit: async ({ value }) => {
       await newPostMutator.mutateAsync(value);

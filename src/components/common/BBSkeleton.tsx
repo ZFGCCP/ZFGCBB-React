@@ -5,7 +5,7 @@ export default function BBSkeleton<
     <div
       {...rest}
       className={`
-        inline-block rounded-lg animate-pulse bg-gradient-to-r from-muted to-elevated
+        inline-block rounded-lg animate-pulse bg-linear-to-r from-muted to-elevated
         ${className}
       `}
       style={style}

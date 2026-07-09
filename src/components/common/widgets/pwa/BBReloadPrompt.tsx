@@ -1,19 +1,15 @@
-import "./BBReloadPrompt.css";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
-function ReloadPrompt() {
+export default function BBReloadPrompt() {
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
-  } = useRegisterSW({
-    onRegistered(registration) {
-      console.log("SW Registered: ", registration);
-    },
-    onRegisterError(error) {
-      console.log("SW registration error", error);
-    },
-  });
+  } = useRegisterSW();
+
+  if (!offlineReady && !needRefresh) {
+    return null;
+  }
 
   const close = () => {
     setOfflineReady(false);
@@ -21,38 +17,20 @@ function ReloadPrompt() {
   };
 
   return (
-    <div className="ReloadPrompt-container">
-      {(offlineReady || needRefresh) && (
-        <div className="ReloadPrompt-toast">
-          <div className="ReloadPrompt-message">
-            {offlineReady ? (
-              <span>App ready to work offline</span>
-            ) : (
-              <span>
-                New content available, click on reload button to update.
-              </span>
-            )}
-          </div>
-          {needRefresh && (
-            <button
-              type="button"
-              className="ReloadPrompt-toast-button"
-              onClick={() => updateServiceWorker(true)}
-            >
-              Reload
-            </button>
-          )}
-          <button
-            type="button"
-            className="ReloadPrompt-toast-button"
-            onClick={() => close()}
-          >
-            Close
-          </button>
-        </div>
+    <div role="status" className="reload-prompt">
+      <span>
+        {offlineReady
+          ? "App ready to work offline."
+          : "New content available — reload to update."}
+      </span>
+      {needRefresh && (
+        <button type="button" onClick={() => updateServiceWorker(true)}>
+          Reload
+        </button>
       )}
+      <button type="button" onClick={close}>
+        Close
+      </button>
     </div>
   );
 }
-
-export default ReloadPrompt;

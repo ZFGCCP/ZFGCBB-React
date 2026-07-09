@@ -8,7 +8,7 @@ export default function Home() {
               <BBFlex justify="center">
                 <BBImage
                   className="h-38 max-h-38 min-w-full object-cover border-default rounded border"
-                  src="images/potm/triforceSaga.png"
+                  src="images/potm/triforceSaga.webp"
                   alt="Triforce Saga project screenshot"
                   loading="eager"
                 />

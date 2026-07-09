@@ -3,11 +3,11 @@ import type { Route } from "./+types/content.resources.$slug";
 import { getQueryClient } from "@/providers/query/queryProvider";
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated<Resource>(request, `/resources/${params.slug}`);
+  prefetchQueryDehydrated(request, `/resources/${params.slug}`, ResourceSchema);
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   await getQueryClient().prefetchQuery(
-    bbQueryOptions<Resource>(`/resources/${params.slug}`),
+    bbQueryOptions(`/resources/${params.slug}`, { schema: ResourceSchema }),
   );
 }
 
@@ -55,8 +55,18 @@ function Masthead({ resource }: { resource: Resource }) {
 }
 
 function ResourceDetail({ slug }: { slug: string }) {
-  const { data: resource } = useBBQuery<Resource>(`/resources/${slug}`);
-  if (!resource) return null;
+  const query = useBBQuery(`/resources/${slug}`, {
+    schema: ResourceSchema,
+  });
+  if (query.isError)
+    return (
+      <BBError
+        error={query.error ?? undefined}
+        onRetry={() => void query.refetch()}
+      />
+    );
+  if (!query.data) return <BBSkeleton className="h-40 w-full rounded" />;
+  const resource = query.data;
 
   const externalUrl =
     resource.downloadUrl && /^https?:\/\//i.test(resource.downloadUrl)

@@ -3,11 +3,11 @@ import type { Route } from "./+types/content.projects.$slug";
 import { getQueryClient } from "@/providers/query/queryProvider";
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated<Project>(request, `/projects/${params.slug}`);
+  prefetchQueryDehydrated(request, `/projects/${params.slug}`, ProjectSchema);
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   await getQueryClient().prefetchQuery(
-    bbQueryOptions<Project>(`/projects/${params.slug}`),
+    bbQueryOptions(`/projects/${params.slug}`, { schema: ProjectSchema }),
   );
 }
 
@@ -67,8 +67,18 @@ function Masthead({ project }: { project: Project }) {
 
 function ProjectDetail({ slug }: { slug: string }) {
   const [tab, setTab] = useState<ProjectTab>("overview");
-  const { data: project } = useBBQuery<Project>(`/projects/${slug}`);
-  if (!project) return null;
+  const query = useBBQuery(`/projects/${slug}`, {
+    schema: ProjectSchema,
+  });
+  if (query.isError)
+    return (
+      <BBError
+        error={query.error ?? undefined}
+        onRetry={() => void query.refetch()}
+      />
+    );
+  if (!query.data) return <BBSkeleton className="h-40 w-full rounded" />;
+  const project = query.data;
 
   const screenshots = project.screenshots.filter(
     (screenshot) => screenshot.contentResourceId,

@@ -2,20 +2,38 @@ import { useGlobalSearch } from "@/providers/search/globalSearchProvider";
 
 const HeaderNavigation: React.FC = () => {
   const { open } = useGlobalSearch();
+  const { pathname } = useLocation();
+  const isActive = (base: string) =>
+    base === "/"
+      ? pathname === "/"
+      : pathname === base || pathname.startsWith(`${base}/`);
   return (
     <nav className="hidden md:flex items-end gap-1">
-      <BBNavTab title="Home" to="/" />
-      <BBNavTab title="Forum" to="/forum" prefetch="intent" />
+      <BBNavTab title="Home" to="/" active={isActive("/")} />
+      <BBNavTab
+        title="Forum"
+        to="/forum"
+        prefetch="intent"
+        active={isActive("/forum")}
+      />
       <BBNavTab
         title="Chat"
         to="https://discord.gg/NP2nNKjun6"
         target="_blank"
       />
-      <BBNavTab title="Wiki" to="/wiki/Main_Page" />
-      <BBNavTab title="Projects" to="/content/projects" />
-      <BBNavTab title="Resources" to="/content/resources" />
+      <BBNavTab title="Wiki" to="/wiki/Main_Page" active={isActive("/wiki")} />
+      <BBNavTab
+        title="Projects"
+        to="/content/projects"
+        active={isActive("/content/projects")}
+      />
+      <BBNavTab
+        title="Resources"
+        to="/content/resources"
+        active={isActive("/content/resources")}
+      />
       <BBHasPermission requiredPermissions={["ZFGC_SITE_ADMIN"]}>
-        <BBNavTab title="Admin" to="/admin" />
+        <BBNavTab title="Admin" to="/admin" active={isActive("/admin")} />
       </BBHasPermission>
       <button
         type="button"

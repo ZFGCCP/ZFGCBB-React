@@ -1,7 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
-import type { CmsConfig, MergeCandidate } from "@/types/content";
-import { CmsConfigFormSchema, type CmsConfigForm } from "@/schemas/system";
 
 function candidateTargetLink(candidate: MergeCandidate) {
   if (candidate.targetType === "WIKI_PAGE" && candidate.targetSlug) {
@@ -23,17 +21,17 @@ function candidateKey(candidate: MergeCandidate) {
 function CmsSettings({ config }: { config: CmsConfig }) {
   const queryClient = useQueryClient();
 
-  const configMutation = useMutation({
-    mutationFn: async (discussionBoardId: string) => {
-      const response = await apiFetch(`${getApiBaseUrl()}/system/cms/config`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ discussionBoardId }),
-      });
-      return handleResponseWithJason<CmsConfig>(response);
-    },
+  const configMutation = useBBMutation({
+    request: (discussionBoardId: string) => ({
+      url: "/system/cms/config",
+      method: "PUT",
+      body: { discussionBoardId },
+    }),
+    schema: CmsConfigSchema,
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["/system/cms/config"] });
+      void queryClient.invalidateQueries({
+        queryKey: ["/system/cms/config"],
+      });
     },
   });
 
@@ -89,10 +87,12 @@ function CmsSettings({ config }: { config: CmsConfig }) {
 function MergeCenter() {
   const queryClient = useQueryClient();
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
-  const { data: candidates, isLoading } = useBBQuery<MergeCandidate[]>(
-    "/system/cms/merge-candidates",
-  );
-  const { data: config } = useBBQuery<CmsConfig>("/system/cms/config");
+  const candidatesQuery = useBBQuery("/system/cms/merge-candidates", {
+    schema: MergeCandidateListSchema,
+  });
+  const { data: config } = useBBQuery("/system/cms/config", {
+    schema: CmsConfigSchema,
+  });
 
   const applyMutation = useMutation({
     mutationFn: async (candidate: MergeCandidate) => {
@@ -115,7 +115,7 @@ function MergeCenter() {
     },
   });
 
-  const visible = (candidates ?? []).filter(
+  const visible = (candidatesQuery.data ?? []).filter(
     (candidate) => !dismissed.has(candidateKey(candidate)),
   );
 
@@ -125,82 +125,88 @@ function MergeCenter() {
 
       <BBWidget widgetTitle={`Merge Center (${visible.length} suggestions)`}>
         <div className="p-4">
-          {isLoading && (
-            <p className="text-dimmed text-sm">Computing candidates…</p>
-          )}
-          {!isLoading && visible.length === 0 && (
-            <p className="text-dimmed text-sm">
-              No merge suggestions — everything is linked up.
-            </p>
-          )}
-          {visible.length > 0 && (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left border-b-2 border-default">
-                  <th className="py-1 pr-2">Source</th>
-                  <th className="py-1 pr-2">Suggestion</th>
-                  <th className="py-1 pr-2">Confidence</th>
-                  <th className="py-1 pr-2">Reason</th>
-                  <th className="py-1">
-                    <span className="sr-only">Actions</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {visible.map((candidate) => {
-                  const link = candidateTargetLink(candidate);
-                  return (
-                    <tr
-                      key={candidateKey(candidate)}
-                      className="border-b border-muted align-top"
-                    >
-                      <td className="py-1 pr-2">
-                        <span className="text-xs text-dimmed">
-                          {candidate.sourceType}
-                        </span>{" "}
-                        {candidate.sourceTitle}
-                      </td>
-                      <td className="py-1 pr-2">
-                        <span className="text-xs text-dimmed">
-                          {candidate.targetType}
-                        </span>{" "}
-                        {link ? (
-                          <BBLink to={link} className="text-highlighted">
-                            {candidate.targetTitle}
-                          </BBLink>
-                        ) : (
-                          candidate.targetTitle
-                        )}
-                      </td>
-                      <td className="py-1 pr-2">{candidate.confidence}%</td>
-                      <td className="py-1 pr-2 text-dimmed">
-                        {candidate.reason}
-                      </td>
-                      <td className="py-1 whitespace-nowrap">
-                        <BBButton
-                          size="xs"
-                          disabled={applyMutation.isPending}
-                          onClick={() => applyMutation.mutate(candidate)}
-                        >
-                          Apply
-                        </BBButton>{" "}
-                        <BBButton
-                          size="xs"
-                          onClick={() =>
-                            setDismissed(
-                              new Set(dismissed).add(candidateKey(candidate)),
-                            )
-                          }
-                        >
-                          Dismiss
-                        </BBButton>
-                      </td>
+          <BBQueryBoundary
+            query={candidatesQuery}
+            isEmpty={(list) => list.length === 0}
+            empty={<BBEmpty message="No merge candidates" />}
+          >
+            {() =>
+              visible.length === 0 ? (
+                <p className="text-dimmed text-sm">
+                  No merge suggestions — everything is linked up.
+                </p>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left border-b-2 border-default">
+                      <th className="py-1 pr-2">Source</th>
+                      <th className="py-1 pr-2">Suggestion</th>
+                      <th className="py-1 pr-2">Confidence</th>
+                      <th className="py-1 pr-2">Reason</th>
+                      <th className="py-1">
+                        <span className="sr-only">Actions</span>
+                      </th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
+                  </thead>
+                  <tbody>
+                    {visible.map((candidate) => {
+                      const link = candidateTargetLink(candidate);
+                      return (
+                        <tr
+                          key={candidateKey(candidate)}
+                          className="border-b border-muted align-top"
+                        >
+                          <td className="py-1 pr-2">
+                            <span className="text-xs text-dimmed">
+                              {candidate.sourceType}
+                            </span>{" "}
+                            {candidate.sourceTitle}
+                          </td>
+                          <td className="py-1 pr-2">
+                            <span className="text-xs text-dimmed">
+                              {candidate.targetType}
+                            </span>{" "}
+                            {link ? (
+                              <BBLink to={link} className="text-highlighted">
+                                {candidate.targetTitle}
+                              </BBLink>
+                            ) : (
+                              candidate.targetTitle
+                            )}
+                          </td>
+                          <td className="py-1 pr-2">{candidate.confidence}%</td>
+                          <td className="py-1 pr-2 text-dimmed">
+                            {candidate.reason}
+                          </td>
+                          <td className="py-1 whitespace-nowrap">
+                            <BBButton
+                              size="xs"
+                              disabled={applyMutation.isPending}
+                              onClick={() => applyMutation.mutate(candidate)}
+                            >
+                              Apply
+                            </BBButton>{" "}
+                            <BBButton
+                              size="xs"
+                              onClick={() =>
+                                setDismissed(
+                                  new Set(dismissed).add(
+                                    candidateKey(candidate),
+                                  ),
+                                )
+                              }
+                            >
+                              Dismiss
+                            </BBButton>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )
+            }
+          </BBQueryBoundary>
           {applyMutation.isError && (
             <p className="text-sm text-error mt-2">
               {(applyMutation.error as Error).message}

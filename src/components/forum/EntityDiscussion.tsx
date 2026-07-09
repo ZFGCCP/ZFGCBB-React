@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Thread } from "@/types/forum";
 
 interface EntityDiscussionProps {
   entityPath: `/${string}`;
@@ -9,11 +8,13 @@ export default function EntityDiscussion({
   entityPath,
 }: EntityDiscussionProps) {
   const queryClient = useQueryClient();
-  const { data: entity } = useBBQuery<{ threadId: number | null }>(entityPath);
+  const { data: entity } = useBBQuery(entityPath, {
+    schema: EntityThreadRefSchema,
+  });
   const threadId = entity?.threadId ?? null;
-  const { data: thread, error: threadError } = useBBQuery<Thread>(
+  const { data: thread, error: threadError } = useBBQuery(
     `/thread/${threadId}?page=0&pageSize=5`,
-    { enabled: threadId != null, throwOnError: false },
+    { enabled: threadId != null, throwOnError: false, schema: ThreadSchema },
   );
 
   const startDiscussion = useMutation({

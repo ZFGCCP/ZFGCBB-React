@@ -52,58 +52,69 @@ function WikiSource({ page }: { page: WikiPage }) {
 }
 
 function WikiHistory({ slug }: { slug: string }) {
-  const { data: revisions } = useBBQuery<WikiRevisionRef[]>(
+  const query = useBBQuery(
     `/wiki/meta/history?slug=${encodeURIComponent(slug)}`,
+    { schema: WikiRevisionRefListSchema },
   );
-  if (!revisions) return null;
 
   return (
-    <section aria-label="Revision history">
-      <p className="mb-3 text-xs tracking-widest text-dimmed">
-        {revisions.length.toLocaleString()} REVISION
-        {revisions.length === 1 ? "" : "S"}, NEWEST FIRST
-      </p>
-      <WikiTimeline>
-        {revisions.map((revision, index) => {
-          const older = revisions[index + 1];
-          const delta = older ? revision.size - older.size : null;
-          return (
-            <WikiTimelineItem
-              key={revision.revisionId}
-              summary={revision.summary}
-            >
-              <BBLink
-                to={
-                  revision.current
-                    ? `/wiki/${slug}`
-                    : `/wiki/${slug}?rev=${revision.revisionId}`
-                }
-                className="font-bold text-highlighted"
-              >
-                <BBDate dateStr={revision.authoredTs} fallback="unknown date" />
-              </BBLink>
-              {revision.current && (
-                <span className="border border-default bg-accented px-1.5 py-0.5 text-[10px] font-bold tracking-widest text-highlighted">
-                  CURRENT
-                </span>
-              )}
-              {revision.authorName && <span>{revision.authorName}</span>}
-              <span className="text-xs text-dimmed">
-                {revision.size.toLocaleString()} bytes
-              </span>
-              {delta !== null && delta !== 0 && (
-                <span
-                  className={`text-xs font-bold ${delta > 0 ? "text-green-500" : "text-red-500"}`}
+    <BBQueryBoundary
+      query={query}
+      isEmpty={(revisions) => !revisions.length}
+      empty={<BBEmpty message="No revisions recorded for this page yet." />}
+    >
+      {(revisions) => (
+        <section aria-label="Revision history">
+          <p className="mb-3 text-xs tracking-widest text-dimmed">
+            {revisions.length.toLocaleString()} REVISION
+            {revisions.length === 1 ? "" : "S"}, NEWEST FIRST
+          </p>
+          <WikiTimeline>
+            {revisions.map((revision, index) => {
+              const older = revisions[index + 1];
+              const delta = older ? revision.size - older.size : null;
+              return (
+                <WikiTimelineItem
+                  key={revision.revisionId}
+                  summary={revision.summary}
                 >
-                  {delta > 0 ? "+" : ""}
-                  {delta.toLocaleString()}
-                </span>
-              )}
-            </WikiTimelineItem>
-          );
-        })}
-      </WikiTimeline>
-    </section>
+                  <BBLink
+                    to={
+                      revision.current
+                        ? `/wiki/${slug}`
+                        : `/wiki/${slug}?rev=${revision.revisionId}`
+                    }
+                    className="font-bold text-highlighted"
+                  >
+                    <BBDate
+                      dateStr={revision.authoredTs}
+                      fallback="unknown date"
+                    />
+                  </BBLink>
+                  {revision.current && (
+                    <span className="border border-default bg-accented px-1.5 py-0.5 text-[10px] font-bold tracking-widest text-highlighted">
+                      CURRENT
+                    </span>
+                  )}
+                  {revision.authorName && <span>{revision.authorName}</span>}
+                  <span className="text-xs text-dimmed">
+                    {revision.size.toLocaleString()} bytes
+                  </span>
+                  {delta !== null && delta !== 0 && (
+                    <span
+                      className={`text-xs font-bold ${delta > 0 ? "text-green-500" : "text-red-500"}`}
+                    >
+                      {delta > 0 ? "+" : ""}
+                      {delta.toLocaleString()}
+                    </span>
+                  )}
+                </WikiTimelineItem>
+              );
+            })}
+          </WikiTimeline>
+        </section>
+      )}
+    </BBQueryBoundary>
   );
 }
 
@@ -211,11 +222,20 @@ export function WikiContent({ slug }: { slug: string }) {
         : "article";
   const revisionId = searchParams.get("rev");
   const noRedirect = searchParams.get("redirect") === "no";
-  const { data: page } = useBBQuery<WikiPage>(
+  const query = useBBQuery(
     `/wiki/${slug}${revisionId ? `?rev=${revisionId}` : ""}`,
+    { schema: WikiPageSchema },
   );
 
-  if (!page) return null;
+  if (query.isError)
+    return (
+      <BBError
+        error={query.error ?? undefined}
+        onRetry={() => void query.refetch()}
+      />
+    );
+  if (!query.data) return <BBSkeleton className="h-40 w-full rounded" />;
+  const page = query.data;
 
   if (page.redirectTo && view === "article" && !revisionId && !noRedirect) {
     const target = page.redirectTo.startsWith("/")

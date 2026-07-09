@@ -3,8 +3,8 @@ import type { Route } from "./+types/_wiki.wiki.special.categories";
 
 export const loader = ({ request }: Route.LoaderArgs) =>
   prefetchQueryDehydrated(request, [
-    "/wiki/meta/config",
-    "/wiki/meta/categories",
+    { url: "/wiki/meta/config", schema: WikiConfigSchema },
+    { url: "/wiki/meta/categories", schema: WikiCategoryCountListSchema },
   ]);
 
 export default function SpecialCategoriesRoute({

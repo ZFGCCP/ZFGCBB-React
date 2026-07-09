@@ -3,7 +3,7 @@ import type {
   ResourceFacets,
   ResourceShowcase,
 } from "@/types/content";
-import type { CatalogParamMap } from "@/hooks/useCatalog";
+import type { CatalogParamMap } from "@/hooks/data/useCatalog";
 import type { CmsCatalogDescriptor } from "@/types/catalogDescriptor";
 
 const RESOURCE_PARAMS: CatalogParamMap = { filter: "type" };
@@ -18,6 +18,9 @@ export const resourceCatalog: CmsCatalogDescriptor<
   api: "/resources",
   basePath: "/content/resources",
   params: RESOURCE_PARAMS,
+  itemSchema: ResourceSchema,
+  showcaseSchema: ResourceShowcaseSchema,
+  facetsSchema: ResourceFacetsSchema,
   searchPlaceholder: "Search resources by title…",
   sortOptions: [
     { value: "", label: "A - Z" },

@@ -39,7 +39,7 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({
     >
       <BBFlex
         align="stretch"
-        className={`p-3 ${backgrounds.profileInfoContainer ?? ""} border-b border-default shrink-0 min-h-[76px]`}
+        className={`p-3 ${backgrounds.profileInfoContainer ?? ""} border-b border-default shrink-0 min-h-19`}
       >
         <BBFlex
           direction="col"
@@ -86,7 +86,9 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({
           {user?.bioInfo?.personalText}
         </BBMutedText>
         <div>
-          (+{user?.bioInfo?.karmaGood}/-{user?.bioInfo?.karmaBad})
+          {user?.bioInfo?.reactionSummary?.reputationPoints ?? 0} rep
+          {" "}(+{user?.bioInfo?.reactionSummary?.positiveCount ?? 0}/-
+          {user?.bioInfo?.reactionSummary?.negativeCount ?? 0})
         </div>
       </BBFlex>
 

@@ -48,8 +48,8 @@
   --fill-color-default: #000000;
   --fill-color-inverted: #ffffff;
 
-  --sprite-icons: url("/themes/midnight/images/sprites/icons.png");
-  --sprite-badges: url("/themes/midnight/images/sprites/badges.png");
+  --sprite-icons: url("/themes/midnight/images/sprites/icons.webp");
+  --sprite-badges: url("/themes/midnight/images/sprites/badges.webp");
 }
 
 @utility bg-hatch {
@@ -113,6 +113,14 @@
   &[aria-pressed="false"]:hover,
   &[data-state="off"]:hover {
     @apply bg-elevated;
+  }
+}
+
+@utility reload-prompt {
+  @apply fixed right-0 bottom-0 z-50 m-4 flex flex-wrap items-center gap-2 border-2 border-default bg-elevated p-3 text-sm shadow-[4px_4px_0_rgba(0,0,0,0.5)];
+
+  & button {
+    @apply cursor-pointer border-2 border-default bg-muted px-2.5 py-1 transition-colors hover:bg-elevated;
   }
 }
 

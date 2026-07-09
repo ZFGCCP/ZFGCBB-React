@@ -3,7 +3,7 @@ import type { RailItem } from "@/components/cms/showcase/ShowcasePieces";
 
 export function toRailItems<
   T extends {
-    previewContentResourceId: number | null;
+    previewContentResourceId?: number;
     title: string;
     slug: string;
   },

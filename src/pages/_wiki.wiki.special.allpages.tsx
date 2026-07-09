@@ -3,8 +3,11 @@ import type { Route } from "./+types/_wiki.wiki.special.allpages";
 
 export const loader = ({ request }: Route.LoaderArgs) =>
   prefetchQueryDehydrated(request, [
-    "/wiki/meta/config",
-    wikiPagesListUrl(new URL(request.url).searchParams),
+    { url: "/wiki/meta/config", schema: WikiConfigSchema },
+    {
+      url: wikiPagesListUrl(new URL(request.url).searchParams),
+      schema: pagedSchema(WikiPageRefSchema),
+    },
   ]);
 
 export default function SpecialAllPagesRoute({

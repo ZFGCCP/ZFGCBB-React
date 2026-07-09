@@ -1,6 +1,6 @@
 import { Navigate } from "react-router";
 import { UserContext } from "./providers/user/userProvider";
-import { useInstallStatus } from "./hooks/useInstallStatus";
+import { useInstallStatus } from "./hooks/data/useInstallStatus";
 import { useGlobalSearch } from "./providers/search/globalSearchProvider";
 
 interface RootLayoutProps {
@@ -24,7 +24,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
         <header className="hidden md:flex justify-between items-end border-b-2 border-default bg-default px-2">
           <div className="z-10">
             <div className="relative -z-10 md:-mb-6 min-h-25 min-w-120">
-              <BBImage src="images/logo.png" alt="Logo" loading="eager" />
+              <BBImage src="images/logo.webp" alt="Logo" loading="eager" />
             </div>
             <HeaderNavigation />
           </div>
@@ -53,7 +53,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           <div className="flex justify-center pt-2 m-h-18 min-w-full items-center">
             <BBImage
               className="h-16 w-auto"
-              src="images/logo.png"
+              src="images/logo.webp"
               alt="Logo"
               loading="eager"
             />

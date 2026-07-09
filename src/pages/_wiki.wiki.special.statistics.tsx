@@ -3,8 +3,8 @@ import type { Route } from "./+types/_wiki.wiki.special.statistics";
 
 export const loader = ({ request }: Route.LoaderArgs) =>
   prefetchQueryDehydrated(request, [
-    "/wiki/meta/config",
-    "/wiki/meta/statistics",
+    { url: "/wiki/meta/config", schema: WikiConfigSchema },
+    { url: "/wiki/meta/statistics", schema: WikiStatisticsSchema },
   ]);
 
 export default function SpecialStatisticsRoute({

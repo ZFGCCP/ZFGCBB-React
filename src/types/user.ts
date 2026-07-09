@@ -1,51 +1,8 @@
-import type { BaseBB, BBPermission } from "./api";
+import * as v from "valibot";
 
-export type User = BaseBB & {
-  displayName: string;
-  theme?: string;
-
-  bioInfo?: UserBioInfo;
-  contactInfo?: UserContactInfo;
-
-  permissions?: Permission[];
-};
-
-export type UserBioInfo = BaseBB & {
-  personalText?: string;
-  customTitle?: string;
-  userId: number;
-  signature?: string;
-  signatureParsed?: string;
-  avatar?: Avatar;
-  birthDate?: string;
-  genderId?: number;
-  karmaGood?: number;
-  karmaBad?: number;
-  dateRegistered?: string;
-  hideEmailFlag?: boolean;
-  postCount?: number;
-};
-
-export type Avatar = BaseBB & {
-  userId: number;
-  id: number;
-  activeFlag: boolean;
-  url?: `${string}://${string}/${string}`;
-  contentResourceId?: number;
-};
-
-export type Permission = BaseBB & {
-  permissionCode: string;
-  permissionName: BBPermission;
-};
-
-export type UserContactInfo = BaseBB & {
-  emailAddress: EmailAddress;
-  allowEmailFlag: boolean;
-  allowPmFlag: boolean;
-};
-
-export type EmailAddress = BaseBB & {
-  emailAddress?: string;
-  spammerFlag: boolean;
-};
+export type User = v.InferOutput<typeof UserSchema>;
+export type UserBioInfo = v.InferOutput<typeof UserBioInfoSchema>;
+export type Avatar = v.InferOutput<typeof AvatarSchema>;
+export type Permission = v.InferOutput<typeof PermissionSchema>;
+export type UserContactInfo = v.InferOutput<typeof UserContactInfoSchema>;
+export type EmailAddress = v.InferOutput<typeof EmailAddressSchema>;

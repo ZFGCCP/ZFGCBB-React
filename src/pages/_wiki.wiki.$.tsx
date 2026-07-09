@@ -1,14 +1,30 @@
 import { HydrationBoundary } from "@tanstack/react-query";
-import type { WikiPage } from "@/types/content";
 import type { Route } from "./+types/_wiki.wiki.$";
 import { getQueryClient } from "@/providers/query/queryProvider";
 
-export const loader = ({ request, params }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated<WikiPage>(request, `/wiki/${params["*"] ?? ""}`);
+function wikiPageUrl(
+  request: Request,
+  splat: string | undefined,
+): `/${string}` {
+  const rev = new URL(request.url).searchParams.get("rev");
+  return `/wiki/${splat ?? ""}${rev ? `?rev=${rev}` : ""}`;
+}
 
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+export const loader = ({ request, params }: Route.LoaderArgs) =>
+  prefetchQueryDehydrated(
+    request,
+    wikiPageUrl(request, params["*"]),
+    WikiPageSchema,
+  );
+
+export async function clientLoader({
+  request,
+  params,
+}: Route.ClientLoaderArgs) {
   await getQueryClient().prefetchQuery(
-    bbQueryOptions<WikiPage>(`/wiki/${params["*"] ?? ""}`),
+    bbQueryOptions(wikiPageUrl(request, params["*"]), {
+      schema: WikiPageSchema,
+    }),
   );
 }
 

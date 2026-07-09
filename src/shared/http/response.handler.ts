@@ -1,3 +1,5 @@
+import * as v from "valibot";
+
 function safeJsonParse<TValue>(json: string): TValue | undefined {
   try {
     return JSON.parse(json) as TValue;
@@ -32,10 +34,14 @@ export async function handleResponseError(response: Response) {
   });
 }
 
-export async function handleResponseWithJason<TData>(response: Response) {
+export async function handleResponseWithJason<TData>(
+  response: Response,
+  schema?: v.GenericSchema<unknown, TData>,
+) {
   if (response.status === 204) return undefined as TData;
   await handleResponseError(response);
-  return (await response.json()) as TData;
+  const data = await response.json();
+  return parseSchema(schema, data);
 }
 
 export function getResponseStatus(error: unknown): number | undefined {

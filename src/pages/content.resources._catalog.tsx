@@ -1,17 +1,19 @@
 import { HydrationBoundary } from "@tanstack/react-query";
-import type { ResourceShowcase } from "@/types/content";
 import { getQueryClient } from "@/providers/query/queryProvider";
 import type { Route } from "./+types/content.resources._catalog";
 
 export const loader = ({ request }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated<ResourceShowcase>(
+  prefetchQueryDehydrated(
     request,
     `${resourceCatalog.api}/showcase`,
+    ResourceShowcaseSchema,
   );
 
 export async function clientLoader() {
   await getQueryClient().prefetchQuery(
-    bbQueryOptions<ResourceShowcase>(`${resourceCatalog.api}/showcase`),
+    bbQueryOptions(`${resourceCatalog.api}/showcase`, {
+      schema: ResourceShowcaseSchema,
+    }),
   );
 }
 

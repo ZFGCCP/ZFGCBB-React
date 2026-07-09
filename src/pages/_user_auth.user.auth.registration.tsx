@@ -1,7 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
-import { RegistrationFormSchema, type RegistrationForm } from "@/schemas/auth";
-import type { User } from "@/types/user";
 
 function AgreementText() {
   return (
@@ -77,22 +74,17 @@ function AgreementText() {
 export default function UserRegistration() {
   const navigate = useNavigate();
   // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation
-  const registrationMutation = useMutation<User, Error, RegistrationForm>({
-    mutationFn: async (values) => {
-      const response = await apiFetch(`${getApiBaseUrl()}/users/register`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userName: values.userName,
-          displayName: values.displayName,
-          email: values.email,
-          password: values.password,
-        }),
-        cache: "no-cache",
-      });
-      return handleResponseWithJason<User>(response);
-    },
+  const registrationMutation = useBBMutation({
+    request: (values: RegistrationForm) => ({
+      url: "/users/register",
+      body: {
+        userName: values.userName,
+        displayName: values.displayName,
+        email: values.email,
+        password: values.password,
+      },
+    }),
+    schema: UserSchema,
     onSuccess: () => navigate("/user/auth/login"),
   });
 

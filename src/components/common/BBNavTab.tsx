@@ -21,7 +21,7 @@ export default function BBNavTab({
   onClick,
 }: BBNavTabProps) {
   const shell = `flex px-4 mx-1 items-center gap-2 border-2 border-default border-b-0 h-8 rounded-t-lg ${
-    active ? "bg-accented text-highlighted font-bold" : "bg-muted"
+    active ? "bg-elevated text-highlighted relative -mb-0.5" : "bg-muted"
   }`;
   const badge = count != null && (
     <span className="text-xs text-dimmed">{count}</span>

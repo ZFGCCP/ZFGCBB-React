@@ -1,4 +1,4 @@
-import type { Paged } from "@/types/content";
+import type { GenericSchema } from "valibot";
 import type { CatalogQuery } from "@/components/common/BBCatalogToolbar";
 
 export type CatalogParamMap = {
@@ -28,11 +28,13 @@ export function catalogListUrl(
 export function useCatalog<TItem>(
   basePath: `/${string}`,
   paramMap: CatalogParamMap,
+  itemSchema: GenericSchema<unknown, TItem>,
 ) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { data } = useBBQuery<Paged<TItem>>(
-    catalogListUrl(basePath, paramMap, searchParams),
-  );
+  const query = useBBQuery(catalogListUrl(basePath, paramMap, searchParams), {
+    schema: pagedSchema(itemSchema),
+  });
+  const data = query.data;
 
   const apply = (next: CatalogQuery & { page?: number }) => {
     setSearchParams(
@@ -60,5 +62,5 @@ export function useCatalog<TItem>(
     ? Math.max(1, Math.ceil(data.total / data.pageSize))
     : 1;
 
-  return { searchParams, data, apply, totalPages };
+  return { searchParams, data, query, apply, totalPages };
 }

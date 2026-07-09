@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import type { GenericSchema } from "valibot";
 import type { FeaturedItem } from "@/components/cms/showcase/ShowcasePieces";
-import type { CatalogParamMap } from "@/hooks/useCatalog";
+import type { CatalogParamMap } from "@/hooks/data/useCatalog";
 import type {
   CatalogFilterOption,
   CatalogLanguageOption,
@@ -8,7 +9,7 @@ import type {
 } from "@/components/common/BBCatalogToolbar";
 
 export type RailSource = {
-  previewContentResourceId: number | null;
+  previewContentResourceId?: number;
   title: string;
   slug: string;
 };
@@ -23,6 +24,9 @@ export type CmsCatalogDescriptor<
   api: `/${string}`;
   basePath: `/${string}`;
   params: CatalogParamMap;
+  itemSchema: GenericSchema<unknown, TItem>;
+  showcaseSchema: GenericSchema<unknown, TShowcase>;
+  facetsSchema: GenericSchema<unknown, TFacets>;
   searchPlaceholder: string;
   sortOptions: readonly CatalogSortOption[];
   kicker: string;

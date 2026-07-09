@@ -1,4 +1,4 @@
-import type { SearchHit, SearchResults } from "@/types/search";
+import type { SearchHit } from "@/types/search";
 
 export default function SearchPalette({ onClose }: { onClose: () => void }) {
   const [term, setTerm] = useState("");
@@ -25,9 +25,14 @@ export default function SearchPalette({ onClose }: { onClose: () => void }) {
   const query = new URLSearchParams({ q: debounced });
   if (filter) query.set("types", filter);
   const enabled = debounced.trim().length >= 2;
-  const { data, isFetching } = useBBQuery<SearchResults>(
+  const { data, isFetching, isError, refetch } = useBBQuery(
     `/search?${query.toString()}`,
-    { enabled, staleTime: 30000, queryKey: `search:${filter}:${debounced}` },
+    {
+      enabled,
+      staleTime: 30000,
+      queryKey: `search:${filter}:${debounced}`,
+      schema: SearchResultsSchema,
+    },
   );
   const { data: filters = [] } = useSearchRealms();
   const flatHits = useMemo<SearchHit[]>(
@@ -142,6 +147,13 @@ export default function SearchPalette({ onClose }: { onClose: () => void }) {
             <p className="px-4 py-8 text-center text-sm text-dimmed">
               Type at least two characters to search.
             </p>
+          )}
+
+          {enabled && isError && (
+            <BBErrorInline
+              message="Search hit an error."
+              onRetry={() => void refetch()}
+            />
           )}
 
           {enabled && data && data.total === 0 && !isFetching && (

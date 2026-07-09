@@ -6,12 +6,9 @@ export function AllPages() {
   const namespace = searchParams.get("ns") ?? "";
   const filterText = searchParams.get("q") ?? "";
   const pageNo = parsePage(searchParams.get("page"));
-  const { data } = useBBQuery<Paged<WikiPageRef>>(
-    wikiPagesListUrl(searchParams),
-  );
-  const totalPages = data
-    ? Math.max(1, Math.ceil(data.total / data.pageSize))
-    : 1;
+  const query = useBBQuery(wikiPagesListUrl(searchParams), {
+    schema: pagedSchema(WikiPageRefSchema),
+  });
 
   const apply = (next: {
     namespace?: string;
@@ -62,148 +59,180 @@ export function AllPages() {
               {option}
             </button>
           ))}
-          {data && (
+          {query.data && (
             <span
               aria-live="polite"
               className="ml-auto self-center text-xs text-dimmed"
             >
-              {data.total} pages
+              {query.data.total} pages
             </span>
           )}
         </form>
-        <WikiPageList refs={data?.items ?? []} />
-        {totalPages > 1 && (
-          <BBPaginator
-            numPages={totalPages}
-            currentPage={pageNo}
-            onPageChange={(next) => apply({ page: next })}
-          />
-        )}
+        <BBQueryBoundary
+          query={query}
+          isEmpty={(data) => !data.items.length}
+          empty={<BBEmpty message="No pages match your filter." />}
+        >
+          {(data) => {
+            const totalPages = Math.max(
+              1,
+              Math.ceil(data.total / data.pageSize),
+            );
+            return (
+              <>
+                <WikiPageList refs={data.items} />
+                {totalPages > 1 && (
+                  <BBPaginator
+                    numPages={totalPages}
+                    currentPage={pageNo}
+                    onPageChange={(next) => apply({ page: next })}
+                  />
+                )}
+              </>
+            );
+          }}
+        </BBQueryBoundary>
       </div>
     </BBWidget>
   );
 }
 
 export function WikiStatistics() {
-  const { data } = useBBQuery<{
-    totalPages: number;
-    byNamespace: Record<string, number>;
-    categories: number;
-    redirects: number;
-  }>("/wiki/meta/statistics");
+  const query = useBBQuery("/wiki/meta/statistics", {
+    schema: WikiStatisticsSchema,
+  });
   return (
     <BBWidget widgetTitle="Statistics">
       <div className="p-4 text-sm">
-        {data && (
-          <BBPanel
-            as="dl"
-            className="max-w-md [&_dt]:border-b [&_dt]:border-default/40 [&_dt]:bg-accented [&_dt]:px-2.5 [&_dt]:py-1 [&_dt]:text-xs [&_dt]:font-bold [&_dt]:tracking-widest [&_dd]:border-b [&_dd]:border-default/40 [&_dd]:px-2.5 [&_dd]:py-1.5"
-          >
-            <dt>TOTAL PAGES</dt>
-            <dd>{data.totalPages.toLocaleString()}</dd>
-            <dt>CATEGORIES</dt>
-            <dd>{data.categories.toLocaleString()}</dd>
-            <dt>REDIRECTS</dt>
-            <dd>{data.redirects.toLocaleString()}</dd>
-            <dt>PAGES BY NAMESPACE</dt>
-            <dd>
-              <ul className="space-y-0.5">
-                {Object.entries(data.byNamespace).map(([namespace, count]) => (
-                  <li key={namespace}>
-                    <BBLink
-                      to={`/wiki/special/allpages?ns=${namespace}`}
-                      className="text-highlighted"
-                    >
-                      {namespace}
-                    </BBLink>{" "}
-                    <span className="text-dimmed">({count})</span>
-                  </li>
-                ))}
-              </ul>
-            </dd>
-          </BBPanel>
-        )}
+        <BBQueryBoundary query={query}>
+          {(data) => (
+            <BBPanel
+              as="dl"
+              className="max-w-md [&_dt]:border-b [&_dt]:border-default/40 [&_dt]:bg-accented [&_dt]:px-2.5 [&_dt]:py-1 [&_dt]:text-xs [&_dt]:font-bold [&_dt]:tracking-widest [&_dd]:border-b [&_dd]:border-default/40 [&_dd]:px-2.5 [&_dd]:py-1.5"
+            >
+              <dt>TOTAL PAGES</dt>
+              <dd>{data.totalPages.toLocaleString()}</dd>
+              <dt>CATEGORIES</dt>
+              <dd>{data.categories.toLocaleString()}</dd>
+              <dt>REDIRECTS</dt>
+              <dd>{data.redirects.toLocaleString()}</dd>
+              <dt>PAGES BY NAMESPACE</dt>
+              <dd>
+                <ul className="space-y-0.5">
+                  {Object.entries(data.byNamespace).map(
+                    ([namespace, count]) => (
+                      <li key={namespace}>
+                        <BBLink
+                          to={`/wiki/special/allpages?ns=${namespace}`}
+                          className="text-highlighted"
+                        >
+                          {namespace}
+                        </BBLink>{" "}
+                        <span className="text-dimmed">({count})</span>
+                      </li>
+                    ),
+                  )}
+                </ul>
+              </dd>
+            </BBPanel>
+          )}
+        </BBQueryBoundary>
       </div>
     </BBWidget>
   );
 }
 
 export function CategoryIndex() {
-  const { data: categories } = useBBQuery<WikiCategoryCount[]>(
-    "/wiki/meta/categories",
-  );
+  const query = useBBQuery("/wiki/meta/categories", {
+    schema: WikiCategoryCountListSchema,
+  });
   return (
     <BBWidget widgetTitle="Categories">
-      <ul className="md:columns-3 p-4 text-sm [&_li]:break-inside-avoid">
-        {(categories ?? []).map((category) => (
-          <li key={category.name}>
-            <BBLink
-              to={`/wiki/Category:${category.name.replace(/ /g, "_")}`}
-              className="text-highlighted"
-            >
-              {category.name}
-            </BBLink>{" "}
-            <span className="text-dimmed">({category.count})</span>
-          </li>
-        ))}
-      </ul>
+      <BBQueryBoundary
+        query={query}
+        isEmpty={(categories) => !categories.length}
+        empty={<BBEmpty message="No categories yet." />}
+      >
+        {(categories) => (
+          <ul className="md:columns-3 p-4 text-sm [&_li]:break-inside-avoid">
+            {categories.map((category) => (
+              <li key={category.name}>
+                <BBLink
+                  to={`/wiki/Category:${category.name.replace(/ /g, "_")}`}
+                  className="text-highlighted"
+                >
+                  {category.name}
+                </BBLink>{" "}
+                <span className="text-dimmed">({category.count})</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </BBQueryBoundary>
     </BBWidget>
   );
 }
 
 export function RecentChanges() {
-  const { data: changes } = useBBQuery<WikiRevisionRef[]>(
-    "/wiki/meta/recentchanges",
-  );
+  const query = useBBQuery("/wiki/meta/recentchanges", {
+    schema: WikiRevisionRefListSchema,
+  });
   return (
     <BBWidget widgetTitle="Recent changes">
       <div className="p-4">
-        <WikiTimeline>
-          {(changes ?? []).map((change) => (
-            <WikiTimelineItem key={change.revisionId} summary={change.summary}>
-              <span className="text-xs text-dimmed">
-                <BBDate dateStr={change.authoredTs} fallback="unknown date" />
-              </span>
-              {change.page && (
-                <BBLink
-                  to={
-                    change.current
-                      ? `/wiki/${change.page.slug}`
-                      : `/wiki/${change.page.slug}?rev=${change.revisionId}`
-                  }
-                  className="font-bold text-highlighted"
+        <BBQueryBoundary
+          query={query}
+          isEmpty={(changes) => !changes.length}
+          empty={<BBEmpty message="No recent changes." />}
+        >
+          {(changes) => (
+            <WikiTimeline>
+              {changes.map((change) => (
+                <WikiTimelineItem
+                  key={change.revisionId}
+                  summary={change.summary}
                 >
-                  <WikiRefLabel
-                    namespace={change.page.namespace}
-                    title={change.page.title}
-                  />
-                </BBLink>
-              )}
-              {change.authorName && <span>{change.authorName}</span>}
-            </WikiTimelineItem>
-          ))}
-        </WikiTimeline>
+                  <span className="text-xs text-dimmed">
+                    <BBDate
+                      dateStr={change.authoredTs}
+                      fallback="unknown date"
+                    />
+                  </span>
+                  {change.page && (
+                    <BBLink
+                      to={
+                        change.current
+                          ? `/wiki/${change.page.slug}`
+                          : `/wiki/${change.page.slug}?rev=${change.revisionId}`
+                      }
+                      className="font-bold text-highlighted"
+                    >
+                      <WikiRefLabel
+                        namespace={change.page.namespace}
+                        title={change.page.title}
+                      />
+                    </BBLink>
+                  )}
+                  {change.authorName && <span>{change.authorName}</span>}
+                </WikiTimelineItem>
+              ))}
+            </WikiTimeline>
+          )}
+        </BBQueryBoundary>
       </div>
     </BBWidget>
   );
 }
 
 export function RandomPage() {
-  const { data } = useBBQuery<Paged<WikiPageRef>>(
-    "/wiki/meta/pages?page=1&pageSize=1",
-  );
-  const [pick] = useState(() => Math.random());
-  if (!data) return null;
-  return <RandomPick index={Math.floor(pick * data.total)} />;
-}
-
-function RandomPick({ index }: { index: number }) {
-  const { data } = useBBQuery<Paged<WikiPageRef>>(
-    `/wiki/meta/pages?page=${index + 1}&pageSize=1`,
-  );
-  const target = data?.items[0];
-  if (!target) return null;
-  return <Navigate to={`/wiki/${target.slug}`} replace />;
+  const [nonce] = useState(() => Math.random().toString(36).slice(2));
+  const { data } = useBBQuery("/wiki/meta/random", {
+    schema: WikiPageRefSchema,
+    queryKey: `wiki-random:${nonce}`,
+    gcTime: 0,
+  });
+  if (!data?.slug) return null;
+  return <Navigate to={`/wiki/${data.slug}`} replace />;
 }
 
 export function UnknownSpecialPage({ name }: { name: string }) {

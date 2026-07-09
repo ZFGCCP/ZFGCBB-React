@@ -1424,15 +1424,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@js-temporal/polyfill@npm:^0.5.1":
-  version: 0.5.1
-  resolution: "@js-temporal/polyfill@npm:0.5.1"
-  dependencies:
-    jsbi: "npm:^4.3.0"
-  checksum: 10c0/d9a843e22167e6c98946dc03f8a480d062ece5d01ca850930c8f00af1bd99cfe513a98c3420b24a9920c47e7a61a82e5c8866da47ecdc0e7ee2cd3bf6e440b46
-  languageName: node
-  linkType: hard
-
 "@napi-rs/wasm-runtime@npm:^1.1.4, @napi-rs/wasm-runtime@npm:^1.1.6":
   version: 1.1.6
   resolution: "@napi-rs/wasm-runtime@npm:1.1.6"
@@ -3608,6 +3599,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-async-storage-persister@npm:^5":
+  version: 5.101.2
+  resolution: "@tanstack/query-async-storage-persister@npm:5.101.2"
+  dependencies:
+    "@tanstack/query-core": "npm:5.101.2"
+    "@tanstack/query-persist-client-core": "npm:5.101.2"
+  checksum: 10c0/6af6efdcddb4481855e10dbdef0211e20c4f7539750d8b1501965d222286991da0a8c6bac0e30496218f9629a0287f2be26a89e7fd6e9a3596dc6c17e044fbb7
+  languageName: node
+  linkType: hard
+
 "@tanstack/query-core@npm:5.101.2":
   version: 5.101.2
   resolution: "@tanstack/query-core@npm:5.101.2"
@@ -3619,6 +3620,15 @@ __metadata:
   version: 5.101.2
   resolution: "@tanstack/query-devtools@npm:5.101.2"
   checksum: 10c0/d874046aebb4d7e09f33d5f4b7d0c3dafbd47d8c4d5e5ef4896cbb4997be625a0e7dd7f42fa8ea7ce1123e95a76d8e67bc811ef2d53e329b5694d22cb714c75b
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-persist-client-core@npm:5.101.2":
+  version: 5.101.2
+  resolution: "@tanstack/query-persist-client-core@npm:5.101.2"
+  dependencies:
+    "@tanstack/query-core": "npm:5.101.2"
+  checksum: 10c0/a57f9046a19cebc21ce30c367eca679b5063e6a357f2395bb06e5858c8e6e1df68cae33a148a16b6d33e037a30e9bb0b13eae3d9e0b8d484de8221d3a3189437
   languageName: node
   linkType: hard
 
@@ -3646,6 +3656,18 @@ __metadata:
     "@tanstack/react-query": ^5.101.2
     react: ^18 || ^19
   checksum: 10c0/83b07bd1650b0cdb8b0f57e3dbfb187aa0d3af7c89f197514903f5afa298ea0f820f7283968023cda6de25243f5055943ebb310ee2b5c79cc63eff82f12fddee
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query-persist-client@npm:^5":
+  version: 5.101.2
+  resolution: "@tanstack/react-query-persist-client@npm:5.101.2"
+  dependencies:
+    "@tanstack/query-persist-client-core": "npm:5.101.2"
+  peerDependencies:
+    "@tanstack/react-query": ^5.101.2
+    react: ^18 || ^19
+  checksum: 10c0/3b33ab25c8a38126aa7f9820a6b24513052f5499ee29aa05b09fb5a95f3f1887a8d30214e6a8ada59a25092729e07319edb3ffecaa1056cac303661906f2ce22
   languageName: node
   linkType: hard
 
@@ -3822,7 +3844,6 @@ __metadata:
     "@dxup/unimport": "npm:^0.1.2"
     "@iconify-json/fa6-regular": "npm:^1.2.4"
     "@iconify-json/fa6-solid": "npm:^1.2.4"
-    "@js-temporal/polyfill": "npm:^0.5.1"
     "@react-router/dev": "npm:^8.1.0"
     "@react-router/fs-routes": "npm:^8.1.0"
     "@react-router/node": "npm:^8.1.0"
@@ -3830,9 +3851,11 @@ __metadata:
     "@svgr/core": "npm:^8.1.0"
     "@svgr/plugin-jsx": "npm:^8.1.0"
     "@tailwindcss/vite": "npm:^4.3.2"
+    "@tanstack/query-async-storage-persister": "npm:^5"
     "@tanstack/react-form": "npm:^1.33.0"
     "@tanstack/react-query": "npm:^5.101.2"
     "@tanstack/react-query-devtools": "npm:^5.101.2"
+    "@tanstack/react-query-persist-client": "npm:^5"
     "@types/node": "npm:^26.1.1"
     "@types/react": "npm:^19.2.17"
     "@types/react-dom": "npm:^19.2.3"
@@ -5813,13 +5836,6 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: 10c0/058b30473d6915ca5b4feb11e2f7d4d97242f98d00a798ed48dd90b46b7c640398afe9128c5db22c5300f8c6528fe2a174b9a93f351a70ebc28c6203938d8bff
-  languageName: node
-  linkType: hard
-
-"jsbi@npm:^4.3.0":
-  version: 4.3.2
-  resolution: "jsbi@npm:4.3.2"
-  checksum: 10c0/f8deb4fc1b1828ee9f90b19b778748f23877d63d437a083b4bead36c7b76c8d173b5dbe2a20cc5dc0217be5bde81791b696b104d5a40d7ede5fda34831d9fab6
   languageName: node
   linkType: hard
 

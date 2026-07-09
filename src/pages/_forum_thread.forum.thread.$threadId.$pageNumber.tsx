@@ -1,18 +1,19 @@
 import { HydrationBoundary } from "@tanstack/react-query";
-import type { Thread } from "@/types/forum";
 import type { Route } from "./+types/_forum_thread.forum.thread.$threadId.$pageNumber";
 import { getQueryClient } from "@/providers/query/queryProvider";
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated<Thread>(
+  prefetchQueryDehydrated(
     request,
     `/thread/${params.threadId}?page=${params.pageNumber}&pageSize=10`,
+    ThreadSchema,
   );
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   await getQueryClient().prefetchQuery(
-    bbQueryOptions<Thread>(
+    bbQueryOptions(
       `/thread/${params.threadId}?page=${params.pageNumber}&pageSize=10`,
+      { schema: ThreadSchema },
     ),
   );
 }
@@ -21,14 +22,10 @@ export default function ForumThreadPage({
   loaderData,
   params,
 }: Route.ComponentProps) {
-  const { threadId, pageNumber } = params;
-  const currentPage = parseInt(pageNumber!);
-  const { data: thread } = useBBQuery<Thread>(
-    `/thread/${threadId}?page=${currentPage}&pageSize=10`,
-  );
+  const { pageNumber } = params;
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <ForumThread pageNumber={pageNumber!} thread={thread!} />
+      <ForumThread pageNumber={pageNumber!} />
     </HydrationBoundary>
   );
 }

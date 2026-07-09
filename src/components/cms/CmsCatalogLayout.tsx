@@ -13,9 +13,9 @@ export function CmsCatalogLayout<
 }: {
   descriptor: CmsCatalogDescriptor<TItem, TShowcase, TFacets>;
 }) {
-  const { data: showcase } = useBBQuery<TShowcase>(
-    `${descriptor.api}/showcase`,
-  );
+  const query = useBBQuery(`${descriptor.api}/showcase`, {
+    schema: descriptor.showcaseSchema,
+  });
   const headingId = `${descriptor.crumb.toLowerCase()}-heading`;
   const label = descriptor.crumb.toLowerCase();
   const crumbs = [{ label: "Home", to: "/" }, { label: descriptor.crumb }];
@@ -32,9 +32,9 @@ export function CmsCatalogLayout<
           >
             {descriptor.heading}
           </h1>
-          {showcase && (
+          {query.data && (
             <span className="ml-auto self-center text-xs text-dimmed">
-              {descriptor.total(showcase).toLocaleString()} {label}
+              {descriptor.total(query.data).toLocaleString()} {label}
             </span>
           )}
         </div>

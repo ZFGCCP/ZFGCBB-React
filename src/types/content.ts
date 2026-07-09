@@ -1,178 +1,29 @@
-import type { BaseBB } from "./api";
+import * as v from "valibot";
 
-export type WikiPageRef = {
-  namespace: string;
-  title: string;
-  slug: string;
-};
-
-export type WikiCategoryCount = {
-  name: string;
-  count: number;
-};
-
-export type WikiNavItem = {
-  label: string;
-  to: string;
-};
-
-export type WikiNavSection = {
-  title: string;
-  items: WikiNavItem[];
-};
-
-export type WikiConfig = {
-  siteName: string;
-  namespaces: string[];
-  nav: WikiNavSection[];
-};
-
-export type WikiRevisionRef = {
-  revisionId: number;
-  page: WikiPageRef | null;
-  authoredTs: string | null;
-  authorName: string | null;
-  summary: string | null;
-  size: number;
-  current: boolean;
-};
-
-export type WikiFileRef = {
-  contentResourceId: number;
-  filename: string | null;
-  mimeType: string | null;
-  fileSize: number | null;
-};
-
-export type WikiHeading = {
-  level: number;
-  text: string;
-  id: string;
-};
-
-export type WikiPage = BaseBB & {
-  namespace: string;
-  title: string;
-  slug: string;
-  redirectTo: string | null;
-  content: string | null;
-  contentParsed: string | null;
-  contentFormat: string | null;
-  categories: string[];
-  categoryMembers: WikiPageRef[];
-  revision: WikiRevisionRef | null;
-  file: WikiFileRef | null;
-  headings?: WikiHeading[];
-  toc?: boolean;
-  entityUrl?: `/${string}` | null;
-};
-
-export type ProjectScreenshot = {
-  contentResourceId: number | null;
-  caption: string | null;
-  ordinal: number;
-};
-
-export type ProjectDownload = {
-  contentResourceId: number | null;
-  label: string | null;
-  url: string | null;
-  filename: string | null;
-  fileSize: number | null;
-  publishedTs: string | null;
-  ordinal: number;
-};
-
-export type ArchiveEntry = {
-  name: string;
-  size: number;
-};
-
-export type ProjectNews = {
-  threadId: number | null;
-  threadName: string | null;
-  subject: string | null;
-  body: string | null;
-  authorUserId: number | null;
-  authorName: string | null;
-  publishedTs: string | null;
-};
-
-export type TeamMember = {
-  userId: number;
-  displayName: string | null;
-  memberRole: string | null;
-};
-
-export type TeamInfo = {
-  teamId: number;
-  name: string;
-  description: string | null;
-  members: TeamMember[];
-};
-
-export type FacetValue = { value: string; count: number };
-
-export type ProjectFacets = {
-  languages: FacetValue[];
-  statuses: FacetValue[];
-};
-
-export type ResourceFacets = {
-  types: FacetValue[];
-};
-
-export type Project = BaseBB & {
-  title: string;
-  slug: string;
-  status: string;
-  progress: number;
-  summary: string | null;
-  summaryText: string | null;
-  language: string | null;
-  requirements: string | null;
-  threadId: number | null;
-  wikiPageId: number | null;
-  previewContentResourceId: number | null;
-  viewCount: number | null;
-  downloadCount: number | null;
-  author: string | null;
-  createdUserId: number | null;
-  publishedTs: string | null;
-  lastUpdatedTs: string | null;
-  rating: number | null;
-  voteCount: number | null;
-  screenshots: ProjectScreenshot[];
-  downloads: ProjectDownload[];
-  tags: string[];
-  news: ProjectNews[];
-  team: TeamInfo | null;
-  page: WikiPage | null;
-};
-
-export type Resource = BaseBB & {
-  title: string;
-  slug: string;
-  resourceType: string | null;
-  summary: string | null;
-  summaryText: string | null;
-  fileSize: number | null;
-  downloadUrl: string | null;
-  threadId: number | null;
-  wikiPageId: number | null;
-  downloadContentResourceId: number | null;
-  downloadFilename: string | null;
-  previewContentResourceId: number | null;
-  viewCount: number | null;
-  downloadCount: number | null;
-  author: string | null;
-  createdUserId: number | null;
-  publishedTs: string | null;
-  lastUpdatedTs: string | null;
-  rating: number | null;
-  voteCount: number | null;
-  page: WikiPage | null;
-};
+export type WikiPageRef = v.InferOutput<typeof WikiPageRefSchema>;
+export type WikiCategoryCount = v.InferOutput<typeof WikiCategoryCountSchema>;
+export type WikiNavItem = v.InferOutput<typeof WikiNavItemSchema>;
+export type WikiNavSection = v.InferOutput<typeof WikiNavSectionSchema>;
+export type WikiConfig = v.InferOutput<typeof WikiConfigSchema>;
+export type WikiRevisionRef = v.InferOutput<typeof WikiRevisionRefSchema>;
+export type WikiFileRef = v.InferOutput<typeof WikiFileRefSchema>;
+export type WikiHeading = v.InferOutput<typeof WikiHeadingSchema>;
+export type WikiPage = v.InferOutput<typeof WikiPageSchema>;
+export type ProjectScreenshot = v.InferOutput<typeof ProjectScreenshotSchema>;
+export type ProjectDownload = v.InferOutput<typeof ProjectDownloadSchema>;
+export type ArchiveEntry = v.InferOutput<typeof ArchiveEntrySchema>;
+export type ProjectNews = v.InferOutput<typeof ProjectNewsSchema>;
+export type TeamMember = v.InferOutput<typeof TeamMemberSchema>;
+export type TeamInfo = v.InferOutput<typeof TeamInfoSchema>;
+export type FacetValue = v.InferOutput<typeof FacetValueSchema>;
+export type ProjectFacets = v.InferOutput<typeof ProjectFacetsSchema>;
+export type ResourceFacets = v.InferOutput<typeof ResourceFacetsSchema>;
+export type Project = v.InferOutput<typeof ProjectSchema>;
+export type Resource = v.InferOutput<typeof ResourceSchema>;
+export type MergeCandidate = v.InferOutput<typeof MergeCandidateSchema>;
+export type CmsConfig = v.InferOutput<typeof CmsConfigSchema>;
+export type ProjectShowcase = v.InferOutput<typeof ProjectShowcaseSchema>;
+export type ResourceShowcase = v.InferOutput<typeof ResourceShowcaseSchema>;
 
 export type Paged<TItem> = {
   items: TItem[];
@@ -181,31 +32,10 @@ export type Paged<TItem> = {
   pageSize: number;
 };
 
-export type MergeCandidate = {
-  sourceType: "PROJECT" | "RESOURCE";
-  sourceId: number;
-  sourceTitle: string;
-  sourceSlug: string | null;
-  targetType: "WIKI_PAGE" | "PROJECT" | "THREAD";
-  targetId: number;
-  targetTitle: string;
-  targetSlug: string | null;
-  confidence: number;
-  reason: string;
-};
-
-export type CmsConfig = {
-  discussionBoardId: string | null;
-};
-
 export type Showcase<TItem> = {
-  featured: TItem | null;
+  featured?: TItem;
   recent: TItem[];
   random: TItem[];
   topRated: TItem[];
   mostDownloaded: TItem[];
 };
-
-export type ProjectShowcase = Showcase<Project> & { totalProjects: number };
-
-export type ResourceShowcase = Showcase<Resource> & { totalResources: number };

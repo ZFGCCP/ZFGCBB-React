@@ -1,5 +1,5 @@
 import type { Project, ProjectFacets, ProjectShowcase } from "@/types/content";
-import type { CatalogParamMap } from "@/hooks/useCatalog";
+import type { CatalogParamMap } from "@/hooks/data/useCatalog";
 import type { CmsCatalogDescriptor } from "@/types/catalogDescriptor";
 
 const PROJECT_PARAMS: CatalogParamMap = { filter: "status", language: "lang" };
@@ -14,6 +14,9 @@ export const projectCatalog: CmsCatalogDescriptor<
   api: "/projects",
   basePath: "/content/projects",
   params: PROJECT_PARAMS,
+  itemSchema: ProjectSchema,
+  showcaseSchema: ProjectShowcaseSchema,
+  facetsSchema: ProjectFacetsSchema,
   searchPlaceholder: "Search projects by title…",
   sortOptions: [
     { value: "", label: "A - Z" },

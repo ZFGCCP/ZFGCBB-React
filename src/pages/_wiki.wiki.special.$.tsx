@@ -2,18 +2,17 @@ import { HydrationBoundary } from "@tanstack/react-query";
 import { Navigate } from "react-router";
 import type { Route } from "./+types/_wiki.wiki.special.$";
 import type { RoutePaths } from "@/components/common/BBLink";
-import type { WikiPage } from "@/types/content";
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
   prefetchQueryDehydrated(request, [
-    "/wiki/meta/config",
-    `/wiki/Special:${params["*"] ?? ""}`,
+    { url: "/wiki/meta/config", schema: WikiConfigSchema },
+    { url: `/wiki/Special:${params["*"] ?? ""}`, schema: WikiPageSchema },
   ]);
 
 function SpecialResolver({ name }: { name: string }) {
-  const { data: page, isPending } = useBBQuery<WikiPage>(
-    `/wiki/Special:${name}`,
-  );
+  const { data: page, isPending } = useBBQuery(`/wiki/Special:${name}`, {
+    schema: WikiPageSchema,
+  });
   if (page?.redirectTo) {
     const target = page.redirectTo.startsWith("/")
       ? page.redirectTo

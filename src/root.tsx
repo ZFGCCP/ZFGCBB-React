@@ -9,8 +9,8 @@ import {
   useRouteLoaderData,
 } from "react-router";
 import { getResponseStatus } from "./shared/http/response.handler";
-import { bbQueryOptions } from "./hooks/bbQueryOptions";
-import { useTheme } from "./hooks/useTheme";
+import { bbQueryOptions } from "./hooks/query/bbQueryOptions";
+import { useTheme } from "./hooks/ui/useTheme";
 import BBForbidden from "./components/common/BBForbidden";
 import ThemePicker from "./components/common/ThemePicker";
 import {
@@ -25,9 +25,9 @@ export async function loader({ request }: Route.LoaderArgs) {
   const cookie = request.headers.get("Cookie") ?? "";
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery(
-    bbQueryOptions<User>(
+    bbQueryOptions(
       "/users/loggedInUser",
-      undefined,
+      { schema: UserSchema },
       cookie ? { Cookie: cookie } : undefined,
     ),
   );
@@ -70,6 +70,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="msapplication-TileColor" content="#000000" />
         <meta name="theme-color" content="#000000" />
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <link rel="apple-touch-icon" href="/pwa-192x192.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="ZFGC.com" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta
           httpEquiv="Content-Security-Policy"
           content="object-src 'none'; frame-src 'self'"
@@ -125,8 +130,8 @@ export function ErrorBoundary() {
   }
 
   return (
-    <main>
-      <p>Something went wrong. Please try again later.</p>
+    <main className="min-h-dvh p-3.5">
+      <BBError error={error instanceof Error ? error : undefined} />
     </main>
   );
 }

@@ -1,18 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import { UserContext } from "@/providers/user/userProvider";
-import {
-  JOB_TYPES,
-  JobListSchema,
-  MigrateJobFormSchema,
-  MigrationConflictListSchema,
-  type Job,
-  type MigrateJobForm,
-  type MigrateJobRequest,
-  type MigrateUploadResponse,
-  type MigrationConflict,
-} from "@/schemas/system";
-import type { BaseBB } from "@/types/api";
 
 function stateClass(state: Job["state"]): string {
   switch (state) {
@@ -36,14 +24,13 @@ function JobRow({
   job: Job;
   onCancelSuccess: () => void;
 }) {
-  const cancelMutation = useBBMutation<BaseBB, BaseBB>(
-    () => [
-      `/system/migrate/jobs/${job.id}`,
-      {} as BaseBB,
-      { method: "DELETE" },
-    ],
-    onCancelSuccess,
-  );
+  const cancelMutation = useBBMutation({
+    request: () => ({
+      url: `/system/migrate/jobs/${job.id}`,
+      method: "DELETE",
+    }),
+    onSuccess: onCancelSuccess,
+  });
 
   const canCancel = job.state === "QUEUED" || job.state === "RUNNING";
 
@@ -85,7 +72,7 @@ const JOB_TYPE_OPTIONS = JOB_TYPES.map((type) => ({
 }));
 
 function ConflictsPanel() {
-  const { data: conflicts, refetch } = useBBQuery<MigrationConflict[]>(
+  const { data: conflicts, refetch } = useBBQuery(
     "/system/migrate/conflicts?status=OPEN",
     {
       retry: 0,
@@ -96,14 +83,9 @@ function ConflictsPanel() {
     },
   );
 
-  const scan = useMutation({
-    mutationFn: async () => {
-      const response = await apiFetch(
-        `${getApiBaseUrl()}/system/migrate/conflicts/scan`,
-        { method: "POST", credentials: "include" },
-      );
-      return handleResponseWithJason<{ detected: number }>(response);
-    },
+  const scan = useBBMutation({
+    request: () => ({ url: "/system/migrate/conflicts/scan" }),
+    schema: MigrateDetectResponseSchema,
     onSuccess: () => refetch(),
   });
 
@@ -221,7 +203,7 @@ export default function SystemMigrate() {
     useState<MigrateUploadResponse | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: jobs, refetch } = useBBQuery<Job[]>("/system/migrate/jobs", {
+  const { data: jobs, refetch } = useBBQuery("/system/migrate/jobs", {
     retry: 0,
     gcTime: 0,
     staleTime: 0,
@@ -249,7 +231,7 @@ export default function SystemMigrate() {
           body: formData,
         },
       );
-      return handleResponseWithJason<MigrateUploadResponse>(response);
+      return handleResponseWithJason(response, MigrateUploadResponseSchema);
     },
     onSuccess: (data) => setUploadResult(data),
   });

@@ -49,6 +49,9 @@ interface BBHtmlProps {
   className?: string;
 }
 
-export default function BBHtml({ html, className }: BBHtmlProps) {
-  return <div className={className}>{parse(html, PARSE_OPTIONS)}</div>;
+function BBHtml({ html, className }: BBHtmlProps) {
+  const nodes = useMemo(() => parse(html, PARSE_OPTIONS), [html]);
+  return <div className={className}>{nodes}</div>;
 }
+
+export default memo(BBHtml);

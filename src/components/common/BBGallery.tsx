@@ -58,7 +58,7 @@ export default function BBGallery({ images }: { images: BBGalleryImage[] }) {
           ref={openModal}
           aria-label="Image viewer"
           onClose={() => setIndex(null)}
-          className="fixed inset-0 z-50 m-0 flex h-full w-full max-h-none max-w-none items-center justify-center border-0 bg-transparent p-0 [&::backdrop]:bg-black/85"
+          className="fixed inset-0 z-50 m-0 flex h-full w-full max-h-none max-w-none items-center justify-center border-0 bg-transparent p-0 backdrop:bg-black/85"
         >
           <button
             type="button"

@@ -28,5 +28,8 @@ export default defineConfig((env) => {
         "@": srcDirectory,
       },
     },
+    optimizeDeps: {
+      include: ["@tanstack/react-form"],
+    },
   } satisfies UserConfig);
 });

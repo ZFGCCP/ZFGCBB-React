@@ -41,9 +41,9 @@ export const JobSchema = v.object({
   type: JobTypeSchema,
   state: JobStateSchema,
   submittedAt: v.string(),
-  startedAt: v.nullable(v.string()),
-  finishedAt: v.nullable(v.string()),
-  error: v.nullable(v.string()),
+  startedAt: v.optional(v.string()),
+  finishedAt: v.optional(v.string()),
+  error: v.optional(v.string()),
 });
 export type Job = v.InferOutput<typeof JobSchema>;
 
@@ -51,19 +51,25 @@ export const JobListSchema = v.array(JobSchema);
 
 export const InstallStatusResponseSchema = v.object({
   installed: v.boolean(),
-  siteName: v.nullable(v.string()),
+  siteName: v.optional(v.string()),
 });
 export type InstallStatusResponse = v.InferOutput<
   typeof InstallStatusResponseSchema
 >;
+
+export const SiteInfoSchema = v.object({
+  siteName: v.optional(v.string()),
+  registrationEnabled: v.boolean(),
+});
+export type SiteInfo = v.InferOutput<typeof SiteInfoSchema>;
 
 export const InstallResponseSchema = v.object({
   installed: v.boolean(),
   adminUserId: v.number(),
   siteName: v.string(),
   sampleDataApplied: v.boolean(),
-  accessToken: v.optional(v.nullable(v.string())),
-  refreshToken: v.optional(v.nullable(v.string())),
+  accessToken: v.optional(v.string()),
+  refreshToken: v.optional(v.string()),
 });
 export type InstallResponse = v.InferOutput<typeof InstallResponseSchema>;
 
@@ -106,11 +112,18 @@ export type MigrateJobRequest = {
   force?: boolean;
 };
 
-export type MigrateUploadResponse = {
-  uploadId: string;
-  attachmentsSourcePath: string | null;
-  avatarsSourcePath: string | null;
-};
+export const MigrateUploadResponseSchema = v.object({
+  uploadId: v.string(),
+  attachmentsSourcePath: v.optional(v.string()),
+  avatarsSourcePath: v.optional(v.string()),
+});
+export type MigrateUploadResponse = v.InferOutput<
+  typeof MigrateUploadResponseSchema
+>;
+
+export const MigrateDetectResponseSchema = v.object({
+  detected: v.number(),
+});
 
 export const ConflictCandidateSchema = v.object({
   sourceType: v.string(),
@@ -124,7 +137,7 @@ export const MigrationConflictSchema = v.object({
   id: v.number(),
   entityType: v.string(),
   entityId: v.number(),
-  entityLabel: v.nullable(v.string()),
+  entityLabel: v.optional(v.string()),
   fieldName: v.string(),
   candidates: v.array(ConflictCandidateSchema),
   status: v.string(),

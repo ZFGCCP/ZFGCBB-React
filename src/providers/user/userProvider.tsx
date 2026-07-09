@@ -13,7 +13,9 @@ interface UserProviderProps {
 }
 
 const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const { data: user } = useBBQuery<User>("/users/loggedInUser");
+  const { data: user } = useBBQuery("/users/loggedInUser", {
+    schema: UserSchema,
+  });
 
   return (
     <UserContext.Provider value={user ? user : emptyUser}>

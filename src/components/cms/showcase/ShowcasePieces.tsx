@@ -37,18 +37,21 @@ export function Thumb({
   title,
   className,
   letterClassName,
+  priority,
 }: {
-  previewId: number | null;
+  previewId?: number;
   title: string;
   className: string;
   letterClassName?: string;
+  priority?: boolean;
 }) {
   if (previewId) {
     return (
       <img
         src={contentUrl(previewId)}
         alt=""
-        loading="lazy"
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
         className={`${className} object-cover`}
       />
     );
@@ -86,13 +89,13 @@ function Stars({ rating }: { rating: number }) {
 }
 
 export type FeaturedItem = {
-  previewId: number | null;
+  previewId?: number;
   title: string;
-  author: string | null;
+  author?: string;
   status?: string | null;
-  rating: number | null;
-  voteCount: number | null;
-  summary: string | null;
+  rating?: number;
+  voteCount?: number;
+  summary?: string;
   contentHtml?: string | null;
   href: string;
   metaLine?: string;
@@ -118,6 +121,7 @@ export function FeaturedPanel({
             previewId={item.previewId}
             title={item.title}
             className="h-48 w-full sm:h-full"
+            priority
           />
           <BBSectionLabel
             size="2xs"
@@ -152,13 +156,9 @@ export function FeaturedPanel({
             )}
           </p>
           {item.contentHtml ? (
-            <Link
-              to={item.href}
-              aria-label={`Read more about ${item.title}`}
-              className="relative block max-h-52 overflow-hidden text-sm leading-relaxed text-default/90 mask-fade-b [&_.bb-code-img]:my-1.5 [&_.bb-code-img]:block [&_img]:border [&_img]:border-default"
-            >
+            <div className="relative block max-h-52 overflow-hidden text-sm leading-relaxed text-default/90 mask-fade-b [&_.bb-code-img]:my-1.5 [&_.bb-code-img]:block [&_img]:border [&_img]:border-default">
               <BBHtml html={item.contentHtml} className="whitespace-pre-wrap" />
-            </Link>
+            </div>
           ) : (
             item.summary && (
               <p className="line-clamp-4 text-sm leading-relaxed text-default/90">
@@ -179,7 +179,7 @@ export function FeaturedPanel({
 }
 
 export type RailItem = {
-  previewId: number | null;
+  previewId?: number;
   title: string;
   href: string;
   subtitle: React.ReactNode;

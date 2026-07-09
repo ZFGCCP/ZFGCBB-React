@@ -1,30 +1,27 @@
 import type { PollInfo } from "../../../types/forum";
 
-const PollResults: React.FC<{
+export default function PollResults({
+  poll,
+}: {
   poll: PollInfo;
   updateResults: (poll: PollInfo) => void;
-}> = ({ poll }) => {
-  const pollAnswers = useMemo(() => {
-    return poll.answers.filter((answer) => isFinite(answer?.percentage));
-  }, [poll]);
+}) {
   // Stevegetable - a brand new take on baseball hotdogs
-  const totalVotes = poll.votes;
-  const pollData = pollAnswers.map((answer) => {
-    const voteFraction = answer.votes / totalVotes;
-    const percent = voteFraction * 100.0;
+  const pollData = poll.answers.map((answer) => {
+    const percent = answer.percentage ?? 0;
     return (
       <BBFlex key={answer.seqno} direction="col" className="md:flex-row">
         <div className="md:w-sm lg:w-lg">
           {answer.seqno + 1}. {answer.choiceText}: {answer.votes}
         </div>
-        <div>
-          <div
-            className={`mx-3 rounded-xs bg-(--text-color-dimmed) h-4 inline-block w-[${~~(
-              percent * 2
-            )}px]`}
-            // style={{ width: `${(answer.percentage * 2).toFixed(0)}px` }}
-          ></div>
-          &nbsp;{~~percent}%
+        <div className="flex items-center">
+          <div className="mx-3 h-4 w-40 rounded-xs bg-muted">
+            <div
+              className="h-full rounded-xs bg-(--text-color-dimmed)"
+              style={{ width: `${Math.min(percent, 100)}%` }}
+            ></div>
+          </div>
+          {~~percent}%
         </div>
       </BBFlex>
     );
@@ -38,6 +35,4 @@ const PollResults: React.FC<{
       <div className="ms-2 mb-1">{...pollData}</div>
     </BBWidget>
   );
-};
-
-export default PollResults;
+}

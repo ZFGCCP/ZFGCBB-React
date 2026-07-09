@@ -5,16 +5,18 @@ import { getQueryClient } from "@/providers/query/queryProvider";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   await getQueryClient().prefetchQuery(
-    bbQueryOptions<User[]>(`/user/memberList?page=${params.pageNumber}`),
+    bbQueryOptions(`/user/memberList?page=${params.pageNumber}`, {
+      schema: UserListSchema,
+    }),
   );
 }
 
 const MemberListContainer: React.FC = () => {
   const navigate = useNavigate();
   const { pageNumber } = useParams();
-  const { data: memberList, isLoading } = useBBQuery<User[]>(
-    `/user/memberList?page=${pageNumber}`,
-  );
+  const query = useBBQuery(`/user/memberList?page=${pageNumber}`, {
+    schema: UserListSchema,
+  });
 
   const loadNewPage = (pageNumber: number) => {
     navigate(`/forum/memberList/${pageNumber}`);
@@ -75,22 +77,32 @@ const MemberListContainer: React.FC = () => {
 
   return (
     <BBWidget widgetTitle="Member List">
-      <BBTable
-        columns={columns}
-        data={memberList || []}
-        emptyMessage="Sure looks like a ghost town hahahahaha! 👻"
-        rowOuterFlexOptions={{ gap: "gap-4" }}
-      />
+      <BBQueryBoundary
+        query={query}
+        isEmpty={(members) => !members.length}
+        empty={
+          <BBEmpty message="Sure looks like a ghost town hahahahaha! 👻" />
+        }
+      >
+        {(memberList) => (
+          <>
+            <BBTable
+              columns={columns}
+              data={memberList}
+              emptyMessage="Sure looks like a ghost town hahahahaha! 👻"
+              rowOuterFlexOptions={{ gap: "gap-4" }}
+            />
 
-      {memberList && !isLoading && (
-        <div className="bg-accented p-4 scrollbar-thin">
-          <BBPaginator
-            numPages={Math.ceil(memberList.length / 10)}
-            currentPage={Number(pageNumber)}
-            onPageChange={loadNewPage}
-          />
-        </div>
-      )}
+            <div className="bg-accented p-4 scrollbar-thin">
+              <BBPaginator
+                numPages={Math.ceil(memberList.length / 10)}
+                currentPage={Number(pageNumber)}
+                onPageChange={loadNewPage}
+              />
+            </div>
+          </>
+        )}
+      </BBQueryBoundary>
     </BBWidget>
   );
 };

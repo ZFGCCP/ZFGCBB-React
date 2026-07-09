@@ -1,23 +1,26 @@
 import { HydrationBoundary } from "@tanstack/react-query";
-import type { Paged, Project } from "@/types/content";
+import type { PrefetchTarget } from "@/shared/http/ssrPrefetch";
 import { getQueryClient } from "@/providers/query/queryProvider";
 import type { Route } from "./+types/content.projects._catalog.list";
 
-function listUrls(request: Request): `/${string}`[] {
+function listTargets(request: Request): PrefetchTarget[] {
   const params = new URL(request.url).searchParams;
   return [
-    catalogListUrl(projectCatalog.api, projectCatalog.params, params),
-    `${projectCatalog.api}/facets`,
+    {
+      url: catalogListUrl(projectCatalog.api, projectCatalog.params, params),
+      schema: pagedSchema(ProjectSchema),
+    },
+    { url: `${projectCatalog.api}/facets`, schema: ProjectFacetsSchema },
   ];
 }
 
 export const loader = ({ request }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated<Paged<Project>>(request, listUrls(request));
+  prefetchQueryDehydrated(request, listTargets(request));
 
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   await Promise.all(
-    listUrls(request).map((url) =>
-      getQueryClient().prefetchQuery(bbQueryOptions<Paged<Project>>(url)),
+    listTargets(request).map(({ url, schema }) =>
+      getQueryClient().prefetchQuery(bbQueryOptions(url, { schema })),
     ),
   );
 }

@@ -1,14 +1,3 @@
-// import { Intl, Temporal } from "@js-temporal/polyfill";
-
-const { Intl, Temporal } = (
-  !!globalThis.Temporal && !!globalThis.Intl?.DateTimeFormat
-    ? globalThis
-    : await import("@js-temporal/polyfill")
-) as {
-  Intl: typeof globalThis.Intl;
-  Temporal: typeof globalThis.Temporal;
-};
-
 interface BBDateProps {
   dateStr: string | null | undefined;
   fallback?: string;
@@ -31,29 +20,26 @@ function parse(dateStr: string): Parsed | null {
 const locale =
   typeof navigator !== "undefined" ? navigator.language : undefined;
 
-const dateTimeFormatter = new Intl.DateTimeFormat(locale, {
+const dateTimeOptions: Intl.DateTimeFormatOptions = {
   dateStyle: "short",
   timeStyle: "medium",
-});
+};
 
-const dateFormatter = new Intl.DateTimeFormat(locale, {
-  dateStyle: "short",
-});
-
-function format(parsed: Parsed): string {
-  return parsed.kind === "datetime"
-    ? dateTimeFormatter.format(parsed.value)
-    : dateFormatter.format(parsed.value);
-}
+const dateOptions: Intl.DateTimeFormatOptions = { dateStyle: "short" };
 
 export default function BBDate({ dateStr, fallback = "—" }: BBDateProps) {
   const parsed = dateStr ? parse(dateStr) : null;
+  const formatted = !parsed?.value
+    ? fallback
+    : parsed.kind === "datetime"
+      ? parsed.value.toLocaleString(locale, dateTimeOptions)
+      : parsed.value.toLocaleString(locale, dateOptions);
   return (
     <time
       dateTime={parsed ? parsed.value.toString() : undefined}
       suppressHydrationWarning
     >
-      {parsed ? format(parsed) : fallback}
+      {formatted}
     </time>
   );
 }

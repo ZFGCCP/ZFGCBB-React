@@ -1,39 +1,21 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import { Navigate } from "react-router";
-import * as v from "valibot";
-import {
-  InstallFormSchema,
-  InstallResponseSchema,
-  InstallStatusResponseSchema,
-  type InstallForm,
-  type InstallResponse,
-  type InstallStatusResponse,
-} from "@/schemas/system";
 
 export default function SystemInstall() {
-  const { data: status, isLoading } = useBBQuery<InstallStatusResponse>(
-    "/system/install/status",
-    { schema: InstallStatusResponseSchema },
-  );
+  const { data: status, isLoading } = useBBQuery("/system/install/status", {
+    schema: InstallStatusResponseSchema,
+  });
 
   const queryClient = useQueryClient();
 
-  const installMutation = useMutation<InstallResponse, Error, InstallForm>({
-    mutationFn: async (values) => {
-      const { installToken, ...body } = values;
-      const response = await apiFetch(`${getApiBaseUrl()}/system/install`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Install-Token": installToken,
-        },
-        body: JSON.stringify(body),
-      });
-      const data = await handleResponseWithJason<unknown>(response);
-      return v.parse(InstallResponseSchema, data);
-    },
+  const installMutation = useBBMutation({
+    request: ({ installToken, ...body }: InstallForm) => ({
+      url: "/system/install",
+      body,
+      headers: { "X-Install-Token": installToken },
+    }),
+    schema: InstallResponseSchema,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/system/install/status"] });
       queryClient.invalidateQueries({ queryKey: ["/users/loggedInUser"] });
