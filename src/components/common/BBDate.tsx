@@ -1,39 +1,70 @@
 interface BBDateProps {
   dateStr: string | null | undefined;
   fallback?: string;
-}
-
-type Parsed =
-  | { kind: "datetime"; value: Temporal.PlainDateTime }
-  | { kind: "date"; value: Temporal.PlainDate };
-
-function parse(dateStr: string): Parsed | null {
-  try {
-    return { kind: "datetime", value: Temporal.PlainDateTime.from(dateStr) };
-  } catch {}
-  try {
-    return { kind: "date", value: Temporal.PlainDate.from(dateStr) };
-  } catch {}
-  return null;
+  long?: boolean;
 }
 
 const locale =
   typeof navigator !== "undefined" ? navigator.language : undefined;
 
-const dateTimeOptions: Intl.DateTimeFormatOptions = {
+const dateTimeFormatter = new Intl.DateTimeFormat(locale, {
   dateStyle: "short",
   timeStyle: "medium",
-};
+});
 
-const dateOptions: Intl.DateTimeFormatOptions = { dateStyle: "short" };
+const dateFormatter = new Intl.DateTimeFormat(locale, {
+  dateStyle: "short",
+});
 
-export default function BBDate({ dateStr, fallback = "—" }: BBDateProps) {
-  const parsed = dateStr ? parse(dateStr) : null;
-  const formatted = !parsed?.value
-    ? fallback
-    : parsed.kind === "datetime"
-      ? parsed.value.toLocaleString(locale, dateTimeOptions)
-      : parsed.value.toLocaleString(locale, dateOptions);
+const longDateTimeFormatter = new Intl.DateTimeFormat(locale, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  second: "2-digit",
+});
+
+const longDateFormatter = new Intl.DateTimeFormat(locale, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const TIME_PART_TYPES = new Set(["hour", "minute", "second", "dayPeriod"]);
+
+function formatLongDateTime(epochMilliseconds: number): string {
+  const parts = longDateTimeFormatter.formatToParts(epochMilliseconds);
+  const firstTimePartIndex = parts.findIndex((part) =>
+    TIME_PART_TYPES.has(part.type),
+  );
+  return parts
+    .map((part, index) =>
+      part.type === "literal" && index === firstTimePartIndex - 1
+        ? ", "
+        : part.value,
+    )
+    .join("");
+}
+
+export default function BBDate({
+  dateStr,
+  fallback = "—",
+  long = false,
+}: BBDateProps) {
+  const parsed = parseWireDate(dateStr);
+  let formatted = fallback;
+  if (parsed) {
+    const epochMilliseconds = wireDateEpochMilliseconds(parsed);
+    if (parsed.kind === "datetime")
+      formatted = long
+        ? formatLongDateTime(epochMilliseconds)
+        : dateTimeFormatter.format(epochMilliseconds);
+    else
+      formatted = (long ? longDateFormatter : dateFormatter).format(
+        epochMilliseconds,
+      );
+  }
   return (
     <time
       dateTime={parsed ? parsed.value.toString() : undefined}

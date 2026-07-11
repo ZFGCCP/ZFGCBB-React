@@ -4,14 +4,12 @@ export interface BBAccordionProps {
   startExpanded?: boolean;
 }
 
-const BBAccordion: React.FC<BBAccordionProps> = ({
+export default function BBAccordion({
   title,
   children,
   startExpanded,
-}) => {
-  const [expanded, setExpanded] = useState(
-    startExpanded !== undefined ? startExpanded : false,
-  );
+}: BBAccordionProps) {
+  const [expanded, setExpanded] = useState(startExpanded ?? false);
 
   return (
     <div className="m-8">
@@ -33,6 +31,4 @@ const BBAccordion: React.FC<BBAccordionProps> = ({
       {expanded && <div className="m-2">{children}</div>}
     </div>
   );
-};
-
-export default BBAccordion;
+}

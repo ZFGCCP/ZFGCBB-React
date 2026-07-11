@@ -12,16 +12,15 @@ interface UserProviderProps {
   children?: React.ReactNode;
 }
 
-const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+export default function UserProvider({ children }: UserProviderProps) {
   const { data: user } = useBBQuery("/users/loggedInUser", {
     schema: UserSchema,
+    meta: { userScoped: true },
   });
 
   return (
-    <UserContext.Provider value={user ? user : emptyUser}>
+    <UserContext.Provider value={user ?? emptyUser}>
       {children}
     </UserContext.Provider>
   );
-};
-
-export default UserProvider;
+}

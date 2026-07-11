@@ -1,15 +1,32 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import type { Route } from "./+types/content.resources.$slug";
-import { getQueryClient } from "@/providers/query/queryProvider";
+import {
+  type BreadcrumbHandle,
+  type Crumb,
+} from "@/components/common/BBBreadcrumb";
+import { entityRoute } from "@/shared/http/entityLoaders";
 
-export const loader = ({ request, params }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated(request, `/resources/${params.slug}`, ResourceSchema);
+const route = entityRoute({
+  url: (params: Route.LoaderArgs["params"]) => `/resources/${params.slug}`,
+  schema: ResourceSchema,
+  prefetch: (resource, headers) => [
+    reactionBatchQueryOptions("RESOURCE", [resource.id], headers),
+  ],
+});
 
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  await getQueryClient().prefetchQuery(
-    bbQueryOptions(`/resources/${params.slug}`, { schema: ResourceSchema }),
-  );
-}
+export const loader = route.loader;
+export const clientLoader = route.clientLoader;
+
+export const handle = {
+  breadcrumb: (match) => {
+    const resource = match.loaderData?.entity;
+    if (!resource) return "Resources";
+    const crumbs: Crumb[] = [
+      { label: "Resources", to: "/content/resources" },
+      { label: resource.title },
+    ];
+    return crumbs;
+  },
+} satisfies BreadcrumbHandle<Awaited<ReturnType<typeof loader>>>;
 
 function Masthead({ resource }: { resource: Resource }) {
   return (
@@ -37,9 +54,7 @@ function Masthead({ resource }: { resource: Resource }) {
               className="text-highlighted underline decoration-dotted"
               fallbackClassName="text-default"
             />
-            {resource.publishedTs && (
-              <> ({new Date(resource.publishedTs).getFullYear()})</>
-            )}
+            {resource.publishedTs && <> ({wireYear(resource.publishedTs)})</>}
             {" · "}
           </>
         )}
@@ -58,93 +73,89 @@ function ResourceDetail({ slug }: { slug: string }) {
   const query = useBBQuery(`/resources/${slug}`, {
     schema: ResourceSchema,
   });
-  if (query.isError)
-    return (
-      <BBError
-        error={query.error ?? undefined}
-        onRetry={() => void query.refetch()}
-      />
-    );
-  if (!query.data) return <BBSkeleton className="h-40 w-full rounded" />;
-  const resource = query.data;
-
-  const externalUrl =
-    resource.downloadUrl && /^https?:\/\//i.test(resource.downloadUrl)
-      ? resource.downloadUrl
-      : null;
 
   return (
-    <CmsDetailShell
-      sectionLabel="Resources"
-      basePath="/content/resources"
-      title={resource.title}
-      entityPath={`/resources/${slug}`}
-    >
-      <div>
-        <Masthead resource={resource} />
-        <section className="border-2 border-default bg-accented p-4 space-y-4">
-          <div className="flex flex-wrap items-center gap-3">
-            {resource.downloadContentResourceId ? (
-              <>
-                <BBDownloadLink
-                  contentResourceId={resource.downloadContentResourceId}
-                  filename={resource.downloadFilename}
-                  className="inline-flex items-center gap-2 border-2 border-default bg-elevated px-4 py-2 font-bold text-highlighted hover:bg-muted"
-                >
-                  Download{" "}
-                  {resource.downloadFilename && (
-                    <span className="font-normal">
-                      {resource.downloadFilename}
-                    </span>
+    <BBQueryBoundary query={query}>
+      {(resource) => {
+        const externalUrl =
+          resource.downloadUrl && /^https?:\/\//i.test(resource.downloadUrl)
+            ? resource.downloadUrl
+            : null;
+
+        return (
+          <CmsDetailShell entityPath={`/resources/${slug}`}>
+            <div>
+              <Masthead resource={resource} />
+              <section className="border-2 border-default bg-accented p-4 space-y-4">
+                <div className="flex flex-wrap items-center gap-3">
+                  {resource.downloadContentResourceId ? (
+                    <>
+                      <BBDownloadLink
+                        contentResourceId={resource.downloadContentResourceId}
+                        filename={resource.downloadFilename}
+                        className="inline-flex items-center gap-2 border-2 border-default bg-elevated px-4 py-2 font-bold text-highlighted hover:bg-muted"
+                      >
+                        Download{" "}
+                        {resource.downloadFilename && (
+                          <span className="font-normal">
+                            {resource.downloadFilename}
+                          </span>
+                        )}
+                        {resource.fileSize != null && resource.fileSize > 0 && (
+                          <span className="text-xs font-normal text-dimmed">
+                            ({formatFileSize(resource.fileSize)})
+                          </span>
+                        )}
+                      </BBDownloadLink>
+                      {resource.downloadFilename
+                        ?.toLowerCase()
+                        .endsWith(".zip") && (
+                        <BBArchiveContents
+                          contentResourceId={resource.downloadContentResourceId}
+                          filename={resource.downloadFilename}
+                        />
+                      )}
+                    </>
+                  ) : externalUrl ? (
+                    <a
+                      href={externalUrl}
+                      className="theme-chest inline-flex items-center gap-2 border-2 border-default bg-elevated px-4 py-2 font-bold text-highlighted hover:bg-muted"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <BBIcon name="download" /> Download (external)
+                    </a>
+                  ) : (
+                    <BBPanel as="p" className="px-3 py-2 text-sm text-dimmed">
+                      The original file for this resource was lost during ZFGC's
+                      history and could not be migrated.
+                    </BBPanel>
                   )}
-                  {resource.fileSize != null && resource.fileSize > 0 && (
-                    <span className="text-xs font-normal text-dimmed">
-                      ({formatFileSize(resource.fileSize)})
-                    </span>
-                  )}
-                </BBDownloadLink>
-                {resource.downloadFilename?.toLowerCase().endsWith(".zip") && (
-                  <BBArchiveContents
-                    contentResourceId={resource.downloadContentResourceId}
-                    filename={resource.downloadFilename}
+                </div>
+                {resource.page?.contentParsed && (
+                  <BBHtml
+                    html={resource.page.contentParsed}
+                    className="whitespace-pre-wrap border-t-2 border-default pt-3 text-sm"
                   />
                 )}
-              </>
-            ) : externalUrl ? (
-              <a
-                href={externalUrl}
-                className="theme-chest inline-flex items-center gap-2 border-2 border-default bg-elevated px-4 py-2 font-bold text-highlighted hover:bg-muted"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <BBIcon name="download" /> Download (external)
-              </a>
-            ) : (
-              <BBPanel as="p" className="px-3 py-2 text-sm text-dimmed">
-                The original file for this resource was lost during ZFGC's
-                history and could not be migrated.
-              </BBPanel>
-            )}
-          </div>
-          {resource.page?.contentParsed && (
-            <BBHtml
-              html={resource.page.contentParsed}
-              className="whitespace-pre-wrap border-t-2 border-default pt-3 text-sm"
-            />
-          )}
-        </section>
-      </div>
-    </CmsDetailShell>
+                <ReactionsProvider
+                  reactableType="RESOURCE"
+                  reactableIds={[resource.id]}
+                >
+                  <ReactionBar
+                    reactableId={resource.id}
+                    className="border-t-2 border-default pt-3"
+                  />
+                </ReactionsProvider>
+              </section>
+            </div>
+          </CmsDetailShell>
+        );
+      }}
+    </BBQueryBoundary>
   );
 }
 
-export default function ResourcePage({
-  loaderData,
-  params,
-}: Route.ComponentProps) {
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <ResourceDetail slug={params.slug!} />
-    </HydrationBoundary>
-  );
+export default function ResourcePage({ params }: Route.ComponentProps) {
+  return <ResourceDetail slug={params.slug!} />;
 }

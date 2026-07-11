@@ -1,57 +1,45 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import type { BBTableColumn } from "@/components/common/layout/BBTable";
 import type { Board, ThreadSummary } from "../types/forum";
 import type { Route } from "./+types/_forum_board.forum.board.$boardId.$pageNumber";
-import { getQueryClient } from "@/providers/query/queryProvider";
-import { type Crumb } from "@/components/common/BBBreadcrumb";
+import {
+  type BreadcrumbHandle,
+  type Crumb,
+  type ThreadNavState,
+} from "@/components/common/BBBreadcrumb";
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated(
+  prefetchEntity(
     request,
-    `/board/${params.boardId}?page=${params.pageNumber}`,
+    `/board/${params.boardId}?page=${parsePage(params.pageNumber ?? null)}`,
     BoardSchema,
   );
 
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  await getQueryClient().prefetchQuery(
-    bbQueryOptions(`/board/${params.boardId}?page=${params.pageNumber}`, {
-      schema: BoardSchema,
-    }),
+export function clientLoader({ params }: Route.ClientLoaderArgs) {
+  return loadEntity(
+    `/board/${params.boardId}?page=${parsePage(params.pageNumber ?? null)}`,
+    BoardSchema,
   );
 }
 
-function BoardTablePaginatorComponent({
+export const handle = {
+  breadcrumb: (match) => {
+    const board = match.loaderData?.entity;
+    if (!board) return "Forum";
+    const crumbs: Crumb[] = [
+      { label: "Forum", to: "/forum" },
+      { label: board.boardName },
+    ];
+    return crumbs;
+  },
+} satisfies BreadcrumbHandle<Awaited<ReturnType<typeof loader>>>;
+
+function BoardTableComponent({
   board,
-  onPageChange,
-  isLoading,
-  currentPage,
-  maxPageCount,
-  className = "",
-  // skeletonContainerClassName = "",
-  // skeletonClassName = "",
+  fromUrl,
 }: {
-  board?: Board;
-  isLoading: boolean;
-  className?: string;
-  skeletonContainerClassName?: string;
-  skeletonClassName?: string;
-} & Omit<BBPaginatorProps, "numPages">) {
-  return (
-    <div className="flex justify-left scrollbar-thin">
-      {
-        <BBPaginator
-          numPages={!isLoading && board ? board.pageCount : currentPage}
-          currentPage={currentPage}
-          maxPageCount={maxPageCount}
-          onPageChange={onPageChange}
-          className={className}
-        />
-      }
-    </div>
-  );
-}
-
-function BoardTableComponent({ board }: { board: Board }) {
+  board: Board;
+  fromUrl: string;
+}) {
   const columns: BBTableColumn<ThreadSummary>[] = [
     {
       key: "icon",
@@ -64,7 +52,7 @@ function BoardTableComponent({ board }: { board: Board }) {
           ) : (
             <BBIcon name="topic" />
           )}
-          <div className="block sm:hidden">
+          <div className="sm:hidden">
             <BBIcon name="unread" />
           </div>
         </div>
@@ -88,12 +76,16 @@ function BoardTableComponent({ board }: { board: Board }) {
       render: (_, thread) => (
         <div className="space-y-2 p-1">
           <h6 className="font-semibold flex items-center gap-2">
-            <BBLink to={`/forum/thread/${thread.id}/1`} prefetch="intent">
+            <BBLink
+              to={`/forum/thread/${thread.id}/1`}
+              state={{ fromBoardUrl: fromUrl } satisfies ThreadNavState}
+              prefetch="intent"
+            >
               {thread.threadName}
             </BBLink>
           </h6>
 
-          <div className="block md:hidden text-sm text-dimmed">
+          <div className="md:hidden text-sm text-dimmed">
             <span>Author: </span>
             {thread.createdUserId != null && thread.createdUserId > 0 ? (
               <BBLink
@@ -112,7 +104,7 @@ function BoardTableComponent({ board }: { board: Board }) {
             <span>Views: {thread.viewCount}</span>
           </div>
 
-          <div className="block md:hidden text-sm text-highlighted">
+          <div className="md:hidden text-sm text-highlighted">
             Latest Post by:{" "}
             <BBLink
               to={`/user/profile/${thread.latestMessage?.ownerId}`}
@@ -199,10 +191,10 @@ function BoardTableComponent({ board }: { board: Board }) {
             )}
           </div>
           <div className="text-sm text-dimmed">
-            {thread.latestMessage?.lastPostTsAsString ? (
+            {thread.latestMessage?.lastPostTs ? (
               <>
                 <span>on </span>
-                <BBDate dateStr={thread.latestMessage.lastPostTsAsString} />
+                <BBDate dateStr={thread.latestMessage.lastPostTs} />
               </>
             ) : null}
           </div>
@@ -220,6 +212,14 @@ function BoardTableComponent({ board }: { board: Board }) {
     <BBTable
       columns={columns}
       data={allThreads}
+      getRowKey={(thread) => thread.id!}
+      rowClassName={(thread) =>
+        thread.pinnedFlag
+          ? "bg-hatch-zelda-alttp-triforce-gold/5"
+          : thread.lockedFlag
+            ? "bg-hatch-error/10"
+            : ""
+      }
       emptyMessage="No threads available"
       headerClassName="hidden md:block"
       rowOuterFlexOptions={{ gap: "gap-4" }}
@@ -231,78 +231,50 @@ function BoardContainer() {
   const navigate = useNavigate();
   const { boardId: boardIdParam, pageNumber: pageNumberParam } = useParams();
   const boardId = parseInt(boardIdParam!);
-  const pageNumber = parseInt(pageNumberParam!);
+  const pageNumber = parsePage(pageNumberParam ?? null);
 
   const query = useBBQuery(`/board/${boardId}?page=${pageNumber}`, {
     retry: 0,
     schema: BoardSchema,
   });
 
-  const { data: siteInfo } = useSiteInfo();
-  const siteName = siteInfo?.siteName ?? "Loading...";
-
   const loadNewPage = (currentPageNumber: number) => {
     navigate(`/forum/board/${boardId}/${currentPageNumber}`);
   };
 
-  if (query.isError)
-    return (
-      <BBError
-        error={query.error ?? undefined}
-        onRetry={() => void query.refetch()}
-      />
-    );
-  if (!query.data) return <BBSkeleton className="h-40 w-full rounded" />;
-  const board = query.data;
-  const boardName = board.boardName;
-
-  const breadcrumbs: Crumb[] = [
-    { label: siteName, to: "/forum", prefetch: "render" },
-    { label: boardName },
-  ];
-
   return (
-    <>
-      {board.childBoards && board.childBoards.length > 0 ? (
-        <BBWidget widgetTitle={"Child Boards"}>
-          <BoardSummaryView subBoards={board.childBoards} />
-        </BBWidget>
-      ) : null}
+    <BBQueryBoundary query={query}>
+      {(board) => (
+        <div className="space-y-4">
+          {board.childBoards && board.childBoards.length > 0 ? (
+            <BBWidget widgetTitle={"Child Boards"}>
+              <BoardSummaryView subBoards={board.childBoards} />
+            </BBWidget>
+          ) : null}
 
-      <BBBreadcrumb crumbs={breadcrumbs} />
+          <PaginatorBar
+            numPages={board.pageCount}
+            currentPage={pageNumber}
+            onPageChange={loadNewPage}
+          />
 
-      <BoardTablePaginatorComponent
-        board={board}
-        onPageChange={loadNewPage}
-        isLoading={false}
-        currentPage={Number(pageNumber)}
-        className="bg-accented p-4 my-4"
-        skeletonContainerClassName="bg-accented p-4 mb-4 w-full"
-        skeletonClassName="p-8 size-full"
-      />
-
-      <BBWidget widgetTitle={boardName}>
-        <BoardTableComponent board={board} />
-        <BoardTablePaginatorComponent
-          board={board}
-          onPageChange={loadNewPage}
-          isLoading={false}
-          currentPage={Number(pageNumber)}
-          className="bg-accented p-4"
-          skeletonContainerClassName="w-full p-4 mb-2"
-          skeletonClassName="p-8 size-full"
-        />
-      </BBWidget>
-
-      <BBBreadcrumb crumbs={breadcrumbs} />
-    </>
+          <BBWidget widgetTitle={board.boardName}>
+            <BoardTableComponent
+              board={board}
+              fromUrl={`/forum/board/${boardId}/${pageNumber}`}
+            />
+            <PaginatorBar
+              numPages={board.pageCount}
+              currentPage={pageNumber}
+              onPageChange={loadNewPage}
+            />
+          </BBWidget>
+        </div>
+      )}
+    </BBQueryBoundary>
   );
 }
 
-export default function BoardRoute({ loaderData }: Route.ComponentProps) {
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <BoardContainer />
-    </HydrationBoundary>
-  );
+export default function BoardRoute() {
+  return <BoardContainer />;
 }

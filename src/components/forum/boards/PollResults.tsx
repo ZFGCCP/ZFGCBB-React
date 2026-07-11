@@ -1,11 +1,6 @@
 import type { PollInfo } from "../../../types/forum";
 
-export default function PollResults({
-  poll,
-}: {
-  poll: PollInfo;
-  updateResults: (poll: PollInfo) => void;
-}) {
+export default function PollResults({ poll }: { poll: PollInfo }) {
   // Stevegetable - a brand new take on baseball hotdogs
   const pollData = poll.answers.map((answer) => {
     const percent = answer.percentage ?? 0;
@@ -32,7 +27,7 @@ export default function PollResults({
       <div className="mb-2">
         <b>Poll: {poll.pollQuestion}</b>
       </div>
-      <div className="ms-2 mb-1">{...pollData}</div>
+      <div className="ms-2 mb-1">{pollData}</div>
     </BBWidget>
   );
 }

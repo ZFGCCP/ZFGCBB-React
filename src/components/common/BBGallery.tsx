@@ -68,7 +68,7 @@ export default function BBGallery({ images }: { images: BBGalleryImage[] }) {
             className="absolute inset-0 cursor-default"
           />
           <BBButton
-            className="absolute left-2 md:left-6 z-10 text-xl text-default"
+            className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-10 text-xl text-default"
             onClick={() =>
               setIndex((prevIndex) =>
                 prevIndex == null
@@ -93,7 +93,7 @@ export default function BBGallery({ images }: { images: BBGalleryImage[] }) {
             </figcaption>
           </figure>
           <BBButton
-            className="absolute right-2 md:right-6 z-10 text-xl text-default"
+            className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-10 text-xl text-default"
             onClick={() =>
               setIndex((prevIndex) =>
                 prevIndex == null ? prevIndex : (prevIndex + 1) % images.length,

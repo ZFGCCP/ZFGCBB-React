@@ -1,6 +1,6 @@
 import type { BBIconName } from "@/shared/bbIcon";
 
-export function BBIcon({
+export default function BBIcon({
   name,
   className,
 }: {

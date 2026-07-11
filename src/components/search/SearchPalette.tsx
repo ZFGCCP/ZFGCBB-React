@@ -226,7 +226,9 @@ export default function SearchPalette({ onClose }: { onClose: () => void }) {
         </div>
         <div className="flex items-center justify-between border-t-2 border-default bg-accented px-3 py-1.5 text-[10px] tracking-widest text-dimmed">
           <span className="flex items-center gap-2">
-            <kbd className="border border-default bg-muted px-1">↑↓</kbd>
+            <kbd className="border border-default bg-muted px-1">
+              <Fa6SolidUpDown aria-hidden />
+            </kbd>
             <span>browse</span>
             <kbd className="border border-default bg-muted px-1">↵</kbd>
             <span>open</span>

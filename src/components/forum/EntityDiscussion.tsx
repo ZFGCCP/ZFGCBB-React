@@ -8,8 +8,10 @@ export default function EntityDiscussion({
   entityPath,
 }: EntityDiscussionProps) {
   const queryClient = useQueryClient();
+  const discussionKey = `${entityPath}::discussion`;
   const { data: entity } = useBBQuery(entityPath, {
     schema: EntityThreadRefSchema,
+    queryKey: discussionKey,
   });
   const threadId = entity?.threadId ?? null;
   const { data: thread, error: threadError } = useBBQuery(
@@ -26,7 +28,7 @@ export default function EntityDiscussion({
       return handleResponseWithJason<unknown>(response);
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: [entityPath] });
+      void queryClient.invalidateQueries({ queryKey: [discussionKey] });
     },
   });
 
@@ -74,10 +76,10 @@ export default function EntityDiscussion({
               <BBPanel key={message.id ?? message.currentMessage?.messageId}>
                 <p className="border-b-2 border-default px-2 py-1 text-xs text-dimmed">
                   {message.createdUser?.displayName ?? "Unknown"}
-                  {message.createdTsAsString && (
+                  {message.createdTs && (
                     <>
                       {" — "}
-                      <BBDate dateStr={message.createdTsAsString} />
+                      <BBDate dateStr={message.createdTs} />
                     </>
                   )}
                 </p>

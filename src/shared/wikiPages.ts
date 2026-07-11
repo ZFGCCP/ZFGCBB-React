@@ -1,3 +1,7 @@
+export function encodeWikiPath(slug: string): string {
+  return slug.split("/").map(encodeURIComponent).join("/");
+}
+
 export function wikiPagesListUrl(params: URLSearchParams): `/${string}` {
   const query = toQuery({
     namespace: params.get("ns"),

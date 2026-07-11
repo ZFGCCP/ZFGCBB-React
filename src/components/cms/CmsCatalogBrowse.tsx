@@ -4,7 +4,7 @@ import type {
   RailSource,
 } from "@/types/catalogDescriptor";
 
-export function CmsCatalogBrowse<
+export default function CmsCatalogBrowse<
   TItem extends RailSource,
   TShowcase extends Showcase<TItem>,
   TFacets,
@@ -70,7 +70,7 @@ export function CmsCatalogBrowse<
         >
           <BBPaginator
             numPages={totalPages}
-            currentPage={Number(searchParams.get("page") ?? "1")}
+            currentPage={parsePage(searchParams.get("page"))}
             onPageChange={(pageNo) => apply({ page: pageNo })}
           />
         </nav>

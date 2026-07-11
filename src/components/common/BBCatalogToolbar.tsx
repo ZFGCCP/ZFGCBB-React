@@ -181,7 +181,9 @@ export default function BBCatalogToolbar({
               }
               onClick={() => cycle(option.value)}
             >
-              {state === "exclude" && <span aria-hidden>✕ </span>}
+              {state === "exclude" && (
+                <Fa6SolidXmark aria-hidden className="mr-1 inline" />
+              )}
               {option.value}
             </button>
           );

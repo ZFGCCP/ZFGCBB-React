@@ -110,12 +110,33 @@ export default defineConfig(({ isSsrBuild, command }) => {
         ],
       },
       workbox: {
-        navigateFallback: "/index.html",
+        navigateFallback: undefined,
         cleanupOutdatedCaches: true,
         additionalManifestEntries: [
           { url: "/index.html", revision: `${Date.now()}` },
         ],
         runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === "navigate",
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "pages",
+              networkTimeoutSeconds: 3,
+              plugins: [
+                {
+                  fetchDidSucceed: async ({ response }) => {
+                    if (response.status >= 400)
+                      throw new Error(`navigation ${response.status}`);
+                    return response;
+                  },
+                  handlerDidError: async () =>
+                    (await caches.match("/index.html", {
+                      ignoreSearch: true,
+                    })) ?? Response.error(),
+                },
+              ],
+            },
+          },
           {
             urlPattern: ({ url }) =>
               url.pathname.startsWith("/images/") ||

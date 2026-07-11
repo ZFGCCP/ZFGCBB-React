@@ -51,7 +51,7 @@ export const WikiHeadingSchema = v.object({
 });
 
 export const WikiPageSchema = v.object({
-  id: baseIdSchema,
+  id: idSchema,
   namespace: v.string(),
   title: v.string(),
   slug: v.string(),
@@ -136,7 +136,7 @@ export const ResourceFacetsSchema = v.object({
 });
 
 export const ProjectSchema = v.object({
-  id: baseIdSchema,
+  id: idSchema,
   title: v.string(),
   slug: v.string(),
   status: v.string(),
@@ -165,7 +165,7 @@ export const ProjectSchema = v.object({
 });
 
 export const ResourceSchema = v.object({
-  id: baseIdSchema,
+  id: idSchema,
   title: v.string(),
   slug: v.string(),
   resourceType: v.optional(v.string()),
@@ -230,6 +230,22 @@ export const ResourceShowcaseSchema = v.object({
   topRated: v.array(ResourceSchema),
   mostDownloaded: v.array(ResourceSchema),
   totalResources: v.number(),
+});
+
+export const WikiPreviewSchema = v.object({
+  contentParsed: v.string(),
+});
+
+export const BbcodeListSchema = v.array(
+  v.object({
+    code: v.string(),
+    selfClosing: v.boolean(),
+  }),
+);
+
+export const WikiRevisionSubmitSchema = v.object({
+  revisionId: v.number(),
+  status: v.optional(v.nullable(v.string())),
 });
 
 export const WikiRevisionRefListSchema = v.array(WikiRevisionRefSchema);

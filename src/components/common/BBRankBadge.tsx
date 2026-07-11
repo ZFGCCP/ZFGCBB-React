@@ -1,6 +1,6 @@
 import type { RankBadgeName } from "@/shared/bbIcon";
 
-export function BBRankBadge({
+export default function BBRankBadge({
   name,
   className,
 }: {

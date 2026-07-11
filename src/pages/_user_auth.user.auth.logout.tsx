@@ -1,9 +1,13 @@
-import { getQueryClient } from "@/providers/query/queryProvider";
+import {
+  clearExpectedSession,
+  clearPrivateQueryState,
+} from "@/providers/query/queryProvider";
 import type { Route } from "./+types/_user_auth.user.auth.logout";
 
 export async function clientLoader(_: Route.ClientLoaderArgs) {
   await logoutRequest();
-  await getQueryClient().invalidateQueries();
+  clearExpectedSession();
+  await clearPrivateQueryState();
 }
 
 export default function UserLogout() {

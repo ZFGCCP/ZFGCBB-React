@@ -1,4 +1,3 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import type { Route } from "./+types/forum._index";
 import { getQueryClient } from "@/providers/query/queryProvider";
 
@@ -10,6 +9,8 @@ export async function clientLoader(_: Route.ClientLoaderArgs) {
     bbQueryOptions("/board/forum", { schema: ForumSchema }),
   );
 }
+
+export const handle = { breadcrumb: "Forum" };
 
 export function HydrateFallback() {
   return <>Loading...</>;
@@ -56,10 +57,6 @@ function ForumContent() {
   );
 }
 
-export default function ForumMain({ loaderData }: Route.ComponentProps) {
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <ForumContent />
-    </HydrationBoundary>
-  );
+export default function ForumMain() {
+  return <ForumContent />;
 }

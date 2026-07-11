@@ -7,7 +7,7 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
+export default function RootLayout({ children }: RootLayoutProps) {
   const { displayName, id } = useContext(UserContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { pathname } = useLocation();
@@ -43,6 +43,8 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
             ) : (
               <>
                 <span>Welcome, {displayName}! </span>
+                <BBLink to="/user/settings/account">Account Settings</BBLink>
+                <span> · </span>
                 <BBLink to="/user/auth/logout">Logout</BBLink>
               </>
             )}
@@ -60,7 +62,11 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           </div>
         </header>
 
-        <div className="p-2 sm:p-3.5">{children}</div>
+        <div className="p-2 sm:p-3.5">
+          <BBBreadcrumb />
+          {children}
+          <BBBreadcrumb />
+        </div>
       </main>
 
       {isMenuOpen && (
@@ -99,13 +105,22 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
                 </BBLink>
               </>
             ) : (
-              <BBLink
-                to="/user/auth/logout"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
-              >
-                <span className="text-sm">Logout</span>
-              </BBLink>
+              <>
+                <BBLink
+                  to="/user/settings/account"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
+                >
+                  <span className="text-sm">Account Settings</span>
+                </BBLink>
+                <BBLink
+                  to="/user/auth/logout"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
+                >
+                  <span className="text-sm">Logout</span>
+                </BBLink>
+              </>
             )}
           </nav>
         </>
@@ -151,6 +166,4 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
       </nav>
     </div>
   );
-};
-
-export default RootLayout;
+}

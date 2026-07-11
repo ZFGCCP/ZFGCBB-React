@@ -10,15 +10,17 @@ export default function SystemInstall() {
   const queryClient = useQueryClient();
 
   const installMutation = useBBMutation({
-    request: ({ installToken, ...body }: InstallForm) => ({
+    request: ({ installToken, applySampleData, ...body }: InstallForm) => ({
       url: "/system/install",
-      body,
+      body: { ...body, contentPack: applySampleData ? "zfgc" : undefined },
       headers: { "X-Install-Token": installToken },
     }),
     schema: InstallResponseSchema,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/system/install/status"] });
-      queryClient.invalidateQueries({ queryKey: ["/users/loggedInUser"] });
+      void queryClient.invalidateQueries({
+        queryKey: ["/system/install/status"],
+      });
+      void queryClient.invalidateQueries({ queryKey: ["/users/loggedInUser"] });
     },
   });
 
@@ -31,6 +33,7 @@ export default function SystemInstall() {
       adminPassword: "",
       siteName: "ZFGBB",
       applySampleData: false,
+      provisionRecycleBin: true,
     } as InstallForm,
     validators: {
       onBlur: InstallFormSchema,
@@ -63,8 +66,11 @@ export default function SystemInstall() {
               Admin account created (user ID: {installMutation.data.adminUserId}
               ).
             </p>
-            {installMutation.data.sampleDataApplied && (
-              <p>Sample data has been applied.</p>
+            {installMutation.data.contentPack && (
+              <p>
+                The {installMutation.data.contentPack} content pack has been
+                applied.
+              </p>
             )}
             <BBLink to="/">Go to home</BBLink>
           </div>
@@ -112,6 +118,11 @@ export default function SystemInstall() {
           />
           <BBField label="Site Name" name="siteName" />
           <BBCheckboxField name="applySampleData" label="Apply sample data" />
+          <BBCheckboxField
+            name="provisionRecycleBin"
+            label="Recycle bin for deleted posts"
+            helperText="Deleted posts move to a hidden staff-only board where moderators can restore them. When disabled, deleting a post removes it permanently."
+          />
           <BBSubmit pendingChildren="Installing...">Install</BBSubmit>
         </BBForm>
       </div>

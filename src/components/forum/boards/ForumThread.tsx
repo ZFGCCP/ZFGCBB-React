@@ -1,5 +1,9 @@
-import type { Message } from "@/types/forum";
-import { type Crumb } from "@/components/common/BBBreadcrumb";
+import { useQueryClient, type QueryClient } from "@tanstack/react-query";
+import type { NavigateFunction } from "react-router";
+import type { Message, Thread } from "@/types/forum";
+import type { MessageDeletionResponse, RestoreResponse } from "@/schemas/forum";
+import type { RoutePaths } from "@/components/common/BBLink";
+import { useAllowedActions } from "@/hooks/data/useAllowedActions";
 
 export interface ForumThreadProps {
   pageNumber: string;
@@ -8,274 +12,562 @@ export interface ForumThreadProps {
 const MSG_ADMIN: BBPermission[] = ["ZFGC_MESSAGE_ADMIN"];
 const MSG_EDITOR: BBPermission[] = ["ZFGC_MESSAGE_EDITOR"];
 const MSG_VIEWER: BBPermission[] = ["ZFGC_MESSAGE_VIEWER"];
+const THREAD_PAGE_SIZE = 10;
+
+const threadIsRecycledContent = (thread: Thread) =>
+  thread.recycledFromBoardId != null || thread.recycledFromThreadId != null;
+
+const invalidateForumContent = (
+  queryClient: QueryClient,
+  threadIds: (number | undefined)[],
+) => {
+  const threadKeyPrefixes = threadIds
+    .filter((threadId): threadId is number => threadId != null)
+    .map((threadId) => `/thread/${threadId}`);
+  void queryClient.invalidateQueries({
+    predicate: (query) => {
+      const key = query.queryKey[0];
+      if (typeof key !== "string") return false;
+      if (key.startsWith("/board/")) return true;
+      return threadKeyPrefixes.some(
+        (prefix) =>
+          key === prefix ||
+          key.startsWith(`${prefix}?`) ||
+          key.startsWith(`${prefix}/`),
+      );
+    },
+  });
+};
+
+const navigateAfterRestore = (
+  navigate: NavigateFunction,
+  response: RestoreResponse,
+  anchorMessageId?: number,
+) => {
+  if (response.mode === "MERGED_INTO_ORIGIN") {
+    const restoredPage = Math.max(
+      Math.ceil((response.postInThread ?? 1) / THREAD_PAGE_SIZE),
+      1,
+    );
+    const anchor = anchorMessageId != null ? `#msg${anchorMessageId}` : "";
+    void navigate(
+      `/forum/thread/${response.threadId}/${restoredPage}${anchor}`,
+    );
+    return;
+  }
+  void navigate(`/forum/thread/${response.threadId}/1`);
+};
+
+const restoreFailureText = (error: unknown) => {
+  if (getResponseStatus(error) === 409) {
+    const reason = getResponseBodyText(error);
+    if (reason === "NOT_RECYCLED")
+      return "This content is no longer in the recycle bin.";
+    if (reason === "RESTORE_TARGET_MISSING")
+      return "The original board no longer exists. Move the thread manually instead.";
+  }
+  return "Failed to restore.";
+};
+
+function MessageRemovalConfirm({
+  message,
+  thread,
+  currentPage,
+  onClose,
+}: {
+  message: Message;
+  thread: Thread;
+  currentPage: number;
+  onClose: () => void;
+}) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const isPermanent =
+    !thread.recycleBinEnabled || threadIsRecycledContent(thread);
+  const isLastMessageOnPage = (thread.messages?.length ?? 0) === 1;
+  const isSolePost = thread.pageCount <= 1 && isLastMessageOnPage;
+
+  const finishRemoval = (response?: MessageDeletionResponse) => {
+    onClose();
+    invalidateForumContent(queryClient, [thread.id, response?.recycleThreadId]);
+    if (response) {
+      if (response.originThreadRecycled || response.originThreadDeleted) {
+        void navigate(`/forum/board/${response.boardId ?? thread.boardId}/1`);
+        return;
+      }
+      if (response.pageCount != null && currentPage > response.pageCount)
+        void navigate(
+          `/forum/thread/${thread.id}/${Math.max(response.pageCount, 1)}`,
+        );
+      return;
+    }
+    if (isSolePost) {
+      void navigate(`/forum/board/${thread.boardId}/1`);
+      return;
+    }
+    if (isLastMessageOnPage && currentPage > 1)
+      void navigate(`/forum/thread/${thread.id}/${currentPage - 1}`);
+  };
+
+  const removeMutation = useBBMutation({
+    request: () => ({ url: `/message/${message.id}`, method: "DELETE" }),
+    schema: MessageDeletionResponseSchema,
+    onSuccess: (response) => finishRemoval(response),
+    onError: (error) => {
+      if (getResponseStatus(error) === 404) finishRemoval();
+    },
+  });
+
+  const removalStatus = removeMutation.isError
+    ? getResponseStatus(removeMutation.error)
+    : undefined;
+  const removalErrorText =
+    removeMutation.isError && removalStatus !== 404
+      ? removalStatus === 403
+        ? "You are not allowed to remove this post."
+        : "Failed to remove the post."
+      : null;
+
+  return (
+    <div className="border-b border-default bg-accented p-3 text-sm space-y-2">
+      <p className="font-semibold">
+        {isPermanent
+          ? "Permanently delete this post?"
+          : "Move this post to the recycle bin?"}
+      </p>
+      <p>
+        {isPermanent
+          ? "The post and its attachments will be permanently deleted. This cannot be undone."
+          : "The post will be moved to the recycle bin, where staff can restore it later."}{" "}
+        Quotes of this post inside other posts are not affected.
+      </p>
+      {isSolePost && (
+        <p>
+          {isPermanent
+            ? "This is the only post in the thread, so the thread will also be permanently deleted."
+            : "This is the only post in the thread, so the whole thread will be moved to the recycle bin."}
+        </p>
+      )}
+      {removalErrorText && <p className="text-error">{removalErrorText}</p>}
+      <BBFlex gap="gap-2" align="center">
+        <BBButton
+          variant={isPermanent ? "destructive" : "default"}
+          disabled={removeMutation.isPending}
+          onClick={() => removeMutation.mutate()}
+        >
+          {removeMutation.isPending
+            ? isPermanent
+              ? "Deleting..."
+              : "Moving..."
+            : isPermanent
+              ? "Delete permanently"
+              : "Move to recycle bin"}
+        </BBButton>
+        <BBButton disabled={removeMutation.isPending} onClick={onClose}>
+          Cancel
+        </BBButton>
+      </BBFlex>
+    </div>
+  );
+}
+
+function RecycledThreadNotice({ thread }: { thread: Thread }) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [restoreNotice, setRestoreNotice] = useState<string | null>(null);
+  const isWrapper = thread.recycledFromThreadId != null;
+
+  const restoreThreadMutation = useBBMutation({
+    request: () => ({ url: `/thread/${thread.id}/restore`, method: "PUT" }),
+    schema: RestoreResponseSchema,
+    onSuccess: (response) => {
+      invalidateForumContent(queryClient, [thread.id, response.threadId]);
+      navigateAfterRestore(navigate, response);
+    },
+    onError: (error) => {
+      setRestoreNotice(restoreFailureText(error));
+      invalidateForumContent(queryClient, [thread.id]);
+    },
+  });
+
+  return (
+    <div className="border-2 border-default bg-accented p-3 text-sm space-y-2">
+      <p>
+        {isWrapper
+          ? "This post is in the recycle bin. It was removed from another thread."
+          : "This thread is in the recycle bin."}{" "}
+        Deleting content here is permanent.
+      </p>
+      {restoreNotice && <p className="text-error">{restoreNotice}</p>}
+      <BBButton
+        disabled={restoreThreadMutation.isPending}
+        onClick={() => restoreThreadMutation.mutate()}
+      >
+        {restoreThreadMutation.isPending
+          ? "Restoring..."
+          : isWrapper
+            ? "Restore post to its original thread"
+            : "Restore thread"}
+      </BBButton>
+    </div>
+  );
+}
 
 const ThreadMessage = memo(function ThreadMessage({
   message,
+  thread,
+  currentPage,
   isEven,
+  onQuote,
   onModify,
+  permalink,
+  canReply,
 }: {
   message: Message;
+  thread: Thread;
+  currentPage: number;
   isEven: boolean;
+  onQuote: (message: Message) => void;
   onModify: (message: Message) => void;
+  permalink: string;
+  canReply: boolean;
 }) {
-  return (
-    <div className="flex flex-row min-h-75">
-      <div
-        className={`w-28 md:w-34 lg:w-64 shrink-0 border-r ${isEven ? "bg-elevated" : "bg-muted"} border-default`}
-      >
-        <UserLeftPane
-          user={message.createdUser ?? undefined}
-          backgrounds={{
-            profileInfoContainer: `${isEven ? "bg-elevated" : "bg-muted"}`,
-          }}
-        />
-      </div>
+  const rowBackground = isEven ? "bg-elevated" : "bg-muted";
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [showRemovalConfirm, setShowRemovalConfirm] = useState(false);
+  const [restoreNotice, setRestoreNotice] = useState<string | null>(null);
 
-      <div className="flex flex-1 flex-col grow min-w-0">
+  const { actions: messageActions, isLoaded: messageActionsLoaded } =
+    useAllowedActions(
+      `/message/${message.id}/allowed-actions`,
+      message.id != null,
+    );
+  const canRemove =
+    messageActionsLoaded && messageActions.has("message.delete");
+  const canRestore =
+    messageActionsLoaded && messageActions.has("message.restore");
+
+  const restoreThreadMutation = useBBMutation({
+    request: () => ({ url: `/thread/${thread.id}/restore`, method: "PUT" }),
+    schema: RestoreResponseSchema,
+    onSuccess: (response) => {
+      invalidateForumContent(queryClient, [thread.id, response.threadId]);
+      navigateAfterRestore(navigate, response, message.id);
+    },
+    onError: (error) => {
+      setRestoreNotice(restoreFailureText(error));
+      invalidateForumContent(queryClient, [thread.id]);
+    },
+  });
+
+  const restoreMessageMutation = useBBMutation({
+    request: () => ({ url: `/message/${message.id}/restore`, method: "PUT" }),
+    schema: RestoreResponseSchema,
+    onSuccess: (response) => {
+      invalidateForumContent(queryClient, [thread.id, response.threadId]);
+      navigateAfterRestore(navigate, response, message.id);
+    },
+    onError: (error) => {
+      if (
+        getResponseStatus(error) === 409 &&
+        getResponseBodyText(error) === "RESTORE_THREAD_INSTEAD"
+      ) {
+        restoreThreadMutation.mutate();
+        return;
+      }
+      setRestoreNotice(restoreFailureText(error));
+      invalidateForumContent(queryClient, [thread.id]);
+    },
+  });
+
+  const restorePending =
+    restoreMessageMutation.isPending || restoreThreadMutation.isPending;
+
+  return (
+    <div id={`msg${message.id}`} className="flex flex-col min-h-75 scroll-mt-4">
+      <div className="flex flex-row items-stretch min-h-16">
         <div
-          className={`border-b border-default p-3 ${isEven ? "bg-elevated" : "bg-muted"} shrink-0 min-h-19 flex items-start`}
+          className={`w-28 md:w-34 lg:w-64 shrink-0 border-r border-b border-default p-3 ${rowBackground}`}
+        >
+          <UserLeftPaneHeader user={message.createdUser ?? undefined} />
+        </div>
+        <div
+          className={`flex flex-1 min-w-0 border-b border-default p-3 ${rowBackground} items-start`}
         >
           <BBFlex
             justify="between"
-            align="center"
-            gap="gap-2"
-            className="overflow-hidden min-w-0 size-fit whitespace-nowrap"
+            align="start"
+            gap="gap-4"
+            className="w-full min-w-0"
             wrap={false}
           >
-            <div className="text-sm">
+            <div className="text-sm min-w-0">
               <div>
-                <BBDate dateStr={message.createdTsAsString} />
+                <BBLink
+                  to={permalink as RoutePaths}
+                  className="hover:underline"
+                  title="Link to this post"
+                >
+                  <BBDate dateStr={message.createdTs} long />
+                </BBLink>
                 <BBHasPermission requiredPermissions={MSG_ADMIN}>
                   <span className="text-muted">- 192.168.1.1</span>
                 </BBHasPermission>
               </div>
-              {message.currentMessage.updatedTsAsString && (
+              {message.updatedTs && message.updatedTs !== message.createdTs && (
                 <div className="text-muted">
-                  Last Edit:{" "}
-                  <BBDate dateStr={message.currentMessage.updatedTsAsString} />
+                  Last Edit: <BBDate dateStr={message.updatedTs} long />
                 </div>
               )}
             </div>
 
-            <BBFlex gap="gap-2" wrap={true} className="text-sm">
-              <BBHasPermission requiredPermissions={MSG_EDITOR}>
+            <BBFlex
+              gap="gap-4"
+              align="start"
+              wrap={false}
+              className="text-sm shrink-0"
+            >
+              <BBFlex gap="gap-2" wrap={true}>
+                {canReply && (
+                  <button
+                    type="button"
+                    className="text-toned hover:transition-colors"
+                    onClick={() => onQuote(message)}
+                  >
+                    <Fa6SolidReply className="mr-1" />
+                    <span className="hidden sm:inline">Reply</span>
+                  </button>
+                )}
+                <BBHasPermission requiredPermissions={MSG_EDITOR}>
+                  <button
+                    type="button"
+                    className="text-toned hover:transition-colors"
+                    onClick={() => onModify(message)}
+                  >
+                    <BBIcon name="modify" className="mr-1" />
+                    <span className="hidden sm:inline">Edit</span>
+                  </button>
+                </BBHasPermission>
+                {canRestore && (
+                  <button
+                    type="button"
+                    className="text-toned hover:transition-colors"
+                    disabled={restorePending}
+                    onClick={() => restoreMessageMutation.mutate()}
+                  >
+                    <BBIcon name="approve" className="mr-1" />
+                    <span className="hidden sm:inline">
+                      {restorePending ? "Restoring..." : "Restore"}
+                    </span>
+                  </button>
+                )}
+                <BBHasPermission requiredPermissions={MSG_ADMIN}>
+                  <button
+                    type="button"
+                    className="text-toned hover:transition-colors hidden md:inline-flex"
+                  >
+                    <BBIcon name="split" className="mr-1" />
+                    Split
+                  </button>
+                </BBHasPermission>
+                <BBHasPermission requiredPermissions={MSG_VIEWER}>
+                  <button
+                    type="button"
+                    className="text-toned hover:transition-colors hidden md:inline-flex"
+                  >
+                    <BBIcon name="history" className="mr-1" />
+                    History
+                  </button>
+                </BBHasPermission>
+                <BBHasPermission requiredPermissions={MSG_EDITOR}>
+                  <button
+                    type="button"
+                    className="text-toned hover:transition-colors hidden lg:inline-flex"
+                  >
+                    <BBIcon name="suspect" className="mr-1" />
+                    Report
+                  </button>
+                </BBHasPermission>
+                <BBHasPermission requiredPermissions={MSG_ADMIN}>
+                  <button
+                    type="button"
+                    className="text-toned hover:transition-colors hidden lg:inline-flex"
+                  >
+                    <BBIcon name="warn" className="mr-1" />
+                    Warn
+                  </button>
+                </BBHasPermission>
+              </BBFlex>
+              {canRemove && (
                 <button
                   type="button"
-                  className="text-toned hover:transition-colors"
-                >
-                  <Fa6SolidReply className="mr-1" />
-                  <span className="hidden sm:inline">Reply</span>
-                </button>
-              </BBHasPermission>
-              <BBHasPermission requiredPermissions={MSG_EDITOR}>
-                <button
-                  type="button"
-                  className="text-toned hover:transition-colors"
-                  onClick={() => onModify(message)}
-                >
-                  <BBIcon name="modify" className="mr-1" />
-                  <span className="hidden sm:inline">Edit</span>
-                </button>
-              </BBHasPermission>
-              <BBHasPermission requiredPermissions={MSG_ADMIN}>
-                <button
-                  type="button"
-                  className="text-toned hover:transition-colors hidden sm:inline-flex"
+                  className="text-toned hover:transition-colors shrink-0"
+                  onClick={() => {
+                    setRestoreNotice(null);
+                    setShowRemovalConfirm((current) => !current);
+                  }}
                 >
                   <BBIcon name="delete" className="mr-1" />
-                  Remove
+                  <span className="hidden sm:inline">Remove</span>
                 </button>
-              </BBHasPermission>
-              <BBHasPermission requiredPermissions={MSG_ADMIN}>
-                <button
-                  type="button"
-                  className="text-toned hover:transition-colors hidden md:inline-flex"
-                >
-                  <BBIcon name="split" className="mr-1" />
-                  Split
-                </button>
-              </BBHasPermission>
-              <BBHasPermission requiredPermissions={MSG_VIEWER}>
-                <button
-                  type="button"
-                  className="text-toned hover:transition-colors hidden md:inline-flex"
-                >
-                  <BBIcon name="history" className="mr-1" />
-                  History
-                </button>
-              </BBHasPermission>
-              <BBHasPermission requiredPermissions={MSG_EDITOR}>
-                <button
-                  type="button"
-                  className="text-toned hover:transition-colors hidden lg:inline-flex"
-                >
-                  <BBIcon name="suspect" className="mr-1" />
-                  Report
-                </button>
-              </BBHasPermission>
-              <BBHasPermission requiredPermissions={MSG_ADMIN}>
-                <button
-                  type="button"
-                  className="text-toned hover:transition-colors hidden lg:inline-flex"
-                >
-                  <BBIcon name="warn" className="mr-1" />
-                  Warn
-                </button>
-              </BBHasPermission>
+              )}
             </BBFlex>
           </BBFlex>
         </div>
+      </div>
 
-        <UserMessage
-          messageText={message.currentMessage.messageText}
-          isEven={isEven}
+      {restoreNotice && (
+        <div className="border-b border-default bg-accented p-3 text-sm text-error">
+          {restoreNotice}
+        </div>
+      )}
+      {showRemovalConfirm && (
+        <MessageRemovalConfirm
+          message={message}
+          thread={thread}
+          currentPage={currentPage}
+          onClose={() => setShowRemovalConfirm(false)}
         />
-        <MessageAttachments
-          attachments={message.fileAttachments ?? []}
-          isEven={isEven}
-        />
-        <UserSignature
-          user={message.createdUser ?? undefined}
-          isEven={isEven}
-        />
+      )}
+
+      <div className="flex flex-row flex-1 items-stretch">
+        <div
+          className={`w-28 md:w-34 lg:w-64 shrink-0 border-r border-default ${rowBackground}`}
+        >
+          <UserLeftPaneBody user={message.createdUser ?? undefined} />
+        </div>
+        <div className="flex flex-1 flex-col grow min-w-0">
+          <UserMessage
+            messageText={message.currentMessage.messageText}
+            isEven={isEven}
+          />
+          <MessageAttachments
+            attachments={message.fileAttachments ?? []}
+            isEven={isEven}
+          />
+          <ReactionBar
+            reactableId={message.id}
+            className={`${rowBackground} px-3 py-2`}
+          />
+          <UserSignature
+            user={message.createdUser ?? undefined}
+            isEven={isEven}
+          />
+        </div>
       </div>
     </div>
   );
 });
 
-const ForumThread: React.FC<ForumThreadProps> = ({
+export default function ForumThread({
   pageNumber: paramsPageNo,
-}) => {
+}: ForumThreadProps) {
   const navigate = useNavigate();
   const { threadId: threadIdParam } = useParams();
-  const { data: siteInfo } = useSiteInfo();
-  const siteName = siteInfo?.siteName ?? "";
-  const currentPage = parseInt(paramsPageNo!);
+  const currentPage = parsePage(paramsPageNo ?? null);
+  const { actions: threadActions, isLoaded: threadActionsLoaded } =
+    useAllowedActions(
+      `/thread/${threadIdParam}/allowed-actions`,
+      threadIdParam != null,
+    );
+  const canReply = threadActionsLoaded && threadActions.has("thread.reply");
+  const canRestoreThread =
+    threadActionsLoaded && threadActions.has("thread.restore");
 
   const query = useBBQuery(
     `/thread/${threadIdParam}?page=${currentPage}&pageSize=10`,
     { schema: ThreadSchema },
   );
 
-  // const textAreaRef = useRef("");
   const [showReplyBox, setShowReplyBox] = useState(false);
-  const [, setMessageText] = useState<
-    string | number | readonly string[] | undefined
-  >("");
+  const [quoteSeed, setQuoteSeed] = useState<string | undefined>(undefined);
+  const [quoteSeedNonce, setQuoteSeedNonce] = useState(0);
 
-  const [, setCurrentMessage] = useState<Message>({} as Message);
-
-  if (query.isError)
-    return (
-      <BBError
-        error={query.error ?? undefined}
-        onRetry={() => void query.refetch()}
-      />
+  const seedReplyEditor = useCallback((message: Message) => {
+    setQuoteSeed(
+      `[quote thread=${message.threadId} msg=${message.id}]\n[/quote]\n`,
     );
-  if (!query.data) return <BBSkeleton className="h-40 w-full rounded" />;
-  const thread = query.data;
-  const threadId = thread.id as number | undefined;
-
-  const loadNewPage = (pageNumber: number) => {
-    navigate(`/forum/thread/${threadId}/${pageNumber}`);
-  };
-
-  // const footer = useMemo(() => {
-  //   return [
-  //     {
-  //       label: "Reply",
-  //       callback: () => setShowReplyBox(!showReplyBox),
-  //       permissions: ["ZFGC_MESSAGE_EDITOR", "ZFGC_MESSAGE_ADMIN"],
-  //     },
-  //     {
-  //       label: "Add Poll",
-  //       callback: () => {},
-  //       permissions: ["ZFGC_MESSAGE_EDITOR", "ZFGC_MESSAGE_ADMIN"],
-  //     },
-  //     {
-  //       label: "Subscribe",
-  //       callback: () => {},
-  //       permissions: [
-  //         "ZFGC_MESSAGE_VIEWER",
-  //         "ZFGC_MESSAGE_EDITOR",
-  //         "ZFGC_MESSAGE_ADMIN",
-  //       ],
-  //     },
-  //     {
-  //       label: "Mark Unread",
-  //       callback: () => {},
-  //       permissions: [
-  //         "ZFGC_MESSAGE_VIEWER",
-  //         "ZFGC_MESSAGE_EDITOR",
-  //         "ZFGC_MESSAGE_ADMIN",
-  //       ],
-  //     },
-  //   ] satisfies BBPermissionLabel[];
-  // }, [showReplyBox]);
-
-  const clickModify = useCallback((message: Message) => {
+    setQuoteSeedNonce((nonce) => nonce + 1);
     setShowReplyBox(true);
-    setMessageText(
-      message.currentMessage.unparsedText as
-        | string
-        | number
-        | readonly string[]
-        | undefined,
-    );
-    setCurrentMessage(message);
   }, []);
 
-  const breadcrumbs: Crumb[] = [
-    { label: siteName || "Loading...", to: "/forum", prefetch: "render" },
-    {
-      label: thread.boardName,
-      to: `/forum/board/${thread.boardId}/1`,
-      prefetch: "intent",
-    },
-    { label: thread.threadName ?? "Loading..." },
-  ];
+  const openReplyEditor = useCallback(() => {
+    setQuoteSeed(undefined);
+    setQuoteSeedNonce((nonce) => nonce + 1);
+    setShowReplyBox(true);
+  }, []);
+
+  const messagesLoaded = Boolean(query.data);
+  useEffect(() => {
+    if (!messagesLoaded) return;
+    const hash = window.location.hash;
+    if (!/^#msg\d+$/.test(hash)) return;
+    document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" });
+  }, [messagesLoaded]);
 
   return (
-    <>
-      <div className="space-y-4">
-        <BBBreadcrumb crumbs={breadcrumbs} />
-        <div className="bg-accented p-4 scrollbar-thin">
-          <BBPaginator
-            numPages={thread.pageCount ?? currentPage}
-            currentPage={currentPage}
-            onPageChange={loadNewPage}
-          />
-        </div>
-
-        {thread.pollInfo && (
-          <PollResults poll={thread.pollInfo} updateResults={() => {}} />
-        )}
-        <BBWidget widgetTitle={thread.threadName}>
-          <div className="divide-y divide-default">
-            {thread.messages?.map((message, index) => (
-              <ThreadMessage
-                key={message.id}
-                message={message}
-                isEven={index % 2 === 0}
-                onModify={clickModify}
+    <BBQueryBoundary query={query}>
+      {(thread) => {
+        const threadId = thread.id;
+        const loadNewPage = (pageNumber: number) => {
+          navigate(`/forum/thread/${threadId}/${pageNumber}`);
+        };
+        return (
+          <>
+            <div className="space-y-4">
+              {canRestoreThread && threadIsRecycledContent(thread) && (
+                <RecycledThreadNotice thread={thread} />
+              )}
+              <PaginatorBar
+                numPages={thread.pageCount ?? currentPage}
+                currentPage={currentPage}
+                onPageChange={loadNewPage}
               />
-            ))}
-          </div>
 
-          <div className="bg-accented p-4 scrollbar-thin">
-            <BBPaginator
-              numPages={thread.pageCount ?? currentPage}
-              currentPage={currentPage}
-              onPageChange={loadNewPage}
-            />
-          </div>
-        </BBWidget>
-        <BBBreadcrumb crumbs={breadcrumbs} />
-      </div>
+              {thread.pollInfo && <PollResults poll={thread.pollInfo} />}
+              <BBWidget widgetTitle={thread.threadName}>
+                <ReactionsProvider
+                  reactableType="MESSAGE"
+                  reactableIds={(thread.messages ?? []).map(
+                    (message) => message.id,
+                  )}
+                >
+                  <div className="divide-y divide-default">
+                    {thread.messages?.map((message, index) => (
+                      <ThreadMessage
+                        key={message.id}
+                        message={message}
+                        thread={thread}
+                        currentPage={currentPage}
+                        isEven={index % 2 === 0}
+                        onQuote={seedReplyEditor}
+                        onModify={openReplyEditor}
+                        permalink={`/forum/thread/${threadId}/${currentPage}#msg${message.id}`}
+                        canReply={canReply}
+                      />
+                    ))}
+                  </div>
+                </ReactionsProvider>
 
-      {showReplyBox && threadId && <MessageEditor threadId={threadId} />}
-    </>
+                <PaginatorBar
+                  numPages={thread.pageCount ?? currentPage}
+                  currentPage={currentPage}
+                  onPageChange={loadNewPage}
+                />
+              </BBWidget>
+            </div>
+
+            {canReply && showReplyBox && threadId && (
+              <MessageEditor
+                key={quoteSeedNonce}
+                threadId={threadId}
+                initialBody={quoteSeed}
+              />
+            )}
+          </>
+        );
+      }}
+    </BBQueryBoundary>
   );
-};
-
-export default ForumThread;
+}

@@ -23,13 +23,10 @@ export const BoardSummarySchema = v.object({
   boardName: v.string(),
   threadCount: v.number(),
   postCount: v.number(),
-  latestMessageId: v.optional(v.number()),
   latestThreadId: v.optional(v.number()),
   latestMessageOwnerId: v.optional(v.number()),
   latestMessageUserName: v.optional(v.string()),
-  categoryId: v.number(),
-  parentBoardId: v.optional(v.number()),
-  latestMessageCreatedTsAsString: v.optional(v.string()),
+  latestMessageCreatedTs: v.optional(v.string()),
   threadName: v.optional(v.string()),
   childBoards: v.optional(v.array(ChildBoardSchema)),
 });
@@ -46,30 +43,30 @@ export const MessageHistorySchema = v.object({
   id: baseIdSchema,
   messageId: v.number(),
   messageText: v.string(),
-  unparsedText: v.string(),
   currentFlag: v.optional(v.boolean()),
-  createdTsAsString: v.string(),
-  updatedTsAsString: v.optional(v.string()),
+  createdTs: v.optional(v.string()),
+  updatedTs: v.optional(v.string()),
 });
 
 export const FileAttachmentSchema = v.object({
   id: baseIdSchema,
   fileAttachmentId: v.number(),
   contentResourceId: v.number(),
-  filename: v.string(),
-  mimeType: v.string(),
-  fileSize: v.number(),
+  filename: v.optional(v.string()),
+  mimeType: v.optional(v.string()),
+  fileSize: v.optional(v.number()),
   downloads: v.number(),
 });
 
 export const MessageSchema = v.object({
-  id: baseIdSchema,
+  id: idSchema,
   ownerId: v.optional(v.number()),
   threadId: v.number(),
   currentMessage: MessageHistorySchema,
   fileAttachments: v.optional(v.array(FileAttachmentSchema)),
   createdUser: v.optional(UserSchema),
-  createdTsAsString: v.string(),
+  createdTs: v.optional(v.string()),
+  updatedTs: v.optional(v.string()),
 });
 
 export const LatestMessageSchema = v.object({
@@ -77,7 +74,7 @@ export const LatestMessageSchema = v.object({
   threadName: v.string(),
   ownerId: v.optional(v.number()),
   ownerName: v.string(),
-  lastPostTsAsString: v.string(),
+  lastPostTs: v.optional(v.string()),
 });
 
 export const PollChoiceSchema = v.object({
@@ -95,13 +92,13 @@ export const PollInfoSchema = v.object({
   pollQuestion: v.optional(v.string()),
   threadId: v.number(),
   votingLockedFlag: v.boolean(),
-  expireTimeAsString: v.optional(v.string()),
+  expireTime: v.optional(v.string()),
   hideResultsFlag: v.boolean(),
   changeVoteFlag: v.boolean(),
-  createdUserId: v.number(),
+  createdUserId: v.optional(v.number()),
   guestVoteFlag: v.boolean(),
   guestVoteCount: v.number(),
-  maxVotes: v.number(),
+  maxVotes: v.optional(v.number()),
   votes: v.number(),
   answers: v.array(PollChoiceSchema),
 });
@@ -120,7 +117,40 @@ export const ThreadSchema = v.object({
   pageCount: v.number(),
   pollInfo: v.optional(PollInfoSchema),
   messages: v.array(MessageSchema),
+  recycleBinEnabled: v.optional(v.boolean()),
+  recycledFromBoardId: v.optional(v.number()),
+  recycledFromThreadId: v.optional(v.number()),
 });
+
+export const MessageDeletionResponseSchema = v.object({
+  outcome: v.picklist(["RECYCLED", "PURGED"]),
+  originThreadRecycled: v.boolean(),
+  originThreadDeleted: v.boolean(),
+  threadId: v.optional(v.number()),
+  boardId: v.optional(v.number()),
+  recycleThreadId: v.optional(v.number()),
+  pageCount: v.optional(v.number()),
+});
+export type MessageDeletionResponse = v.InferOutput<
+  typeof MessageDeletionResponseSchema
+>;
+
+export const ThreadDeletionResponseSchema = v.object({
+  outcome: v.picklist(["RECYCLED", "PURGED"]),
+  boardId: v.optional(v.number()),
+  recycleThreadId: v.optional(v.number()),
+});
+export type ThreadDeletionResponse = v.InferOutput<
+  typeof ThreadDeletionResponseSchema
+>;
+
+export const RestoreResponseSchema = v.object({
+  mode: v.picklist(["MERGED_INTO_ORIGIN", "THREAD_RESTORED"]),
+  threadId: v.optional(v.number()),
+  boardId: v.optional(v.number()),
+  postInThread: v.optional(v.number()),
+});
+export type RestoreResponse = v.InferOutput<typeof RestoreResponseSchema>;
 
 export const ThreadSummarySchema = v.object({
   id: baseIdSchema,
@@ -132,7 +162,7 @@ export const ThreadSummarySchema = v.object({
   createdUser: UserSchema,
   postCount: v.number(),
   viewCount: v.number(),
-  createdTsAsString: v.string(),
+  createdTs: v.optional(v.string()),
   latestMessage: LatestMessageSchema,
 });
 
@@ -158,3 +188,10 @@ export const ForumSchema = v.object({
 export const EntityThreadRefSchema = v.object({
   threadId: v.optional(v.number()),
 });
+
+export const BbCodeToggleSchema = v.object({
+  code: v.string(),
+  enabled: v.boolean(),
+});
+export const BbCodeToggleListSchema = v.array(BbCodeToggleSchema);
+export type BbCodeToggle = v.InferOutput<typeof BbCodeToggleSchema>;

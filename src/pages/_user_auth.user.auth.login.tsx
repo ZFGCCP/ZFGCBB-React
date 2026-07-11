@@ -1,8 +1,10 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
+import {
+  clearPrivateQueryState,
+  recordSessionEstablished,
+} from "@/providers/query/queryProvider";
 
 export default function UserLogin() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const loginMutation = useBBMutation({
@@ -16,9 +18,10 @@ export default function UserLogin() {
         scope: "all",
       },
     }),
-    schema: UserSchema,
-    onSuccess: () => {
-      queryClient.invalidateQueries();
+    schema: LoginResponseSchema,
+    onSuccess: async (loginResponse) => {
+      await clearPrivateQueryState();
+      recordSessionEstablished(loginResponse.accessTokenTtlSeconds);
       navigate("/");
     },
   });
@@ -27,7 +30,7 @@ export default function UserLogin() {
     defaultValues: {
       username: "",
       password: "",
-      stayLoggedIn: false,
+      stayLoggedIn: true,
     } as LoginForm,
     validators: {
       onBlur: LoginFormSchema,

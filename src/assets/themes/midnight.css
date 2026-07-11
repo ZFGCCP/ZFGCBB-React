@@ -3,6 +3,7 @@
     --text-color-muted: #b0b4bf;
     --text-color-toned: #8e95a4;
     --text-color-error: #ff8f8f;
+    --text-color-success: #8fe6a3;
 
     --background-color-default: #204378;
     --background-color-muted: #1e2b44;
@@ -10,6 +11,7 @@
     --background-color-accented: #132241;
 
     --border-color-accented: #132241;
+    --border-color-error: #ff8f8f;
 
     --ring-color-accented: #4c83ff;
 

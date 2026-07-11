@@ -1,4 +1,4 @@
-const Sonic: React.FC = () => {
+export default function Sonic() {
   return (
     <div className="grid grid-cols-1 gap-4">
       <div className="my-2">
@@ -14,6 +14,4 @@ const Sonic: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default Sonic;
+}

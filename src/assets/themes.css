@@ -12,17 +12,21 @@
   --text-color-highlighted: #f3f4f6;
   --text-color-inverted: #1f2937;
   --text-color-error: #f87171;
+  --text-color-success: #4ade80;
 
   --background-color-default: #374151;
   --background-color-muted: #1f2937;
   --background-color-elevated: #4b5563;
   --background-color-accented: #111827;
   --background-color-inverted: #ffffff;
+  --background-color-error: #f87171;
+  --background-color-success: #4ade80;
 
   --border-color-default: #000000;
   --border-color-muted: #374151;
   --border-color-accented: #1f2937;
   --border-color-inverted: #ffffff;
+  --border-color-error: #f87171;
 
   --ring-color-default: #000000;
   --ring-color-muted: #374151;
@@ -50,12 +54,33 @@
 
   --sprite-icons: url("/themes/midnight/images/sprites/icons.webp");
   --sprite-badges: url("/themes/midnight/images/sprites/badges.webp");
+
+  --color-zelda-alttp-triforce-gold: oklch(88.805% 0.18375 98.426);
+  --color-zelda-alttp-triforce-gold-50: oklch(96.262% 0.08423 100.53);
+  --color-zelda-alttp-triforce-gold-100: oklch(95.496% 0.10611 101.23);
+  --color-zelda-alttp-triforce-gold-200: oklch(93.726% 0.14167 100.89);
+  --color-zelda-alttp-triforce-gold-300: oklch(92.35% 0.16808 100.65);
+  --color-zelda-alttp-triforce-gold-400: oklch(91.137% 0.18324 99.835);
+  --color-zelda-alttp-triforce-gold-500: oklch(88.805% 0.18375 98.426);
+  --color-zelda-alttp-triforce-gold-600: oklch(73.431% 0.15199 98.538);
+  --color-zelda-alttp-triforce-gold-700: oklch(57.198% 0.11845 98.731);
+  --color-zelda-alttp-triforce-gold-800: oklch(39.696% 0.08231 99.146);
+  --color-zelda-alttp-triforce-gold-900: oklch(19.883% 0.04143 100.69);
+  --color-zelda-alttp-triforce-gold-950: oklch(0% 0 none);
 }
 
-@utility bg-hatch {
-  background: repeating-linear-gradient(
+@utility bg-hatch-* {
+  --hatch-color: --value(
+    --color-*,
+    --background-color-*,
+    [color],
+    --default(var(--text-color-highlighted))
+  );
+  --hatch-opacity: calc(--modifier(integer, --default(100)) * 1%);
+  background-image: repeating-linear-gradient(
     45deg,
-    var(--text-color-highlighted) 0 4px,
+    color-mix(in srgb, var(--hatch-color) var(--hatch-opacity), transparent) 0
+      4px,
     transparent 4px 8px
   );
 }

@@ -1,4 +1,6 @@
 import type { Config } from "@react-router/dev/config";
+import { existsSync, readdirSync, renameSync, rmdirSync } from "node:fs";
+import { join, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
 import { loadEnv } from "vite";
 import { presetSpa } from "./react-router.config.spa.js";
@@ -101,9 +103,11 @@ async function enumerateDynamicRoutes() {
     enumerate(
       "forum",
       async () => {
-        const boards = (await fetchJson<Forum>("/board/forum")).categories
-          ?.flatMap((category) => category.boards ?? [])
-          .filter((board) => board.boardId != null);
+        const boards = (
+          await fetchJson<Forum>("/board/forum")
+        ).categories?.flatMap((category) =>
+          (category.boards ?? []).filter((board) => board.boardId != null),
+        );
         if (!boards?.length) return [];
         const threadId = boards.find(
           (board) => board.latestThreadId != null,
@@ -129,8 +133,45 @@ async function enumerateDynamicRoutes() {
   ];
 }
 
+function collectSubdirectoriesDeepestFirst(rootDirectory: string) {
+  const subdirectories: string[] = [];
+  const collectDescendants = (currentDirectory: string) => {
+    for (const directoryEntry of readdirSync(currentDirectory, {
+      withFileTypes: true,
+    })) {
+      if (!directoryEntry.isDirectory()) continue;
+      const childDirectory = join(currentDirectory, directoryEntry.name);
+      subdirectories.push(childDirectory);
+      collectDescendants(childDirectory);
+    }
+  };
+  collectDescendants(rootDirectory);
+  const directoryDepth = (directoryPath: string) =>
+    directoryPath.split(sep).length;
+  return subdirectories.sort(
+    (first, second) => directoryDepth(second) - directoryDepth(first),
+  );
+}
+
+function flattenPrerenderedRouteHtml(clientDirectory: string) {
+  for (const routeDirectory of collectSubdirectoriesDeepestFirst(
+    clientDirectory,
+  )) {
+    const indexHtmlPath = join(routeDirectory, "index.html");
+    if (!existsSync(indexHtmlPath)) continue;
+    const flatHtmlPath = `${routeDirectory}.html`;
+    renameSync(indexHtmlPath, flatHtmlPath);
+    if (readdirSync(routeDirectory).length === 0) rmdirSync(routeDirectory);
+  }
+}
+
 export default {
   appDirectory: "src",
+  buildEnd: ({ reactRouterConfig, viteConfig }) => {
+    flattenPrerenderedRouteHtml(
+      resolve(viteConfig.root, reactRouterConfig.buildDirectory, "client"),
+    );
+  },
   prerender: async ({ getStaticPaths }) => {
     const staticPaths = getStaticPaths().filter(
       (path) => !nonPrerenderablePaths.includes(path),

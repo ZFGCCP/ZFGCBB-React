@@ -28,7 +28,6 @@ export const useBBQuery = <
     queryKey,
     schema,
     retry = 0,
-    gcTime = 300000,
     staleTime = 100000,
     enabled = true,
     throwOnError = (error: Error) => getResponseStatus(error) === 403,
@@ -43,7 +42,7 @@ export const useBBQuery = <
   >({
     queryKey: [queryKey ?? url],
     queryFn: async () => {
-      const response = await fetch(`${getApiBaseUrl()}${url ?? "/"}`, {
+      const response = await fetch(`${getApiBaseUrl()}${url}`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -53,7 +52,6 @@ export const useBBQuery = <
       return handleResponseWithJason(response, schema);
     },
     retry,
-    gcTime,
     staleTime,
     enabled,
     throwOnError,

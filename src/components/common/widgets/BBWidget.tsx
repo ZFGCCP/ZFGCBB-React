@@ -1,14 +1,14 @@
 export interface BBWidgetProps {
-  widgetTitle?: string;
+  widgetTitle?: React.ReactNode;
   className?: string;
   children: React.ReactNode;
 }
 
-const BBWidget: React.FC<BBWidgetProps> = ({
+export default function BBWidget({
   widgetTitle,
   className = "",
   children,
-}) => {
+}: BBWidgetProps) {
   return (
     <section className={`bg-accented border-2 border-default ${className}`}>
       {widgetTitle && (
@@ -19,6 +19,4 @@ const BBWidget: React.FC<BBWidgetProps> = ({
       <div>{children}</div>
     </section>
   );
-};
-
-export default BBWidget;
+}

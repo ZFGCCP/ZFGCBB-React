@@ -1,23 +1,6 @@
 import type { WikiPageRef } from "@/types/content";
 
-export function WikiRefLabel({
-  namespace,
-  title,
-}: {
-  namespace: string;
-  title: string;
-}) {
-  return (
-    <>
-      {namespace !== "MAIN" && (
-        <span className="text-dimmed">{namespace}:</span>
-      )}
-      {title}
-    </>
-  );
-}
-
-export function WikiPageList({
+export default function WikiPageList({
   refs,
   className,
 }: {

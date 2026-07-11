@@ -1,4 +1,4 @@
-export function UserLink({
+export default function UserLink({
   userId,
   name,
   className = "text-highlighted",

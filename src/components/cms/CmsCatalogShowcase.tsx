@@ -4,7 +4,7 @@ import type {
   RailSource,
 } from "@/types/catalogDescriptor";
 
-export function CmsCatalogShowcase<
+export default function CmsCatalogShowcase<
   TItem extends RailSource,
   TShowcase extends Showcase<TItem>,
   TFacets,

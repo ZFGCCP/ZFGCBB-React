@@ -1,4 +1,3 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import type { Route } from "./+types/_wiki.wiki.special.recentchanges";
 
 export const loader = ({ request }: Route.LoaderArgs) =>
@@ -7,14 +6,10 @@ export const loader = ({ request }: Route.LoaderArgs) =>
     { url: "/wiki/meta/recentchanges", schema: WikiRevisionRefListSchema },
   ]);
 
-export default function SpecialRecentChangesRoute({
-  loaderData,
-}: Route.ComponentProps) {
+export default function SpecialRecentChangesRoute() {
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <WikiShell trail={specialTrail("Recent changes")}>
-        <RecentChanges />
-      </WikiShell>
-    </HydrationBoundary>
+    <WikiShell trail={specialTrail("Recent changes")}>
+      <RecentChanges />
+    </WikiShell>
   );
 }

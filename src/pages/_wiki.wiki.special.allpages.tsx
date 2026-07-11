@@ -1,4 +1,3 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import type { Route } from "./+types/_wiki.wiki.special.allpages";
 
 export const loader = ({ request }: Route.LoaderArgs) =>
@@ -10,14 +9,10 @@ export const loader = ({ request }: Route.LoaderArgs) =>
     },
   ]);
 
-export default function SpecialAllPagesRoute({
-  loaderData,
-}: Route.ComponentProps) {
+export default function SpecialAllPagesRoute() {
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <WikiShell trail={specialTrail("All pages")}>
-        <AllPages />
-      </WikiShell>
-    </HydrationBoundary>
+    <WikiShell trail={specialTrail("All pages")}>
+      <AllPages />
+    </WikiShell>
   );
 }

@@ -8,29 +8,13 @@ interface UserLeftPaneProps {
   };
 }
 
-const AvatarSkeleton: React.FC = () => {
-  return <BBSkeleton className="h-24 w-24 rounded border border-default " />;
-};
-
-const UserLeftPane: React.FC<UserLeftPaneProps> = ({
+export default function UserLeftPane({
   user,
   backgrounds = {
     profileInfoContainer: "bg-muted",
     avatarContainer: "bg-muted",
   },
-}) => {
-  const avatarSrc = useMemo(() => {
-    if (user?.bioInfo?.avatar) {
-      return user.bioInfo?.avatar?.url && user.bioInfo?.avatar?.url?.trim()
-        ? user.bioInfo.avatar.url
-        : (contentUrl(
-            user.bioInfo.avatar.contentResourceId!,
-          ) as `${string}://${string}/${string}`);
-    }
-
-    return contentUrl(3) as `${string}://${string}/${string}`;
-  }, [user]);
-
+}: UserLeftPaneProps) {
   return (
     <BBFlex
       align="stretch"
@@ -39,68 +23,11 @@ const UserLeftPane: React.FC<UserLeftPaneProps> = ({
     >
       <BBFlex
         align="stretch"
-        className={`p-3 ${backgrounds.profileInfoContainer ?? ""} border-b border-default shrink-0 min-h-19`}
+        className={`min-h-16 p-3 ${backgrounds.profileInfoContainer ?? ""} border-b border-default shrink-0`}
       >
-        <BBFlex
-          direction="col"
-          className="space-y-0.5 leading-tight font-medium truncate max-w-40"
-        >
-          {user && Number(user.id) > 0 ? (
-            <BBLink
-              to={`/user/profile/${user.id}`}
-              className="font-medium truncate w-full"
-              prefetch="intent"
-            >
-              {user?.displayName}
-            </BBLink>
-          ) : (
-            <span className="font-medium">{user?.displayName}</span>
-          )}
-          {user?.bioInfo?.customTitle && (
-            <BBMutedText className="truncate w-full">
-              {user?.bioInfo?.customTitle}
-            </BBMutedText>
-          )}
-          {user && <BBRankBadge name={rankBadgeFor(user)} />}
-        </BBFlex>
+        <UserLeftPaneHeader user={user} />
       </BBFlex>
-
-      <BBFlex
-        direction="col"
-        align="center"
-        justify="center"
-        className="p-4  text-center"
-      >
-        {user && (
-          <BBImage
-            src={avatarSrc}
-            alt="User avatar"
-            className="w-24 h-24 rounded border border-default object-cover"
-            fallback={<AvatarSkeleton />}
-          />
-        )}
-
-        {!user && <AvatarSkeleton />}
-
-        <BBMutedText className="truncate w-64 overflow-hidden">
-          {user?.bioInfo?.personalText}
-        </BBMutedText>
-        <div>
-          {user?.bioInfo?.reactionSummary?.reputationPoints ?? 0} rep
-          {" "}(+{user?.bioInfo?.reactionSummary?.positiveCount ?? 0}/-
-          {user?.bioInfo?.reactionSummary?.negativeCount ?? 0})
-        </div>
-      </BBFlex>
-
-      <BBFlex direction="col" align="stretch" className="p-3 space-y-2 text-sm">
-        <BBMutedText>Posts: {user?.bioInfo?.postCount}</BBMutedText>
-        <BBMutedText>
-          Joined: <BBDate dateStr={user?.bioInfo?.dateRegistered} />
-        </BBMutedText>
-        <BBMutedText>Status:</BBMutedText>
-      </BBFlex>
+      <UserLeftPaneBody user={user} />
     </BBFlex>
   );
-};
-
-export default UserLeftPane;
+}

@@ -15,7 +15,7 @@ export default defineConfig((env) => {
 
   return mergeConfig(baseConfig(env), {
     server: {
-      allowedHosts: [".zfgc.com"],
+      allowedHosts: [".zfgc.com", ".trycloudflare.com"],
       proxy: {
         "/zfgbb": {
           target: apiProxyTarget,

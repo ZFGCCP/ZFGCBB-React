@@ -16,12 +16,9 @@ export default function BBSubmit({
   className,
 }: BBSubmitProps) {
   const form = useBBFormContext();
-  const { canSubmit, isSubmitting } = useStore(form.store, (state) => ({
-    canSubmit: state.canSubmit,
-    isSubmitting: state.isSubmitting,
-  }));
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
 
-  const buttonDisabled = disabled || !canSubmit || isSubmitting;
+  const buttonDisabled = disabled || isSubmitting;
 
   return (
     <button

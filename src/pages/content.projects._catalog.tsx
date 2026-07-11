@@ -1,4 +1,3 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/providers/query/queryProvider";
 import type { Route } from "./+types/content.projects._catalog";
 
@@ -17,12 +16,8 @@ export async function clientLoader() {
   );
 }
 
-export default function ProjectsCatalogLayout({
-  loaderData,
-}: Route.ComponentProps) {
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <CmsCatalogLayout descriptor={projectCatalog} />
-    </HydrationBoundary>
-  );
+export const handle = { breadcrumb: "Projects" };
+
+export default function ProjectsCatalogLayout() {
+  return <CmsCatalogLayout descriptor={projectCatalog} />;
 }

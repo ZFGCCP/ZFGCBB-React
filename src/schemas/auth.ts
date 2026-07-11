@@ -8,6 +8,19 @@ export const LoginFormSchema = v.object({
 
 export type LoginForm = v.InferOutput<typeof LoginFormSchema>;
 
+export const LoginResponseSchema = v.object({
+  accessTokenTtlSeconds: v.number(),
+  user: UserSchema,
+});
+
+export type LoginResponse = v.InferOutput<typeof LoginResponseSchema>;
+
+export const RefreshResponseSchema = v.object({
+  accessTokenTtlSeconds: v.number(),
+});
+
+export type RefreshResponse = v.InferOutput<typeof RefreshResponseSchema>;
+
 export const RegistrationFormSchema = v.pipe(
   v.object({
     userName: v.pipe(v.string(), v.nonEmpty("Username is required.")),

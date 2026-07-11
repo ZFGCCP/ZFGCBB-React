@@ -9,5 +9,5 @@ export default function BBMutedText({
   Ass = "span",
   className = "",
 }: BBMutedTextProps) {
-  return <Ass className={`text-muted ${className ?? ""}`}>{children}</Ass>;
+  return <Ass className={`text-muted ${className}`}>{children}</Ass>;
 }

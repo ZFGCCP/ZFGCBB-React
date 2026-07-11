@@ -1,4 +1,3 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import type { PrefetchTarget } from "@/shared/http/ssrPrefetch";
 import type { Route } from "./+types/search.$query";
 import { getQueryClient } from "@/providers/query/queryProvider";
@@ -10,7 +9,7 @@ function searchTargets(
   const targets: PrefetchTarget[] = [
     { url: "/search/realms", schema: SearchRealmListSchema },
   ];
-  const decoded = decodeURIComponent(query ?? "");
+  const decoded = query ?? "";
   if (decoded.trim().length >= 2) {
     const api = new URLSearchParams({ q: decoded });
     const types = new URL(request.url).searchParams.get("types");
@@ -39,7 +38,7 @@ export async function clientLoader({
 
 function SearchResultsView() {
   const { query = "" } = useParams();
-  const decoded = decodeURIComponent(query);
+  const decoded = query;
   const [searchParams, setSearchParams] = useSearchParams();
   const filter = searchParams.get("types") ?? "";
   const navigate = useNavigate();
@@ -54,15 +53,9 @@ function SearchResultsView() {
   const { data: filters = [] } = useSearchRealms();
 
   const setFilter = (key: string) => {
-    setSearchParams(
-      (params) => {
-        const merged = new URLSearchParams(params);
-        if (key) merged.set("types", key);
-        else merged.delete("types");
-        return merged;
-      },
-      { replace: true },
-    );
+    setSearchParams((params) => mergeParams(params, { types: key }), {
+      replace: true,
+    });
   };
 
   return (
@@ -153,53 +146,55 @@ function SearchResultsView() {
             }
           >
             {(results) =>
-              results.groups
-                .filter((group) => group.hits.length > 0)
-                .map((group) => (
-                  <section key={group.type} aria-label={group.label}>
-                    <header className="flex items-center gap-2 border-b-2 border-default bg-accented px-3 py-1.5">
-                      <span aria-hidden className="h-3.5 w-1.5 bg-hatch" />
-                      <BBSectionLabel as="h2" size="2xs">
-                        {group.label}
-                      </BBSectionLabel>
-                      <span className="text-[11px] tracking-widest text-dimmed">
-                        ({group.total})
-                      </span>
-                    </header>
-                    <ul className="divide-y-2 divide-default/50">
-                      {group.hits.map((hit, index) => (
-                        <li key={hit.url + index}>
-                          <Link
-                            to={hit.url}
-                            className="block px-4 py-2.5 transition-colors hover:bg-elevated"
-                          >
-                            <div className="flex items-baseline justify-between gap-3">
-                              <span className="truncate text-sm font-bold text-highlighted">
-                                <HighlightMatch
-                                  text={hit.title}
-                                  query={decoded}
-                                />
-                              </span>
-                              {hit.context && (
-                                <span className="shrink-0 whitespace-nowrap border border-default bg-accented px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-dimmed">
-                                  {hit.context}
-                                </span>
-                              )}
-                            </div>
-                            {hit.snippet && (
-                              <p className="mt-1 line-clamp-2 text-xs text-dimmed">
-                                <HighlightMatch
-                                  text={hit.snippet}
-                                  query={decoded}
-                                />
-                              </p>
-                            )}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                ))
+              results.groups.flatMap((group) =>
+                group.hits.length > 0
+                  ? [
+                      <section key={group.type} aria-label={group.label}>
+                        <header className="flex items-center gap-2 border-b-2 border-default bg-accented px-3 py-1.5">
+                          <span aria-hidden className="h-3.5 w-1.5 bg-hatch" />
+                          <BBSectionLabel as="h2" size="2xs">
+                            {group.label}
+                          </BBSectionLabel>
+                          <span className="text-[11px] tracking-widest text-dimmed">
+                            ({group.total})
+                          </span>
+                        </header>
+                        <ul className="divide-y-2 divide-default/50">
+                          {group.hits.map((hit, index) => (
+                            <li key={hit.url + index}>
+                              <Link
+                                to={hit.url}
+                                className="block px-4 py-2.5 transition-colors hover:bg-elevated"
+                              >
+                                <div className="flex items-baseline justify-between gap-3">
+                                  <span className="truncate text-sm font-bold text-highlighted">
+                                    <HighlightMatch
+                                      text={hit.title}
+                                      query={decoded}
+                                    />
+                                  </span>
+                                  {hit.context && (
+                                    <span className="shrink-0 whitespace-nowrap border border-default bg-accented px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-dimmed">
+                                      {hit.context}
+                                    </span>
+                                  )}
+                                </div>
+                                {hit.snippet && (
+                                  <p className="mt-1 line-clamp-2 text-xs text-dimmed">
+                                    <HighlightMatch
+                                      text={hit.snippet}
+                                      query={decoded}
+                                    />
+                                  </p>
+                                )}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>,
+                    ]
+                  : [],
+              )
             }
           </BBQueryBoundary>
         )}
@@ -208,12 +203,6 @@ function SearchResultsView() {
   );
 }
 
-export default function SearchResultsPage({
-  loaderData,
-}: Route.ComponentProps) {
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <SearchResultsView />
-    </HydrationBoundary>
-  );
+export default function SearchResultsPage() {
+  return <SearchResultsView />;
 }

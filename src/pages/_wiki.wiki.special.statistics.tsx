@@ -1,4 +1,3 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import type { Route } from "./+types/_wiki.wiki.special.statistics";
 
 export const loader = ({ request }: Route.LoaderArgs) =>
@@ -7,14 +6,10 @@ export const loader = ({ request }: Route.LoaderArgs) =>
     { url: "/wiki/meta/statistics", schema: WikiStatisticsSchema },
   ]);
 
-export default function SpecialStatisticsRoute({
-  loaderData,
-}: Route.ComponentProps) {
+export default function SpecialStatisticsRoute() {
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <WikiShell trail={specialTrail("Statistics")}>
-        <WikiStatistics />
-      </WikiShell>
-    </HydrationBoundary>
+    <WikiShell trail={specialTrail("Statistics")}>
+      <WikiStatistics />
+    </WikiShell>
   );
 }

@@ -13,6 +13,10 @@ export default function BBArchiveContents({
     schema: ArchiveEntryListSchema,
   });
 
+  const openModal = useCallback((node: HTMLDialogElement | null) => {
+    if (node && !node.open) node.showModal();
+  }, []);
+
   return (
     <>
       <button
@@ -23,18 +27,13 @@ export default function BBArchiveContents({
         view contents
       </button>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <button
-            type="button"
-            aria-label="Close archive contents"
-            onClick={() => setOpen(false)}
-            className="absolute inset-0 cursor-default bg-black/60"
-          />
-          <dialog
-            open
-            aria-label={filename ?? "Archive contents"}
-            className="relative z-10 max-h-[70dvh] w-[min(90vw,30rem)] overflow-auto border-2 border-default bg-accented text-default p-0"
-          >
+        <dialog
+          ref={openModal}
+          aria-label={filename ?? "Archive contents"}
+          onClose={() => setOpen(false)}
+          className="fixed inset-0 z-50 m-0 flex h-full w-full max-h-none max-w-none items-center justify-center border-0 bg-transparent p-0 backdrop:bg-black/60"
+        >
+          <div className="relative z-10 max-h-[70dvh] w-[min(90vw,30rem)] overflow-auto border-2 border-default bg-accented text-default p-0">
             <div className="flex items-center justify-between border-b-2 border-default p-2">
               <span className="font-bold text-sm">
                 {filename ?? "Archive contents"}
@@ -71,8 +70,8 @@ export default function BBArchiveContents({
                 )}
               </BBQueryBoundary>
             </div>
-          </dialog>
-        </div>
+          </div>
+        </dialog>
       )}
     </>
   );

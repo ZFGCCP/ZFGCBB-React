@@ -25,13 +25,6 @@ export type CmsConfig = v.InferOutput<typeof CmsConfigSchema>;
 export type ProjectShowcase = v.InferOutput<typeof ProjectShowcaseSchema>;
 export type ResourceShowcase = v.InferOutput<typeof ResourceShowcaseSchema>;
 
-export type Paged<TItem> = {
-  items: TItem[];
-  total: number;
-  page: number;
-  pageSize: number;
-};
-
 export type Showcase<TItem> = {
   featured?: TItem;
   recent: TItem[];

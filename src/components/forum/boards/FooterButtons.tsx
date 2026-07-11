@@ -7,7 +7,7 @@ interface FooterButtonsProps {
   options: FooterConfig[];
 }
 
-const FooterButtons: React.FC<FooterButtonsProps> = ({ options }) => {
+export default function FooterButtons({ options }: FooterButtonsProps) {
   return (
     <div className="flex justify-end">
       {options.map((option, index) => {
@@ -18,7 +18,7 @@ const FooterButtons: React.FC<FooterButtonsProps> = ({ options }) => {
           <button
             key={option.label}
             type="button"
-            onClick={() => option.callback()}
+            onClick={option.callback}
             className={`
               px-2 py-2 bg-elevated border-2 border-default border-t-0 
               hover:bg-accented transition-colors
@@ -32,6 +32,4 @@ const FooterButtons: React.FC<FooterButtonsProps> = ({ options }) => {
       })}
     </div>
   );
-};
-
-export default FooterButtons;
+}

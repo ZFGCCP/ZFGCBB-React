@@ -10,17 +10,18 @@ export function useCarouselScroll<TElement extends HTMLElement>() {
     );
   }, []);
 
-  const ref = useCallback(
-    (node: TElement | null) => {
-      trackRef.current = node;
-      if (!node) return;
-      sync(node);
-      const observer = new ResizeObserver(() => sync(node));
-      observer.observe(node);
-      return () => observer.disconnect();
-    },
-    [sync],
-  );
+  const ref = useCallback((node: TElement | null) => {
+    trackRef.current = node;
+  }, []);
+
+  useEffect(() => {
+    const node = trackRef.current;
+    if (!node) return;
+    sync(node);
+    const observer = new ResizeObserver(() => sync(node));
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [sync]);
 
   const onScroll = useCallback(() => {
     if (trackRef.current) sync(trackRef.current);

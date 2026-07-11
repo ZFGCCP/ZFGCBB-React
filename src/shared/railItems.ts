@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { RailItem } from "@/components/cms/showcase/ShowcasePieces";
+import type { RailItem } from "@/components/cms/showcase/showcaseTypes";
 
 export function toRailItems<
   T extends {

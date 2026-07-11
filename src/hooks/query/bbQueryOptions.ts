@@ -28,7 +28,6 @@ export const bbQueryOptions = <TData extends object>(
       return handleResponseWithJason(response, schema);
     },
     staleTime: 100_000,
-    gcTime: 300_000,
     ...queryOpts,
   });
 };

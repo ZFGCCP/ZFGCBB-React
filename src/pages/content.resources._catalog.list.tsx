@@ -1,4 +1,3 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import type { PrefetchTarget } from "@/shared/http/ssrPrefetch";
 import { getQueryClient } from "@/providers/query/queryProvider";
 import type { Route } from "./+types/content.resources._catalog.list";
@@ -25,12 +24,6 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   );
 }
 
-export default function ResourcesListPage({
-  loaderData,
-}: Route.ComponentProps) {
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <CmsCatalogBrowse descriptor={resourceCatalog} />
-    </HydrationBoundary>
-  );
+export default function ResourcesListPage() {
+  return <CmsCatalogBrowse descriptor={resourceCatalog} />;
 }

@@ -1,0 +1,164 @@
+.bb-smiley {
+  display: inline-block;
+}
+[data-smiley-set] .bb-smiley {
+  font-size: 0;
+  line-height: 0;
+  vertical-align: middle;
+}
+[data-smiley-set] .bb-smiley::before {
+  vertical-align: middle;
+}
+[data-smiley-set="tplink"] .bb-smiley-smiley::before {
+  content: url("/themes/smileys/tplink/smiley.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-wink::before {
+  content: url("/themes/smileys/tplink/wink.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-cheesy::before {
+  content: url("/themes/smileys/tplink/cheesy.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-grin::before {
+  content: url("/themes/smileys/tplink/grin.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-sad::before {
+  content: url("/themes/smileys/tplink/sad.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-shocked::before {
+  content: url("/themes/smileys/tplink/shocked.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-cool::before {
+  content: url("/themes/smileys/tplink/cool.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-huh::before {
+  content: url("/themes/smileys/tplink/huh.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-rolleyes::before {
+  content: url("/themes/smileys/tplink/rolleyes.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-tongue::before {
+  content: url("/themes/smileys/tplink/tongue.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-embarrassed::before {
+  content: url("/themes/smileys/tplink/embarrassed.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-lipsrsealed::before {
+  content: url("/themes/smileys/tplink/lipsrsealed.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-undecided::before {
+  content: url("/themes/smileys/tplink/undecided.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-kiss::before {
+  content: url("/themes/smileys/tplink/kiss.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-cry::before {
+  content: url("/themes/smileys/tplink/cry.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-angry::before {
+  content: url("/themes/smileys/tplink/angry.gif");
+}
+[data-smiley-set="tplink"] .bb-smiley-evil::before {
+  content: url("/themes/smileys/tplink/evil.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-smiley::before {
+  content: url("/themes/smileys/takam/smiley.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-wink::before {
+  content: url("/themes/smileys/takam/wink.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-cheesy::before {
+  content: url("/themes/smileys/takam/cheesy.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-grin::before {
+  content: url("/themes/smileys/takam/grin.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-sad::before {
+  content: url("/themes/smileys/takam/sad.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-shocked::before {
+  content: url("/themes/smileys/takam/shocked.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-cool::before {
+  content: url("/themes/smileys/takam/cool.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-huh::before {
+  content: url("/themes/smileys/takam/huh.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-rolleyes::before {
+  content: url("/themes/smileys/takam/rolleyes.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-tongue::before {
+  content: url("/themes/smileys/takam/tongue.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-embarrassed::before {
+  content: url("/themes/smileys/takam/embarrassed.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-lipsrsealed::before {
+  content: url("/themes/smileys/takam/lipsrsealed.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-undecided::before {
+  content: url("/themes/smileys/takam/undecided.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-kiss::before {
+  content: url("/themes/smileys/takam/kiss.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-cry::before {
+  content: url("/themes/smileys/takam/cry.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-angry::before {
+  content: url("/themes/smileys/takam/angry.gif");
+}
+[data-smiley-set="takam"] .bb-smiley-evil::before {
+  content: url("/themes/smileys/takam/evil.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-smiley::before {
+  content: url("/themes/smileys/classic/smiley.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-wink::before {
+  content: url("/themes/smileys/classic/wink.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-cheesy::before {
+  content: url("/themes/smileys/classic/cheesy.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-grin::before {
+  content: url("/themes/smileys/classic/grin.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-sad::before {
+  content: url("/themes/smileys/classic/sad.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-shocked::before {
+  content: url("/themes/smileys/classic/shocked.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-cool::before {
+  content: url("/themes/smileys/classic/cool.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-huh::before {
+  content: url("/themes/smileys/classic/huh.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-rolleyes::before {
+  content: url("/themes/smileys/classic/rolleyes.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-tongue::before {
+  content: url("/themes/smileys/classic/tongue.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-embarrassed::before {
+  content: url("/themes/smileys/classic/embarrassed.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-lipsrsealed::before {
+  content: url("/themes/smileys/classic/lipsrsealed.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-undecided::before {
+  content: url("/themes/smileys/classic/undecided.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-kiss::before {
+  content: url("/themes/smileys/classic/kiss.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-cry::before {
+  content: url("/themes/smileys/classic/cry.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-angry::before {
+  content: url("/themes/smileys/classic/angry.gif");
+}
+[data-smiley-set="classic"] .bb-smiley-evil::before {
+  content: url("/themes/smileys/classic/evil.gif");
+}

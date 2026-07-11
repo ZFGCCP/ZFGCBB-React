@@ -1,52 +1,29 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "@tanstack/react-form";
+import type { ContentEditorValue } from "@/components/common/forms/BBContentEditor";
 
 interface MessageEditorProps {
   threadId: number;
+  initialBody?: string;
 }
 
-const MessageEditor: React.FC<MessageEditorProps> = ({ threadId }) => {
-  const { data: currentMessage, isLoading } = useBBQuery(
-    `/message/template?threadId=${threadId}`,
-    { schema: MessageSchema },
-  );
-
-  if (isLoading || !currentMessage) {
-    return null;
-  }
-
-  return <MessageEditorForm threadId={threadId} template={currentMessage} />;
-};
-
-function MessageEditorForm({
+export default function MessageEditor({
   threadId,
-  template,
-}: {
-  threadId: number;
-  template: Message;
-}) {
+  initialBody,
+}: MessageEditorProps) {
   const queryClient = useQueryClient();
-  const newPostMutator = useMutation<unknown, Error, MessageForm>({
+  const newPostMutator = useMutation<unknown, Error, ContentEditorValue>({
     mutationFn: async (values) => {
-      const body: Message = {
-        ...template,
-        currentMessage: {
-          ...template.currentMessage,
-          unparsedText: values.body,
-        },
-      };
       const response = await apiFetch(
         `${getApiBaseUrl()}/message/${threadId}`,
         {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
+          body: JSON.stringify({ body: values.body }),
         },
       );
       return handleResponseWithJason<unknown>(response);
     },
-    // Refresh the thread (any page) so the newly posted message shows.
     onSuccess: () => {
       void queryClient.invalidateQueries({
         predicate: (query) =>
@@ -56,68 +33,20 @@ function MessageEditorForm({
     },
   });
 
-  const form = useForm({
-    defaultValues: {
-      body: template.currentMessage.unparsedText ?? "",
-    } as MessageForm,
-    validators: {
-      onBlur: MessageFormSchema,
-      onSubmit: MessageFormSchema,
-    },
-    onSubmit: async ({ value }) => {
-      await newPostMutator.mutateAsync(value);
-    },
-  });
-
   return (
     <div className="mt-3">
-      <div className="p-4 mb-4 border-2 border-red-500 text-red-600 bg-red-50">
+      <div className="p-4 mb-4 border-2 border-error text-error bg-accented">
         Warning: this topic has not been posted in for at least 14 days. Unless
         you're sure you want to reply, please consider starting a new topic.
       </div>
 
-      <BBForm
-        form={form}
-        className="space-y-4"
+      <BBContentEditor
+        initialBody={initialBody}
+        submitLabel="Submit Post"
+        pendingLabel="Posting..."
         errorMessage={newPostMutator.isError ? "Failed to post message." : null}
-      >
-        <div className="flex gap-2">
-          <button
-            type="button"
-            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
-          >
-            B
-          </button>
-          <button
-            type="button"
-            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
-          >
-            I
-          </button>
-          <button
-            type="button"
-            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
-          >
-            U
-          </button>
-          <button
-            type="button"
-            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
-          >
-            S
-          </button>
-          <span className="text-muted">|</span>
-        </div>
-        <BBTextareaField name="body" rows={15} />
-        <BBSubmit
-          pendingChildren="Posting..."
-          className="px-4 py-2 bg-accented border border-default hover:bg-elevated disabled:opacity-50"
-        >
-          Submit Post
-        </BBSubmit>
-      </BBForm>
+        onSubmit={(value) => newPostMutator.mutateAsync(value)}
+      />
     </div>
   );
 }
-
-export default MessageEditor;

@@ -1,10 +1,12 @@
 import type { Project } from "@/types/content";
 
-export function ProjectCardBodyCatalog({ project }: { project: Project }) {
+export default function ProjectCardBodyCatalog({
+  project,
+}: {
+  project: Project;
+}) {
   const location = useLocation();
-  const year = project.publishedTs
-    ? new Date(project.publishedTs).getFullYear()
-    : null;
+  const year = wireYear(project.publishedTs);
   return (
     <BBLink
       to={`/content/projects/${project.slug}`}

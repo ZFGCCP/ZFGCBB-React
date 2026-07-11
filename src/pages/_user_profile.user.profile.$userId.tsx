@@ -1,6 +1,6 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import type { Route } from "./+types/_user_profile.user.profile.$userId";
 import { getQueryClient } from "@/providers/query/queryProvider";
+import megadethThemeUrl from "../../public/music/megadeth - washington is next.mp3?url";
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
   prefetchQueryDehydrated(
@@ -11,7 +11,26 @@ export const loader = ({ request, params }: Route.LoaderArgs) =>
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   await getQueryClient().prefetchQuery(
-    bbQueryOptions(`/user-profile/${params.userId}`, { schema: UserSchema }),
+    bbQueryOptions(`/user-profile/${params.userId}`, {
+      schema: UserSchema,
+      meta: { userScoped: true },
+    }),
+  );
+}
+
+function MgZeroEasterEgg() {
+  const audioRef = useEasterEggAudio();
+
+  return (
+    <audio
+      ref={audioRef}
+      src={megadethThemeUrl}
+      loop
+      preload="auto"
+      className="hidden"
+    >
+      <track kind="captions" />
+    </audio>
   );
 }
 
@@ -19,12 +38,16 @@ function UserProfileContent() {
   const { userId } = useParams();
   const query = useBBQuery(`/user-profile/${userId}`, {
     schema: UserSchema,
+    meta: { userScoped: true },
   });
 
   return (
     <BBQueryBoundary query={query}>
       {(user) => (
         <div className="flex flex-col md:flex-row">
+          {user?.displayName?.toLowerCase() === "mg-zero" && (
+            <MgZeroEasterEgg />
+          )}
           <span className="w-full  md:w-1/4">
             <UserLeftPane user={user} />
           </span>
@@ -128,6 +151,9 @@ function UserProfileContent() {
                   <select
                     id="profile-gender"
                     className="w-full p-2 bg-default border border-default flex-1/2"
+                    value={String(user?.bioInfo?.genderId ?? "")}
+                    disabled={true}
+                    onChange={() => {}}
                   >
                     <option value="1">Male</option>
                     <option value="2">Female</option>
@@ -147,7 +173,7 @@ function UserProfileContent() {
 
             <BBAccordionWidget title="Contact Information">
               <form className="space-y-4">
-                {user?.bioInfo?.hideEmailFlag === true && (
+                {user?.bioInfo?.hideEmailFlag !== true && (
                   <div className="flex flex-col sm:flex-row items-start sm:items-center">
                     <label
                       htmlFor="profile-email-address"
@@ -248,6 +274,12 @@ function UserProfileContent() {
                 </div>
               </form>
             </BBAccordionWidget>
+
+            <BBHasPermission
+              requiredPermissions={["ZFGC_SITE_ADMIN", "ZFGC_PROFILE_ADMIN"]}
+            >
+              <UserAwardGrantPanel userId={Number(userId)} />
+            </BBHasPermission>
           </div>
         </div>
       )}
@@ -255,10 +287,6 @@ function UserProfileContent() {
   );
 }
 
-export default function UserProfileRoute({ loaderData }: Route.ComponentProps) {
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <UserProfileContent />
-    </HydrationBoundary>
-  );
+export default function UserProfileRoute() {
+  return <UserProfileContent />;
 }

@@ -22,6 +22,7 @@ export interface BBTableProps<TRow> {
   headerOuterFlexOptions?: Omit<BBFlexProps, "children">;
   rowClassName?: string | ((row: TRow, index: number) => string);
   rowOuterFlexOptions?: Omit<BBFlexProps, "children">;
+  getRowKey: (row: TRow) => React.Key;
   onRowClick?: (row: TRow, index: number) => void;
   emptyMessage?: string;
   showHeader?: boolean;
@@ -44,12 +45,13 @@ export default function BBTable<TRow extends object>({
   headerOuterFlexOptions = EMPTY_FLEX_OPTIONS,
   rowClassName = "",
   rowOuterFlexOptions = EMPTY_FLEX_OPTIONS,
+  getRowKey,
   onRowClick,
   emptyMessage = "No data available",
   showHeader = true,
 }: BBTableProps<TRow>) {
   const getRowClassName = (row: TRow, index: number): string => {
-    const baseClass = "transition-colors";
+    const baseClass = "transition-colors px-4";
     const stripeClass =
       index % 2 === 0
         ? "bg-muted hover:bg-muted/60"
@@ -73,6 +75,7 @@ export default function BBTable<TRow extends object>({
             className="p-4 font-semibold"
             align="center"
             justify="center"
+            gap={rowOuterFlexOptions.gap}
             {...headerOuterFlexOptions}
           >
             {columns.map((column) => (
@@ -92,9 +95,7 @@ export default function BBTable<TRow extends object>({
           <div className="p-8 text-center bg-muted">{emptyMessage}</div>
         ) : (
           data.map((row, index) => {
-            const rowKey = String(
-              (row as { [key: string]: unknown }).id ?? index,
-            );
+            const rowKey = getRowKey(row);
             const rowContent = (
               <BBFlex align="center" justify="center" {...rowOuterFlexOptions}>
                 {columns.map((column) => (

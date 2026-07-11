@@ -1,10 +1,12 @@
 import type { Resource } from "@/types/content";
 
-export function ResourceCardBodyCatalog({ resource }: { resource: Resource }) {
+export default function ResourceCardBodyCatalog({
+  resource,
+}: {
+  resource: Resource;
+}) {
   const location = useLocation();
-  const year = resource.publishedTs
-    ? new Date(resource.publishedTs).getFullYear()
-    : null;
+  const year = wireYear(resource.publishedTs);
   const hasFile =
     resource.downloadContentResourceId != null || resource.downloadUrl != null;
   return (

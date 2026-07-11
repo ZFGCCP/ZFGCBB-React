@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
-import type { UseMutationOptions } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { QueryKey, UseMutationOptions } from "@tanstack/react-query";
 import * as v from "valibot";
 
 type BBMutationRequest = {
@@ -15,6 +15,7 @@ type UseBBMutationOptions<TSchema extends v.GenericSchema, TVariables> = Omit<
 > & {
   request: (variables: TVariables) => BBMutationRequest;
   schema?: TSchema;
+  invalidateKeys?: QueryKey[];
 };
 
 export const useBBMutation = <
@@ -23,10 +24,19 @@ export const useBBMutation = <
 >({
   request,
   schema,
+  invalidateKeys,
+  onSuccess,
   ...options
-}: UseBBMutationOptions<TSchema, TVariables>) =>
-  useMutation<v.InferOutput<TSchema>, Error, TVariables>({
+}: UseBBMutationOptions<TSchema, TVariables>) => {
+  const queryClient = useQueryClient();
+  return useMutation<v.InferOutput<TSchema>, Error, TVariables>({
     ...options,
+    onSuccess: (...args) => {
+      for (const queryKey of invalidateKeys ?? []) {
+        void queryClient.invalidateQueries({ queryKey });
+      }
+      return onSuccess?.(...args);
+    },
     mutationFn: async (variables) => {
       const { url, body, method = "POST", headers } = request(variables);
       const hasBody =
@@ -40,3 +50,4 @@ export const useBBMutation = <
       return handleResponseWithJason(response, schema);
     },
   });
+};

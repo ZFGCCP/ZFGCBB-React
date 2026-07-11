@@ -1,10 +1,15 @@
 import * as v from "valibot";
 
 export type BaseBB = {
-  id?: number | string;
+  id?: number;
 };
 
-export const baseIdSchema = v.optional(v.union([v.number(), v.string()]));
+export const idSchema = v.pipe(
+  v.union([v.number(), v.string()]),
+  v.transform(Number),
+);
+
+export const baseIdSchema = v.optional(idSchema);
 
 export const BB_PERMISSIONS = [
   "ZFGC_USER",

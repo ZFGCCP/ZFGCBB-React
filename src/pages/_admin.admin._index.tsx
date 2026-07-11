@@ -20,7 +20,7 @@ function AdminCard({
         <p className="text-sm text-dimmed grow">{description}</p>
         {available ? (
           <BBLink to={to} className="text-sm text-highlighted">
-            Manage →
+            Manage <Fa6SolidArrowRight aria-hidden className="inline" />
           </BBLink>
         ) : (
           <span className="text-sm text-dimmed">Coming soon</span>
@@ -49,7 +49,11 @@ export default function AdminDashboard() {
             title="User Management"
             description="View, edit, and moderate user accounts."
             to="/admin/users"
-            available={false}
+          />
+          <AdminCard
+            title="BBCode Management"
+            description="Enable or disable special bbcodes, like the [you] April Fools prank."
+            to="/admin/bbcodes"
           />
           <AdminCard
             title="Board Management"

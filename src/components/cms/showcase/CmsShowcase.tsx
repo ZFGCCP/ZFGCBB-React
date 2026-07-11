@@ -1,10 +1,10 @@
-import type { CarouselSlide, FeaturedItem, RailItem } from "./ShowcasePieces";
+import type { CarouselSlide, FeaturedItem, RailItem } from "./showcaseTypes";
 
 const RANDOM_GLYPH = <BBIcon name="nav" />;
 const TOP_RATED_GLYPH = <Fa6SolidStar className="text-sm" />;
 const MOST_DOWNLOADED_GLYPH = <BBIcon name="sort-down" />;
 
-export function CmsShowcase({
+export default function CmsShowcase({
   featured,
   kicker,
   carousel,

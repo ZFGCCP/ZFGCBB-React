@@ -5,7 +5,11 @@ type BBSelectProps = Omit<
   options: readonly { value: string | number; label: string }[];
 };
 
-const BBSelect: React.FC<BBSelectProps> = ({ options, className, ...rest }) => {
+export default function BBSelect({
+  options,
+  className,
+  ...rest
+}: BBSelectProps) {
   return (
     <select
       className={`w-full p-2 bg-default border ${className ?? "border-default"}`}
@@ -18,6 +22,4 @@ const BBSelect: React.FC<BBSelectProps> = ({ options, className, ...rest }) => {
       ))}
     </select>
   );
-};
-
-export default BBSelect;
+}

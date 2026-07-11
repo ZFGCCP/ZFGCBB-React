@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./themes.css";
 @import "./sprites.css";
+@import "./smileys.css";
 
 html,
 body,

@@ -4,38 +4,52 @@ import QueryProvider from "./providers/query/queryProvider";
 import RootLayout from "./root.layout";
 import GlobalSearchProvider from "./providers/search/globalSearchProvider";
 import {
+  data,
   isRouteErrorResponse,
+  useMatches,
   useRouteError,
   useRouteLoaderData,
 } from "react-router";
 import { getResponseStatus } from "./shared/http/response.handler";
-import { bbQueryOptions } from "./hooks/query/bbQueryOptions";
-import { useTheme } from "./hooks/ui/useTheme";
+import {
+  prefetchQueries,
+  requestIsAuthenticated,
+  type PrefetchTarget,
+} from "./shared/http/ssrPrefetch";
+import { useTheme, userUiPrefs } from "./hooks/ui/useTheme";
 import BBForbidden from "./components/common/BBForbidden";
 import ThemePicker from "./components/common/ThemePicker";
-import {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-} from "@tanstack/react-query";
+import BBProdOnly from "./components/common/BBProdOnly";
+import { HydrationBoundary } from "@tanstack/react-query";
+import type { DehydratedState } from "@tanstack/react-query";
 import type { User } from "./types/user";
 import type { Route } from "./+types/root";
 
+const GLOBAL_QUERIES: PrefetchTarget[] = [
+  {
+    url: "/users/loggedInUser",
+    schema: UserSchema,
+    meta: { userScoped: true },
+  },
+  { url: "/system/site", schema: SiteInfoSchema },
+];
+
 export async function loader({ request }: Route.LoaderArgs) {
-  const cookie = request.headers.get("Cookie") ?? "";
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery(
-    bbQueryOptions(
-      "/users/loggedInUser",
-      { schema: UserSchema },
-      cookie ? { Cookie: cookie } : undefined,
-    ),
+  const { dehydratedState, queryClient } = await prefetchQueries(
+    request,
+    GLOBAL_QUERIES,
   );
   const user = queryClient.getQueryData<User>(["/users/loggedInUser"]);
-  return {
-    dehydratedState: dehydrate(queryClient),
-    theme: user?.theme ?? "midnight",
-  };
+  return data(
+    { dehydratedState, ...userUiPrefs(user) },
+    requestIsAuthenticated(request)
+      ? { headers: { "Cache-Control": "private, no-store" } }
+      : undefined,
+  );
+}
+
+export function headers({ loaderHeaders }: Route.HeadersArgs) {
+  return loaderHeaders;
 }
 
 const TanStackQueryDevtools = import.meta.env.DEV
@@ -57,27 +71,36 @@ export function HydrateFallback() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const data = useRouteLoaderData("root") as { theme?: string } | undefined;
-  const { theme, setTheme } = useTheme(data?.theme ?? "midnight");
+  const data = useRouteLoaderData("root") as
+    | { userId?: number; theme?: string; smileySet?: string }
+    | undefined;
+  const { theme, setTheme, smileySet, setSmileySet, effectiveSmileySet } =
+    useTheme(data?.theme, data?.smileySet);
   const showThemePicker =
     import.meta.env.DEV ||
-    import.meta.env.REACT_ZFGBB_FEATURE_FLAG_ENABLE_THEME_PICKER;
+    import.meta.env.REACT_ZFGBB_FEATURE_FLAG_ENABLE_THEME_PICKER === "true";
   return (
-    <html lang="en" className={`theme-${theme}`}>
+    <html
+      lang="en"
+      className={`theme-${theme}`}
+      data-smiley-set={effectiveSmileySet}
+    >
       <head>
         <base href={import.meta.env.VITE_BASE ?? "/"} />
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="msapplication-TileColor" content="#000000" />
         <meta name="theme-color" content="#000000" />
-        <link rel="manifest" href="/manifest.webmanifest" />
+        <BBProdOnly>
+          <link rel="manifest" href="/manifest.webmanifest" />
+        </BBProdOnly>
         <link rel="apple-touch-icon" href="/pwa-192x192.png" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="ZFGC.com" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta
           httpEquiv="Content-Security-Policy"
-          content="object-src 'none'; frame-src 'self'"
+          content="object-src 'none'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com"
         />
         <title>ZFGC.com</title>
         <Meta />
@@ -85,7 +108,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        {showThemePicker && <ThemePicker theme={theme} setTheme={setTheme} />}
+        {showThemePicker && (
+          <ThemePicker
+            theme={theme}
+            setTheme={setTheme}
+            smileySet={smileySet}
+            setSmileySet={setSmileySet}
+          />
+        )}
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -93,10 +123,31 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App({ loaderData }: Route.ComponentProps) {
+function useMergedDehydratedState(): DehydratedState {
+  const matches = useMatches();
+  return useMemo(() => {
+    const states = matches
+      .map(
+        (match) =>
+          (
+            match.loaderData as
+              | { dehydratedState?: DehydratedState }
+              | undefined
+          )?.dehydratedState,
+      )
+      .filter((state): state is DehydratedState => Boolean(state));
+    return {
+      mutations: states.flatMap((state) => state.mutations),
+      queries: states.flatMap((state) => state.queries),
+    };
+  }, [matches]);
+}
+
+export default function App() {
+  const dehydratedState = useMergedDehydratedState();
   return (
     <QueryProvider>
-      <HydrationBoundary state={loaderData?.dehydratedState}>
+      <HydrationBoundary state={dehydratedState}>
         <UserProvider>
           <GlobalSearchProvider>
             <RootLayout>

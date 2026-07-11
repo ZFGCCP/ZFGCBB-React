@@ -1,4 +1,3 @@
-import { HydrationBoundary } from "@tanstack/react-query";
 import { Navigate } from "react-router";
 import type { Route } from "./+types/_wiki.wiki.special.$";
 import type { RoutePaths } from "@/components/common/BBLink";
@@ -26,13 +25,6 @@ function SpecialResolver({ name }: { name: string }) {
   );
 }
 
-export default function SpecialUnknownRoute({
-  params,
-  loaderData,
-}: Route.ComponentProps) {
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <SpecialResolver name={params["*"] ?? ""} />
-    </HydrationBoundary>
-  );
+export default function SpecialUnknownRoute({ params }: Route.ComponentProps) {
+  return <SpecialResolver name={params["*"] ?? ""} />;
 }

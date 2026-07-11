@@ -49,3 +49,9 @@ export function getResponseStatus(error: unknown): number | undefined {
   const cause = error.cause as { response?: Response } | undefined;
   return cause?.response?.status;
 }
+
+export function getResponseBodyText(error: unknown): string | undefined {
+  if (!(error instanceof Error)) return undefined;
+  const cause = error.cause as { responseText?: string } | undefined;
+  return cause?.responseText;
+}

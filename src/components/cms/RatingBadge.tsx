@@ -1,4 +1,4 @@
-export function RatingBadge({
+export default function RatingBadge({
   rating,
   voteCount,
 }: {

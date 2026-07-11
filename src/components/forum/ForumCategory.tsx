@@ -1,14 +1,15 @@
 import type { BoardSummary } from "../../types/forum";
 
-const ForumCategory: React.FC<{ title: string; subBoards: BoardSummary[] }> = ({
+export default function ForumCategory({
   title,
   subBoards,
-}) => {
+}: {
+  title: string;
+  subBoards: BoardSummary[];
+}) {
   return (
     <BBWidget widgetTitle={title}>
       <BoardSummaryView subBoards={subBoards} />
     </BBWidget>
   );
-};
-
-export default ForumCategory;
+}

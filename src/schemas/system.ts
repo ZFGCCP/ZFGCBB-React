@@ -17,11 +17,17 @@ export const JOB_TYPES = [
   "POLLS",
   "POLL_CHOICES",
   "USER_POLL_CHOICES",
-  "KARMA",
+  "REACTIONS",
+  "MEMBER_GROUPS",
+  "PERSONAL_MESSAGES",
+  "SUBSCRIPTIONS",
+  "MODERATION_LOGS",
   "WIKI_PAGES",
   "PROJECTS",
   "RESOURCES",
+  "CMS_COMMENTS",
   "MIGRATE_CMS_INSTALLATION",
+  "SMF_INSTALLATION_PIPELINE",
 ] as const;
 
 export const JobTypeSchema = v.picklist(JOB_TYPES);
@@ -33,7 +39,7 @@ export const JobStateSchema = v.picklist([
   "COMPLETED",
   "FAILED",
   "CANCELLED",
-] as const);
+]);
 export type JobState = v.InferOutput<typeof JobStateSchema>;
 
 export const JobSchema = v.object({
@@ -67,7 +73,7 @@ export const InstallResponseSchema = v.object({
   installed: v.boolean(),
   adminUserId: v.number(),
   siteName: v.string(),
-  sampleDataApplied: v.boolean(),
+  contentPack: v.optional(v.string()),
   accessToken: v.optional(v.string()),
   refreshToken: v.optional(v.string()),
 });
@@ -110,7 +116,23 @@ export type MigrateJobRequest = {
   cmsFilesSourcePath?: string;
   wikiImagesSourcePath?: string;
   force?: boolean;
+  groupPermissionMap?: Record<number, string[]>;
 };
+
+export const SmfMemberGroupSchema = v.object({
+  id: v.number(),
+  name: v.string(),
+  suggestedCodes: v.array(v.string()),
+});
+export const SmfMemberGroupListSchema = v.array(SmfMemberGroupSchema);
+export type SmfMemberGroup = v.InferOutput<typeof SmfMemberGroupSchema>;
+
+export const PermissionCodeSchema = v.object({
+  permissionCode: v.string(),
+  permissionName: v.optional(v.string()),
+});
+export const PermissionCodeListSchema = v.array(PermissionCodeSchema);
+export type PermissionCode = v.InferOutput<typeof PermissionCodeSchema>;
 
 export const MigrateUploadResponseSchema = v.object({
   uploadId: v.string(),
@@ -174,6 +196,7 @@ export const InstallFormSchema = v.object({
   ),
   siteName: v.pipe(v.string(), v.nonEmpty("Site name is required.")),
   applySampleData: v.boolean(),
+  provisionRecycleBin: v.boolean(),
 });
 
 export type InstallForm = v.InferOutput<typeof InstallFormSchema>;

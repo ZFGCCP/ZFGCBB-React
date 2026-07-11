@@ -1,4 +1,4 @@
-export function HighlightMatch({
+export default function HighlightMatch({
   text,
   query,
 }: {

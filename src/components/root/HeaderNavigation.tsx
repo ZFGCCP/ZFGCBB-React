@@ -1,6 +1,6 @@
 import { useGlobalSearch } from "@/providers/search/globalSearchProvider";
 
-const HeaderNavigation: React.FC = () => {
+export default function HeaderNavigation() {
   const { open } = useGlobalSearch();
   const { pathname } = useLocation();
   const isActive = (base: string) =>
@@ -49,6 +49,4 @@ const HeaderNavigation: React.FC = () => {
       </button>
     </nav>
   );
-};
-
-export default HeaderNavigation;
+}

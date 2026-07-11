@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { GenericSchema } from "valibot";
-import type { FeaturedItem } from "@/components/cms/showcase/ShowcasePieces";
+import type { FeaturedItem } from "@/components/cms/showcase/showcaseTypes";
 import type { CatalogParamMap } from "@/hooks/data/useCatalog";
 import type {
   CatalogFilterOption,

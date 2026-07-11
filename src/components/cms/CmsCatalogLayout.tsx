@@ -4,7 +4,7 @@ import type {
   RailSource,
 } from "@/types/catalogDescriptor";
 
-export function CmsCatalogLayout<
+export default function CmsCatalogLayout<
   TItem extends RailSource,
   TShowcase extends Showcase<TItem>,
   TFacets,
@@ -16,13 +16,11 @@ export function CmsCatalogLayout<
   const query = useBBQuery(`${descriptor.api}/showcase`, {
     schema: descriptor.showcaseSchema,
   });
-  const headingId = `${descriptor.crumb.toLowerCase()}-heading`;
   const label = descriptor.crumb.toLowerCase();
-  const crumbs = [{ label: "Home", to: "/" }, { label: descriptor.crumb }];
+  const headingId = `${label}-heading`;
 
   return (
     <section aria-labelledby={headingId}>
-      <BBBreadcrumb crumbs={crumbs} />
       <header className="border-2 border-b-0 border-default bg-accented">
         <div className="flex items-baseline gap-3 px-4 pb-2 pt-3">
           <span aria-hidden className="h-8 w-2 self-center bg-hatch" />
@@ -41,8 +39,6 @@ export function CmsCatalogLayout<
       </header>
 
       <Outlet />
-
-      <BBBreadcrumb crumbs={crumbs} />
     </section>
   );
 }
