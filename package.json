@@ -58,6 +58,7 @@
     "@zfgc/vite-plugin-generate-image-paths": "workspace:*",
     "oxfmt": "^0.58.0",
     "oxlint": "^1.66.0",
+    "oxlint-tsgolint": "7",
     "react-doctor": "^0.7.2",
     "tailwindcss": "^4.3.2",
     "typescript": "^6.0.3",
