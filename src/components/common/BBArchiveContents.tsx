@@ -17,12 +17,30 @@ export default function BBArchiveContents({
     if (node && !node.open) node.showModal();
   }, []);
 
+  const handleOpen = useCallback(() => {
+    setOpen(true);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  const checkEmpty = useCallback(
+    (entries: unknown[]) => entries.length === 0,
+    [],
+  );
+
+  const emptyMessage = useMemo(
+    () => <BBEmpty message="This archive is empty." />,
+    [],
+  );
+
   return (
     <>
       <button
         type="button"
         className="ml-2 text-xs text-highlighted underline cursor-pointer"
-        onClick={() => setOpen(true)}
+        onClick={handleOpen}
       >
         view contents
       </button>
@@ -30,7 +48,7 @@ export default function BBArchiveContents({
         <dialog
           ref={openModal}
           aria-label={filename ?? "Archive contents"}
-          onClose={() => setOpen(false)}
+          onClose={handleClose}
           className="fixed inset-0 z-50 m-0 flex h-full w-full max-h-none max-w-none items-center justify-center border-0 bg-transparent p-0 backdrop:bg-black/60"
         >
           <div className="relative z-10 max-h-[70dvh] w-[min(90vw,30rem)] overflow-auto border-2 border-default bg-accented text-default p-0">
@@ -42,7 +60,7 @@ export default function BBArchiveContents({
                 type="button"
                 aria-label="Close"
                 className="px-2 cursor-pointer hover:text-highlighted"
-                onClick={() => setOpen(false)}
+                onClick={handleClose}
               >
                 <BBIcon name="close" />
               </button>
@@ -50,8 +68,8 @@ export default function BBArchiveContents({
             <div className="p-3 text-sm">
               <BBQueryBoundary
                 query={query}
-                isEmpty={(entries) => entries.length === 0}
-                empty={<BBEmpty message="This archive is empty." />}
+                isEmpty={checkEmpty}
+                empty={emptyMessage}
               >
                 {(entries) => (
                   <ul className="space-y-1">

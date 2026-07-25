@@ -1,4 +1,4 @@
-import type { Program } from "@oxc-project/types";
+import type { Program } from "oxc-parser";
 import type { EcmaScriptModule } from "oxc-parser";
 
 export function computeImportInsertionPoint(

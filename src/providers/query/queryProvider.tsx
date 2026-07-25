@@ -118,8 +118,10 @@ function tryRefresh(): Promise<boolean> {
 
 function errorIsFromAuthEndpoint(error: unknown) {
   if (!(error instanceof Error)) return false;
+  // oxlint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
   const cause = error.cause as { response?: Response } | undefined;
   const url = cause?.response?.url ?? "";
+
   return AUTH_ENDPOINT_PATHS.some((path) => url.includes(path));
 }
 
@@ -184,6 +186,19 @@ export default function QueryProvider({
     import.meta.env.SSR ? makeQueryClient() : queryClient,
   );
   const [persister] = useState(getPersister);
+  const persistOptions = useMemo(
+    () => ({
+      persister: persister!,
+      maxAge: PERSIST_MAX_AGE,
+      buster: "zfgbb-v2-private-by-default",
+      dehydrateOptions: {
+        shouldDehydrateQuery: (
+          query: Parameters<typeof defaultShouldDehydrateQuery>[0],
+        ) => defaultShouldDehydrateQuery(query) && query.meta?.persist === true,
+      },
+    }),
+    [persister],
+  );
 
   if (import.meta.env.SSR || !persister) {
     return (
@@ -192,18 +207,7 @@ export default function QueryProvider({
   }
 
   return (
-    <PersistQueryClientProvider
-      client={client}
-      persistOptions={{
-        persister,
-        maxAge: PERSIST_MAX_AGE,
-        buster: "zfgbb-v2-private-by-default",
-        dehydrateOptions: {
-          shouldDehydrateQuery: (query) =>
-            defaultShouldDehydrateQuery(query) && query.meta?.persist === true,
-        },
-      }}
-    >
+    <PersistQueryClientProvider client={client} persistOptions={persistOptions}>
       {children}
     </PersistQueryClientProvider>
   );

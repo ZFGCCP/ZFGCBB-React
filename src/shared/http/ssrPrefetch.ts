@@ -3,7 +3,7 @@ import {
   dehydrate,
   type DehydratedState,
 } from "@tanstack/react-query";
-import * as v from "valibot";
+import type * as v from "valibot";
 import { getQueryClient } from "@/providers/query/queryProvider";
 
 export type PrefetchTarget = {

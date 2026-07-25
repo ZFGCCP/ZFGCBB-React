@@ -13,8 +13,8 @@ export default function HighlightRail({
     <section aria-label={title} className="flex min-w-0 flex-col">
       <SectionBar title={title} glyph={glyph} />
       <BBPanel as="ul" className="grow divide-y divide-default/40">
-        {items.map((item, index) => (
-          <li key={item.href + index}>
+        {items.map((item) => (
+          <li key={item.href}>
             <Link
               to={item.href}
               className="flex items-center gap-2.5 px-2.5 py-2 transition-colors hover:bg-elevated"

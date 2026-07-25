@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import type { UseQueryOptions } from "@tanstack/react-query";
-import * as v from "valibot";
+import type * as v from "valibot";
 
 export type BBQueryOptions<TData> = Omit<
   UseQueryOptions<TData>,

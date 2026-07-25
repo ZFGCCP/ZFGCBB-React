@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { QueryKey, UseMutationOptions } from "@tanstack/react-query";
-import * as v from "valibot";
+import type * as v from "valibot";
 
 type BBMutationRequest = {
   url: string;

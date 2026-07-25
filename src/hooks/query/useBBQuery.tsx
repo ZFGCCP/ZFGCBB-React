@@ -1,17 +1,8 @@
-import {
-  useQuery,
-  type QueryKey,
-  type UseQueryOptions,
-} from "@tanstack/react-query";
-import * as v from "valibot";
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
+import type * as v from "valibot";
 
 export type UseBBQueryOptions<TSchema extends v.GenericSchema> = Omit<
-  UseQueryOptions<
-    v.InferOutput<TSchema>,
-    Error,
-    v.InferOutput<TSchema>,
-    QueryKey
-  >,
+  UseQueryOptions<v.InferOutput<TSchema>, Error, v.InferOutput<TSchema>>,
   "queryKey" | "queryFn"
 > & {
   queryKey?: string;
@@ -34,12 +25,7 @@ export const useBBQuery = <
     ...rest
   } = options;
 
-  return useQuery<
-    v.InferOutput<TSchema>,
-    Error,
-    v.InferOutput<TSchema>,
-    QueryKey
-  >({
+  return useQuery<v.InferOutput<TSchema>, Error, v.InferOutput<TSchema>>({
     queryKey: [queryKey ?? url],
     queryFn: async () => {
       const response = await fetch(`${getApiBaseUrl()}${url}`, {

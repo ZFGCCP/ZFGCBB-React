@@ -1,4 +1,4 @@
-import * as v from "valibot";
+import type * as v from "valibot";
 
 export type WikiPageRef = v.InferOutput<typeof WikiPageRefSchema>;
 export type WikiCategoryCount = v.InferOutput<typeof WikiCategoryCountSchema>;

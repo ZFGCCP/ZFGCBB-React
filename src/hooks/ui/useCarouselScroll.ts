@@ -1,27 +1,33 @@
-export function useCarouselScroll<TElement extends HTMLElement>() {
-  const trackRef = useRef<TElement>(null);
+import { useResizeObserver } from "./useResizeObserver";
+
+export function useCarouselScroll() {
+  const trackRef = useRef<HTMLElement | null>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
 
-  const sync = useCallback((element: TElement) => {
+  const sync = useCallback((element: HTMLElement) => {
     setAtStart(element.scrollLeft <= 2);
     setAtEnd(
       element.scrollLeft + element.clientWidth >= element.scrollWidth - 2,
     );
   }, []);
 
-  const ref = useCallback((node: TElement | null) => {
-    trackRef.current = node;
-  }, []);
+  const handleResize = useCallback(
+    (element: HTMLElement) => {
+      sync(element);
+    },
+    [sync],
+  );
 
-  useEffect(() => {
-    const node = trackRef.current;
-    if (!node) return;
-    sync(node);
-    const observer = new ResizeObserver(() => sync(node));
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [sync]);
+  const setResizeElement = useResizeObserver<HTMLElement>(handleResize);
+
+  const ref = useCallback(
+    (node: HTMLElement | null) => {
+      trackRef.current = node;
+      setResizeElement(node);
+    },
+    [setResizeElement],
+  );
 
   const onScroll = useCallback(() => {
     if (trackRef.current) sync(trackRef.current);

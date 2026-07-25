@@ -6,7 +6,8 @@ export interface SourceEdit extends Span {
 
 export function applySourceEdits(sourceCode: string, edits: SourceEdit[]) {
   if (edits.length === 0) return sourceCode;
-  const sortedEdits = edits.sort((a, b) => a.start - b.start);
+  const sortedEdits = edits.toSorted((a, b) => a.start - b.start);
+
   let output = "";
   let cursor = 0;
   let lastEditEnd = -1;

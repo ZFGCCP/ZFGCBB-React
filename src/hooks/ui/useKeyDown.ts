@@ -3,10 +3,12 @@ export function useKeyDown(
   enabled = true,
 ) {
   const handlerRef = useRef(handler);
-  handlerRef.current = handler;
+  useLayoutEffect(() => {
+    handlerRef.current = handler;
+  });
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) return undefined;
     const listener = (event: KeyboardEvent) => handlerRef.current(event);
     window.addEventListener("keydown", listener);
     return () => window.removeEventListener("keydown", listener);

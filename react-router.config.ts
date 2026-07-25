@@ -17,7 +17,7 @@ const { mode } = parseArgs({
 const env = loadEnv(`${mode}`, process.cwd(), ["REACT_", "VITE_"]);
 const ssrEnabled = env["VITE_ENABLE_SSR"] === "true";
 
-const nonPrerenderablePaths = ["/content"];
+const nonPrerenderablePaths = new Set(["/content"]);
 
 const prerenderApiUrl = (env["REACT_ZFGBB_API_URL"] ?? "").replace(/\/+$/, "");
 
@@ -38,27 +38,43 @@ interface Forum {
   }>;
 }
 
-async function fetchJson<T>(path: string) {
+async function fetchJson<T>(path: string): Promise<T> {
   const response = await fetch(`${prerenderApiUrl}${path}`, {
     signal: AbortSignal.timeout(4000),
   });
   if (!response.ok) throw new Error(`${path} -> ${response.status}`);
-  return (await response.json()) as T;
+  return response.json();
 }
 
 async function fetchAllSlugs(basePath: string) {
-  const slugs: string[] = [];
-  let page = 1;
-  for (;;) {
-    const data = await fetchJson<PagedSlugs>(
-      `${basePath}?page=${page}&pageSize=200`,
-    );
-    const items = data.items ?? [];
-    for (const item of items) if (item.slug) slugs.push(item.slug);
-    if (items.length === 0 || slugs.length >= (data.total ?? slugs.length))
-      break;
-    page += 1;
+  const firstPage = await fetchJson<PagedSlugs>(
+    `${basePath}?page=1&pageSize=200`,
+  );
+  const items = firstPage.items ?? [];
+  const slugs: string[] = items.flatMap((item) =>
+    item.slug ? [item.slug] : [],
+  );
+  const total = firstPage.total ?? slugs.length;
+  if (items.length === 0 || slugs.length >= total) {
+    return slugs;
   }
+
+  const totalPages = Math.ceil(total / 200);
+  const pagePromises: Promise<PagedSlugs>[] = [];
+  for (let page = 2; page <= totalPages; page += 1) {
+    pagePromises.push(
+      fetchJson<PagedSlugs>(`${basePath}?page=${page}&pageSize=200`),
+    );
+  }
+
+  const pages = await Promise.all(pagePromises);
+  for (const pageData of pages) {
+    const pageItems = pageData.items ?? [];
+    for (const item of pageItems) {
+      if (item.slug) slugs.push(item.slug);
+    }
+  }
+
   return slugs;
 }
 
@@ -71,8 +87,9 @@ async function enumerate(
     const paths = await build();
     return paths.length > 0 ? paths : fallback;
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     console.warn(
-      `[prerender] ${label} enumeration failed (${(error as Error).message}); using stub(s): ${fallback.join(", ")}`,
+      `[prerender] ${label} enumeration failed (${message}); using stub(s): ${fallback.join(", ")}`,
     );
     return fallback;
   }
@@ -133,6 +150,10 @@ async function enumerateDynamicRoutes() {
   ];
 }
 
+function directoryDepth(directoryPath: string) {
+  return directoryPath.split(sep).length;
+}
+
 function collectSubdirectoriesDeepestFirst(rootDirectory: string) {
   const subdirectories: string[] = [];
   const collectDescendants = (currentDirectory: string) => {
@@ -146,9 +167,7 @@ function collectSubdirectoriesDeepestFirst(rootDirectory: string) {
     }
   };
   collectDescendants(rootDirectory);
-  const directoryDepth = (directoryPath: string) =>
-    directoryPath.split(sep).length;
-  return subdirectories.sort(
+  return subdirectories.toSorted(
     (first, second) => directoryDepth(second) - directoryDepth(first),
   );
 }
@@ -174,11 +193,12 @@ export default {
   },
   prerender: async ({ getStaticPaths }) => {
     const staticPaths = getStaticPaths().filter(
-      (path) => !nonPrerenderablePaths.includes(path),
+      (path) => !nonPrerenderablePaths.has(path),
     );
     if (ssrEnabled) return staticPaths;
     return [...staticPaths, ...(await enumerateDynamicRoutes())];
   },
+
   basename: env["VITE_BASE"] ?? "/",
   routeDiscovery: { mode: "initial" },
   presets: [ssrEnabled ? presetSsr() : presetSpa()],

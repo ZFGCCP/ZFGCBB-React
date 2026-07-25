@@ -78,15 +78,23 @@ export function preprocessTwMerge(
     name: "vite-plugin-preprocess-twmerge",
     enforce: "pre",
     async transform(sourceCode: string, fileId: string) {
-      if (!options.include.test(fileId) || options.exclude.test(fileId)) return;
+      if (!options.include.test(fileId) || options.exclude.test(fileId))
+        return undefined;
 
       const edits: SourceEdit[] = [];
-      const computedLanguage = fileId.split(".").pop() as ParserOptions["lang"];
+      const cleanFileId = fileId.split("?")[0] ?? fileId;
+      const ext = cleanFileId.split(".").pop();
+
+      const validLangs: ParserOptions["lang"][] = [
+        "js",
+        "jsx",
+        "ts",
+        "tsx",
+        "dts",
+      ];
+      const computedLanguage = validLangs.find((lang) => lang === ext);
       const language =
-        (options.oxcParserOptions?.lang ??
-        ["js", "jsx", "ts", "tsx", "dts"].includes(computedLanguage ?? ""))
-          ? computedLanguage
-          : "js";
+        options.oxcParserOptions?.lang ?? computedLanguage ?? "js";
 
       const parsedFile = parseSync(fileId, sourceCode, {
         lang: language,
@@ -98,7 +106,7 @@ export function preprocessTwMerge(
       traverseAST(program, (node) =>
         onVisitNode({ node, options, constants, edits, fileId, sourceCode }),
       );
-      if (!edits.length) return;
+      if (!edits.length) return undefined;
       if (
         options.twMergeImportSpecifier &&
         !hasTwMergeImport(parsedFile, options.twMergeImportSpecifier)

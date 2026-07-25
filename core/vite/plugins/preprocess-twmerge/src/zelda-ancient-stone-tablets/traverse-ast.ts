@@ -1,17 +1,25 @@
-import type { Node } from "@oxc-project/types";
+import type { Node } from "oxc-parser";
+
 export function traverseAST(
-  node: Node | null | undefined,
+  node: unknown,
   onVisit: (node: Node, parent: Node | null) => void,
   parent: Node | null = null,
 ) {
-  if (
-    !node ||
-    (typeof node === "object" && !("type" in node)) ||
-    !Array.isArray(node)
-  )
-    return;
+  if (!node || typeof node !== "object") return;
 
-  // FIXME: Create a symbol of the node so we can track its changes. This would allow us to avoid unnecessary re-evaluation of the expression, and to keep AST modifications in sync with the original source code.
-  onVisit(node, parent);
-  for (const value of Object.values(node)) traverseAST(value, onVisit, node);
+  if (Array.isArray(node)) {
+    for (const item of node) {
+      traverseAST(item, onVisit, parent);
+    }
+    return;
+  }
+
+  if ("type" in node && typeof (node as { type?: unknown }).type === "string") {
+    // oxlint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+    const astNode = node as Node;
+    onVisit(astNode, parent);
+    for (const value of Object.values(astNode)) {
+      traverseAST(value, onVisit, astNode);
+    }
+  }
 }

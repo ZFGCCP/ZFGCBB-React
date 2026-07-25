@@ -33,8 +33,15 @@ export default function ShowcaseCarousel({
   viewAllLabel?: string;
   slides: CarouselSlide[];
 }) {
-  const { ref, onScroll, atStart, atEnd, nudge } =
-    useCarouselScroll<HTMLUListElement>();
+  const { ref, onScroll, atStart, atEnd, nudge } = useCarouselScroll();
+
+  const handlePrev = useCallback(() => {
+    nudge(-1);
+  }, [nudge]);
+
+  const handleNext = useCallback(() => {
+    nudge(1);
+  }, [nudge]);
 
   return (
     <section aria-label={title}>
@@ -50,12 +57,8 @@ export default function ShowcaseCarousel({
               <Fa6SolidArrowRight aria-hidden className="inline" />
             </Link>
             <span className="hidden gap-1 sm:flex">
-              <ArrowButton
-                dir={-1}
-                disabled={atStart}
-                onClick={() => nudge(-1)}
-              />
-              <ArrowButton dir={1} disabled={atEnd} onClick={() => nudge(1)} />
+              <ArrowButton dir={-1} disabled={atStart} onClick={handlePrev} />
+              <ArrowButton dir={1} disabled={atEnd} onClick={handleNext} />
             </span>
           </>
         }

@@ -1,7 +1,10 @@
 import { Navigate } from "react-router";
-import { UserContext } from "./providers/user/userProvider";
+
 import { useInstallStatus } from "./hooks/data/useInstallStatus";
 import { useGlobalSearch } from "./providers/search/globalSearchProvider";
+import { UserContext } from "./providers/user/userProvider";
+
+const ADMIN_PERMISSIONS = ["ZFGC_SITE_ADMIN"] as const;
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -13,6 +16,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
   const { pathname } = useLocation();
   const { data: installStatus } = useInstallStatus();
   const { open: openSearch } = useGlobalSearch();
+
+  const handleCloseMenu = useCallback(() => {
+    setIsMenuOpen(false);
+  }, []);
+
+  const handleToggleMenu = useCallback(() => {
+    setIsMenuOpen((isOpen) => !isOpen);
+  }, []);
 
   if (installStatus?.installed === false && !pathname.startsWith("/system")) {
     return <Navigate to="/system/install" replace />;
@@ -75,13 +86,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
             type="button"
             aria-label="Close menu"
             className="fixed inset-0 z-40"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={handleCloseMenu}
           />
           <nav className="fixed bottom-12 left-0 right-0 z-50 bg-elevated border-t-2 border-default md:hidden">
-            <BBHasPermission requiredPermissions={["ZFGC_SITE_ADMIN"]}>
+            <BBHasPermission requiredPermissions={ADMIN_PERMISSIONS}>
               <BBLink
                 to="/admin"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={handleCloseMenu}
                 className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
               >
                 <span className="text-sm">Admin Dashboard</span>
@@ -91,14 +102,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <>
                 <BBLink
                   to="/user/auth/login"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={handleCloseMenu}
                   className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
                 >
                   <span className="text-sm">Login</span>
                 </BBLink>
                 <BBLink
                   to="/user/auth/registration"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={handleCloseMenu}
                   className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
                 >
                   <span className="text-sm">Register</span>
@@ -108,14 +119,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <>
                 <BBLink
                   to="/user/settings/account"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={handleCloseMenu}
                   className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
                 >
                   <span className="text-sm">Account Settings</span>
                 </BBLink>
                 <BBLink
                   to="/user/auth/logout"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={handleCloseMenu}
                   className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
                 >
                   <span className="text-sm">Logout</span>
@@ -158,7 +169,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <button
             type="button"
             className="flex items-center justify-center hover:bg-muted transition-colors"
-            onClick={() => setIsMenuOpen((isOpen) => !isOpen)}
+            onClick={handleToggleMenu}
           >
             <Fa6SolidBars />
           </button>

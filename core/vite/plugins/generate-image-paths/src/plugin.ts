@@ -27,9 +27,9 @@ async function walk(dir: string): Promise<string[]> {
     .readdir(dir, { withFileTypes: true })
     .catch(() => []);
   const files = await Promise.all(
-    entries.map((entry) => {
+    entries.map(async (entry) => {
       const fullPath = path.join(dir, entry.name);
-      return entry.isDirectory() ? walk(fullPath) : fullPath;
+      return entry.isDirectory() ? await walk(fullPath) : fullPath;
     }),
   );
   return files.flat();
@@ -219,12 +219,12 @@ export function generateImagePaths(
         server.watcher.add(watchDirs);
         server.watcher.on("add", (file) => {
           updateCache(file, true);
-          triggerRegeneration();
+          void triggerRegeneration();
         });
 
         server.watcher.on("unlink", (file) => {
           updateCache(file, false);
-          triggerRegeneration();
+          void triggerRegeneration();
         });
       },
       async closeBundle() {

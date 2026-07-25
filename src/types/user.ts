@@ -1,4 +1,4 @@
-import * as v from "valibot";
+import type * as v from "valibot";
 
 export type User = v.InferOutput<typeof UserSchema>;
 export type UserBioInfo = v.InferOutput<typeof UserBioInfoSchema>;

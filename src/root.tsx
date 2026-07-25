@@ -71,11 +71,10 @@ export function HydrateFallback() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const data = useRouteLoaderData("root") as
-    | { userId?: number; theme?: string; smileySet?: string }
-    | undefined;
+  const routeData = useRouteLoaderData("root");
+
   const { theme, setTheme, smileySet, setSmileySet, effectiveSmileySet } =
-    useTheme(data?.theme, data?.smileySet);
+    useTheme(routeData?.theme, routeData?.smileySet);
   const showThemePicker =
     import.meta.env.DEV ||
     import.meta.env.REACT_ZFGBB_FEATURE_FLAG_ENABLE_THEME_PICKER === "true";
@@ -123,18 +122,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+function getDehydratedState(loaderData: unknown): DehydratedState | undefined {
+  if (
+    typeof loaderData === "object" &&
+    loaderData !== null &&
+    "dehydratedState" in loaderData
+  ) {
+    // oxlint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+    return (loaderData as { dehydratedState: DehydratedState }).dehydratedState;
+  }
+  return undefined;
+}
+
 function useMergedDehydratedState(): DehydratedState {
   const matches = useMatches();
   return useMemo(() => {
     const states = matches
-      .map(
-        (match) =>
-          (
-            match.loaderData as
-              | { dehydratedState?: DehydratedState }
-              | undefined
-          )?.dehydratedState,
-      )
+      .map((match) => getDehydratedState(match.loaderData))
       .filter((state): state is DehydratedState => Boolean(state));
     return {
       mutations: states.flatMap((state) => state.mutations),

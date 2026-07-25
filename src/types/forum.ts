@@ -1,4 +1,4 @@
-import * as v from "valibot";
+import type * as v from "valibot";
 
 export type Forum = v.InferOutput<typeof ForumSchema>;
 export type Board = v.InferOutput<typeof BoardSchema>;
