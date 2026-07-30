@@ -16,8 +16,9 @@ export default function BBToggle({
   ...inputProps
 }: BBToggleProps) {
   const change = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) =>
-      onCheckedChange(event.target.checked),
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onCheckedChange(event.target.checked);
+    },
     [onCheckedChange],
   );
 

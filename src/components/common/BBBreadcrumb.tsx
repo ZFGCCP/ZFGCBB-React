@@ -8,15 +8,15 @@ import { type BBLinkProps, type RoutePaths } from "@/components/common/BBLink";
 
 export type Crumb = {
   label: string;
-  to?: RoutePaths;
-  prefetch?: BBLinkProps["prefetch"];
+  to?: RoutePaths | undefined;
+  prefetch?: BBLinkProps["prefetch"] | undefined;
 };
 
 type BreadcrumbValue = Crumb | Crumb[] | string;
 
 export type BreadcrumbContext = { location: Location };
 
-export type ThreadNavState = { fromBoardUrl?: string };
+export type ThreadNavState = { fromBoardUrl?: string | undefined };
 
 export type BreadcrumbHandle<TData = unknown> = {
   breadcrumb:
@@ -28,13 +28,18 @@ export type BreadcrumbHandle<TData = unknown> = {
 };
 
 function toCrumbs(value: BreadcrumbValue | null | undefined): Crumb[] {
-  if (value == null) return [];
+  if (value === null || value === undefined) return [];
   if (typeof value === "string") return [{ label: value }];
   return Array.isArray(value) ? value : [value];
 }
 
 function isCrumb(value: unknown): value is Crumb {
-  if (typeof value !== "object" || value == null || !("label" in value)) {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    value === undefined ||
+    !("label" in value)
+  ) {
     return false;
   }
   if (typeof value.label !== "string") return false;
@@ -48,12 +53,17 @@ function isBreadcrumbValue(value: unknown): value is BreadcrumbValue {
   return (
     typeof value === "string" ||
     isCrumb(value) ||
-    (Array.isArray(value) && value.every(isCrumb))
+    (Array.isArray(value) && value.every((entry) => isCrumb(entry)))
   );
 }
 
 function isBreadcrumbHandle(value: unknown): value is BreadcrumbHandle {
-  if (typeof value !== "object" || value == null || !("breadcrumb" in value)) {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    value === undefined ||
+    !("breadcrumb" in value)
+  ) {
     return false;
   }
   return (
@@ -69,14 +79,20 @@ function crumbsFromMatches(
   return matches.flatMap((match) => {
     if (!isBreadcrumbHandle(match.handle)) return [];
     const { breadcrumb } = match.handle;
-    if (breadcrumb == null) return [];
+    if (breadcrumb === null || breadcrumb === undefined) return [];
     return toCrumbs(
       typeof breadcrumb === "function" ? breadcrumb(match, ctx) : breadcrumb,
     );
   });
 }
 
-export default function BBBreadcrumb({ crumbs }: { crumbs?: Crumb[] }) {
+export default function BBBreadcrumb({
+  crumbs,
+  decorative = false,
+}: {
+  crumbs?: Crumb[];
+  decorative?: boolean;
+}) {
   const matches = useMatches();
   const location = useLocation();
   const { data: siteInfo } = useSiteInfo();
@@ -90,8 +106,12 @@ export default function BBBreadcrumb({ crumbs }: { crumbs?: Crumb[] }) {
 
   return (
     <nav
-      aria-label="Breadcrumb"
-      className="flex min-h-9 flex-wrap items-center gap-2 py-2 text-sm"
+      {...(decorative
+        ? { "aria-hidden": true as const }
+        : { "aria-label": "Breadcrumb" })}
+      className={`flex min-h-9 flex-wrap items-center gap-2 py-2 text-sm${
+        decorative ? " mt-2 border-t border-default pt-3" : ""
+      }`}
     >
       {fullTrail.map((crumb, index) => {
         const isLast = index === fullTrail.length - 1;
@@ -108,14 +128,15 @@ export default function BBBreadcrumb({ crumbs }: { crumbs?: Crumb[] }) {
             {crumb.to && !isLast ? (
               <BBLink
                 to={crumb.to}
-                prefetch={crumb.prefetch}
+                {...(crumb.prefetch ? { prefetch: crumb.prefetch } : {})}
+                {...(decorative ? { tabIndex: -1 } : {})}
                 className="text-highlighted hover:underline"
               >
                 {crumb.label}
               </BBLink>
             ) : (
               <span
-                aria-current={isLast ? "page" : undefined}
+                aria-current={isLast && !decorative ? "page" : undefined}
                 className="text-dimmed"
               >
                 {crumb.label}

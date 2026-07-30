@@ -2,7 +2,7 @@ export default function WikiTimelineItem({
   summary,
   children,
 }: {
-  summary?: string | null;
+  summary?: string | null | undefined;
   children: React.ReactNode;
 }) {
   return (

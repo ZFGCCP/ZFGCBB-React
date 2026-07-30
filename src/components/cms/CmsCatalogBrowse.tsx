@@ -46,7 +46,12 @@ export default function CmsCatalogBrowse<
     ),
     [descriptor],
   );
-  const changePage = useCallback((page: number) => apply({ page }), [apply]);
+  const changePage = useCallback(
+    (page: number) => {
+      apply({ page });
+    },
+    [apply],
+  );
 
   return (
     <div className="border-2 border-t-0 border-default">

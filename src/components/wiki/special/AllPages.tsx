@@ -14,7 +14,7 @@ interface WikiPageResult {
 }
 
 const ALL_PAGES_EMPTY_STATE = <BBEmpty message="No pages match your filter." />;
-const isPageResultEmpty = (data: WikiPageResult) => !data.items.length;
+const isPageResultEmpty = (data: WikiPageResult) => data.items.length === 0;
 
 function NamespaceButton({
   option,
@@ -25,10 +25,9 @@ function NamespaceButton({
   namespace: string;
   onApply: (next: PageFilters) => void;
 }) {
-  const handleClick = useCallback(
-    () => onApply({ namespace: namespace === option ? "" : option }),
-    [namespace, onApply, option],
-  );
+  const handleClick = useCallback(() => {
+    onApply({ namespace: namespace === option ? "" : option });
+  }, [namespace, onApply, option]);
 
   return (
     <button
@@ -71,12 +70,13 @@ export default function AllPages() {
     },
     [setSearchParams],
   );
-  const debouncedApplyFilter = useDebouncedCallback(
-    (value: string) => apply({ filterText: value }),
-    300,
-  );
+  const debouncedApplyFilter = useDebouncedCallback((value: string) => {
+    apply({ filterText: value });
+  }, 300);
   const handleSubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => event.preventDefault(),
+    (event: React.SubmitEvent<HTMLFormElement>) => {
+      event.preventDefault();
+    },
     [],
   );
   const handleFilterChange = useCallback(
@@ -87,7 +87,9 @@ export default function AllPages() {
     [debouncedApplyFilter, setFilterDraft],
   );
   const handlePageChange = useCallback(
-    (next: number) => apply({ page: next }),
+    (next: number) => {
+      apply({ page: next });
+    },
     [apply],
   );
   const renderPageResults = useCallback(

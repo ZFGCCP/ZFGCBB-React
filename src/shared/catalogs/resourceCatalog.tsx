@@ -35,29 +35,29 @@ export const resourceCatalog: CmsCatalogDescriptor<
   total: (showcase) => showcase.totalResources,
   card: (resource) => <ResourceCardBodyCatalog resource={resource} />,
   featured: (resource) => ({
-    previewId: resource.previewContentResourceId,
+    previewId: resource.previewContentResourceId ?? undefined,
     title: resource.title,
-    author: resource.author,
-    status: resource.resourceType,
-    rating: resource.rating,
-    voteCount: resource.voteCount,
-    summary: resource.summaryText,
+    author: resource.author ?? undefined,
+    status: resource.resourceType ?? undefined,
+    rating: resource.rating ?? undefined,
+    voteCount: resource.voteCount ?? undefined,
+    summary: resource.summaryText ?? undefined,
     contentHtml: resource.page?.contentParsed ?? null,
     href: `/content/resources/${resource.slug}`,
     metaLine:
-      resource.downloadCount != null
-        ? `${resource.downloadCount.toLocaleString()} downloads`
-        : undefined,
+      resource.downloadCount === null || resource.downloadCount === undefined
+        ? undefined
+        : `${resource.downloadCount.toLocaleString()} downloads`,
   }),
   randomSub: (resource) => resource.resourceType ?? "resource",
   topRatedSub: (resource) =>
-    resource.rating != null ? (
+    resource.rating === null || resource.rating === undefined ? (
+      (resource.resourceType ?? "resource")
+    ) : (
       <>
         <Fa6SolidStar aria-hidden className="inline" />{" "}
         {resource.rating.toFixed(1)} · {resource.resourceType ?? "resource"}
       </>
-    ) : (
-      (resource.resourceType ?? "resource")
     ),
   downloadsSub: (resource) =>
     `${(resource.downloadCount ?? 0).toLocaleString()} downloads · ${resource.resourceType ?? "resource"}`,

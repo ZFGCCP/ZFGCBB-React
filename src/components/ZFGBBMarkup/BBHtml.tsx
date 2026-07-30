@@ -36,7 +36,7 @@ function isDOMNode(node: Element["children"][number]): node is DOMNode {
 }
 
 const PARSE_OPTIONS: HTMLReactParserOptions = {
-  replace(node) {
+  replace(node): React.ReactElement | undefined {
     if (!(node instanceof Element)) return undefined;
     const element = node;
     const renderChildren = () =>

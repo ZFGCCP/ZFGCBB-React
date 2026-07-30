@@ -19,8 +19,9 @@ export default function BBCheckboxField({
   const error = firstError(field.state.meta.errors);
   const showError = field.state.meta.isTouched && !!error;
   const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) =>
-      field.handleChange(event.target.checked),
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      field.handleChange(event.target.checked);
+    },
     [field],
   );
 

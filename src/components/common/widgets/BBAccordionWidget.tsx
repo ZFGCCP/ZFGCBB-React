@@ -10,10 +10,9 @@ export default function BBAccordion({
   startExpanded,
 }: BBAccordionProps) {
   const [expanded, setExpanded] = useState(startExpanded ?? false);
-  const toggleExpanded = useCallback(
-    () => setExpanded((previous) => !previous),
-    [],
-  );
+  const toggleExpanded = useCallback(() => {
+    setExpanded((previous) => !previous);
+  }, []);
 
   return (
     <div className="m-8">

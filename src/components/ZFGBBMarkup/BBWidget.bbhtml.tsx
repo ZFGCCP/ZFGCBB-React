@@ -1,8 +1,11 @@
 import type { BBHtmlHandler } from "@/components/ZFGBBMarkup/BBHtml";
 
-const handler: BBHtmlHandler = (element, { renderChildren }) => {
+const handler: BBHtmlHandler = (
+  element,
+  { renderChildren },
+): React.ReactElement | undefined => {
   if (element.name !== "div") return undefined;
-  const classes = (element.attribs?.["class"] ?? "").split(/\s+/);
+  const classes = (element.attribs?.["class"] ?? "").split(/\s+/u);
   if (!classes.includes("bb-code-widget")) return undefined;
   return (
     <BBWidget

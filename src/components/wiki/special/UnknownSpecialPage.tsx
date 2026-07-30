@@ -2,7 +2,7 @@ export default function UnknownSpecialPage({ name }: { name: string }) {
   return (
     <BBWidget widgetTitle={name}>
       <p className="p-4 text-sm text-dimmed">
-        This special page isn't available. Try{" "}
+        This special page isn&apos;t available. Try{" "}
         <BBLink to="/wiki/special/allpages" className="text-highlighted">
           All pages
         </BBLink>

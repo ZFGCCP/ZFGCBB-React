@@ -21,7 +21,7 @@ function PollAnswerResult({ answer }: { answer: PollAnswer }) {
             style={widthStyle}
           ></div>
         </div>
-        {~~percent}%
+        {Math.trunc(percent)}%
       </div>
     </BBFlex>
   );

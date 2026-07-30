@@ -63,7 +63,7 @@ export function HydrateFallback() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const routeData = useRouteLoaderData("root");
+  const routeData = useRouteLoaderData<typeof loader>("root");
 
   const { theme, setTheme, smileySet, setSmileySet, effectiveSmileySet } =
     useTheme(routeData?.theme, routeData?.smileySet);

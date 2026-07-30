@@ -4,7 +4,7 @@ export function useResizeObserver<TElement extends Element>(
   const observerRef = useRef<ResizeObserver>(null);
 
   return useCallback(
-    (element: TElement | null) => {
+    (element: TElement | null): (() => void) | undefined => {
       observerRef.current?.disconnect();
       observerRef.current = null;
 

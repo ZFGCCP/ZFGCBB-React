@@ -24,16 +24,16 @@ function buildPageItems(current: number, total: number): PageItem[] {
   const siblings = Math.floor((VISIBLE_SLOTS - 5) / 2);
   const leftGap = current > VISIBLE_SLOTS - 3;
   const rightGap = current < total - (VISIBLE_SLOTS - 4);
-  const windowStart = !leftGap
-    ? 2
-    : rightGap
+  const windowStart = leftGap
+    ? rightGap
       ? current - siblings
-      : total - (VISIBLE_SLOTS - 3);
-  const windowEnd = !rightGap
-    ? total - 1
-    : leftGap
+      : total - (VISIBLE_SLOTS - 3)
+    : 2;
+  const windowEnd = rightGap
+    ? leftGap
       ? current + siblings
-      : VISIBLE_SLOTS - 2;
+      : VISIBLE_SLOTS - 2
+    : total - 1;
 
   items.push({ kind: "page", page: 1 });
   if (leftGap) {
@@ -74,10 +74,9 @@ function PaginatorPageButton({
   onPageChange: (page: number) => void;
 }) {
   const isCurrent = page === current;
-  const selectPage = useCallback(
-    () => onPageChange(page),
-    [onPageChange, page],
-  );
+  const selectPage = useCallback(() => {
+    onPageChange(page);
+  }, [onPageChange, page]);
 
   return (
     <button
@@ -113,10 +112,18 @@ export default function BBPaginator({
     },
     [current, onPageChange, total],
   );
-  const goToFirst = useCallback(() => goTo(1), [goTo]);
-  const goToPrevious = useCallback(() => goTo(current - 1), [current, goTo]);
-  const goToNext = useCallback(() => goTo(current + 1), [current, goTo]);
-  const goToLast = useCallback(() => goTo(total), [goTo, total]);
+  const goToFirst = useCallback(() => {
+    goTo(1);
+  }, [goTo]);
+  const goToPrevious = useCallback(() => {
+    goTo(current - 1);
+  }, [current, goTo]);
+  const goToNext = useCallback(() => {
+    goTo(current + 1);
+  }, [current, goTo]);
+  const goToLast = useCallback(() => {
+    goTo(total);
+  }, [goTo, total]);
 
   return (
     <nav

@@ -9,10 +9,9 @@ function SearchPaletteRealm({
   active: boolean;
   onSelect: (type: string) => void;
 }) {
-  const select = useCallback(
-    () => onSelect(realm.type),
-    [onSelect, realm.type],
-  );
+  const select = useCallback(() => {
+    onSelect(realm.type);
+  }, [onSelect, realm.type]);
 
   return (
     <button
@@ -44,8 +43,12 @@ function SearchPaletteHit({
   onActivate: (index: number) => void;
   onOpen: (hit: SearchHit) => void;
 }) {
-  const activate = useCallback(() => onActivate(index), [index, onActivate]);
-  const open = useCallback(() => onOpen(hit), [hit, onOpen]);
+  const activate = useCallback(() => {
+    onActivate(index);
+  }, [index, onActivate]);
+  const open = useCallback(() => {
+    onOpen(hit);
+  }, [hit, onOpen]);
 
   return (
     <li>
@@ -141,17 +144,18 @@ export default function SearchPalette({ onClose }: { onClose: () => void }) {
       inputRef.current?.focus();
     }
   }, []);
-  const updateDebounced = useCallback(
-    (value: string) => setDebounced(value),
-    [],
-  );
+  const updateDebounced = useCallback((value: string) => {
+    setDebounced(value);
+  }, []);
   const debounceSearch = useDebouncedCallback(updateDebounced, 220);
 
   const scope = `${debounced} ${filter}`;
   const [selection, setSelection] = useState({ scope, index: 0 });
   const active = selection.scope === scope ? selection.index : 0;
   const setActive = useCallback(
-    (index: number) => setSelection({ scope, index }),
+    (index: number) => {
+      setSelection({ scope, index });
+    },
     [scope],
   );
 
@@ -214,18 +218,20 @@ export default function SearchPalette({ onClose }: { onClose: () => void }) {
     ],
   );
 
-  const orderedGroups = useMemo(
-    () =>
-      (data?.groups ?? [])
-        .filter((group) => group.hits.length > 0)
-        .map((group, groupIndex, groups) => ({
-          group,
-          startIndex: groups
-            .slice(0, groupIndex)
-            .reduce((count, previous) => count + previous.hits.length, 0),
-        })),
-    [data],
-  );
+  const orderedGroups = useMemo(() => {
+    let runningIndex = 0;
+    const result: Array<{
+      group: NonNullable<typeof data>["groups"][number];
+      startIndex: number;
+    }> = [];
+    for (const group of data?.groups ?? []) {
+      if (group.hits.length > 0) {
+        result.push({ group, startIndex: runningIndex });
+        runningIndex += group.hits.length;
+      }
+    }
+    return result;
+  }, [data]);
   const changeTerm = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setTerm(event.target.value);
@@ -233,9 +239,11 @@ export default function SearchPalette({ onClose }: { onClose: () => void }) {
     },
     [debounceSearch],
   );
-  const selectFilter = useCallback((type: string) => setFilter(type), []);
-  const retry = useCallback(async () => {
-    await refetch();
+  const selectFilter = useCallback((type: string) => {
+    setFilter(type);
+  }, []);
+  const retry = useCallback(() => {
+    void refetch();
   }, [refetch]);
   const showAllResults = useCallback(() => {
     onClose();
@@ -256,7 +264,7 @@ export default function SearchPalette({ onClose }: { onClose: () => void }) {
         onClick={onClose}
         className="absolute inset-0 cursor-default bg-black/70 animate-[searchFade_150ms_ease-out]"
       />
-      <div className="relative w-full max-w-2xl overflow-hidden border-2 border-default bg-muted shadow-[6px_6px_0_rgba(0,0,0,0.6)] motion-safe:animate-[searchRise_160ms_ease-out]">
+      <div className="relative w-full max-w-2xl overflow-hidden border-2 border-default bg-muted shadow-panel motion-safe:animate-[searchRise_160ms_ease-out]">
         <div className="flex items-center gap-2.5 border-b-2 border-default bg-accented px-3 py-1.5">
           <span aria-hidden className="h-4 w-1.5 bg-hatch" />
           <BBSectionLabel size="2xs">Search ZFGC</BBSectionLabel>

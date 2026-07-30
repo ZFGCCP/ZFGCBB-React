@@ -1,20 +1,8 @@
 {
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "rootDirs": [".", "./.react-router/types"],
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "plugins": [{ "name": "@dxup/unimport" }]
-  },
-  "include": ["src", "build/types", "./.react-router/types/**/*"],
-  "exclude": ["node_modules"],
+  "files": [],
   "references": [
-    {
-      "path": "./core"
-    },
-    {
-      "path": "./tsconfig.config.json"
-    }
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" },
+    { "path": "./core" }
   ]
 }

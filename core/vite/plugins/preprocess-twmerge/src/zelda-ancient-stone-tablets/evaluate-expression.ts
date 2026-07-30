@@ -75,6 +75,9 @@ export function evaluateExpression(
       if (expression.operator === "||") return left ?? right;
       return undefined;
     }
+    default: {
+      break;
+    }
   }
 
   if (!options.handleDynamicClassName) return undefined;
@@ -100,18 +103,16 @@ export function evaluateExpression(
               constantBindings,
               options,
             );
-          } else {
-            return evaluateExpression(
-              property.value,
-              constantBindings,
-              options,
-            );
           }
+          return evaluateExpression(property.value, constantBindings, options);
         })
         .join(" ");
 
       if (classNames.trim()) return classNames;
       return undefined;
+    }
+    default: {
+      break;
     }
   }
 

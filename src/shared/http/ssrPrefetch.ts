@@ -49,7 +49,10 @@ export async function prefetchQueries(
       queryClient.prefetchQuery(
         bbQueryOptions(
           entry.url,
-          { schema: entry.schema, meta: entry.meta },
+          {
+            schema: entry.schema,
+            ...(entry.meta === undefined ? {} : { meta: entry.meta }),
+          },
           headers,
         ),
       ),
@@ -80,11 +83,11 @@ export async function prefetchQueryDehydrated<TData extends object>(
   extra?: DehydratedExtraPrefetch,
 ): Promise<{ dehydratedState: DehydratedState }> {
   let targets: PrefetchTarget[];
-  if (typeof target !== "string") {
-    targets = [...target];
-  } else {
+  if (typeof target === "string") {
     if (!schema) throw new Error("A schema is required to prefetch a URL.");
     targets = [{ url: target, schema }];
+  } else {
+    targets = [...target];
   }
   const { dehydratedState, queryClient } = await prefetchQueries(
     request,

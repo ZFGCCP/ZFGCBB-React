@@ -21,8 +21,9 @@ export default function BBTextareaField({
   const error = firstError(field.state.meta.errors);
   const showError = field.state.meta.isTouched && !!error;
   const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) =>
-      field.handleChange(event.target.value),
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      field.handleChange(event.target.value);
+    },
     [field],
   );
 

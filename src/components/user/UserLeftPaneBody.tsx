@@ -7,12 +7,19 @@ function AvatarSkeleton() {
 
 const AVATAR_SKELETON = <AvatarSkeleton />;
 
-export default function UserLeftPaneBody({ user }: { user?: User }) {
+export default function UserLeftPaneBody({
+  user,
+  extraDetailsSlot,
+}: {
+  user?: User | undefined;
+  extraDetailsSlot?: React.ReactNode;
+}) {
   const avatarSrc = useMemo(() => {
     if (user?.bioInfo?.avatar) {
       const { contentResourceId, url } = user.bioInfo.avatar;
       if (url?.trim()) return url;
-      if (contentResourceId != null) return contentUrl(contentResourceId);
+      if (contentResourceId !== null && contentResourceId !== undefined)
+        return contentUrl(contentResourceId);
     }
 
     return contentUrl(3);
@@ -69,6 +76,7 @@ export default function UserLeftPaneBody({ user }: { user?: User }) {
           Joined: <BBDate dateStr={user?.bioInfo?.dateRegistered} />
         </BBMutedText>
         <BBMutedText>Status:</BBMutedText>
+        {extraDetailsSlot}
       </BBFlex>
     </>
   );

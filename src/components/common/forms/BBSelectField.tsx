@@ -26,8 +26,9 @@ export default function BBSelectField({
   const error = firstError(field.state.meta.errors);
   const showError = field.state.meta.isTouched && !!error;
   const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) =>
-      field.handleChange(event.target.value),
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      field.handleChange(event.target.value);
+    },
     [field],
   );
 

@@ -1,6 +1,10 @@
 import type { User } from "../../types/user";
 
-export default function UserLeftPaneHeader({ user }: { user?: User }) {
+export default function UserLeftPaneHeader({
+  user,
+}: {
+  user?: User | undefined;
+}) {
   return (
     <BBFlex
       direction="col"

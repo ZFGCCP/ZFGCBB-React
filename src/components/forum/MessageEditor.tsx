@@ -4,7 +4,7 @@ import type { ContentEditorValue } from "@/components/common/forms/BBContentEdit
 
 interface MessageEditorProps {
   threadId: number;
-  initialBody?: string;
+  initialBody?: string | undefined;
 }
 
 export default function MessageEditor({
@@ -42,7 +42,8 @@ export default function MessageEditor({
     <div className="mt-3">
       <div className="p-4 mb-4 border-2 border-error text-error bg-accented">
         Warning: this topic has not been posted in for at least 14 days. Unless
-        you're sure you want to reply, please consider starting a new topic.
+        you&apos;re sure you want to reply, please consider starting a new
+        topic.
       </div>
 
       <BBContentEditor

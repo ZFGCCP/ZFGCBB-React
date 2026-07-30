@@ -22,7 +22,7 @@ let refreshMarkedStale = false;
 let inFlightRefresh: Promise<boolean> | undefined;
 let proactiveRefreshTimer: ReturnType<typeof setTimeout> | undefined;
 
-function readSessionExpiresAt() {
+function readSessionExpiresAt(): number | undefined {
   if (import.meta.env.SSR) return undefined;
   const stored = window.localStorage.getItem(SESSION_EXPIRY_STORAGE_KEY);
   if (!stored) return undefined;
@@ -76,7 +76,7 @@ function onProactiveRefreshDue() {
   void refreshExpectedSession();
 }
 
-export function refreshExpectedSession(): Promise<boolean> {
+export function refreshExpectedSession() {
   if (readSessionExpiresAt() === undefined) return Promise.resolve(false);
   refreshMarkedStale = false;
   return tryRefresh();
@@ -109,7 +109,7 @@ async function performRefresh() {
   }
 }
 
-function tryRefresh(): Promise<boolean> {
+function tryRefresh() {
   if (import.meta.env.SSR || refreshMarkedStale) return Promise.resolve(false);
   inFlightRefresh ??= performRefresh().finally(() => {
     inFlightRefresh = undefined;
@@ -123,16 +123,17 @@ function errorIsFromAuthEndpoint(error: unknown) {
   return AUTH_ENDPOINT_PATHS.some((path) => url.includes(path));
 }
 
+async function refreshAndRefetch(
+  queryKey: Query<unknown, unknown>["queryKey"],
+) {
+  if (await tryRefresh())
+    await queryClient.refetchQueries({ queryKey, exact: true });
+}
+
 function onQueryError(error: unknown, query: Query<unknown, unknown>) {
   if (getResponseStatus(error) !== 401) return;
   if (errorIsFromAuthEndpoint(error)) return;
-  void tryRefresh().then((refreshed) => {
-    if (refreshed)
-      void queryClient.refetchQueries({
-        queryKey: query.queryKey,
-        exact: true,
-      });
-  });
+  void refreshAndRefetch(query.queryKey);
 }
 
 function onMutationError(error: unknown) {
@@ -166,7 +167,9 @@ export const getQueryClient = () => queryClient;
 
 let browserPersister: ReturnType<typeof createAsyncStoragePersister>;
 
-function getPersister() {
+function getPersister():
+  | ReturnType<typeof createAsyncStoragePersister>
+  | undefined {
   if (import.meta.env.SSR || import.meta.env.DEV) return undefined;
   browserPersister ??= createAsyncStoragePersister({
     storage: window.localStorage,

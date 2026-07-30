@@ -1,34 +1,49 @@
 interface UseEasterEggAudioProps {
   targetRef?: HTMLElement | typeof globalThis | null;
-  triggerEvent?: keyof HTMLElementEventMap;
+  triggerEvents?: (keyof HTMLElementEventMap)[];
 }
+
+const USER_ACTIVATION_EVENTS: (keyof HTMLElementEventMap)[] = [
+  "pointerdown",
+  "keydown",
+];
 
 function connectEasterEggAudio(
   audio: HTMLAudioElement,
   target: HTMLElement | typeof globalThis,
-  triggerEvent: keyof HTMLElementEventMap,
+  triggerEvents: (keyof HTMLElementEventMap)[],
 ) {
   let disconnected = false;
 
-  async function handlePlay() {
-    await audio.play().catch((error) => {
-      console.warn("Audio playback blocked by browser policies:", error);
-    });
-
-    if (!disconnected) {
+  function stopWaitingForActivation() {
+    for (const triggerEvent of triggerEvents) {
       target.removeEventListener(triggerEvent, handlePlay);
     }
   }
 
+  function handlePlay() {
+    audio
+      .play()
+      .catch((error: unknown) => {
+        console.warn("Audio playback blocked by browser policies:", error);
+      })
+      .finally(() => {
+        if (!disconnected) {
+          stopWaitingForActivation();
+        }
+      });
+  }
+
   audio.play().catch(() => {
-    if (!disconnected) {
+    if (disconnected) return;
+    for (const triggerEvent of triggerEvents) {
       target.addEventListener(triggerEvent, handlePlay);
     }
   });
 
   return () => {
     disconnected = true;
-    target.removeEventListener(triggerEvent, handlePlay);
+    stopWaitingForActivation();
     audio.pause();
     audio.currentTime = 0;
   };
@@ -36,14 +51,14 @@ function connectEasterEggAudio(
 
 export function useEasterEggAudio({
   targetRef = import.meta.env.SSR ? null : globalThis,
-  triggerEvent = "mouseenter",
+  triggerEvents = USER_ACTIVATION_EVENTS,
 }: UseEasterEggAudioProps = {}) {
   return useCallback(
-    (audio: HTMLAudioElement | null) => {
+    (audio: HTMLAudioElement | null): (() => void) | undefined => {
       if (import.meta.env.SSR || !audio || !targetRef) return undefined;
 
-      return connectEasterEggAudio(audio, targetRef, triggerEvent);
+      return connectEasterEggAudio(audio, targetRef, triggerEvents);
     },
-    [targetRef, triggerEvent],
+    [targetRef, triggerEvents],
   );
 }

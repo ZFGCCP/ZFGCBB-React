@@ -4,12 +4,12 @@ export default function UserLink({
   className = "text-highlighted",
   fallbackClassName,
 }: {
-  userId?: number | null;
+  userId?: number | null | undefined;
   name: string;
-  className?: string;
-  fallbackClassName?: string;
+  className?: string | undefined;
+  fallbackClassName?: string | undefined;
 }) {
-  if (userId == null) {
+  if (userId === null || userId === undefined) {
     return <span className={fallbackClassName}>{name}</span>;
   }
   return (

@@ -1,4 +1,5 @@
 import type { Config } from "@react-router/dev/config";
+import * as v from "valibot";
 import { existsSync, readdirSync, renameSync, rmdirSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
@@ -19,36 +20,49 @@ const ssrEnabled = env["VITE_ENABLE_SSR"] === "true";
 
 const nonPrerenderablePaths = new Set(["/content"]);
 
-const prerenderApiUrl = (env["REACT_ZFGBB_API_URL"] ?? "").replace(/\/+$/, "");
+const prerenderApiUrl = (env["REACT_ZFGBB_API_URL"] ?? "").replace(/\/+$/u, "");
 
 const searchAndSpecialStubs = ["/search/data", "/wiki/special/steve"];
 
-interface PagedSlugs {
-  items?: Array<{ slug?: string }>;
-  total?: number;
-}
+const PagedSlugsSchema = v.looseObject({
+  items: v.optional(v.array(v.looseObject({ slug: v.optional(v.string()) }))),
+  total: v.optional(v.number()),
+});
 
-interface Forum {
-  categories?: Array<{
-    boards?: Array<{
-      boardId?: number;
-      latestThreadId?: number;
-      latestMessageOwnerId?: number;
-    }>;
-  }>;
-}
+const ForumSchema = v.looseObject({
+  categories: v.optional(
+    v.array(
+      v.looseObject({
+        boards: v.optional(
+          v.array(
+            v.looseObject({
+              boardId: v.optional(v.number()),
+              latestThreadId: v.optional(v.number()),
+              latestMessageOwnerId: v.optional(v.number()),
+            }),
+          ),
+        ),
+      }),
+    ),
+  ),
+});
 
-async function fetchJson<T>(path: string): Promise<T> {
+async function fetchJson<TSchema extends v.GenericSchema>(
+  path: string,
+  schema: TSchema,
+): Promise<v.InferOutput<TSchema>> {
   const response = await fetch(`${prerenderApiUrl}${path}`, {
     signal: AbortSignal.timeout(4000),
   });
   if (!response.ok) throw new Error(`${path} -> ${response.status}`);
-  return response.json();
+  const payload: unknown = await response.json();
+  return v.parse(schema, payload);
 }
 
 async function fetchAllSlugs(basePath: string) {
-  const firstPage = await fetchJson<PagedSlugs>(
+  const firstPage = await fetchJson(
     `${basePath}?page=1&pageSize=200`,
+    PagedSlugsSchema,
   );
   const items = firstPage.items ?? [];
   const slugs: string[] = items.flatMap((item) =>
@@ -60,10 +74,10 @@ async function fetchAllSlugs(basePath: string) {
   }
 
   const totalPages = Math.ceil(total / 200);
-  const pagePromises: Promise<PagedSlugs>[] = [];
+  const pagePromises: Promise<v.InferOutput<typeof PagedSlugsSchema>>[] = [];
   for (let page = 2; page <= totalPages; page += 1) {
     pagePromises.push(
-      fetchJson<PagedSlugs>(`${basePath}?page=${page}&pageSize=200`),
+      fetchJson(`${basePath}?page=${page}&pageSize=200`, PagedSlugsSchema),
     );
   }
 
@@ -121,16 +135,21 @@ async function enumerateDynamicRoutes() {
       "forum",
       async () => {
         const boards = (
-          await fetchJson<Forum>("/board/forum")
+          await fetchJson("/board/forum", ForumSchema)
         ).categories?.flatMap((category) =>
-          (category.boards ?? []).filter((board) => board.boardId != null),
+          (category.boards ?? []).filter(
+            (board) => board.boardId !== null && board.boardId !== undefined,
+          ),
         );
         if (!boards?.length) return [];
         const threadId = boards.find(
-          (board) => board.latestThreadId != null,
+          (board) =>
+            board.latestThreadId !== null && board.latestThreadId !== undefined,
         )?.latestThreadId;
         const ownerId = boards.find(
-          (board) => board.latestMessageOwnerId != null,
+          (board) =>
+            board.latestMessageOwnerId !== null &&
+            board.latestMessageOwnerId !== undefined,
         )?.latestMessageOwnerId;
         return [
           ...boards.map((board) => `/forum/board/${board.boardId}/1`),
@@ -184,7 +203,7 @@ function flattenPrerenderedRouteHtml(clientDirectory: string) {
   }
 }
 
-export default {
+const config: Config = {
   appDirectory: "src",
   buildEnd: ({ reactRouterConfig, viteConfig }) => {
     flattenPrerenderedRouteHtml(
@@ -202,4 +221,6 @@ export default {
   basename: env["VITE_BASE"] ?? "/",
   routeDiscovery: { mode: "initial" },
   presets: [ssrEnabled ? presetSsr() : presetSpa()],
-} satisfies Config;
+};
+
+export default config;

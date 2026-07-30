@@ -14,37 +14,51 @@ export default function HeaderNavigation() {
       : pathname === base || pathname.startsWith(`${base}/`);
   return (
     <nav className="hidden md:flex items-end gap-1">
-      <BBNavTab title="Home" to="/" active={isActive("/")} />
+      <BBNavTab title="Home" to="/" active={isActive("/")} raiseOnHover />
       <BBNavTab
         title="Forum"
         to="/forum"
         prefetch="intent"
         active={isActive("/forum")}
+        raiseOnHover
       />
       <BBNavTab
         title="Chat"
         to="https://discord.gg/NP2nNKjun6"
         target="_blank"
+        raiseOnHover
       />
-      <BBNavTab title="Wiki" to="/wiki/Main_Page" active={isActive("/wiki")} />
+      <BBNavTab
+        title="Wiki"
+        to="/wiki/Main_Page"
+        active={isActive("/wiki")}
+        raiseOnHover
+      />
       <BBNavTab
         title="Projects"
         to="/content/projects"
         active={isActive("/content/projects")}
+        raiseOnHover
       />
       <BBNavTab
         title="Resources"
         to="/content/resources"
         active={isActive("/content/resources")}
+        raiseOnHover
       />
       <BBHasPermission requiredPermissions={SITE_ADMIN_PERMISSION}>
-        <BBNavTab title="Admin" to="/admin" active={isActive("/admin")} />
+        <BBNavTab
+          title="Admin"
+          to="/admin"
+          active={isActive("/admin")}
+          raiseOnHover
+        />
       </BBHasPermission>
       <button
         type="button"
         onClick={open}
         aria-label="Search ZFGC"
-        className="mb-1 ml-2 flex h-8 items-center gap-2 border-2 border-default bg-muted px-3 text-sm text-dimmed transition-colors hover:bg-elevated hover:text-highlighted"
+        className="ml-2 flex h-8 items-center gap-2 border-2 border-default border-b-0 bg-muted px-3 text-sm text-dimmed transition-colors hover:bg-elevated hover:text-highlighted"
       >
         <BBIcon name="search" />
         <span className="hidden lg:inline">Search</span>

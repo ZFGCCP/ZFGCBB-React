@@ -26,7 +26,7 @@ export type ProjectShowcase = v.InferOutput<typeof ProjectShowcaseSchema>;
 export type ResourceShowcase = v.InferOutput<typeof ResourceShowcaseSchema>;
 
 export type Showcase<TItem> = {
-  featured?: TItem;
+  featured?: TItem | undefined;
   recent: TItem[];
   random: TItem[];
   topRated: TItem[];

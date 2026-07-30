@@ -35,7 +35,7 @@ export default function WikiShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto flex max-w-6xl gap-6 px-1">
+    <div className="flex gap-6 px-1">
       <WikiSidebar />
       <div className="min-w-0 grow">
         {trail && (

@@ -21,23 +21,27 @@ export default function UserAwardGrantPanel({
       body: { awardId: variables.awardId, reason: variables.reason },
     }),
     invalidateKeys: [[`/user-profile/${userId}`]],
-    onSuccess: () => setReason(""),
+    onSuccess: () => {
+      setReason("");
+    },
   });
 
   const awards = catalog.data ?? [];
   const activeAwardId = selectedAwardId ?? awards[0]?.awardId ?? null;
   const selectAward = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) =>
-      setSelectedAwardId(Number(event.target.value)),
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setSelectedAwardId(Number(event.target.value));
+    },
     [],
   );
   const changeReason = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) =>
-      setReason(event.target.value),
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setReason(event.target.value);
+    },
     [],
   );
   const grantAward = useCallback(() => {
-    if (activeAwardId != null) {
+    if (activeAwardId !== null && activeAwardId !== undefined) {
       grant.mutate({ awardId: activeAwardId, reason });
     }
   }, [activeAwardId, grant, reason]);
@@ -64,7 +68,11 @@ export default function UserAwardGrantPanel({
           onChange={changeReason}
         />
         <BBButton
-          disabled={activeAwardId == null || grant.isPending}
+          disabled={
+            activeAwardId === null ||
+            activeAwardId === undefined ||
+            grant.isPending
+          }
           onClick={grantAward}
         >
           Grant Award

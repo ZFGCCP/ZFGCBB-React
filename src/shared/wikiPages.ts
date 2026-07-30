@@ -1,5 +1,8 @@
 export function encodeWikiPath(slug: string): string {
-  return slug.split("/").map(encodeURIComponent).join("/");
+  return slug
+    .split("/")
+    .map((part) => encodeURIComponent(part))
+    .join("/");
 }
 
 export function wikiPagesListUrl(params: URLSearchParams): `/${string}` {

@@ -52,6 +52,27 @@
   --fill-color-default: #000000;
   --fill-color-inverted: #ffffff;
 
+  --shadow-color-default: #000000;
+  --shadow-color-inverted: #ffffff;
+
+  --highlight-color-default: #ffffff;
+  --highlight-color-inverted: #000000;
+
+  --shadow-panel-strength: 100%;
+  --shadow-panel-opacity: 70%;
+  --shadow-panel-color: color-mix(
+    in srgb,
+    color-mix(
+        in srgb,
+        var(--shadow-color-default) var(--shadow-panel-strength),
+        var(--highlight-color-default)
+      )
+      var(--shadow-panel-opacity),
+    transparent
+  );
+  --shadow-panel: 6px 6px 0 var(--shadow-panel-color);
+  --shadow-toast: 4px 4px 0 var(--shadow-panel-color);
+
   --sprite-icons: url("/themes/midnight/images/sprites/icons.webp");
   --sprite-badges: url("/themes/midnight/images/sprites/badges.webp");
 
@@ -142,7 +163,7 @@
 }
 
 @utility reload-prompt {
-  @apply fixed right-0 bottom-0 z-50 m-4 flex flex-wrap items-center gap-2 border-2 border-default bg-elevated p-3 text-sm shadow-[4px_4px_0_rgba(0,0,0,0.5)];
+  @apply fixed right-0 bottom-0 z-50 m-4 flex flex-wrap items-center gap-2 border-2 border-default bg-elevated p-3 text-sm shadow-toast;
 
   & button {
     @apply cursor-pointer border-2 border-default bg-muted px-2.5 py-1 transition-colors hover:bg-elevated;

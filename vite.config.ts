@@ -1,11 +1,8 @@
 import { defineConfig, loadEnv, mergeConfig, type UserConfig } from "vite";
-import { fileURLToPath, resolve } from "node:url";
+import { resolve } from "node:path";
 import baseConfig from "@zfgc/vite-config-base";
 
-const srcDirectory = resolve(
-  fileURLToPath(new URL(".", import.meta.url)),
-  "src",
-);
+const srcDirectory = resolve(import.meta.dirname, "src");
 
 // https://vitejs.dev/config/
 export default defineConfig((env) => {

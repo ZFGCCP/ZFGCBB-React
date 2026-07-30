@@ -13,4 +13,4 @@ build
 build.zip
 .env
 .env*.local
-tsconfig.tsbuildinfo
+*.tsbuildinfo

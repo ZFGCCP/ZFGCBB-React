@@ -19,13 +19,20 @@ const ALIGN_CLASSES = {
 
 export interface BBFlexProps {
   children: React.ReactNode;
-  className?: string;
-  direction?: "row" | "col";
-  justify?: "start" | "end" | "center" | "between" | "around" | "evenly";
-  align?: "start" | "end" | "center" | "baseline" | "stretch";
-  wrap?: boolean;
-  gap?: string;
-  as?: ElementType;
+  className?: string | undefined;
+  direction?: "row" | "col" | undefined;
+  justify?:
+    | "start"
+    | "end"
+    | "center"
+    | "between"
+    | "around"
+    | "evenly"
+    | undefined;
+  align?: "start" | "end" | "center" | "baseline" | "stretch" | undefined;
+  wrap?: boolean | undefined;
+  gap?: string | undefined;
+  as?: ElementType | undefined;
 }
 
 export default function BBFlex({

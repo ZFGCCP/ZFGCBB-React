@@ -1,12 +1,12 @@
-import { useStore } from "@tanstack/react-form";
+import { useSelector } from "@tanstack/react-form";
 import { useBBFormContext } from "./BBForm";
 
 type BBSubmitProps = {
   children: React.ReactNode;
-  pendingChildren?: React.ReactNode;
+  pendingChildren?: React.ReactNode | undefined;
   /** Forces the button to disabled regardless of form state (e.g., outer mutation pending). */
-  disabled?: boolean;
-  className?: string;
+  disabled?: boolean | undefined;
+  className?: string | undefined;
 };
 
 export default function BBSubmit({
@@ -16,9 +16,9 @@ export default function BBSubmit({
   className,
 }: BBSubmitProps) {
   const form = useBBFormContext();
-  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
+  const isSubmitting = useSelector(form.store, (state) => state.isSubmitting);
 
-  const buttonDisabled = disabled || isSubmitting;
+  const buttonDisabled = (disabled ?? false) || isSubmitting;
 
   return (
     <button

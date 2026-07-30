@@ -20,10 +20,10 @@ export default function BBQueryBoundary<TData>({
   }, [query]);
 
   if (query.data !== undefined) {
-    if (isEmpty?.(query.data)) return <>{empty ?? <BBEmpty />}</>;
-    return <>{children(query.data)}</>;
+    if (isEmpty?.(query.data)) return empty ?? <BBEmpty />;
+    return children(query.data);
   }
   if (query.isError)
     return <BBError error={query.error ?? undefined} onRetry={retry} />;
-  return <>{loading ?? <BBSkeleton className="h-40 w-full rounded" />}</>;
+  return loading ?? <BBSkeleton className="h-40 w-full rounded" />;
 }

@@ -31,8 +31,12 @@ export default function GlobalSearchProvider({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const open = useCallback(() => setIsOpen(true), []);
-  const close = useCallback(() => setIsOpen(false), []);
+  const open = useCallback(() => {
+    setIsOpen(true);
+  }, []);
+  const close = useCallback(() => {
+    setIsOpen(false);
+  }, []);
 
   useKeyDown((event) => {
     if (

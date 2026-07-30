@@ -110,7 +110,7 @@ export default defineConfig(({ isSsrBuild, command }) => {
         ],
       },
       workbox: {
-        navigateFallback: undefined,
+        navigateFallback: "",
         cleanupOutdatedCaches: true,
         additionalManifestEntries: [
           { url: "/index.html", revision: `${Date.now()}` },
@@ -124,10 +124,10 @@ export default defineConfig(({ isSsrBuild, command }) => {
               networkTimeoutSeconds: 3,
               plugins: [
                 {
-                  fetchDidSucceed: async ({ response }) => {
+                  fetchDidSucceed: ({ response }) => {
                     if (response.status >= 400)
                       throw new Error(`navigation ${response.status}`);
-                    return response;
+                    return Promise.resolve(response);
                   },
                   handlerDidError: async () =>
                     (await caches.match("/index.html", {
@@ -155,8 +155,8 @@ export default defineConfig(({ isSsrBuild, command }) => {
   plugins.push(
     icons({ compiler: "jsx", jsx: "react", autoInstall: true }),
     generateImagePaths(),
+    preprocessTwMerge(),
   );
-  plugins.push(preprocessTwMerge());
 
   return {
     plugins,

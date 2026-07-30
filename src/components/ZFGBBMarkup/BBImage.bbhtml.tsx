@@ -1,7 +1,7 @@
 import { attributesToProps } from "html-react-parser/lib/index";
 import type { BBHtmlHandler } from "@/components/ZFGBBMarkup/BBHtml";
 
-const handler: BBHtmlHandler = (element) => {
+const handler: BBHtmlHandler = (element): React.ReactElement | undefined => {
   if (element.name !== "img") return undefined;
   const rawSrc = element.attribs?.["src"];
   if (!rawSrc) return undefined;
@@ -14,7 +14,7 @@ const handler: BBHtmlHandler = (element) => {
     crossOrigin: _crossOrigin,
     ...rest
   } = attributesToProps(element.attribs ?? {});
-  const classes = typeof className === "string" ? className.split(/\s+/) : [];
+  const classes = typeof className === "string" ? className.split(/\s+/u) : [];
   const framed = classes.includes("bb-code-preview");
   return (
     <BBImage

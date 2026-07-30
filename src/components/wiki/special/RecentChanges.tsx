@@ -1,7 +1,8 @@
 import type { WikiRevisionRef } from "@/types/content";
 
 const RECENT_CHANGES_EMPTY_STATE = <BBEmpty message="No recent changes." />;
-const isRecentChangesEmpty = (changes: WikiRevisionRef[]) => !changes.length;
+const isRecentChangesEmpty = (changes: WikiRevisionRef[]) =>
+  changes.length === 0;
 const renderRecentChanges = (changes: WikiRevisionRef[]) => (
   <WikiTimeline>
     {changes.map((change) => (

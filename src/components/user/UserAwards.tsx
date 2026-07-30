@@ -1,10 +1,11 @@
 import type { Award } from "../../types/user";
 
 interface UserAwardsProps {
-  awards?: Award[];
+  awards?: Award[] | undefined;
 }
 
 function awardIcon(iconName: string | null | undefined) {
+  if (!iconName) return <Fa6SolidMedal />;
   switch (iconName) {
     case "trophy":
       return <Fa6SolidTrophy />;

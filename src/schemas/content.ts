@@ -68,6 +68,7 @@ export const WikiPageSchema = v.object({
   entityUrl: v.optional(
     v.custom<`/${string}`>((value) => typeof value === "string"),
   ),
+  editable: v.optional(v.boolean()),
 });
 
 export const WikiStatisticsSchema = v.object({

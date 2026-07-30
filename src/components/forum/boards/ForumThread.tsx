@@ -15,14 +15,20 @@ const THREAD_PAGE_SIZE = 10;
 const EMPTY_ATTACHMENTS: Message["fileAttachments"] = [];
 
 const threadIsRecycledContent = (thread: Thread) =>
-  thread.recycledFromBoardId != null || thread.recycledFromThreadId != null;
+  (thread.recycledFromBoardId !== null &&
+    thread.recycledFromBoardId !== undefined) ||
+  (thread.recycledFromThreadId !== null &&
+    thread.recycledFromThreadId !== undefined);
 
 const invalidateForumContent = (
   queryClient: QueryClient,
   threadIds: (number | undefined)[],
 ) => {
   const threadKeyPrefixes = threadIds
-    .filter((threadId): threadId is number => threadId != null)
+    .filter(
+      (threadId): threadId is number =>
+        threadId !== null && threadId !== undefined,
+    )
     .map((threadId) => `/thread/${threadId}`);
   void queryClient.invalidateQueries({
     predicate: (query) => {
@@ -49,7 +55,10 @@ const navigateAfterRestore = (
       Math.ceil((response.postInThread ?? 1) / THREAD_PAGE_SIZE),
       1,
     );
-    const anchor = anchorMessageId != null ? `#msg${anchorMessageId}` : "";
+    const anchor =
+      anchorMessageId === null || anchorMessageId === undefined
+        ? ""
+        : `#msg${anchorMessageId}`;
     void navigate(
       `/forum/thread/${response.threadId}/${restoredPage}${anchor}`,
     );
@@ -95,7 +104,11 @@ function MessageRemovalConfirm({
         void navigate(`/forum/board/${response.boardId ?? thread.boardId}/1`);
         return;
       }
-      if (response.pageCount != null && currentPage > response.pageCount)
+      if (
+        response.pageCount !== null &&
+        response.pageCount !== undefined &&
+        currentPage > response.pageCount
+      )
         void navigate(
           `/forum/thread/${thread.id}/${Math.max(response.pageCount, 1)}`,
         );
@@ -112,7 +125,9 @@ function MessageRemovalConfirm({
   const removeMutation = useBBMutation({
     request: () => ({ url: `/message/${message.id}`, method: "DELETE" }),
     schema: MessageDeletionResponseSchema,
-    onSuccess: (response) => finishRemoval(response),
+    onSuccess: (response) => {
+      finishRemoval(response);
+    },
     onError: (error) => {
       if (getResponseStatus(error) === 404) finishRemoval();
     },
@@ -127,10 +142,9 @@ function MessageRemovalConfirm({
         ? "You are not allowed to remove this post."
         : "Failed to remove the post."
       : null;
-  const handleRemove = useCallback(
-    () => removeMutation.mutate(),
-    [removeMutation],
-  );
+  const handleRemove = useCallback(() => {
+    removeMutation.mutate();
+  }, [removeMutation]);
 
   return (
     <div className="border-b border-default bg-accented p-3 text-sm space-y-2">
@@ -179,7 +193,9 @@ function RecycledThreadNotice({ thread }: { thread: Thread }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [restoreNotice, setRestoreNotice] = useState<string | null>(null);
-  const isWrapper = thread.recycledFromThreadId != null;
+  const isWrapper =
+    thread.recycledFromThreadId !== null &&
+    thread.recycledFromThreadId !== undefined;
 
   const restoreThreadMutation = useBBMutation({
     request: () => ({ url: `/thread/${thread.id}/restore`, method: "PUT" }),
@@ -193,10 +209,9 @@ function RecycledThreadNotice({ thread }: { thread: Thread }) {
       invalidateForumContent(queryClient, [thread.id]);
     },
   });
-  const handleRestore = useCallback(
-    () => restoreThreadMutation.mutate(),
-    [restoreThreadMutation],
-  );
+  const handleRestore = useCallback(() => {
+    restoreThreadMutation.mutate();
+  }, [restoreThreadMutation]);
 
   return (
     <div className="border-2 border-default bg-accented p-3 text-sm space-y-2">
@@ -249,7 +264,7 @@ const ThreadMessage = memo(function ThreadMessage({
   const { actions: messageActions, isLoaded: messageActionsLoaded } =
     useAllowedActions(
       `/message/${message.id}/allowed-actions`,
-      message.id != null,
+      message.id !== null && message.id !== undefined,
     );
   const canRemove =
     messageActionsLoaded && messageActions.has("message.delete");
@@ -291,23 +306,22 @@ const ThreadMessage = memo(function ThreadMessage({
 
   const restorePending =
     restoreMessageMutation.isPending || restoreThreadMutation.isPending;
-  const handleQuote = useCallback(() => onQuote(message), [message, onQuote]);
-  const handleModify = useCallback(
-    () => onModify(message),
-    [message, onModify],
-  );
-  const handleRestore = useCallback(
-    () => restoreMessageMutation.mutate(),
-    [restoreMessageMutation],
-  );
+  const handleQuote = useCallback(() => {
+    onQuote(message);
+  }, [message, onQuote]);
+  const handleModify = useCallback(() => {
+    onModify(message);
+  }, [message, onModify]);
+  const handleRestore = useCallback(() => {
+    restoreMessageMutation.mutate();
+  }, [restoreMessageMutation]);
   const handleRemovalToggle = useCallback(() => {
     setRestoreNotice(null);
     setShowRemovalConfirm((current) => !current);
   }, []);
-  const handleRemovalClose = useCallback(
-    () => setShowRemovalConfirm(false),
-    [],
-  );
+  const handleRemovalClose = useCallback(() => {
+    setShowRemovalConfirm(false);
+  }, []);
 
   return (
     <div id={`msg${message.id}`} className="flex flex-col min-h-75 scroll-mt-4">
@@ -498,7 +512,7 @@ function ThreadView({
   canReply: boolean;
   canRestoreThread: boolean;
   showReplyBox: boolean;
-  quoteSeed?: string;
+  quoteSeed?: string | undefined;
   quoteSeedNonce: number;
   onQuote: (message: Message) => void;
   onModify: () => void;
@@ -529,7 +543,7 @@ function ThreadView({
         />
 
         {thread.pollInfo && <PollResults poll={thread.pollInfo} />}
-        <BBWidget widgetTitle={thread.threadName}>
+        <BBWidget widgetTitle={thread.threadName} className="shadow-panel">
           <ReactionsProvider
             reactableType="MESSAGE"
             reactableIds={reactableIds}
@@ -578,7 +592,7 @@ export default function ForumThread({
   const { actions: threadActions, isLoaded: threadActionsLoaded } =
     useAllowedActions(
       `/thread/${threadIdParam}/allowed-actions`,
-      threadIdParam != null,
+      threadIdParam !== null && threadIdParam !== undefined,
     );
   const canReply = threadActionsLoaded && threadActions.has("thread.reply");
   const canRestoreThread =
@@ -590,7 +604,7 @@ export default function ForumThread({
   );
 
   const [showReplyBox, setShowReplyBox] = useState(false);
-  const [quoteSeed, setQuoteSeed] = useState<string | undefined>(undefined);
+  const [quoteSeed, setQuoteSeed] = useState<string | undefined>();
   const [quoteSeedNonce, setQuoteSeedNonce] = useState(0);
 
   const seedReplyEditor = useCallback((message: Message) => {
@@ -611,8 +625,8 @@ export default function ForumThread({
   useEffect(() => {
     if (!messagesLoaded) return;
     const hash = window.location.hash;
-    if (!/^#msg\d+$/.test(hash)) return;
-    document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" });
+    if (!/^#msg\d+$/u.test(hash)) return;
+    document.querySelector(hash)?.scrollIntoView({ block: "start" });
   }, [messagesLoaded]);
   const renderThread = useCallback(
     (thread: Thread) => (
@@ -622,7 +636,7 @@ export default function ForumThread({
         canReply={canReply}
         canRestoreThread={canRestoreThread}
         showReplyBox={showReplyBox}
-        quoteSeed={quoteSeed}
+        quoteSeed={quoteSeed ?? undefined}
         quoteSeedNonce={quoteSeedNonce}
         onQuote={seedReplyEditor}
         onModify={openReplyEditor}

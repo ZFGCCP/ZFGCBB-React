@@ -8,7 +8,7 @@ export default function ForumCategory({
   subBoards: BoardSummary[];
 }) {
   return (
-    <BBWidget widgetTitle={title}>
+    <BBWidget widgetTitle={title} className="shadow-panel">
       <BoardSummaryView subBoards={subBoards} />
     </BBWidget>
   );

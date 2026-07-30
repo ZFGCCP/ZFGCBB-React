@@ -1,15 +1,4 @@
 {
-  "extends": "../tsconfig.base.json",
-  "compilerOptions": {
-    "noEmit": false,
-    "allowImportingTsExtensions": false
-  },
-  "references": [
-    {
-      "path": "./vite/config"
-    },
-    {
-      "path": "./vite/plugins"
-    }
-  ]
+  "files": [],
+  "references": [{ "path": "./vite/config" }, { "path": "./vite/plugins" }]
 }

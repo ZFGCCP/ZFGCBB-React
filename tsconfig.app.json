@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "rootDirs": [".", "./.react-router/types"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "plugins": [{ "name": "@dxup/unimport" }],
+    "declarationDir": "./dist/tsc/app",
+    "tsBuildInfoFile": "./dist/tsc/app.tsbuildinfo"
+  },
+  "include": ["src", "build/types/**/*", "./.react-router/types/**/*"],
+  "exclude": ["node_modules"]
+}

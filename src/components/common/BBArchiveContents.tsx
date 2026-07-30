@@ -1,6 +1,6 @@
 interface BBArchiveContentsProps {
   contentResourceId: number;
-  filename?: string | null;
+  filename?: string | null | undefined;
 }
 
 export default function BBArchiveContents({

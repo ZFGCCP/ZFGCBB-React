@@ -13,20 +13,22 @@ export default class BBErrorBoundary extends Component<
   BBErrorBoundaryProps,
   BBErrorBoundaryState
 > {
-  state: BBErrorBoundaryState = { error: null };
+  override state: BBErrorBoundaryState = { error: null };
 
   static getDerivedStateFromError(error: Error): BBErrorBoundaryState {
     return { error };
   }
 
-  componentDidCatch(error: Error) {
+  override componentDidCatch(error: Error) {
     if (import.meta.env.DEV)
       console.error("BBErrorBoundary caught a render error:", error);
   }
 
-  reset = () => this.setState({ error: null });
+  reset = () => {
+    this.setState({ error: null });
+  };
 
-  render() {
+  override render() {
     const { error } = this.state;
     if (error)
       return this.props.fallback ? (

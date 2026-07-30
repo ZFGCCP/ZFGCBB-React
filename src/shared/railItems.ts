@@ -3,7 +3,7 @@ import type { RailItem } from "@/components/cms/showcase/showcaseTypes";
 
 export function toRailItems<
   T extends {
-    previewContentResourceId?: number;
+    previewContentResourceId?: number | undefined;
     title: string;
     slug: string;
   },
@@ -13,7 +13,7 @@ export function toRailItems<
   subtitle: (entity: T) => ReactNode,
 ): RailItem[] {
   return entities.map((entity) => ({
-    previewId: entity.previewContentResourceId,
+    previewId: entity.previewContentResourceId ?? undefined,
     title: entity.title,
     href: `${basePath}/${entity.slug}`,
     subtitle: subtitle(entity),

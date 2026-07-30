@@ -13,12 +13,12 @@ export function useBBFormContext(): AnyFormApi {
 }
 
 type BBFormProps = {
-  form?: AnyFormApi;
+  form?: AnyFormApi | undefined;
   children: React.ReactNode;
-  errorMessage?: string | null;
-  className?: string;
-  role?: React.AriaRole;
-  onSubmit?: React.SubmitEventHandler<HTMLFormElement>;
+  errorMessage?: string | null | undefined;
+  className?: string | undefined;
+  role?: React.AriaRole | undefined;
+  onSubmit?: React.SubmitEventHandler<HTMLFormElement> | undefined;
 };
 
 export default function BBForm({

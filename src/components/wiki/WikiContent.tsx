@@ -3,7 +3,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { TrailSegment } from "./WikiShell";
 import { UserContext } from "@/providers/user/userProvider";
 import type { WikiRevisionRef } from "@/types/content";
-import type { User } from "@/types/user";
 
 const TOC_INDENT = ["", "pl-3", "pl-6", "pl-9", "pl-12", "pl-15"];
 
@@ -16,7 +15,8 @@ const WIKI_MODERATOR_CODES = new Set([
 const WIKI_HISTORY_EMPTY_STATE = (
   <BBEmpty message="No revisions recorded for this page yet." />
 );
-const isWikiHistoryEmpty = (revisions: WikiRevisionRef[]) => !revisions.length;
+const isWikiHistoryEmpty = (revisions: WikiRevisionRef[]) =>
+  revisions.length === 0;
 
 function WikiEditor({
   page,
@@ -44,7 +44,11 @@ function WikiEditor({
       },
     }),
     onSuccess: async (ref) => {
-      if (isModerator && ref.revisionId != null) {
+      if (
+        isModerator &&
+        ref.revisionId !== null &&
+        ref.revisionId !== undefined
+      ) {
         const response = await apiFetch(
           `${getApiBaseUrl()}/wiki/meta/moderation/${ref.revisionId}/approve`,
           { method: "POST" },
@@ -82,6 +86,7 @@ function WikiEditor({
       initialBody={page.content ?? ""}
       showSummary
       previewScope="WIKI"
+      previewSlug={page.slug}
       submitLabel="Save changes"
       pendingLabel="Saving..."
       errorMessage={
@@ -94,17 +99,21 @@ function WikiEditor({
 
 function WikiSource({ page }: { page: WikiPage }) {
   const [copied, setCopied] = useState(false);
-  const resetCopied = useDebouncedCallback(() => setCopied(false), 1500);
+  const resetCopied = useDebouncedCallback(() => {
+    setCopied(false);
+  }, 1500);
   const source = page.content ?? "";
   const lines = source ? source.split("\n").length : 0;
   const handleCopy = useCallback(() => {
-    void navigator.clipboard.writeText(source).then(
-      () => {
+    void (async () => {
+      try {
+        await navigator.clipboard.writeText(source);
         setCopied(true);
         resetCopied();
-      },
-      () => setCopied(false),
-    );
+      } catch {
+        setCopied(false);
+      }
+    })();
   }, [resetCopied, source]);
 
   return (
@@ -315,7 +324,9 @@ function WikiFile({ file }: { file: WikiFileRef }) {
         </BBDownloadLink>
         {file.filename && <span className="text-default">{file.filename}</span>}
         {file.mimeType && <span>{file.mimeType}</span>}
-        {file.fileSize != null && <span>{formatFileSize(file.fileSize)}</span>}
+        {file.fileSize !== null && file.fileSize !== undefined && (
+          <span>{formatFileSize(file.fileSize)}</span>
+        )}
       </div>
     </div>
   );
@@ -338,10 +349,9 @@ function WikiViewButton({
   currentView: WikiView;
   onViewChange: (view: WikiView) => void;
 }) {
-  const handleClick = useCallback(
-    () => onViewChange(viewKey),
-    [onViewChange, viewKey],
-  );
+  const handleClick = useCallback(() => {
+    onViewChange(viewKey);
+  }, [onViewChange, viewKey]);
 
   return (
     <button
@@ -365,7 +375,6 @@ function WikiPageView({
   view,
   revisionId,
   noRedirect,
-  user,
   isModerator,
   onViewChange,
 }: {
@@ -374,7 +383,6 @@ function WikiPageView({
   view: WikiView;
   revisionId: string | null;
   noRedirect: boolean;
-  user: User;
   isModerator: boolean;
   onViewChange: (view: WikiView) => void;
 }) {
@@ -383,8 +391,7 @@ function WikiPageView({
   const entityHref = page.entityUrl ?? null;
   const oldRevision =
     page.revision && !page.revision.current ? page.revision : null;
-  const canEdit =
-    (user.id ?? 0) > 0 && (page.namespace !== "ZFGC" || isModerator);
+  const canEdit = page.editable ?? false;
   const trail = useMemo<TrailSegment[]>(() => {
     const segments: TrailSegment[] = [];
     if (page.namespace === "Category") {
@@ -420,10 +427,9 @@ function WikiPageView({
     [entityHref, page.namespace],
   );
   const reactableIds = useMemo(() => [page.id], [page.id]);
-  const handlePublished = useCallback(
-    () => onViewChange("article"),
-    [onViewChange],
-  );
+  const handlePublished = useCallback(() => {
+    onViewChange("article");
+  }, [onViewChange]);
 
   if (page.redirectTo && view === "article" && !revisionId && !noRedirect) {
     const base = page.redirectTo.startsWith("/")
@@ -519,7 +525,7 @@ function WikiPageView({
                   }
                   className="text-highlighted"
                 >
-                  {page.redirectTo.replace(/_/g, " ")}
+                  {page.redirectTo.replaceAll("_", " ")}
                 </BBLink>
               </p>
             )}
@@ -565,7 +571,7 @@ function WikiPageView({
                   <span key={category}>
                     {index > 0 && " · "}
                     <BBLink
-                      to={`/wiki/Category:${category.replace(/ /g, "_")}`}
+                      to={`/wiki/Category:${category.replaceAll(" ", "_")}`}
                       className="text-highlighted"
                     >
                       {category}
@@ -634,12 +640,11 @@ export default function WikiContent({ slug }: { slug: string }) {
         view={view}
         revisionId={revisionId}
         noRedirect={noRedirect}
-        user={user}
         isModerator={isModerator}
         onViewChange={setView}
       />
     ),
-    [isModerator, noRedirect, revisionId, setView, slug, user, view],
+    [isModerator, noRedirect, revisionId, setView, slug, view],
   );
 
   return <BBQueryBoundary query={query}>{renderPage}</BBQueryBoundary>;

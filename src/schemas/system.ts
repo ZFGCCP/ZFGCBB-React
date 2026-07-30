@@ -111,7 +111,7 @@ export const MigrateJobFormSchema = v.object({
   smfPort: v.pipe(
     v.string(),
     v.nonEmpty("Port is required."),
-    v.regex(/^\d+$/, "Port must be a positive integer."),
+    v.regex(/^\d+$/u, "Port must be a positive integer."),
   ),
   smfDatabase: v.pipe(v.string(), v.nonEmpty("Database is required.")),
   smfUser: v.pipe(v.string(), v.nonEmpty("Username is required.")),
@@ -130,19 +130,19 @@ export type MigrateJobForm = v.InferOutput<typeof MigrateJobFormSchema>;
 export type MigrateJobRequest = {
   type: JobType;
   smfHost: string;
-  smfPort?: number;
+  smfPort?: number | undefined;
   smfDatabase: string;
   smfUser: string;
   smfPassword: string;
-  smfTablePrefix?: string;
-  smfLegacyHost?: string;
-  attachmentsSourcePath?: string;
-  attachmentsTargetPath?: string;
-  avatarsSourcePath?: string;
-  cmsFilesSourcePath?: string;
-  wikiImagesSourcePath?: string;
-  force?: boolean;
-  groupPermissionMap?: Record<number, string[]>;
+  smfTablePrefix?: string | undefined;
+  smfLegacyHost?: string | undefined;
+  attachmentsSourcePath?: string | undefined;
+  attachmentsTargetPath?: string | undefined;
+  avatarsSourcePath?: string | undefined;
+  cmsFilesSourcePath?: string | undefined;
+  wikiImagesSourcePath?: string | undefined;
+  force?: boolean | undefined;
+  groupPermissionMap?: Record<number, string[]> | undefined;
 };
 
 export const SmfMemberGroupSchema = v.object({
@@ -198,7 +198,7 @@ export const CmsConfigFormSchema = v.object({
   discussionBoardId: v.pipe(
     v.string(),
     v.nonEmpty("Discussion board id is required."),
-    v.regex(/^\d+$/, "Discussion board id must be a number."),
+    v.regex(/^\d+$/u, "Discussion board id must be a number."),
   ),
 });
 export type CmsConfigForm = v.InferOutput<typeof CmsConfigFormSchema>;
@@ -226,3 +226,12 @@ export const InstallFormSchema = v.object({
 });
 
 export type InstallForm = v.InferOutput<typeof InstallFormSchema>;
+
+export const WikiImportNamespaceSchema = v.object({
+  sourceNamespaceId: v.number(),
+  namespaceName: v.string(),
+});
+export const WikiImportNamespaceListSchema = v.array(WikiImportNamespaceSchema);
+export type WikiImportNamespace = v.InferOutput<
+  typeof WikiImportNamespaceSchema
+>;

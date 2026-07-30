@@ -1,9 +1,9 @@
 interface BBDownloadLinkProps {
   contentResourceId: number;
-  filename?: string | null;
-  icon?: boolean;
-  className?: string;
-  children?: React.ReactNode;
+  filename?: string | null | undefined;
+  icon?: boolean | undefined;
+  className?: string | undefined;
+  children?: React.ReactNode | undefined;
 }
 
 export default function BBDownloadLink({

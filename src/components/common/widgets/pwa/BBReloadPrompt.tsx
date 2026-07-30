@@ -1,5 +1,26 @@
 import { useRegisterSW } from "virtual:pwa-register/react";
 
+async function purgeDevServiceWorkers() {
+  const registrations = await navigator.serviceWorker.getRegistrations();
+  if (registrations.length === 0) {
+    return;
+  }
+  await Promise.all(
+    registrations.map((registration) => registration.unregister()),
+  );
+  if ("caches" in window) {
+    const cacheKeys = await caches.keys();
+    await Promise.all(cacheKeys.map((cacheKey) => caches.delete(cacheKey)));
+  }
+  if (
+    navigator.serviceWorker.controller &&
+    !sessionStorage.getItem("dev-sw-purged")
+  ) {
+    sessionStorage.setItem("dev-sw-purged", "1");
+    window.location.reload();
+  }
+}
+
 export default function BBReloadPrompt() {
   const [updateState, setUpdateState] = useState<
     "idle" | "updating" | "failed"
@@ -14,29 +35,9 @@ export default function BBReloadPrompt() {
     if (!import.meta.env.DEV || !("serviceWorker" in navigator)) {
       return;
     }
-    void navigator.serviceWorker
-      .getRegistrations()
-      .then(async (registrations) => {
-        if (registrations.length === 0) {
-          return;
-        }
-        await Promise.all(
-          registrations.map((registration) => registration.unregister()),
-        );
-        if ("caches" in window) {
-          const cacheKeys = await caches.keys();
-          await Promise.all(
-            cacheKeys.map((cacheKey) => caches.delete(cacheKey)),
-          );
-        }
-        if (
-          navigator.serviceWorker.controller &&
-          !sessionStorage.getItem("dev-sw-purged")
-        ) {
-          sessionStorage.setItem("dev-sw-purged", "1");
-          window.location.reload();
-        }
-      });
+    purgeDevServiceWorkers().catch((error: unknown) => {
+      console.warn("Failed to purge dev service workers:", error);
+    });
   }, []);
 
   const close = useCallback(() => {
@@ -53,6 +54,9 @@ export default function BBReloadPrompt() {
       setUpdateState("failed");
     }
   }, [updateServiceWorker]);
+  const handleReload = useCallback(() => {
+    void reload();
+  }, [reload]);
 
   if (!offlineReady && !needRefresh && updateState === "idle") {
     return null;
@@ -72,7 +76,7 @@ export default function BBReloadPrompt() {
       {(needRefresh || updateState === "failed") && (
         <button
           type="button"
-          onClick={reload}
+          onClick={handleReload}
           disabled={updateState === "updating"}
         >
           {updateState === "failed" ? "Retry" : "Reload"}

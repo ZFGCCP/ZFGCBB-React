@@ -56,19 +56,23 @@ export default function ProjectCardBodyCatalog({
           />
         )}
         <p className="mt-auto pt-1 text-[11px] text-dimmed">
-          {project.rating != null && (project.voteCount ?? 0) > 0 && (
-            <span
-              aria-label={`Rated ${project.rating.toFixed(1)} out of 5 from ${project.voteCount} votes`}
-            >
-              <Fa6SolidStar aria-hidden className="inline" />{" "}
-              {project.rating.toFixed(1)} ·{" "}
-            </span>
-          )}
+          {project.rating !== null &&
+            project.rating !== undefined &&
+            (project.voteCount ?? 0) > 0 && (
+              <span
+                aria-label={`Rated ${project.rating.toFixed(1)} out of 5 from ${project.voteCount} votes`}
+              >
+                <Fa6SolidStar aria-hidden className="inline" />{" "}
+                {project.rating.toFixed(1)} ·{" "}
+              </span>
+            )}
           {project.language && <>{project.language} · </>}
           {(project.viewCount ?? 0).toLocaleString()} views
-          {project.downloadCount != null && project.downloadCount > 0 && (
-            <> · {project.downloadCount.toLocaleString()} downloads</>
-          )}
+          {project.downloadCount !== null &&
+            project.downloadCount !== undefined &&
+            project.downloadCount > 0 && (
+              <> · {project.downloadCount.toLocaleString()} downloads</>
+            )}
         </p>
       </div>
     </BBLink>

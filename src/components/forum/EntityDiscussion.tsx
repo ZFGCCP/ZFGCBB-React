@@ -19,7 +19,11 @@ export default function EntityDiscussion({
   const threadId = entity?.threadId ?? null;
   const { data: thread, error: threadError } = useBBQuery(
     `/thread/${threadId}?page=0&pageSize=5`,
-    { enabled: threadId != null, throwOnError: false, schema: ThreadSchema },
+    {
+      enabled: threadId !== null && threadId !== undefined,
+      throwOnError: false,
+      schema: ThreadSchema,
+    },
   );
 
   const startDiscussion = useMutation({
@@ -34,17 +38,16 @@ export default function EntityDiscussion({
       void queryClient.invalidateQueries({ queryKey: [discussionKey] });
     },
   });
-  const handleStartDiscussion = useCallback(
-    () => startDiscussion.mutate(),
-    [startDiscussion],
-  );
+  const handleStartDiscussion = useCallback(() => {
+    startDiscussion.mutate();
+  }, [startDiscussion]);
 
   const threadStatus = getResponseStatus(threadError ?? undefined);
 
   return (
     <BBWidget widgetTitle="Discussion">
       <div className="p-4 space-y-3">
-        {entity && threadId == null && (
+        {entity && (threadId === null || threadId === undefined) && (
           <div className="flex items-center gap-3">
             <p className="text-sm text-dimmed grow">
               No discussion thread yet.
@@ -65,7 +68,8 @@ export default function EntityDiscussion({
               "Could not start the discussion."}
           </p>
         )}
-        {threadId != null &&
+        {threadId !== null &&
+          threadId !== undefined &&
           !thread &&
           threadError &&
           (threadStatus === 403 || threadStatus === 404 ? (
@@ -77,7 +81,7 @@ export default function EntityDiscussion({
               Could not load the discussion thread.
             </p>
           ))}
-        {threadId != null && thread && (
+        {threadId !== null && threadId !== undefined && thread && (
           <>
             {(thread.messages ?? []).map((message) => (
               <BBPanel key={message.id ?? message.currentMessage?.messageId}>

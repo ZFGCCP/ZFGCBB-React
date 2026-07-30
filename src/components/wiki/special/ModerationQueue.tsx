@@ -7,7 +7,8 @@ type ModerationAction = "approve" | "reject";
 const MODERATION_EMPTY_STATE = (
   <BBEmpty message="Nothing waiting for review." />
 );
-const isModerationQueueEmpty = (pending: WikiRevisionRef[]) => !pending.length;
+const isModerationQueueEmpty = (pending: WikiRevisionRef[]) =>
+  pending.length === 0;
 
 function ModerationItem({
   revision,
@@ -19,24 +20,21 @@ function ModerationItem({
 }: {
   revision: WikiRevisionRef;
   previewId: number | null;
-  previewHtml?: string;
+  previewHtml?: string | undefined;
   pending: boolean;
   onPreview: (revisionId: number) => void;
   onAction: (revisionId: number, action: ModerationAction) => void;
 }) {
   const isPreviewed = previewId === revision.revisionId;
-  const handlePreview = useCallback(
-    () => onPreview(revision.revisionId),
-    [onPreview, revision.revisionId],
-  );
-  const handleApprove = useCallback(
-    () => onAction(revision.revisionId, "approve"),
-    [onAction, revision.revisionId],
-  );
-  const handleReject = useCallback(
-    () => onAction(revision.revisionId, "reject"),
-    [onAction, revision.revisionId],
-  );
+  const handlePreview = useCallback(() => {
+    onPreview(revision.revisionId);
+  }, [onPreview, revision.revisionId]);
+  const handleApprove = useCallback(() => {
+    onAction(revision.revisionId, "approve");
+  }, [onAction, revision.revisionId]);
+  const handleReject = useCallback(() => {
+    onAction(revision.revisionId, "reject");
+  }, [onAction, revision.revisionId]);
 
   return (
     <li className="border-2 border-default bg-accented p-3">
@@ -90,7 +88,7 @@ export default function ModerationQueue() {
     `/wiki/meta/moderation/${previewId ?? 0}/preview`,
     {
       schema: WikiPreviewSchema,
-      enabled: previewId != null,
+      enabled: previewId !== null && previewId !== undefined,
       meta: { userScoped: true },
     },
   );
@@ -104,16 +102,17 @@ export default function ModerationQueue() {
       url: `/wiki/meta/moderation/${variables.revisionId}/${variables.action}`,
       method: "POST",
     }),
-    onSuccess: () => setPreviewId(null),
+    onSuccess: () => {
+      setPreviewId(null);
+    },
   });
-  const handlePreview = useCallback(
-    (revisionId: number) =>
-      setPreviewId((current) => (current === revisionId ? null : revisionId)),
-    [],
-  );
+  const handlePreview = useCallback((revisionId: number) => {
+    setPreviewId((current) => (current === revisionId ? null : revisionId));
+  }, []);
   const handleAction = useCallback(
-    (revisionId: number, action: ModerationAction) =>
-      act.mutate({ revisionId, action }),
+    (revisionId: number, action: ModerationAction) => {
+      act.mutate({ revisionId, action });
+    },
     [act],
   );
   const renderPending = useCallback(

@@ -1,7 +1,7 @@
 import type { User } from "@/types/user";
 export interface UserSignatureProps {
-  user?: User;
-  isEven?: boolean;
+  user?: User | undefined;
+  isEven?: boolean | undefined;
 }
 
 export default function UserSignature({ user, isEven }: UserSignatureProps) {

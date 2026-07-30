@@ -1,8 +1,8 @@
 interface CmsMastheadProps {
-  steveId?: number | null;
+  steveId?: number | null | undefined;
   title: string;
-  stevePadClassName?: string;
-  children?: React.ReactNode;
+  stevePadClassName?: string | undefined;
+  children?: React.ReactNode | undefined;
 }
 
 export default function CmsMasthead({

@@ -7,10 +7,14 @@ export function useKeyDown(
     handlerRef.current = handler;
   });
 
-  useEffect(() => {
+  useEffect((): (() => void) | undefined => {
     if (!enabled) return undefined;
-    const listener = (event: KeyboardEvent) => handlerRef.current(event);
+    const listener = (event: KeyboardEvent) => {
+      handlerRef.current(event);
+    };
     window.addEventListener("keydown", listener);
-    return () => window.removeEventListener("keydown", listener);
+    return () => {
+      window.removeEventListener("keydown", listener);
+    };
   }, [enabled]);
 }

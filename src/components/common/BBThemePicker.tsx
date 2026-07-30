@@ -9,7 +9,7 @@ export type ThemeStandardBackgroundTypes =
 
 export type ThemeBackgroundClassValue =
   | `bg-${ThemeStandardBackgroundTypes}`
-  | (`bg-${string}` & {});
+  | (`bg-${string}` & Record<never, never>);
 
 const THEME_OPTIONS = ["Midnight", "Kikori", "Goron", "Sheik"];
 

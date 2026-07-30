@@ -3,24 +3,26 @@ import type { BBFlexProps } from "./BBFlex";
 export interface BBTableColumn<TRow> {
   key: keyof TRow | string;
   label: string;
-  className?: string;
-  hideOnMobile?: boolean;
-  hideOnTablet?: boolean;
-  render?: (value: unknown, row: TRow, index: number) => React.ReactNode;
+  className?: string | undefined;
+  hideOnMobile?: boolean | undefined;
+  hideOnTablet?: boolean | undefined;
+  render?:
+    | ((value: unknown, row: TRow, index: number) => React.ReactNode)
+    | undefined;
 }
 
 export interface BBTableProps<TRow> {
   columns: BBTableColumn<TRow>[];
   data: TRow[];
-  className?: string;
-  headerClassName?: string;
-  headerOuterFlexOptions?: Omit<BBFlexProps, "children">;
-  rowClassName?: string | ((row: TRow, index: number) => string);
-  rowOuterFlexOptions?: Omit<BBFlexProps, "children">;
+  className?: string | undefined;
+  headerClassName?: string | undefined;
+  headerOuterFlexOptions?: Omit<BBFlexProps, "children"> | undefined;
+  rowClassName?: string | ((row: TRow, index: number) => string) | undefined;
+  rowOuterFlexOptions?: Omit<BBFlexProps, "children"> | undefined;
   getRowKey: (row: TRow) => React.Key;
-  onRowClick?: (row: TRow, index: number) => void;
-  emptyMessage?: string;
-  showHeader?: boolean;
+  onRowClick?: ((row: TRow, index: number) => void) | undefined;
+  emptyMessage?: string | undefined;
+  showHeader?: boolean | undefined;
 }
 
 const EMPTY_FLEX_OPTIONS: Omit<BBFlexProps, "children"> = {};
@@ -89,9 +91,9 @@ function BBTableDataRow<TRow extends object>({
   row: TRow;
   index: number;
   columns: BBTableColumn<TRow>[];
-  rowClassName: BBTableProps<TRow>["rowClassName"];
+  rowClassName?: BBTableProps<TRow>["rowClassName"] | undefined;
   rowOuterFlexOptions: Omit<BBFlexProps, "children">;
-  onRowClick?: (row: TRow, index: number) => void;
+  onRowClick?: ((row: TRow, index: number) => void) | undefined;
 }) {
   const handleClick = useCallback(
     () => onRowClick?.(row, index),
@@ -101,7 +103,7 @@ function BBTableDataRow<TRow extends object>({
     row,
     index,
     rowClassName,
-    onRowClick != null,
+    onRowClick !== null && onRowClick !== undefined,
   );
   const rowContent = (
     <BBFlex align="center" justify="center" {...rowOuterFlexOptions}>
@@ -110,7 +112,7 @@ function BBTableDataRow<TRow extends object>({
         return (
           <div
             key={String(column.key)}
-            className={`${column.className || ""} ${getColumnVisibilityClass(column)}`}
+            className={`${column.className ?? ""} ${getColumnVisibilityClass(column)}`}
           >
             {column.render
               ? column.render(value, row, index)
@@ -165,7 +167,7 @@ export default function BBTable<TRow extends object>({
             {columns.map((column) => (
               <div
                 key={String(column.key)}
-                className={`${column.className || ""} ${getColumnVisibilityClass(column)}`}
+                className={`${column.className ?? ""} ${getColumnVisibilityClass(column)}`}
               >
                 {column.label}
               </div>

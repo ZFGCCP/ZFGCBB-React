@@ -1,6 +1,6 @@
 export interface CatalogFilterOption {
   value: string;
-  count?: number;
+  count?: number | undefined;
 }
 
 export interface CatalogLanguageOption {
@@ -14,12 +14,12 @@ export interface CatalogSortOption {
 }
 
 export interface CatalogQuery {
-  search?: string;
-  author?: string;
-  filter?: string;
-  sort?: string;
-  language?: string;
-  availability?: string;
+  search?: string | undefined;
+  author?: string | undefined;
+  filter?: string | undefined;
+  sort?: string | undefined;
+  language?: string | undefined;
+  availability?: string | undefined;
 }
 
 interface BBCatalogToolbarProps {
@@ -28,12 +28,12 @@ interface BBCatalogToolbarProps {
   filter: string;
   sort: string;
   availability: string;
-  language?: string;
-  languageOptions?: CatalogLanguageOption[];
+  language?: string | undefined;
+  languageOptions?: CatalogLanguageOption[] | undefined;
   filterOptions: CatalogFilterOption[];
   sortOptions: readonly CatalogSortOption[];
-  total: number | null;
-  searchPlaceholder: string;
+  total: number | null | undefined;
+  searchPlaceholder?: string | undefined;
   onChange: (next: CatalogQuery) => void;
 }
 
@@ -99,7 +99,7 @@ function FilterChip({
   );
 }
 
-function preventSubmit(event: React.FormEvent<HTMLFormElement>) {
+function preventSubmit(event: React.SubmitEvent<HTMLFormElement>) {
   event.preventDefault();
 }
 
@@ -119,14 +119,12 @@ export default function BBCatalogToolbar({
 }: BBCatalogToolbarProps) {
   const [searchDraft, setSearchDraft] = useSyncedDraft(search);
   const [authorDraft, setAuthorDraft] = useSyncedDraft(author);
-  const debouncedSearch = useDebouncedCallback(
-    (value: string) => onChange({ search: value }),
-    300,
-  );
-  const debouncedAuthor = useDebouncedCallback(
-    (value: string) => onChange({ author: value }),
-    300,
-  );
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    onChange({ search: value });
+  }, 300);
+  const debouncedAuthor = useDebouncedCallback((value: string) => {
+    onChange({ author: value });
+  }, 300);
 
   const tokens = useMemo(() => filter.split(",").filter(Boolean), [filter]);
   const changeSearch = useCallback(
@@ -144,24 +142,26 @@ export default function BBCatalogToolbar({
     [debouncedAuthor, setAuthorDraft],
   );
   const changeLanguage = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) =>
-      onChange({ language: event.target.value }),
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      onChange({ language: event.target.value });
+    },
     [onChange],
   );
   const changeSort = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) =>
-      onChange({ sort: event.target.value }),
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      onChange({ sort: event.target.value });
+    },
     [onChange],
   );
-  const clearFilters = useCallback(() => onChange({ filter: "" }), [onChange]);
-  const toggleAvailable = useCallback(
-    () => onChange({ availability: availability === "yes" ? "" : "yes" }),
-    [availability, onChange],
-  );
-  const toggleMissing = useCallback(
-    () => onChange({ availability: availability === "no" ? "" : "no" }),
-    [availability, onChange],
-  );
+  const clearFilters = useCallback(() => {
+    onChange({ filter: "" });
+  }, [onChange]);
+  const toggleAvailable = useCallback(() => {
+    onChange({ availability: availability === "yes" ? "" : "yes" });
+  }, [availability, onChange]);
+  const toggleMissing = useCallback(() => {
+    onChange({ availability: availability === "no" ? "" : "no" });
+  }, [availability, onChange]);
 
   return (
     <search className="border-b-2 border-default bg-muted/40 px-4 py-3">
@@ -253,7 +253,7 @@ export default function BBCatalogToolbar({
           >
             MISSING FILES
           </button>
-          {total != null && (
+          {total !== null && total !== undefined && (
             <span aria-live="polite" className="ml-auto text-xs text-dimmed">
               {total} {total === 1 ? "entry" : "entries"}
             </span>

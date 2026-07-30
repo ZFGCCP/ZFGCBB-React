@@ -1,8 +1,8 @@
 export interface BBErrorProps {
-  title?: string;
-  description?: string;
-  error?: Error;
-  onRetry?: () => void;
+  title?: string | undefined;
+  description?: string | undefined;
+  error?: Error | undefined;
+  onRetry?: (() => void) | undefined;
 }
 
 export default function BBError({

@@ -31,13 +31,14 @@ const TOOLBAR_PRIORITY = [
 ];
 
 interface BBContentEditorProps {
-  initialBody?: string;
-  rows?: number;
+  initialBody?: string | undefined;
+  rows?: number | undefined;
   submitLabel: string;
   pendingLabel: string;
-  errorMessage?: string | null;
-  showSummary?: boolean;
-  previewScope?: "WIKI" | "FORUM";
+  errorMessage?: string | null | undefined;
+  showSummary?: boolean | undefined;
+  previewScope?: "WIKI" | "FORUM" | undefined;
+  previewSlug?: string | undefined;
   onSubmit: (value: ContentEditorValue) => Promise<unknown>;
 }
 
@@ -48,10 +49,9 @@ function ToolbarButton({
   entry: Bbcode;
   onInsert: (code: string, selfClosing: boolean) => void;
 }) {
-  const insert = useCallback(
-    () => onInsert(entry.code, entry.selfClosing),
-    [entry.code, entry.selfClosing, onInsert],
-  );
+  const insert = useCallback(() => {
+    onInsert(entry.code, entry.selfClosing);
+  }, [entry.code, entry.selfClosing, onInsert]);
 
   return (
     <button
@@ -73,6 +73,7 @@ export default function BBContentEditor({
   errorMessage,
   showSummary = false,
   previewScope = "FORUM",
+  previewSlug,
   onSubmit,
 }: BBContentEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -155,6 +156,7 @@ export default function BBContentEditor({
         body: JSON.stringify({
           content: form.getFieldValue("body"),
           scope: previewScope,
+          slug: previewSlug,
         }),
       });
       const data = await handleResponseWithJason(response, WikiPreviewSchema);
@@ -162,8 +164,10 @@ export default function BBContentEditor({
     } catch {
       setPreviewError(true);
     }
-  }, [form, previewScope]);
-  const showWriteMode = useCallback(() => setMode("write"), []);
+  }, [form, previewScope, previewSlug]);
+  const showWriteMode = useCallback(() => {
+    setMode("write");
+  }, []);
   const showPreviewMode = useCallback(() => {
     void showPreview();
   }, [showPreview]);
@@ -215,7 +219,7 @@ export default function BBContentEditor({
           <div className="border-2 border-default bg-accented p-3 min-h-32">
             {previewError ? (
               <BBErrorInline message="Preview failed. Are you logged in?" />
-            ) : previewHtml == null ? (
+            ) : previewHtml === null || previewHtml === undefined ? (
               <span className="text-dimmed">Rendering preview…</span>
             ) : (
               <BBHtml html={previewHtml} className="whitespace-pre-wrap" />

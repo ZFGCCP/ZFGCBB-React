@@ -8,7 +8,9 @@ export default function ResourceCardBodyCatalog({
   const location = useLocation();
   const year = wireYear(resource.publishedTs);
   const hasFile =
-    resource.downloadContentResourceId != null || resource.downloadUrl != null;
+    (resource.downloadContentResourceId !== null &&
+      resource.downloadContentResourceId !== undefined) ||
+    (resource.downloadUrl !== null && resource.downloadUrl !== undefined);
   const navigationState = useMemo(
     () => ({ from: `${location.pathname}${location.search}` }),
     [location.pathname, location.search],
@@ -42,7 +44,9 @@ export default function ResourceCardBodyCatalog({
           {hasFile ? (
             <span className="inline-flex items-center gap-1.5 align-middle text-highlighted">
               <BBIcon name="download" />
-              {resource.fileSize != null && resource.fileSize > 0
+              {resource.fileSize !== null &&
+              resource.fileSize !== undefined &&
+              resource.fileSize > 0
                 ? formatFileSize(resource.fileSize)
                 : "download"}
             </span>
@@ -50,14 +54,16 @@ export default function ResourceCardBodyCatalog({
             <span>file lost</span>
           )}
           {" · "}
-          {resource.rating != null && (resource.voteCount ?? 0) > 0 && (
-            <span
-              aria-label={`Rated ${resource.rating.toFixed(1)} out of 5 from ${resource.voteCount} votes`}
-            >
-              <Fa6SolidStar aria-hidden className="inline" />{" "}
-              {resource.rating.toFixed(1)} ·{" "}
-            </span>
-          )}
+          {resource.rating !== null &&
+            resource.rating !== undefined &&
+            (resource.voteCount ?? 0) > 0 && (
+              <span
+                aria-label={`Rated ${resource.rating.toFixed(1)} out of 5 from ${resource.voteCount} votes`}
+              >
+                <Fa6SolidStar aria-hidden className="inline" />{" "}
+                {resource.rating.toFixed(1)} ·{" "}
+              </span>
+            )}
           {(resource.downloadCount ?? 0).toLocaleString()} downloads
         </p>
       </div>

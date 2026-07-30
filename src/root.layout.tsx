@@ -16,6 +16,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   const { pathname } = useLocation();
   const { data: installStatus } = useInstallStatus();
   const { open: openSearch } = useGlobalSearch();
+  const isNavigating = useNavigation().state === "loading";
 
   const handleCloseMenu = useCallback(() => {
     setIsMenuOpen(false);
@@ -31,8 +32,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
   return (
     <div className="grid grid-rows-[1fr_auto] md:grid-rows-[1fr] size-full overflow-hidden">
-      <main className="overflow-auto bg-default min-h-0 size-full scrollbar-color-default scrollbar-gutter-stable px-1.5 mr-1">
-        <header className="hidden md:flex justify-between items-end border-b-2 border-default bg-default px-2">
+      <main
+        aria-busy={isNavigating}
+        className="flex flex-col overflow-auto bg-default min-h-0 size-full scrollbar-color-default scrollbar-gutter-stable px-1.5 mr-1"
+      >
+        <header className="hidden md:flex shrink-0 justify-between items-end border-b-2 border-default bg-default px-2">
           <div className="z-10">
             <div className="relative -z-10 md:-mb-6 min-h-25 min-w-120">
               <BBImage src="images/logo.webp" alt="Logo" loading="eager" />
@@ -62,7 +66,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </div>
         </header>
 
-        <header className="md:hidden bg-default border-b-2 border-default">
+        <header className="md:hidden shrink-0 bg-default border-b-2 border-default">
           <div className="flex justify-center pt-2 m-h-18 min-w-full items-center">
             <BBImage
               className="h-16 w-auto"
@@ -73,10 +77,19 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </div>
         </header>
 
-        <div className="p-2 sm:p-3.5">
+        <div
+          aria-hidden
+          className={`h-1 shrink-0 transition-opacity motion-reduce:transition-none ${
+            isNavigating ? "opacity-100 duration-75" : "opacity-0 duration-500"
+          }`}
+        >
+          <div className="h-full animate-pulse bg-hatch" />
+        </div>
+
+        <div className="flex flex-1 flex-col p-2 sm:p-3.5">
           <BBBreadcrumb />
-          {children}
-          <BBBreadcrumb />
+          <div className="flex-1">{children}</div>
+          <BBBreadcrumb decorative />
         </div>
       </main>
 

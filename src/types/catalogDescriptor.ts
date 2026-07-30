@@ -9,7 +9,7 @@ import type {
 } from "@/components/common/BBCatalogToolbar";
 
 export type RailSource = {
-  previewContentResourceId?: number;
+  previewContentResourceId?: number | undefined;
   title: string;
   slug: string;
 };
@@ -40,6 +40,6 @@ export type CmsCatalogDescriptor<
   downloadsSub: (item: TItem) => ReactNode;
   facetOptions: (facets: TFacets | undefined) => {
     filterOptions: CatalogFilterOption[];
-    languageOptions?: CatalogLanguageOption[];
+    languageOptions?: CatalogLanguageOption[] | undefined;
   };
 };

@@ -29,8 +29,8 @@ function ExamplePost({ body }: { body: string }) {
 }
 
 interface Props {
-  preview?: AccountDeletionPreview;
-  selectedMode?: DeletionMode;
+  preview?: AccountDeletionPreview | undefined;
+  selectedMode?: DeletionMode | undefined;
   wipeAcknowledged: boolean;
   continueDisabled: boolean;
   onModeChange: (mode: DeletionMode) => void;
@@ -59,14 +59,16 @@ export default function AccountDeletionChoice({
           ["uploads", preview.contentResourceCount],
         ]
       : [];
-  const selectAnonymize = useCallback(
-    () => onModeChange("ANONYMIZE"),
-    [onModeChange],
-  );
-  const selectPurge = useCallback(() => onModeChange("PURGE"), [onModeChange]);
+  const selectAnonymize = useCallback(() => {
+    onModeChange("ANONYMIZE");
+  }, [onModeChange]);
+  const selectPurge = useCallback(() => {
+    onModeChange("PURGE");
+  }, [onModeChange]);
   const changeWipeAcknowledgement = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) =>
-      onWipeAcknowledgedChange(event.target.checked),
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onWipeAcknowledgedChange(event.target.checked);
+    },
     [onWipeAcknowledgedChange],
   );
 
@@ -136,10 +138,10 @@ export default function AccountDeletionChoice({
             <span className="font-bold">
               wiki pages I created, and my projects and resources
             </span>
-            . Pages I edited but didn't create are kept with my name shown as{" "}
-            <span className="font-mono">[deleted]</span>. Private messages I
-            sent stay in recipients' inboxes with my name removed; quotes of me
-            in other members' posts remain.
+            . Pages I edited but didn&apos;t create are kept with my name shown
+            as <span className="font-mono">[deleted]</span>. Private messages I
+            sent stay in recipients&apos; inboxes with my name removed; quotes
+            of me in other members&apos; posts remain.
           </span>
           <span className="block text-sm text-dimmed">
             Threads left empty by this deletion are removed for everyone,
@@ -158,8 +160,8 @@ export default function AccountDeletionChoice({
         </label>
       </fieldset>
       <p className="text-xs text-dimmed">
-        In both cases, quotes of your posts inside other members' messages are
-        part of their posts and are not rewritten. You sent{" "}
+        In both cases, quotes of your posts inside other members&apos; messages
+        are part of their posts and are not rewritten. You sent{" "}
         {preview ? preview.sentPersonalMessageCount : "your"} private messages;
         delivered copies stay with their recipients, with your name removed.
       </p>

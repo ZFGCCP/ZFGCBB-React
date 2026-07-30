@@ -17,7 +17,7 @@ type ReplaceParamsWithString<TPath extends string> =
     ? `${Start}:${Param}/${ReplaceParamsWithString<Rest>}` // Replace dynamic part and recurse into the rest
     : TPath extends `${infer Start}:${infer Param}` // Handle the last dynamic part (e.g., `/forum/:boardId`)
       ? `${Start}:${Param}` // Replace the dynamic segment with string
-      : TPath | (string & {}); // Return the path as is if no dynamic segments
+      : TPath | (string & Record<never, never>); // Return the path as is if no dynamic segments
 
 /**
  * This type extracts the keys from the {@link RouteParams} type to build a string.

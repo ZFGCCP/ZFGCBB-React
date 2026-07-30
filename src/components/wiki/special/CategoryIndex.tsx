@@ -2,13 +2,13 @@ import type { WikiCategoryCount } from "@/types/content";
 
 const CATEGORY_EMPTY_STATE = <BBEmpty message="No categories yet." />;
 const isCategoryListEmpty = (categories: WikiCategoryCount[]) =>
-  !categories.length;
+  categories.length === 0;
 const renderCategories = (categories: WikiCategoryCount[]) => (
   <ul className="md:columns-3 p-4 text-sm [&_li]:break-inside-avoid">
     {categories.map((category) => (
       <li key={category.name}>
         <BBLink
-          to={`/wiki/Category:${category.name.replace(/ /g, "_")}`}
+          to={`/wiki/Category:${category.name.replaceAll(" ", "_")}`}
           className="text-highlighted"
         >
           {category.name}

@@ -1,6 +1,6 @@
 export interface BBGalleryImage {
   contentResourceId: number;
-  caption?: string | null;
+  caption?: string | null | undefined;
 }
 
 function GalleryThumbnail({
@@ -44,44 +44,44 @@ function GalleryThumbnail({
 
 export default function BBGallery({ images }: { images: BBGalleryImage[] }) {
   const [index, setIndex] = useState<number | null>(null);
-  const current = index != null ? images[index] : null;
+  const current = index === null ? null : images[index];
 
   const openModal = useCallback((node: HTMLDialogElement | null) => {
     if (node && !node.open) node.showModal();
   }, []);
-  const closeModal = useCallback(() => setIndex(null), []);
-  const showPrevious = useCallback(
-    () =>
-      setIndex((previousIndex) =>
-        previousIndex == null
-          ? previousIndex
-          : (previousIndex - 1 + images.length) % images.length,
-      ),
-    [images.length],
-  );
-  const showNext = useCallback(
-    () =>
-      setIndex((previousIndex) =>
-        previousIndex == null
-          ? previousIndex
-          : (previousIndex + 1) % images.length,
-      ),
-    [images.length],
-  );
-  const openImage = useCallback((position: number) => setIndex(position), []);
+  const closeModal = useCallback(() => {
+    setIndex(null);
+  }, []);
+  const showPrevious = useCallback(() => {
+    setIndex((previousIndex) =>
+      previousIndex === null
+        ? previousIndex
+        : (previousIndex - 1 + images.length) % images.length,
+    );
+  }, [images.length]);
+  const showNext = useCallback(() => {
+    setIndex((previousIndex) =>
+      previousIndex === null
+        ? previousIndex
+        : (previousIndex + 1) % images.length,
+    );
+  }, [images.length]);
+  const openImage = useCallback((position: number) => {
+    setIndex(position);
+  }, []);
 
   useKeyDown((event) => {
     if (event.key === "ArrowRight")
       setIndex((prevIndex) =>
-        prevIndex == null ? prevIndex : (prevIndex + 1) % images.length,
+        prevIndex === null ? prevIndex : (prevIndex + 1) % images.length,
       );
     else if (event.key === "ArrowLeft")
       setIndex((prevIndex) =>
-        prevIndex == null
+        prevIndex === null
           ? prevIndex
           : (prevIndex - 1 + images.length) % images.length,
       );
-  }, index != null);
+  }, index !== null);
 
   return (
     <>

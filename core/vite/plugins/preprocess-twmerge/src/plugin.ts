@@ -29,8 +29,8 @@ function hasTwMergeImport({ module }: ParseResult, importName: string) {
 }
 
 const defaults: Required<PreprocessTwMergeOptions> = {
-  include: /\.(jsx|tsx)$/,
-  exclude: /node_modules/,
+  include: /\.(jsx|tsx)$/u,
+  exclude: /node_modules/u,
   handleDynamicClassName: false,
   twMergeImportSpecifier: "",
   oxcParserOptions: {},
@@ -79,7 +79,7 @@ export function preprocessTwMerge(
     enforce: "pre",
     async transform(sourceCode: string, fileId: string) {
       if (!options.include.test(fileId) || options.exclude.test(fileId))
-        return undefined;
+        return null;
 
       const edits: SourceEdit[] = [];
       const cleanFileId = fileId.split("?")[0] ?? fileId;
@@ -103,10 +103,10 @@ export function preprocessTwMerge(
       const { program, module: moduleInfo } = parsedFile;
       const constants = collectConstantBindings(program, options);
 
-      traverseAST(program, (node) =>
-        onVisitNode({ node, options, constants, edits, fileId, sourceCode }),
-      );
-      if (!edits.length) return undefined;
+      traverseAST(program, (node) => {
+        onVisitNode({ node, options, constants, edits, fileId, sourceCode });
+      });
+      if (edits.length === 0) return null;
       if (
         options.twMergeImportSpecifier &&
         !hasTwMergeImport(parsedFile, options.twMergeImportSpecifier)

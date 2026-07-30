@@ -65,13 +65,15 @@ export default function FeaturedPanel({
           <p className="text-xs text-dimmed">
             by <span className="text-default">{item.author ?? "unknown"}</span>
             {item.metaLine && <> · {item.metaLine}</>}
-            {item.rating != null && (item.voteCount ?? 0) > 0 && (
-              <>
-                {" · "}
-                <Stars rating={item.rating} />{" "}
-                <span className="text-dimmed">({item.voteCount})</span>
-              </>
-            )}
+            {item.rating !== null &&
+              item.rating !== undefined &&
+              (item.voteCount ?? 0) > 0 && (
+                <>
+                  {" · "}
+                  <Stars rating={item.rating} />{" "}
+                  <span className="text-dimmed">({item.voteCount})</span>
+                </>
+              )}
           </p>
           {item.contentHtml ? (
             <div className="relative max-h-52 overflow-hidden text-sm leading-relaxed text-default/90 mask-fade-b [&_.bb-code-img]:my-1.5 [&_.bb-code-img]:block [&_img]:border [&_img]:border-default">

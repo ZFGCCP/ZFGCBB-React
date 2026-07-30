@@ -11,6 +11,7 @@ interface ReactionBarProps {
 }
 
 function reactionIcon(iconName: string | null | undefined) {
+  if (!iconName) return <Fa6SolidThumbsUp />;
   switch (iconName) {
     case "thumbs-up":
       return <Fa6SolidThumbsUp />;
@@ -42,10 +43,9 @@ function ReactionButton({
   pending,
   onToggle,
 }: ReactionButtonProps) {
-  const handleClick = useCallback(
-    () => onToggle(tally.reactionTypeId),
-    [onToggle, tally.reactionTypeId],
-  );
+  const handleClick = useCallback(() => {
+    onToggle(tally.reactionTypeId);
+  }, [onToggle, tally.reactionTypeId]);
 
   return (
     <button
@@ -80,7 +80,9 @@ export default function ReactionBar({
     reactions?.batchKey,
   );
   const handleToggle = useCallback(
-    (reactionTypeId: number) => toggleReaction.mutate({ reactionTypeId }),
+    (reactionTypeId: number) => {
+      toggleReaction.mutate({ reactionTypeId });
+    },
     [toggleReaction],
   );
 

@@ -5,11 +5,11 @@ export default function Thumb({
   letterClassName,
   priority,
 }: {
-  previewId?: number;
+  previewId?: number | undefined;
   title: string;
   className: string;
-  letterClassName?: string;
-  priority?: boolean;
+  letterClassName?: string | undefined;
+  priority?: boolean | undefined;
 }) {
   if (previewId) {
     return (

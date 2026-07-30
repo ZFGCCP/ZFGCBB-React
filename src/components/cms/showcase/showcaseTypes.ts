@@ -1,20 +1,20 @@
 import type { ReactNode } from "react";
 
 export type FeaturedItem = {
-  previewId?: number;
+  previewId?: number | undefined;
   title: string;
-  author?: string;
-  status?: string | null;
-  rating?: number;
-  voteCount?: number;
-  summary?: string;
-  contentHtml?: string | null;
+  author?: string | undefined;
+  status?: string | null | undefined;
+  rating?: number | undefined;
+  voteCount?: number | undefined;
+  summary?: string | undefined;
+  contentHtml?: string | null | undefined;
   href: string;
-  metaLine?: string;
+  metaLine?: string | undefined;
 };
 
 export type RailItem = {
-  previewId?: number;
+  previewId?: number | undefined;
   title: string;
   href: string;
   subtitle: ReactNode;

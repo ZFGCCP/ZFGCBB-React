@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "declarationDir": "./dist/tsc/node",
+    "tsBuildInfoFile": "./dist/tsc/node.tsbuildinfo"
+  },
+  "references": [{ "path": "./core/vite/config" }],
+  "include": ["*.ts"],
+  "exclude": ["node_modules"]
+}

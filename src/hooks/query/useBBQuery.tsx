@@ -5,7 +5,7 @@ export type UseBBQueryOptions<TSchema extends v.GenericSchema> = Omit<
   UseQueryOptions<v.InferOutput<TSchema>, Error, v.InferOutput<TSchema>>,
   "queryKey" | "queryFn"
 > & {
-  queryKey?: string;
+  queryKey?: string | undefined;
   schema: TSchema;
 };
 

@@ -5,7 +5,7 @@ interface BBDateProps {
 }
 
 const locale =
-  typeof navigator !== "undefined" ? navigator.language : undefined;
+  typeof navigator === "undefined" ? undefined : navigator.language;
 
 const dateTimeFormatter = new Intl.DateTimeFormat(locale, {
   dateStyle: "short",

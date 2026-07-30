@@ -26,7 +26,9 @@ export default function BBShowMore({
   const contentRef = useResizeObserver(handleResize);
 
   const collapsed = !expanded && overflowing;
-  const toggleExpanded = useCallback(() => setExpanded((value) => !value), []);
+  const toggleExpanded = useCallback(() => {
+    setExpanded((value) => !value);
+  }, []);
 
   return (
     <div className={className}>

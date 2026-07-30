@@ -1,0 +1,15 @@
+import { UserManagement } from "./UserManagement";
+
+export const handle = {
+  breadcrumb: "User Management",
+} satisfies BreadcrumbHandle;
+
+const ADMIN_PERMISSION = ["ZFGC_SITE_ADMIN"] as const;
+
+export default function AdminUsersPage() {
+  return (
+    <BBHasPermission requiredPermissions={ADMIN_PERMISSION}>
+      <UserManagement />
+    </BBHasPermission>
+  );
+}

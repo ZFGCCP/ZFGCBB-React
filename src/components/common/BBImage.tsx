@@ -24,7 +24,7 @@ export type BBImageProps = BBImageBaseProps &
  * @param path - Relative path or full URL to the image.
  * @returns A resolved image path or undefined if not found.
  */
-function resolveSrc(path: string) {
+function resolveSrc(path: string): string | undefined {
   if (URL.canParse(path)) return path;
   if (path) return path.startsWith("/") ? path : `/${path}`;
   if (import.meta.env.DEV)
