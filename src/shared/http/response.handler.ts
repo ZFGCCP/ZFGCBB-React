@@ -1,11 +1,23 @@
-import * as v from "valibot";
+import type * as v from "valibot";
 
-function safeJsonParse<TValue>(json: string): TValue | undefined {
+function safeJsonParse(json: string): unknown {
   try {
-    return JSON.parse(json) as TValue;
+    const data: unknown = JSON.parse(json);
+    return data;
   } catch {
-    return;
+    return undefined;
   }
+}
+
+function isUnknownRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function getErrorCauseProperty(error: unknown, property: string): unknown {
+  if (!(error instanceof Error)) return undefined;
+  const { cause } = error;
+  if (!isUnknownRecord(cause)) return undefined;
+  return cause[property];
 }
 
 export async function handleResponseError(response: Response) {
@@ -36,22 +48,24 @@ export async function handleResponseError(response: Response) {
 
 export async function handleResponseWithJason<TData>(
   response: Response,
-  schema?: v.GenericSchema<unknown, TData>,
+  schema: v.GenericSchema<unknown, TData>,
 ) {
-  if (response.status === 204) return undefined as TData;
   await handleResponseError(response);
-  const data = await response.json();
+  const data: unknown =
+    response.status === 204 ? undefined : await response.json();
   return parseSchema(schema, data);
 }
 
+export function getErrorResponse(error: unknown): Response | undefined {
+  const response = getErrorCauseProperty(error, "response");
+  return response instanceof Response ? response : undefined;
+}
+
 export function getResponseStatus(error: unknown): number | undefined {
-  if (!(error instanceof Error)) return undefined;
-  const cause = error.cause as { response?: Response } | undefined;
-  return cause?.response?.status;
+  return getErrorResponse(error)?.status;
 }
 
 export function getResponseBodyText(error: unknown): string | undefined {
-  if (!(error instanceof Error)) return undefined;
-  const cause = error.cause as { responseText?: string } | undefined;
-  return cause?.responseText;
+  const responseText = getErrorCauseProperty(error, "responseText");
+  return typeof responseText === "string" ? responseText : undefined;
 }

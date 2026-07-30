@@ -6,14 +6,12 @@ export type UseBBQueryOptions<TSchema extends v.GenericSchema> = Omit<
   "queryKey" | "queryFn"
 > & {
   queryKey?: string;
-  schema?: TSchema;
+  schema: TSchema;
 };
 
-export const useBBQuery = <
-  TSchema extends v.GenericSchema = v.GenericSchema<unknown, unknown>,
->(
+export const useBBQuery = <TSchema extends v.GenericSchema>(
   url: `/${string}`,
-  options: UseBBQueryOptions<TSchema> = {},
+  options: UseBBQueryOptions<TSchema>,
 ) => {
   const {
     queryKey,

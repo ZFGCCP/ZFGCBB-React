@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { useToggleReaction } from "@/hooks/data/useReactions";
 import { useReactionsContext } from "@/components/reactions/ReactionsProvider";
 import { UserContext } from "@/providers/user/userProvider";
+import type { ReactionTally } from "@/schemas/reactions";
 
 interface ReactionBarProps {
   reactableId: number;
@@ -26,6 +27,45 @@ function reactionIcon(iconName: string | null | undefined) {
   }
 }
 
+interface ReactionButtonProps {
+  tally: ReactionTally;
+  active: boolean;
+  signedIn: boolean;
+  pending: boolean;
+  onToggle: (reactionTypeId: number) => void;
+}
+
+function ReactionButton({
+  tally,
+  active,
+  signedIn,
+  pending,
+  onToggle,
+}: ReactionButtonProps) {
+  const handleClick = useCallback(
+    () => onToggle(tally.reactionTypeId),
+    [onToggle, tally.reactionTypeId],
+  );
+
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      disabled={!signedIn || pending}
+      title={signedIn ? tally.label : "Sign in to react"}
+      onClick={handleClick}
+      className={`inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs transition-colors ${
+        active
+          ? "border-highlighted bg-accented font-semibold text-highlighted"
+          : "border-default hover:bg-muted"
+      } ${signedIn ? "cursor-pointer" : "cursor-not-allowed opacity-70"}`}
+    >
+      {reactionIcon(tally.icon)}
+      {tally.count}
+    </button>
+  );
+}
+
 export default function ReactionBar({
   reactableId,
   className,
@@ -39,6 +79,10 @@ export default function ReactionBar({
     reactableId,
     reactions?.batchKey,
   );
+  const handleToggle = useCallback(
+    (reactionTypeId: number) => toggleReaction.mutate({ reactionTypeId }),
+    [toggleReaction],
+  );
 
   if (!summary) {
     return null;
@@ -51,24 +95,14 @@ export default function ReactionBar({
       {tallies.map((tally) => {
         const isActiveChoice = tally.reactionTypeId === userReactionTypeId;
         return (
-          <button
+          <ReactionButton
             key={tally.reactionTypeId}
-            type="button"
-            aria-pressed={isActiveChoice}
-            disabled={!isSignedIn || toggleReaction.isPending}
-            title={isSignedIn ? tally.label : "Sign in to react"}
-            onClick={() =>
-              toggleReaction.mutate({ reactionTypeId: tally.reactionTypeId })
-            }
-            className={`inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs transition-colors ${
-              isActiveChoice
-                ? "border-highlighted bg-accented font-semibold text-highlighted"
-                : "border-default hover:bg-muted"
-            } ${isSignedIn ? "cursor-pointer" : "cursor-not-allowed opacity-70"}`}
-          >
-            {reactionIcon(tally.icon)}
-            {tally.count}
-          </button>
+            tally={tally}
+            active={isActiveChoice}
+            signedIn={isSignedIn}
+            pending={toggleReaction.isPending}
+            onToggle={handleToggle}
+          />
         );
       })}
       <span className="text-xs text-dimmed" title="Reputation points">

@@ -10,6 +10,10 @@ export default function BBAccordion({
   startExpanded,
 }: BBAccordionProps) {
   const [expanded, setExpanded] = useState(startExpanded ?? false);
+  const toggleExpanded = useCallback(
+    () => setExpanded((previous) => !previous),
+    [],
+  );
 
   return (
     <div className="m-8">
@@ -18,7 +22,7 @@ export default function BBAccordion({
           <button
             type="button"
             className="cursor-pointer w-full text-left align-items-center"
-            onClick={() => setExpanded((prev) => !prev)}
+            onClick={toggleExpanded}
             aria-expanded={expanded}
           >
             <span className="inline-block">

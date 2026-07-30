@@ -9,10 +9,14 @@ export default function ResourceCardBodyCatalog({
   const year = wireYear(resource.publishedTs);
   const hasFile =
     resource.downloadContentResourceId != null || resource.downloadUrl != null;
+  const navigationState = useMemo(
+    () => ({ from: `${location.pathname}${location.search}` }),
+    [location.pathname, location.search],
+  );
   return (
     <BBLink
       to={`/content/resources/${resource.slug}`}
-      state={{ from: `${location.pathname}${location.search}` }}
+      state={navigationState}
       aria-label={`${resource.title}, ${resource.resourceType}, by ${resource.author ?? "unknown author"}${hasFile ? "" : ", file lost"}`}
       className="group flex w-full flex-col border-2 border-default bg-muted transition-colors hover:bg-elevated focus-visible:outline-2 focus-visible:outline-offset-2"
     >

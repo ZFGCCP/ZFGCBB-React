@@ -6,15 +6,15 @@ export type BBQueryOptions<TData> = Omit<
   UseQueryOptions<TData>,
   "queryKey" | "queryFn"
 > & {
-  schema?: v.GenericSchema<unknown, TData>;
+  schema: v.GenericSchema<unknown, TData>;
 };
 
 export const bbQueryOptions = <TData extends object>(
   url: `/${string}`,
-  options?: BBQueryOptions<TData>,
+  options: BBQueryOptions<TData>,
   requestHeaders?: Record<string, string>,
 ) => {
-  const { schema, ...queryOpts } = options ?? {};
+  const { schema, ...queryOpts } = options;
   return queryOptions<TData>({
     queryKey: [url],
     queryFn: async () => {

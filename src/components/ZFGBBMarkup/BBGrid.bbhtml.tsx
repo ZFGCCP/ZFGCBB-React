@@ -7,9 +7,9 @@ const GRID_COLUMNS = {
 } as const;
 
 const handler: BBHtmlHandler = (element, { renderChildren }) => {
-  if (element.name !== "div") return;
+  if (element.name !== "div") return undefined;
   const classes = (element.attribs?.["class"] ?? "").split(/\s+/);
-  if (!classes.includes("bb-code-grid")) return;
+  if (!classes.includes("bb-code-grid")) return undefined;
   const columnToken = classes.find(
     (token): token is keyof typeof GRID_COLUMNS => token in GRID_COLUMNS,
   );

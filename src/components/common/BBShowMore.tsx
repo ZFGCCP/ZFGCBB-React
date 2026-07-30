@@ -1,3 +1,5 @@
+import { useResizeObserver } from "../../hooks/ui/useResizeObserver";
+
 interface BBShowMoreProps {
   children: React.ReactNode;
   className?: string;
@@ -9,24 +11,22 @@ export default function BBShowMore({
   className,
   collapsedMaxHeightClassName = "max-h-[75dvh]",
 }: BBShowMoreProps) {
-  const contentRef = useRef<HTMLDivElement>(null);
   const contentId = useId();
   const [expanded, setExpanded] = useState(false);
   const [overflowing, setOverflowing] = useState(false);
 
-  useEffect(() => {
-    if (expanded) return;
-    const node = contentRef.current;
-    if (!node) return;
-    const check = () =>
-      setOverflowing(node.scrollHeight > node.clientHeight + 1);
-    check();
-    const observer = new ResizeObserver(check);
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [expanded]);
+  const handleResize = useCallback(
+    (element: HTMLDivElement) => {
+      if (!expanded) {
+        setOverflowing(element.scrollHeight > element.clientHeight + 1);
+      }
+    },
+    [expanded],
+  );
+  const contentRef = useResizeObserver(handleResize);
 
   const collapsed = !expanded && overflowing;
+  const toggleExpanded = useCallback(() => setExpanded((value) => !value), []);
 
   return (
     <div className={className}>
@@ -55,7 +55,7 @@ export default function BBShowMore({
               type="button"
               aria-expanded={expanded}
               aria-controls={contentId}
-              onClick={() => setExpanded((value) => !value)}
+              onClick={toggleExpanded}
               className="pointer-events-auto inline-flex cursor-pointer items-center gap-1 rounded-full border-2 border-default bg-accented px-3 py-1 text-sm text-dimmed shadow-[2px_2px_0_rgba(0,0,0,0.5)] transition-colors hover:bg-default hover:text-highlighted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inverted"
             >
               {expanded ? "Show Less" : "Show More"}

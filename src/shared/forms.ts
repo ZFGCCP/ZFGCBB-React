@@ -4,7 +4,7 @@ export function firstError(errors: unknown[]): string | undefined {
     if (typeof error === "string") return error;
     if (typeof error === "object" && error !== null && "message" in error) {
       const { message } = error;
-      return `${message}`;
+      if (typeof message === "string") return message;
     }
   }
   return undefined;

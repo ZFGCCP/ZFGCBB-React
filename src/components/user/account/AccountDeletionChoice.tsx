@@ -59,6 +59,16 @@ export default function AccountDeletionChoice({
           ["uploads", preview.contentResourceCount],
         ]
       : [];
+  const selectAnonymize = useCallback(
+    () => onModeChange("ANONYMIZE"),
+    [onModeChange],
+  );
+  const selectPurge = useCallback(() => onModeChange("PURGE"), [onModeChange]);
+  const changeWipeAcknowledgement = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) =>
+      onWipeAcknowledgedChange(event.target.checked),
+    [onWipeAcknowledgedChange],
+  );
 
   return (
     <div className="space-y-4">
@@ -84,7 +94,7 @@ export default function AccountDeletionChoice({
               type="radio"
               name="deletion-mode"
               checked={selectedMode === "ANONYMIZE"}
-              onChange={() => onModeChange("ANONYMIZE")}
+              onChange={selectAnonymize}
             />
             {DELETION_MODE_TITLES.ANONYMIZE}
           </span>
@@ -117,7 +127,7 @@ export default function AccountDeletionChoice({
               type="radio"
               name="deletion-mode"
               checked={selectedMode === "PURGE"}
-              onChange={() => onModeChange("PURGE")}
+              onChange={selectPurge}
             />
             {DELETION_MODE_TITLES.PURGE}
           </span>
@@ -158,7 +168,7 @@ export default function AccountDeletionChoice({
           <input
             type="checkbox"
             checked={wipeAcknowledged}
-            onChange={(event) => onWipeAcknowledgedChange(event.target.checked)}
+            onChange={changeWipeAcknowledgement}
           />
           <span>
             I understand this permanently deletes the wiki pages I created, my

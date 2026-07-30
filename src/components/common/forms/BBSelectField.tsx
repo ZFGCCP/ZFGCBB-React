@@ -25,6 +25,11 @@ export default function BBSelectField({
   const field = useField({ form, name });
   const error = firstError(field.state.meta.errors);
   const showError = field.state.meta.isTouched && !!error;
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) =>
+      field.handleChange(event.target.value),
+    [field],
+  );
 
   return (
     <div className="space-y-1">
@@ -37,7 +42,7 @@ export default function BBSelectField({
         disabled={disabled}
         className={showError ? "border-highlighted" : undefined}
         value={String(field.state.value ?? "")}
-        onChange={(event) => field.handleChange(event.target.value)}
+        onChange={handleChange}
         onBlur={field.handleBlur}
         options={options}
       />

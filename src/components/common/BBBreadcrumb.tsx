@@ -33,13 +33,42 @@ function toCrumbs(value: BreadcrumbValue | null | undefined): Crumb[] {
   return Array.isArray(value) ? value : [value];
 }
 
+function isCrumb(value: unknown): value is Crumb {
+  if (typeof value !== "object" || value == null || !("label" in value)) {
+    return false;
+  }
+  if (typeof value.label !== "string") return false;
+  if ("to" in value && value.to !== undefined && typeof value.to !== "string") {
+    return false;
+  }
+  return true;
+}
+
+function isBreadcrumbValue(value: unknown): value is BreadcrumbValue {
+  return (
+    typeof value === "string" ||
+    isCrumb(value) ||
+    (Array.isArray(value) && value.every(isCrumb))
+  );
+}
+
+function isBreadcrumbHandle(value: unknown): value is BreadcrumbHandle {
+  if (typeof value !== "object" || value == null || !("breadcrumb" in value)) {
+    return false;
+  }
+  return (
+    typeof value.breadcrumb === "function" ||
+    isBreadcrumbValue(value.breadcrumb)
+  );
+}
+
 function crumbsFromMatches(
   matches: UIMatch[],
   ctx: BreadcrumbContext,
 ): Crumb[] {
   return matches.flatMap((match) => {
-    const breadcrumb = (match.handle as BreadcrumbHandle | undefined)
-      ?.breadcrumb;
+    if (!isBreadcrumbHandle(match.handle)) return [];
+    const { breadcrumb } = match.handle;
     if (breadcrumb == null) return [];
     return toCrumbs(
       typeof breadcrumb === "function" ? breadcrumb(match, ctx) : breadcrumb,

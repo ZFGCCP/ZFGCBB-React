@@ -15,16 +15,15 @@ export default function BBQueryBoundary<TData>({
   empty,
   isEmpty,
 }: BBQueryBoundaryProps<TData>) {
+  const retry = useCallback(() => {
+    void query.refetch();
+  }, [query]);
+
   if (query.data !== undefined) {
     if (isEmpty?.(query.data)) return <>{empty ?? <BBEmpty />}</>;
     return <>{children(query.data)}</>;
   }
   if (query.isError)
-    return (
-      <BBError
-        error={query.error ?? undefined}
-        onRetry={() => void query.refetch()}
-      />
-    );
+    return <BBError error={query.error ?? undefined} onRetry={retry} />;
   return <>{loading ?? <BBSkeleton className="h-40 w-full rounded" />}</>;
 }

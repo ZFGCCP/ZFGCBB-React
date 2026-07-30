@@ -9,14 +9,30 @@ export default function MessageAttachments({
   attachments,
   isEven,
 }: MessageAttachmentsProps) {
-  if (!attachments || attachments.length === 0) return null;
+  const images = useMemo(
+    () =>
+      attachments.filter((attachment) =>
+        attachment.mimeType?.startsWith("image/"),
+      ),
+    [attachments],
+  );
+  const files = useMemo(
+    () =>
+      attachments.filter(
+        (attachment) => !attachment.mimeType?.startsWith("image/"),
+      ),
+    [attachments],
+  );
+  const galleryImages = useMemo(
+    () =>
+      images.map((image) => ({
+        contentResourceId: image.contentResourceId,
+        caption: image.filename,
+      })),
+    [images],
+  );
 
-  const images = attachments.filter((attachment) =>
-    attachment.mimeType?.startsWith("image/"),
-  );
-  const files = attachments.filter(
-    (attachment) => !attachment.mimeType?.startsWith("image/"),
-  );
+  if (attachments.length === 0) return null;
 
   return (
     <div className={`px-3 py-2 ${isEven ? "bg-elevated" : "bg-muted"}`}>
@@ -26,12 +42,7 @@ export default function MessageAttachments({
 
       {images.length > 0 && (
         <div className="mb-2">
-          <BBGallery
-            images={images.map((img) => ({
-              contentResourceId: img.contentResourceId,
-              caption: img.filename,
-            }))}
-          />
+          <BBGallery images={galleryImages} />
         </div>
       )}
 

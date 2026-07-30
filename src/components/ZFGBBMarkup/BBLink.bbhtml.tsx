@@ -1,14 +1,13 @@
-import type { RoutePaths } from "@/components/common/BBLink";
 import type { BBHtmlHandler } from "@/components/ZFGBBMarkup/BBHtml";
 
 const handler: BBHtmlHandler = (element, { renderChildren }) => {
-  if (element.name !== "a") return;
+  if (element.name !== "a") return undefined;
   const className = element.attribs?.["class"] ?? "";
-  if (!className.split(/\s+/).includes("bb-resource-link")) return;
+  if (!className.split(/\s+/).includes("bb-resource-link")) return undefined;
   const href = element.attribs?.["href"];
-  if (!href) return;
+  if (!href) return undefined;
   return (
-    <BBLink to={href as RoutePaths} className={className}>
+    <BBLink to={href} className={className}>
       {renderChildren()}
     </BBLink>
   );

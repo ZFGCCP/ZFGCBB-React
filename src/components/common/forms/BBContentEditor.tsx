@@ -11,6 +11,7 @@ const ContentFormSchema = v.object({
 });
 
 export type ContentEditorValue = v.InferOutput<typeof ContentFormSchema>;
+type Bbcode = v.InferOutput<typeof BbcodeListSchema>[number];
 
 const TOOLBAR_PRIORITY = [
   "b",
@@ -40,6 +41,30 @@ interface BBContentEditorProps {
   onSubmit: (value: ContentEditorValue) => Promise<unknown>;
 }
 
+function ToolbarButton({
+  entry,
+  onInsert,
+}: {
+  entry: Bbcode;
+  onInsert: (code: string, selfClosing: boolean) => void;
+}) {
+  const insert = useCallback(
+    () => onInsert(entry.code, entry.selfClosing),
+    [entry.code, entry.selfClosing, onInsert],
+  );
+
+  return (
+    <button
+      type="button"
+      title={`[${entry.code}]`}
+      onClick={insert}
+      className="px-2 py-0.5 text-xs bg-muted border border-default hover:bg-elevated"
+    >
+      {entry.code}
+    </button>
+  );
+}
+
 export default function BBContentEditor({
   initialBody,
   rows = 15,
@@ -60,7 +85,6 @@ export default function BBContentEditor({
   });
   const toolbar = useMemo(() => {
     const codes = bbcodesQuery.data ?? [];
-    type Bbcode = (typeof codes)[number];
     const prioritySet = new Set(TOOLBAR_PRIORITY);
     const byCode = new Map<string, Bbcode>();
     const rest: Bbcode[] = [];
@@ -80,7 +104,7 @@ export default function BBContentEditor({
     defaultValues: {
       body: initialBody ?? "",
       summary: "",
-    } as ContentEditorValue,
+    },
     validators: {
       onBlur: ContentFormSchema,
       onSubmit: ContentFormSchema,
@@ -90,34 +114,37 @@ export default function BBContentEditor({
     },
   });
 
-  const insertTag = (code: string, selfClosing: boolean) => {
-    const textarea = containerRef.current?.querySelector<HTMLTextAreaElement>(
-      'textarea[name="body"]',
-    );
-    if (!textarea) return;
-    const open = `[${code}]`;
-    const close = selfClosing ? "" : `[/${code}]`;
-    const start = textarea.selectionStart ?? textarea.value.length;
-    const end = textarea.selectionEnd ?? start;
-    const value = textarea.value;
-    form.setFieldValue(
-      "body",
-      value.slice(0, start) +
-        open +
-        value.slice(start, end) +
-        close +
-        value.slice(end),
-    );
-    requestAnimationFrame(() => {
-      textarea.focus();
-      const cursor = selfClosing
-        ? start + open.length
-        : start + open.length + (end - start);
-      textarea.setSelectionRange(cursor, cursor);
-    });
-  };
+  const insertTag = useCallback(
+    (code: string, selfClosing: boolean) => {
+      const textarea = containerRef.current?.querySelector<HTMLTextAreaElement>(
+        'textarea[name="body"]',
+      );
+      if (!textarea) return;
+      const open = `[${code}]`;
+      const close = selfClosing ? "" : `[/${code}]`;
+      const start = textarea.selectionStart ?? textarea.value.length;
+      const end = textarea.selectionEnd ?? start;
+      const value = textarea.value;
+      form.setFieldValue(
+        "body",
+        value.slice(0, start) +
+          open +
+          value.slice(start, end) +
+          close +
+          value.slice(end),
+      );
+      requestAnimationFrame(() => {
+        textarea.focus();
+        const cursor = selfClosing
+          ? start + open.length
+          : start + open.length + (end - start);
+        textarea.setSelectionRange(cursor, cursor);
+      });
+    },
+    [form],
+  );
 
-  const showPreview = async () => {
+  const showPreview = useCallback(async () => {
     setMode("preview");
     setPreviewHtml(null);
     setPreviewError(false);
@@ -135,49 +162,51 @@ export default function BBContentEditor({
     } catch {
       setPreviewError(true);
     }
-  };
+  }, [form, previewScope]);
+  const showWriteMode = useCallback(() => setMode("write"), []);
+  const showPreviewMode = useCallback(() => {
+    void showPreview();
+  }, [showPreview]);
 
   return (
     <div ref={containerRef}>
       <BBForm form={form} className="space-y-4" errorMessage={errorMessage}>
         <div className="flex border-b-2 border-default">
-          {(
-            [
-              ["write", "Write"],
-              ["preview", "Preview"],
-            ] as const
-          ).map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              aria-current={mode === key ? "page" : undefined}
-              onClick={() =>
-                key === "preview" ? void showPreview() : setMode("write")
-              }
-              className={`cursor-pointer px-3 py-1 text-xs ${
-                mode === key
-                  ? "border-2 border-b-0 border-default bg-accented font-bold text-highlighted"
-                  : "text-dimmed hover:text-highlighted"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+          <button
+            type="button"
+            aria-current={mode === "write" ? "page" : undefined}
+            onClick={showWriteMode}
+            className={`cursor-pointer px-3 py-1 text-xs ${
+              mode === "write"
+                ? "border-2 border-b-0 border-default bg-accented font-bold text-highlighted"
+                : "text-dimmed hover:text-highlighted"
+            }`}
+          >
+            Write
+          </button>
+          <button
+            type="button"
+            aria-current={mode === "preview" ? "page" : undefined}
+            onClick={showPreviewMode}
+            className={`cursor-pointer px-3 py-1 text-xs ${
+              mode === "preview"
+                ? "border-2 border-b-0 border-default bg-accented font-bold text-highlighted"
+                : "text-dimmed hover:text-highlighted"
+            }`}
+          >
+            Preview
+          </button>
         </div>
 
         {mode === "write" ? (
           <>
             <div className="flex flex-wrap gap-1">
               {toolbar.map((entry) => (
-                <button
+                <ToolbarButton
                   key={entry.code}
-                  type="button"
-                  title={`[${entry.code}]`}
-                  onClick={() => insertTag(entry.code, entry.selfClosing)}
-                  className="px-2 py-0.5 text-xs bg-muted border border-default hover:bg-elevated"
-                >
-                  {entry.code}
-                </button>
+                  entry={entry}
+                  onInsert={insertTag}
+                />
               ))}
             </div>
             <BBTextareaField name="body" rows={rows} />

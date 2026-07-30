@@ -23,6 +23,16 @@ export default function BBField({
   const field = useField({ form, name });
   const error = firstError(field.state.meta.errors);
   const showError = field.state.meta.isTouched && !!error;
+  const fieldValue = field.state.value;
+  const value =
+    typeof fieldValue === "string" || typeof fieldValue === "number"
+      ? fieldValue
+      : "";
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) =>
+      field.handleChange(event.target.value),
+    [field],
+  );
 
   return (
     <BBInput
@@ -33,8 +43,8 @@ export default function BBField({
       placeholder={placeholder}
       helperText={helperText}
       error={showError ? error : undefined}
-      value={(field.state.value as string | number | undefined) ?? ""}
-      onChange={(event) => field.handleChange(event.target.value)}
+      value={value}
+      onChange={handleChange}
       onBlur={field.handleBlur}
     />
   );

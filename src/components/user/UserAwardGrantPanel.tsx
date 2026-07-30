@@ -26,6 +26,21 @@ export default function UserAwardGrantPanel({
 
   const awards = catalog.data ?? [];
   const activeAwardId = selectedAwardId ?? awards[0]?.awardId ?? null;
+  const selectAward = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) =>
+      setSelectedAwardId(Number(event.target.value)),
+    [],
+  );
+  const changeReason = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) =>
+      setReason(event.target.value),
+    [],
+  );
+  const grantAward = useCallback(() => {
+    if (activeAwardId != null) {
+      grant.mutate({ awardId: activeAwardId, reason });
+    }
+  }, [activeAwardId, grant, reason]);
 
   return (
     <BBAccordionWidget title="Grant Award">
@@ -34,7 +49,7 @@ export default function UserAwardGrantPanel({
           aria-label="Award"
           className="w-full p-2 bg-default border border-default"
           value={activeAwardId ?? ""}
-          onChange={(event) => setSelectedAwardId(Number(event.target.value))}
+          onChange={selectAward}
         >
           {awards.map((award) => (
             <option key={award.code} value={award.awardId}>
@@ -46,15 +61,11 @@ export default function UserAwardGrantPanel({
           name="award-reason"
           value={reason}
           placeholder="Reason (optional)"
-          onChange={(event) => setReason(event.target.value)}
+          onChange={changeReason}
         />
         <BBButton
           disabled={activeAwardId == null || grant.isPending}
-          onClick={() => {
-            if (activeAwardId != null) {
-              grant.mutate({ awardId: activeAwardId, reason });
-            }
-          }}
+          onClick={grantAward}
         >
           Grant Award
         </BBButton>

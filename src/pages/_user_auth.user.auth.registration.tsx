@@ -1,5 +1,23 @@
 import { useForm } from "@tanstack/react-form";
 
+interface RegistrationDraft {
+  userName: string;
+  displayName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  agreed: boolean;
+}
+
+const REGISTRATION_DEFAULT_VALUES: RegistrationDraft = {
+  userName: "",
+  displayName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  agreed: false,
+};
+
 function AgreementText() {
   return (
     <div className="text-sm text-muted space-y-3 max-h-48 overflow-y-auto border border-default p-3 bg-default">
@@ -73,9 +91,8 @@ function AgreementText() {
 
 export default function UserRegistration() {
   const navigate = useNavigate();
-  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation
   const registrationMutation = useBBMutation({
-    request: (values: RegistrationForm) => ({
+    request: (values: RegistrationDraft) => ({
       url: "/users/register",
       body: {
         userName: values.userName,
@@ -84,19 +101,14 @@ export default function UserRegistration() {
         password: values.password,
       },
     }),
-    schema: UserSchema,
-    onSuccess: () => navigate("/user/auth/login"),
+    schema: LoggedInUserResponseSchema,
+    onSuccess: async () => {
+      await navigate("/user/auth/login");
+    },
   });
 
   const form = useForm({
-    defaultValues: {
-      userName: "",
-      displayName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      agreed: false,
-    } as unknown as RegistrationForm,
+    defaultValues: REGISTRATION_DEFAULT_VALUES,
     validators: {
       onBlur: RegistrationFormSchema,
       onSubmit: RegistrationFormSchema,

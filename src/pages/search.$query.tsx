@@ -1,6 +1,91 @@
 import type { PrefetchTarget } from "@/shared/http/ssrPrefetch";
+import type * as v from "valibot";
 import type { Route } from "./+types/search.$query";
 import { getQueryClient } from "@/providers/query/queryProvider";
+
+type SearchRealm = v.InferOutput<typeof SearchRealmSchema>;
+type SearchResults = v.InferOutput<typeof SearchResultsSchema>;
+
+const searchResultsEmpty = (results: SearchResults) => results.total === 0;
+
+function SearchRealmButton({
+  realm,
+  active,
+  onSelect,
+}: {
+  realm: SearchRealm;
+  active: boolean;
+  onSelect: (type: string) => void;
+}) {
+  const select = useCallback(
+    () => onSelect(realm.type),
+    [onSelect, realm.type],
+  );
+
+  return (
+    <button
+      type="button"
+      onClick={select}
+      className={`border-2 border-default px-3 py-0.5 text-xs tracking-wide ${
+        active
+          ? "bg-elevated font-bold text-highlighted"
+          : "bg-muted text-dimmed hover:bg-elevated hover:text-highlighted"
+      }`}
+    >
+      {realm.label}
+    </button>
+  );
+}
+
+function SearchResultGroups({
+  results,
+  query,
+}: {
+  results: SearchResults;
+  query: string;
+}) {
+  return results.groups
+    .filter((group) => group.hits.length > 0)
+    .map((group) => (
+      <section key={group.type} aria-label={group.label}>
+        <header className="flex items-center gap-2 border-b-2 border-default bg-accented px-3 py-1.5">
+          <span aria-hidden className="h-3.5 w-1.5 bg-hatch" />
+          <BBSectionLabel as="h2" size="2xs">
+            {group.label}
+          </BBSectionLabel>
+          <span className="text-[11px] tracking-widest text-dimmed">
+            ({group.total})
+          </span>
+        </header>
+        <ul className="divide-y-2 divide-default/50">
+          {group.hits.map((hit) => (
+            <li key={`${hit.type}:${hit.url}`}>
+              <Link
+                to={hit.url}
+                className="block px-4 py-2.5 transition-colors hover:bg-elevated"
+              >
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="truncate text-sm font-bold text-highlighted">
+                    <HighlightMatch text={hit.title} query={query} />
+                  </span>
+                  {hit.context && (
+                    <span className="shrink-0 whitespace-nowrap border border-default bg-accented px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-dimmed">
+                      {hit.context}
+                    </span>
+                  )}
+                </div>
+                {hit.snippet && (
+                  <p className="mt-1 line-clamp-2 text-xs text-dimmed">
+                    <HighlightMatch text={hit.snippet} query={query} />
+                  </p>
+                )}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ));
+}
 
 function searchTargets(
   request: Request,
@@ -52,11 +137,38 @@ function SearchResultsView() {
   });
   const { data: filters = [] } = useSearchRealms();
 
-  const setFilter = (key: string) => {
-    setSearchParams((params) => mergeParams(params, { types: key }), {
-      replace: true,
-    });
-  };
+  const setFilter = useCallback(
+    (key: string) => {
+      setSearchParams((params) => mergeParams(params, { types: key }), {
+        replace: true,
+      });
+    },
+    [setSearchParams],
+  );
+  const submitSearch = useCallback(
+    (event: React.SubmitEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const value = inputRef.current?.value.trim() ?? "";
+      if (value.length >= 2) {
+        void navigate(`/search/${encodeURIComponent(value)}`);
+      }
+    },
+    [navigate],
+  );
+  const emptyResults = useMemo(
+    () => (
+      <p className="px-4 py-16 text-center text-sm text-dimmed">
+        No matches for “{decoded}”. Try a broader term or a different realm.
+      </p>
+    ),
+    [decoded],
+  );
+  const renderResults = useCallback(
+    (results: SearchResults) => (
+      <SearchResultGroups results={results} query={decoded} />
+    ),
+    [decoded],
+  );
 
   return (
     <section aria-labelledby="search-heading" className="mx-auto max-w-4xl">
@@ -85,12 +197,7 @@ function SearchResultsView() {
       <BBPanel>
         <form
           className="flex items-center gap-2 border-b-2 border-default bg-accented px-3 py-2.5"
-          onSubmit={(event) => {
-            event.preventDefault();
-            const value = inputRef.current?.value.trim() ?? "";
-            if (value.length >= 2)
-              navigate(`/search/${encodeURIComponent(value)}`);
-          }}
+          onSubmit={submitSearch}
         >
           <BBIcon name="search" />
           <input
@@ -114,18 +221,12 @@ function SearchResultsView() {
           {filters.map((realm) => {
             const isActive = filter === realm.type;
             return (
-              <button
+              <SearchRealmButton
                 key={realm.type || "all"}
-                type="button"
-                onClick={() => setFilter(realm.type)}
-                className={`border-2 border-default px-3 py-0.5 text-xs tracking-wide ${
-                  isActive
-                    ? "bg-elevated font-bold text-highlighted"
-                    : "bg-muted text-dimmed hover:bg-elevated hover:text-highlighted"
-                }`}
-              >
-                {realm.label}
-              </button>
+                realm={realm}
+                active={isActive}
+                onSelect={setFilter}
+              />
             );
           })}
         </div>
@@ -137,65 +238,10 @@ function SearchResultsView() {
         ) : (
           <BBQueryBoundary
             query={resultsQuery}
-            isEmpty={(results) => results.total === 0}
-            empty={
-              <p className="px-4 py-16 text-center text-sm text-dimmed">
-                No matches for “{decoded}”. Try a broader term or a different
-                realm.
-              </p>
-            }
+            isEmpty={searchResultsEmpty}
+            empty={emptyResults}
           >
-            {(results) =>
-              results.groups.flatMap((group) =>
-                group.hits.length > 0
-                  ? [
-                      <section key={group.type} aria-label={group.label}>
-                        <header className="flex items-center gap-2 border-b-2 border-default bg-accented px-3 py-1.5">
-                          <span aria-hidden className="h-3.5 w-1.5 bg-hatch" />
-                          <BBSectionLabel as="h2" size="2xs">
-                            {group.label}
-                          </BBSectionLabel>
-                          <span className="text-[11px] tracking-widest text-dimmed">
-                            ({group.total})
-                          </span>
-                        </header>
-                        <ul className="divide-y-2 divide-default/50">
-                          {group.hits.map((hit, index) => (
-                            <li key={hit.url + index}>
-                              <Link
-                                to={hit.url}
-                                className="block px-4 py-2.5 transition-colors hover:bg-elevated"
-                              >
-                                <div className="flex items-baseline justify-between gap-3">
-                                  <span className="truncate text-sm font-bold text-highlighted">
-                                    <HighlightMatch
-                                      text={hit.title}
-                                      query={decoded}
-                                    />
-                                  </span>
-                                  {hit.context && (
-                                    <span className="shrink-0 whitespace-nowrap border border-default bg-accented px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-dimmed">
-                                      {hit.context}
-                                    </span>
-                                  )}
-                                </div>
-                                {hit.snippet && (
-                                  <p className="mt-1 line-clamp-2 text-xs text-dimmed">
-                                    <HighlightMatch
-                                      text={hit.snippet}
-                                      query={decoded}
-                                    />
-                                  </p>
-                                )}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </section>,
-                    ]
-                  : [],
-              )
-            }
+            {renderResults}
           </BBQueryBoundary>
         )}
       </BBPanel>

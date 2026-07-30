@@ -167,6 +167,16 @@ export default function UserAccountSettingsRoute() {
       });
     },
   });
+  const handleResend = useCallback(() => {
+    setResendNotice(null);
+    resendMutation.mutate();
+  }, [resendMutation]);
+  const handleCancel = useCallback(
+    () => cancelMutation.mutate(),
+    [cancelMutation],
+  );
+  const handleContinue = useCallback(() => setStage("verify"), []);
+  const handleBack = useCallback(() => setStage("choose"), []);
 
   if (!loggedIn)
     return (
@@ -187,7 +197,6 @@ export default function UserAccountSettingsRoute() {
     !selectedMode ||
     (selectedMode === "PURGE" && !wipeAcknowledged) ||
     preview?.adminReplacementRequired === true;
-
   return (
     <div className="space-y-4">
       <AccountSummary
@@ -198,12 +207,9 @@ export default function UserAccountSettingsRoute() {
       <BBWidget widgetTitle="Delete My Account" className="border-error">
         <div className="p-4 space-y-4">
           {notice && (
-            <p
-              role="status"
-              className="text-sm border-l-2 border-default pl-2 text-success"
-            >
+            <output className="block text-sm border-l-2 border-default pl-2 text-success">
               {notice}
-            </p>
+            </output>
           )}
 
           {deletionUnderway && (
@@ -237,16 +243,13 @@ export default function UserAccountSettingsRoute() {
                 you can start over from this page.
               </p>
               {resendNotice && (
-                <p role="status" className="text-sm text-highlighted">
+                <output className="block text-sm text-highlighted">
                   {resendNotice}
-                </p>
+                </output>
               )}
               <div className="flex flex-wrap items-center gap-3">
                 <BBButton
-                  onClick={() => {
-                    setResendNotice(null);
-                    resendMutation.mutate();
-                  }}
+                  onClick={handleResend}
                   disabled={resendMutation.isPending}
                 >
                   {resendMutation.isPending
@@ -258,7 +261,7 @@ export default function UserAccountSettingsRoute() {
                 </span>
                 <BBButton
                   className="border-error text-error"
-                  onClick={() => cancelMutation.mutate()}
+                  onClick={handleCancel}
                   disabled={cancelMutation.isPending}
                 >
                   {cancelMutation.isPending
@@ -279,7 +282,7 @@ export default function UserAccountSettingsRoute() {
             continueDisabled={continueDisabled}
             onModeChange={setSelectedMode}
             onWipeAcknowledgedChange={setWipeAcknowledged}
-            onContinue={() => setStage("verify")}
+            onContinue={handleContinue}
           />
 
           {!deletionUnderway && !pendingDeletion && stage === "verify" && (
@@ -322,7 +325,7 @@ export default function UserAccountSettingsRoute() {
                   Email me the confirmation link
                 </BBSubmit>
               </BBForm>
-              <BBButton onClick={() => setStage("choose")}>Back</BBButton>
+              <BBButton onClick={handleBack}>Back</BBButton>
             </div>
           )}
         </div>

@@ -1,6 +1,5 @@
 import { Navigate } from "react-router";
 import type { Route } from "./+types/_wiki.wiki.special.$";
-import type { RoutePaths } from "@/components/common/BBLink";
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
   prefetchQueryDehydrated(request, [
@@ -16,7 +15,7 @@ function SpecialResolver({ name }: { name: string }) {
     const target = page.redirectTo.startsWith("/")
       ? page.redirectTo
       : `/wiki/${page.redirectTo}`;
-    return <Navigate to={target as RoutePaths} replace />;
+    return <Navigate to={target} replace />;
   }
   return (
     <WikiShell>

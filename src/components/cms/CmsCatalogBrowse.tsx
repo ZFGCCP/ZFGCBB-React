@@ -23,6 +23,30 @@ export default function CmsCatalogBrowse<
   });
   const { filterOptions, languageOptions } = descriptor.facetOptions(facets);
   const label = descriptor.crumb.toLowerCase();
+  const isEmpty = useCallback((page: { items: TItem[] }) => {
+    return page.items.length === 0;
+  }, []);
+  const empty = useMemo(
+    () => (
+      <BBEmpty
+        message={`No ${label} match — try clearing the search or filters.`}
+      />
+    ),
+    [label],
+  );
+  const renderPage = useCallback(
+    (page: { items: TItem[] }) => (
+      <ul className="grid list-none grid-cols-1 gap-3 p-4 md:grid-cols-3">
+        {page.items.map((item) => (
+          <li key={item.slug} className="flex">
+            {descriptor.card(item)}
+          </li>
+        ))}
+      </ul>
+    ),
+    [descriptor],
+  );
+  const changePage = useCallback((page: number) => apply({ page }), [apply]);
 
   return (
     <div className="border-2 border-t-0 border-default">
@@ -44,24 +68,8 @@ export default function CmsCatalogBrowse<
         searchPlaceholder={descriptor.searchPlaceholder}
         onChange={apply}
       />
-      <BBQueryBoundary
-        query={query}
-        isEmpty={(page) => page.items.length === 0}
-        empty={
-          <BBEmpty
-            message={`No ${label} match — try clearing the search or filters.`}
-          />
-        }
-      >
-        {(page) => (
-          <ul className="grid list-none grid-cols-1 gap-3 p-4 md:grid-cols-3">
-            {page.items.map((item) => (
-              <li key={item.slug} className="flex">
-                {descriptor.card(item)}
-              </li>
-            ))}
-          </ul>
-        )}
+      <BBQueryBoundary query={query} isEmpty={isEmpty} empty={empty}>
+        {renderPage}
       </BBQueryBoundary>
       {totalPages > 1 && (
         <nav
@@ -71,7 +79,7 @@ export default function CmsCatalogBrowse<
           <BBPaginator
             numPages={totalPages}
             currentPage={parsePage(searchParams.get("page"))}
-            onPageChange={(pageNo) => apply({ page: pageNo })}
+            onPageChange={changePage}
           />
         </nav>
       )}

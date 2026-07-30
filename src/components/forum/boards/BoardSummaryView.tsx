@@ -5,6 +5,9 @@ interface BoardSummaryViewProps {
   subBoards: BoardSummary[];
 }
 
+const getBoardRowKey = (board: BoardSummary) => board.boardId;
+const BOARD_ROW_FLEX_OPTIONS = { gap: "gap-4" } as const;
+
 export default function BoardSummaryView({ subBoards }: BoardSummaryViewProps) {
   const columns = useMemo<BBTableColumn<BoardSummary>[]>(
     () => [
@@ -157,13 +160,11 @@ export default function BoardSummaryView({ subBoards }: BoardSummaryViewProps) {
     <BBTable
       columns={columns}
       data={subBoards}
-      getRowKey={(board) => board.boardId}
+      getRowKey={getBoardRowKey}
       emptyMessage="No boards available"
       showHeader={false}
       rowClassName="py-2 px-4"
-      rowOuterFlexOptions={{
-        gap: "gap-4",
-      }}
+      rowOuterFlexOptions={BOARD_ROW_FLEX_OPTIONS}
     />
   );
 }

@@ -6,6 +6,12 @@ const THEME_SMILEY_DEFAULTS = {
   sheik: "takam",
 } as const;
 
+function hasThemeSmileyDefault(
+  theme: string,
+): theme is keyof typeof THEME_SMILEY_DEFAULTS {
+  return Object.hasOwn(THEME_SMILEY_DEFAULTS, theme);
+}
+
 export function userUiPrefs(user?: User) {
   return {
     userId: user?.id ?? 0,
@@ -22,8 +28,8 @@ export function useTheme(userTheme?: string, userSmileySet?: string | null) {
       ? undefined
       : smileySet
         ? smileySet.toLowerCase()
-        : theme in THEME_SMILEY_DEFAULTS
-          ? THEME_SMILEY_DEFAULTS[theme as keyof typeof THEME_SMILEY_DEFAULTS]
+        : hasThemeSmileyDefault(theme)
+          ? THEME_SMILEY_DEFAULTS[theme]
           : "tplink";
   return { theme, setTheme, smileySet, setSmileySet, effectiveSmileySet };
 }

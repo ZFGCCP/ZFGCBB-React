@@ -153,7 +153,7 @@ export const RestoreResponseSchema = v.object({
 export type RestoreResponse = v.InferOutput<typeof RestoreResponseSchema>;
 
 export const ThreadSummarySchema = v.object({
-  id: baseIdSchema,
+  id: idSchema,
   threadName: v.string(),
   boardId: v.number(),
   lockedFlag: v.boolean(),

@@ -39,6 +39,10 @@ export default function AccountDeleteConfirmRoute() {
     ? getResponseStatus(confirmMutation.error)
     : undefined;
   const showInvalidLink = confirmMutation.isError && errorStatus !== 429;
+  const handleConfirm = useCallback(
+    () => confirmMutation.mutate(),
+    [confirmMutation],
+  );
 
   return (
     <BBWidget widgetTitle="Confirm Account Deletion">
@@ -91,17 +95,17 @@ export default function AccountDeleteConfirmRoute() {
               variant="destructive"
               className="w-full"
               disabled={confirmMutation.isPending}
-              onClick={() => confirmMutation.mutate()}
+              onClick={handleConfirm}
             >
               {confirmMutation.isPending
                 ? "Deleting your account…"
                 : "Permanently delete my account"}
             </BBButton>
             {confirmMutation.isPending && (
-              <p role="status" className="text-sm text-dimmed">
+              <output className="block text-sm text-dimmed">
                 Deleting your account. This may take a moment — please leave
                 this page open.
-              </p>
+              </output>
             )}
             {errorStatus === 429 && (
               <p role="alert" className="text-sm text-highlighted">
@@ -123,7 +127,7 @@ export default function AccountDeleteConfirmRoute() {
             </p>
             <div className="flex items-center gap-3">
               <BBButton
-                onClick={() => confirmMutation.mutate()}
+                onClick={handleConfirm}
                 disabled={confirmMutation.isPending}
               >
                 Try again

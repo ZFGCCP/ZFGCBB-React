@@ -8,9 +8,10 @@ import { entityRoute } from "@/shared/http/entityLoaders";
 const route = entityRoute({
   url: (params: Route.LoaderArgs["params"]) => `/projects/${params.slug}`,
   schema: ProjectSchema,
-  prefetch: (project, headers) => [
-    reactionBatchQueryOptions("PROJECT", [project.id], headers),
-  ],
+  prefetch: (project, queryClient, headers) =>
+    queryClient.prefetchQuery(
+      reactionBatchQueryOptions("PROJECT", [project.id], headers),
+    ),
 });
 
 export const loader = route.loader;
@@ -34,6 +35,10 @@ function Masthead({ project }: { project: Project }) {
   const steveId =
     project.screenshots.find((screenshot) => screenshot.contentResourceId)
       ?.contentResourceId ?? project.previewContentResourceId;
+  const progressStyle = useMemo(
+    () => ({ width: `${Math.min(100, project.progress)}%` }),
+    [project.progress],
+  );
 
   return (
     <CmsMasthead steveId={steveId} title={project.title}>
@@ -48,7 +53,7 @@ function Masthead({ project }: { project: Project }) {
           <BBPanel as="span" className="h-3 w-36">
             <span
               className="block h-full bg-progress-hatch"
-              style={{ width: `${Math.min(100, project.progress)}%` }}
+              style={progressStyle}
             />
           </BBPanel>
           <span className="text-xs text-dimmed">{project.progress}%</span>
@@ -246,6 +251,8 @@ function ProjectSidebar({ project }: { project: Project }) {
 }
 
 function ProjectOverview({ project }: { project: Project }) {
+  const reactableIds = useMemo(() => [project.id], [project.id]);
+
   return (
     <div className="grid gap-4 text-sm md:grid-cols-[1fr_260px]">
       <div className="space-y-4 min-w-0">
@@ -258,7 +265,7 @@ function ProjectOverview({ project }: { project: Project }) {
           <p className="text-dimmed">This project doesn't have a page yet.</p>
         )}
         {project.news.length > 0 && <ProjectNews news={project.news} />}
-        <ReactionsProvider reactableType="PROJECT" reactableIds={[project.id]}>
+        <ReactionsProvider reactableType="PROJECT" reactableIds={reactableIds}>
           <ReactionBar
             reactableId={project.id}
             className="border-t-2 border-default pt-3"
@@ -322,73 +329,86 @@ function ProjectDownloads({ downloads }: { downloads: Project["downloads"] }) {
 }
 
 function ProjectDetail({ slug }: { slug: string }) {
-  const [tab, setTab] = useState<ProjectTab>("overview");
   const query = useBBQuery(`/projects/${slug}`, {
     schema: ProjectSchema,
   });
 
-  return (
-    <BBQueryBoundary query={query}>
-      {(project) => {
-        const screenshots = project.screenshots.filter(
-          (screenshot) => screenshot.contentResourceId,
-        );
-        const downloads = project.downloads.filter(
-          (download) => download.contentResourceId,
-        );
+  return <BBQueryBoundary query={query}>{renderProject}</BBQueryBoundary>;
+}
 
-        return (
-          <CmsDetailShell entityPath={`/projects/${slug}`}>
-            <div>
-              <Masthead project={project} />
-              <nav className="flex items-end border-t-2 border-default bg-accented px-2 pt-2">
-                <BBNavTab
-                  title="Overview"
-                  active={tab === "overview"}
-                  onClick={() => setTab("overview")}
-                />
-                {screenshots.length > 0 && (
-                  <BBNavTab
-                    title="Screenshots"
-                    count={screenshots.length}
-                    active={tab === "screenshots"}
-                    onClick={() => setTab("screenshots")}
-                  />
-                )}
-                {downloads.length > 0 && (
-                  <BBNavTab
-                    title="Downloads"
-                    count={downloads.length}
-                    active={tab === "downloads"}
-                    onClick={() => setTab("downloads")}
-                  />
-                )}
-                {project.page && (
-                  <BBNavTab title="Wiki" to={`/wiki/Project:${project.slug}`} />
-                )}
-              </nav>
-              <section className="border-2 border-default bg-accented p-4">
-                {tab === "overview" && <ProjectOverview project={project} />}
-                {tab === "screenshots" && (
-                  <BBGallery
-                    images={screenshots.map((screenshot) => ({
-                      contentResourceId: screenshot.contentResourceId!,
-                      caption: screenshot.caption,
-                    }))}
-                  />
-                )}
-                {tab === "downloads" && (
-                  <ProjectDownloads downloads={downloads} />
-                )}
-              </section>
-            </div>
-          </CmsDetailShell>
-        );
-      }}
-    </BBQueryBoundary>
+function renderProject(project: Project) {
+  return <ProjectView project={project} />;
+}
+
+function ProjectView({ project }: { project: Project }) {
+  const [tab, setTab] = useState<ProjectTab>("overview");
+  const screenshots = useMemo(
+    () =>
+      project.screenshots.filter((screenshot) => screenshot.contentResourceId),
+    [project.screenshots],
+  );
+  const downloads = useMemo(
+    () => project.downloads.filter((download) => download.contentResourceId),
+    [project.downloads],
+  );
+  const galleryImages = useMemo(
+    () =>
+      screenshots.flatMap((screenshot) =>
+        screenshot.contentResourceId
+          ? [
+              {
+                contentResourceId: screenshot.contentResourceId,
+                caption: screenshot.caption,
+              },
+            ]
+          : [],
+      ),
+    [screenshots],
+  );
+  const showOverview = useCallback(() => setTab("overview"), []);
+  const showScreenshots = useCallback(() => setTab("screenshots"), []);
+  const showDownloads = useCallback(() => setTab("downloads"), []);
+
+  return (
+    <CmsDetailShell entityPath={`/projects/${project.slug}`}>
+      <div>
+        <Masthead project={project} />
+        <nav className="flex items-end border-t-2 border-default bg-accented px-2 pt-2">
+          <BBNavTab
+            title="Overview"
+            active={tab === "overview"}
+            onClick={showOverview}
+          />
+          {screenshots.length > 0 && (
+            <BBNavTab
+              title="Screenshots"
+              count={screenshots.length}
+              active={tab === "screenshots"}
+              onClick={showScreenshots}
+            />
+          )}
+          {downloads.length > 0 && (
+            <BBNavTab
+              title="Downloads"
+              count={downloads.length}
+              active={tab === "downloads"}
+              onClick={showDownloads}
+            />
+          )}
+          {project.page && (
+            <BBNavTab title="Wiki" to={`/wiki/Project:${project.slug}`} />
+          )}
+        </nav>
+        <section className="border-2 border-default bg-accented p-4">
+          {tab === "overview" && <ProjectOverview project={project} />}
+          {tab === "screenshots" && <BBGallery images={galleryImages} />}
+          {tab === "downloads" && <ProjectDownloads downloads={downloads} />}
+        </section>
+      </div>
+    </CmsDetailShell>
   );
 }
 
 export default function ProjectPage({ params }: Route.ComponentProps) {
-  return <ProjectDetail slug={params.slug!} />;
+  return <ProjectDetail slug={params.slug} />;
 }

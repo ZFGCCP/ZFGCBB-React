@@ -1,4 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import * as v from "valibot";
+
+const DISCUSSION_PERMISSION = ["ZFGC_USER"] as const;
 
 interface EntityDiscussionProps {
   entityPath: `/${string}`;
@@ -25,12 +28,16 @@ export default function EntityDiscussion({
         `${getApiBaseUrl()}${entityPath}/discussion`,
         { method: "POST" },
       );
-      return handleResponseWithJason<unknown>(response);
+      return handleResponseWithJason(response, v.unknown());
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: [discussionKey] });
     },
   });
+  const handleStartDiscussion = useCallback(
+    () => startDiscussion.mutate(),
+    [startDiscussion],
+  );
 
   const threadStatus = getResponseStatus(threadError ?? undefined);
 
@@ -42,10 +49,10 @@ export default function EntityDiscussion({
             <p className="text-sm text-dimmed grow">
               No discussion thread yet.
             </p>
-            <BBHasPermission requiredPermissions={["ZFGC_USER"]}>
+            <BBHasPermission requiredPermissions={DISCUSSION_PERMISSION}>
               <BBButton
                 disabled={startDiscussion.isPending}
-                onClick={() => startDiscussion.mutate()}
+                onClick={handleStartDiscussion}
               >
                 Start discussion
               </BBButton>
@@ -54,7 +61,7 @@ export default function EntityDiscussion({
         )}
         {startDiscussion.isError && (
           <p className="text-sm text-error">
-            {(startDiscussion.error as Error)?.message ??
+            {startDiscussion.error?.message ??
               "Could not start the discussion."}
           </p>
         )}

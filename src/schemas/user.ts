@@ -78,6 +78,7 @@ export type UserSettings = v.InferOutput<typeof UserSettingsSchema>;
 export const UserSchema = v.object({
   id: baseIdSchema,
   displayName: v.string(),
+  activeFlag: v.optional(v.boolean()),
   theme: v.optional(v.string()),
   settings: v.optional(UserSettingsSchema),
   bioInfo: v.optional(UserBioInfoSchema),
@@ -86,6 +87,11 @@ export const UserSchema = v.object({
   reactionSummary: v.optional(ReactionSummarySchema),
   awards: v.optional(v.array(AwardSchema)),
 });
+
+export const LoggedInUserResponseSchema = v.pipe(
+  v.object({ user: UserSchema }),
+  v.transform(({ user }) => user),
+);
 
 export const UserListSchema = v.array(UserSchema);
 

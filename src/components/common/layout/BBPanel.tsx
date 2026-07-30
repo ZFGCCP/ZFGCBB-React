@@ -8,7 +8,7 @@ export default function BBPanel<TElement extends React.ElementType = "div">({
   className,
   ...rest
 }: BBPanelProps<TElement>) {
-  const Tag = (as ?? "div") as React.ElementType;
+  const Tag = as ?? "div";
   return (
     <Tag
       className={`border-2 border-default bg-muted${className ? ` ${className}` : ""}`}

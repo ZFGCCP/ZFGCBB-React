@@ -1,5 +1,16 @@
 import { UserContext } from "@/providers/user/userProvider";
 
+export type ThemeStandardBackgroundTypes =
+  | "default"
+  | "muted"
+  | "elevated"
+  | "accented"
+  | "transparent";
+
+export type ThemeBackgroundClassValue =
+  | `bg-${ThemeStandardBackgroundTypes}`
+  | (`bg-${string}` & {});
+
 const THEME_OPTIONS = ["Midnight", "Kikori", "Goron", "Sheik"];
 
 const SMILEY_SET_OPTIONS = [
@@ -25,17 +36,34 @@ export default function ThemePicker({
 }: ThemePickerProps) {
   const user = useContext(UserContext);
 
-  const persist = (nextTheme: string, nextSmileySet: string) => {
-    if (!user.id) return;
-    void apiFetch(`${getApiBaseUrl()}/user-profile/${user.id}/settings`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        theme: nextTheme.toUpperCase(),
-        smileySet: nextSmileySet || null,
-      }),
-    }).catch(() => {});
-  };
+  const persist = useCallback(
+    (nextTheme: string, nextSmileySet: string) => {
+      if (!user.id) return;
+      void apiFetch(`${getApiBaseUrl()}/user-profile/${user.id}/settings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          theme: nextTheme.toUpperCase(),
+          smileySet: nextSmileySet || null,
+        }),
+      }).catch(() => {});
+    },
+    [user.id],
+  );
+  const handleThemeChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setTheme(event.target.value);
+      persist(event.target.value, smileySet);
+    },
+    [persist, setTheme, smileySet],
+  );
+  const handleSmileySetChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setSmileySet(event.target.value);
+      persist(theme, event.target.value);
+    },
+    [persist, setSmileySet, theme],
+  );
 
   return (
     <div className="z-50 p-1 bg-elevated border-t border-default">
@@ -47,10 +75,7 @@ export default function ThemePicker({
           id="theme-selector"
           className="bg-default border border-default rounded-md p-1 capitalize"
           value={theme}
-          onChange={(event) => {
-            setTheme(event.target.value);
-            persist(event.target.value, smileySet);
-          }}
+          onChange={handleThemeChange}
         >
           {THEME_OPTIONS.map((name) => (
             <option
@@ -69,10 +94,7 @@ export default function ThemePicker({
           id="smiley-set-selector"
           className="bg-default border border-default rounded-md p-1"
           value={smileySet}
-          onChange={(event) => {
-            setSmileySet(event.target.value);
-            persist(theme, event.target.value);
-          }}
+          onChange={handleSmileySetChange}
         >
           {SMILEY_SET_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>

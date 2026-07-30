@@ -1,6 +1,11 @@
-export default function BBSkeleton<
-  TProps extends React.HTMLAttributes<HTMLDivElement> & React.PropsWithChildren,
->({ className = "", style, ...rest }: TProps) {
+type BBSkeletonProps = React.HTMLAttributes<HTMLDivElement> &
+  React.PropsWithChildren;
+
+export default function BBSkeleton({
+  className = "",
+  style,
+  ...rest
+}: BBSkeletonProps) {
   return (
     <div
       {...rest}

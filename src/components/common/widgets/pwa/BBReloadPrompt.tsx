@@ -1,6 +1,9 @@
 import { useRegisterSW } from "virtual:pwa-register/react";
 
 export default function BBReloadPrompt() {
+  const [updateState, setUpdateState] = useState<
+    "idle" | "updating" | "failed"
+  >("idle");
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
@@ -36,30 +39,48 @@ export default function BBReloadPrompt() {
       });
   }, []);
 
-  if (!offlineReady && !needRefresh) {
+  const close = useCallback(() => {
+    setOfflineReady(false);
+    setNeedRefresh(false);
+    setUpdateState("idle");
+  }, [setNeedRefresh, setOfflineReady]);
+  const reload = useCallback(async () => {
+    setUpdateState("updating");
+    try {
+      await updateServiceWorker(true);
+      setUpdateState("idle");
+    } catch {
+      setUpdateState("failed");
+    }
+  }, [updateServiceWorker]);
+
+  if (!offlineReady && !needRefresh && updateState === "idle") {
     return null;
   }
 
-  const close = () => {
-    setOfflineReady(false);
-    setNeedRefresh(false);
-  };
-
   return (
-    <div role="status" className="reload-prompt">
+    <output className="reload-prompt">
       <span>
-        {offlineReady
-          ? "App ready to work offline."
-          : "New content available — reload to update."}
+        {updateState === "failed"
+          ? "Update failed. Check your connection and try again."
+          : updateState === "updating"
+            ? "Updating…"
+            : offlineReady
+              ? "App ready to work offline."
+              : "New content available — reload to update."}
       </span>
-      {needRefresh && (
-        <button type="button" onClick={() => updateServiceWorker(true)}>
-          Reload
+      {(needRefresh || updateState === "failed") && (
+        <button
+          type="button"
+          onClick={reload}
+          disabled={updateState === "updating"}
+        >
+          {updateState === "failed" ? "Retry" : "Reload"}
         </button>
       )}
       <button type="button" onClick={close}>
         Close
       </button>
-    </div>
+    </output>
   );
 }

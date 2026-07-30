@@ -14,7 +14,7 @@ interface UserProviderProps {
 
 export default function UserProvider({ children }: UserProviderProps) {
   const { data: user } = useBBQuery("/users/loggedInUser", {
-    schema: UserSchema,
+    schema: LoggedInUserResponseSchema,
     meta: { userScoped: true },
   });
 

@@ -3,8 +3,11 @@ export function useDebouncedCallback<TArgs extends unknown[]>(
   delay: number,
 ) {
   const callbackRef = useRef(callback);
-  callbackRef.current = callback;
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useLayoutEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
 
   useEffect(() => () => clearTimeout(timer.current), []);
 

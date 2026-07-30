@@ -10,5 +10,5 @@ export function getPublicApiBaseUrl() {
 }
 
 export function contentUrl(contentResourceId: number) {
-  return `${getPublicApiBaseUrl()}/content/${contentResourceId}`;
+  return `${getPublicApiBaseUrl()}/content/${contentResourceId}` as `${string}/content/${number}`;
 }

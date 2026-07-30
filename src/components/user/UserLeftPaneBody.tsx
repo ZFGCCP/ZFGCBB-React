@@ -5,17 +5,17 @@ function AvatarSkeleton() {
   return <BBSkeleton className="h-24 w-24 rounded border border-default " />;
 }
 
+const AVATAR_SKELETON = <AvatarSkeleton />;
+
 export default function UserLeftPaneBody({ user }: { user?: User }) {
   const avatarSrc = useMemo(() => {
     if (user?.bioInfo?.avatar) {
-      return user.bioInfo?.avatar?.url && user.bioInfo?.avatar?.url?.trim()
-        ? user.bioInfo.avatar.url
-        : (contentUrl(
-            user.bioInfo.avatar.contentResourceId!,
-          ) as `${string}://${string}/${string}`);
+      const { contentResourceId, url } = user.bioInfo.avatar;
+      if (url?.trim()) return url;
+      if (contentResourceId != null) return contentUrl(contentResourceId);
     }
 
-    return contentUrl(3) as `${string}://${string}/${string}`;
+    return contentUrl(3);
   }, [user]);
 
   const reactionSummary = user?.reactionSummary;
@@ -31,10 +31,10 @@ export default function UserLeftPaneBody({ user }: { user?: User }) {
       >
         {user && (
           <BBImage
-            src={avatarSrc}
+            dynamicSrc={avatarSrc}
             alt="User avatar"
             className="w-24 h-24 rounded border border-default object-cover"
-            fallback={<AvatarSkeleton />}
+            fallback={AVATAR_SKELETON}
           />
         )}
 

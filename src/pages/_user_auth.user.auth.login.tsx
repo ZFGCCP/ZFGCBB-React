@@ -1,11 +1,37 @@
 import { useForm } from "@tanstack/react-form";
 import {
   clearPrivateQueryState,
+  getQueryClient,
   recordSessionEstablished,
 } from "@/providers/query/queryProvider";
 
+const LOGIN_DEFAULT_VALUES: LoginForm = {
+  username: "",
+  password: "",
+  stayLoggedIn: true,
+};
+
+function postInstallAdminUserName(value: unknown): string | undefined {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    !("installationComplete" in value) ||
+    value.installationComplete !== true ||
+    !("returnTo" in value) ||
+    value.returnTo !== "/system/migrate" ||
+    !("adminUserName" in value) ||
+    typeof value.adminUserName !== "string"
+  ) {
+    return undefined;
+  }
+  return value.adminUserName;
+}
+
 export default function UserLogin() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const adminUserName = postInstallAdminUserName(location.state);
+  const continueToMigrator = adminUserName !== undefined;
 
   const loginMutation = useBBMutation({
     request: (values: LoginForm) => ({
@@ -22,16 +48,21 @@ export default function UserLogin() {
     onSuccess: async (loginResponse) => {
       await clearPrivateQueryState();
       recordSessionEstablished(loginResponse.accessTokenTtlSeconds);
-      navigate("/");
+      getQueryClient().setQueryData(
+        ["/users/loggedInUser"],
+        loginResponse.user,
+      );
+      await navigate(continueToMigrator ? "/system/migrate" : "/", {
+        replace: true,
+      });
     },
   });
 
   const form = useForm({
     defaultValues: {
-      username: "",
-      password: "",
-      stayLoggedIn: true,
-    } as LoginForm,
+      ...LOGIN_DEFAULT_VALUES,
+      username: adminUserName ?? "",
+    },
     validators: {
       onBlur: LoginFormSchema,
       onSubmit: LoginFormSchema,
@@ -44,6 +75,12 @@ export default function UserLogin() {
   return (
     <BBWidget widgetTitle="Login">
       <div className="p-4 space-y-4 max-w-sm mx-auto">
+        {continueToMigrator && (
+          <p className="border-l-2 border-highlighted pl-3">
+            Installation is complete. Log in as <strong>{adminUserName}</strong>{" "}
+            to continue to the SMF Migrator.
+          </p>
+        )}
         <BBForm
           form={form}
           errorMessage={

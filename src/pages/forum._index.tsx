@@ -1,5 +1,20 @@
 import type { Route } from "./+types/forum._index";
+import type { Forum } from "@/types/forum";
 import { getQueryClient } from "@/providers/query/queryProvider";
+
+const FORUM_EMPTY_STATE = (
+  <BBEmpty message="No boards here yet. Check back soon!" />
+);
+const isForumEmpty = (forum: Forum) => !forum.categories?.length;
+const renderForumCategories = (forumIndex: Forum) =>
+  forumIndex.categories?.map((category) => (
+    <div key={category.id} className="my-2">
+      <ForumCategory
+        title={category.categoryName}
+        subBoards={category.boards}
+      />
+    </div>
+  ));
 
 export const loader = ({ request }: Route.LoaderArgs) =>
   prefetchQueryDehydrated(request, "/board/forum", ForumSchema);
@@ -38,19 +53,10 @@ function ForumContent() {
 
         <BBQueryBoundary
           query={query}
-          isEmpty={(forum) => !forum.categories?.length}
-          empty={<BBEmpty message="No boards here yet. Check back soon!" />}
+          isEmpty={isForumEmpty}
+          empty={FORUM_EMPTY_STATE}
         >
-          {(forumIndex) =>
-            forumIndex.categories?.map((category) => (
-              <div key={category.id} className="my-2">
-                <ForumCategory
-                  title={category.categoryName}
-                  subBoards={category.boards}
-                />
-              </div>
-            ))
-          }
+          {renderForumCategories}
         </BBQueryBoundary>
       </section>
     </article>

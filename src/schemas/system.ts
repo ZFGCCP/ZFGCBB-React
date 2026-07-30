@@ -70,7 +70,7 @@ export const SiteInfoSchema = v.object({
 export type SiteInfo = v.InferOutput<typeof SiteInfoSchema>;
 
 export const InstallResponseSchema = v.object({
-  installed: v.boolean(),
+  installed: v.literal(true),
   adminUserId: v.number(),
   siteName: v.string(),
   contentPack: v.optional(v.string()),
@@ -78,6 +78,32 @@ export const InstallResponseSchema = v.object({
   refreshToken: v.optional(v.string()),
 });
 export type InstallResponse = v.InferOutput<typeof InstallResponseSchema>;
+
+export const BackupStateSchema = v.picklist([
+  "CREATING",
+  "READY",
+  "DOWNLOADING",
+  "CONSUMED",
+  "EXPIRED",
+  "FAILED",
+]);
+export type BackupState = v.InferOutput<typeof BackupStateSchema>;
+
+export const AdminBackupSchema = v.object({
+  id: v.string(),
+  state: BackupStateSchema,
+  createdAt: v.string(),
+  expiresAt: v.string(),
+  archiveBytes: v.optional(v.number()),
+  archiveSha256: v.optional(v.string()),
+  generationId: v.optional(v.string()),
+  installerCompatible: v.optional(v.boolean()),
+  installerAnchorAdministratorId: v.optional(v.number()),
+  downloadReady: v.boolean(),
+  error: v.optional(v.string()),
+});
+export const AdminBackupListSchema = v.array(AdminBackupSchema);
+export type AdminBackup = v.InferOutput<typeof AdminBackupSchema>;
 
 export const MigrateJobFormSchema = v.object({
   type: JobTypeSchema,

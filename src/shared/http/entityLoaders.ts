@@ -1,4 +1,4 @@
-import type { FetchQueryOptions, QueryClient } from "@tanstack/react-query";
+import type { QueryClient } from "@tanstack/react-query";
 import type { GenericSchema } from "valibot";
 
 import { bbQueryOptions } from "@/hooks/query/bbQueryOptions";
@@ -12,13 +12,11 @@ import {
 
 type LoaderArgs<TParams> = { request: Request; params: TParams };
 
-type DependentQueries = readonly FetchQueryOptions<any, any, any, any>[];
-
 type EntityPrefetch<TData> = (
   entity: TData,
+  queryClient: QueryClient,
   requestHeaders?: Record<string, string>,
-  queryClient?: QueryClient,
-) => DependentQueries | Promise<DependentQueries>;
+) => Promise<void>;
 
 type DehydratedResult = Awaited<ReturnType<typeof prefetchQueryDehydrated>>;
 
@@ -33,17 +31,6 @@ interface DehydratedRouteConfig<
   TData extends object,
 > extends EntityRouteConfig<TParams, TData> {
   dehydrated: true;
-}
-
-async function warmDependents(
-  queryClient: QueryClient,
-  dependents: DependentQueries | Promise<DependentQueries>,
-) {
-  const resolved = await dependents;
-  if (resolved.length === 0) return;
-  await Promise.all(
-    resolved.map((options) => queryClient.prefetchQuery(options)),
-  );
 }
 
 export function entityRoute<TParams, TData extends object>(
@@ -74,10 +61,7 @@ export function entityRoute<TParams, TData extends object>(
           async (queryClient, headers) => {
             const entity = queryClient.getQueryData<TData>([url]);
             if (entity && config.prefetch) {
-              await warmDependents(
-                queryClient,
-                config.prefetch(entity, headers, queryClient),
-              );
+              await config.prefetch(entity, queryClient, headers);
             }
           },
         );
@@ -90,10 +74,7 @@ export function entityRoute<TParams, TData extends object>(
         );
         const entity = queryClient.getQueryData<TData>([url]);
         if (entity && config.prefetch) {
-          await warmDependents(
-            queryClient,
-            config.prefetch(entity, undefined, queryClient),
-          );
+          await config.prefetch(entity, queryClient);
         }
       },
     };
@@ -107,7 +88,7 @@ export function entityRoute<TParams, TData extends object>(
         config.schema,
         (entity, queryClient, headers) =>
           config.prefetch
-            ? warmDependents(queryClient, config.prefetch(entity, headers))
+            ? config.prefetch(entity, queryClient, headers)
             : Promise.resolve(),
       ),
     clientLoader: ({ request, params }: LoaderArgs<TParams>) =>
@@ -116,7 +97,7 @@ export function entityRoute<TParams, TData extends object>(
         config.schema,
         (entity, queryClient) =>
           config.prefetch
-            ? warmDependents(queryClient, config.prefetch(entity))
+            ? config.prefetch(entity, queryClient)
             : Promise.resolve(),
       ),
   };

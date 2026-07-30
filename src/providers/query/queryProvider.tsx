@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import { getErrorResponse } from "@/shared/http/response.handler";
 
 const SESSION_EXPIRY_STORAGE_KEY = "zfgbb-session-expires-at";
 const PROACTIVE_REFRESH_LEAD_MS = 120_000;
@@ -72,13 +73,13 @@ function onProactiveRefreshDue() {
     scheduleProactiveRefresh();
     return;
   }
-  refreshExpectedSession();
+  void refreshExpectedSession();
 }
 
-function refreshExpectedSession() {
-  if (readSessionExpiresAt() === undefined) return;
+export function refreshExpectedSession(): Promise<boolean> {
+  if (readSessionExpiresAt() === undefined) return Promise.resolve(false);
   refreshMarkedStale = false;
-  void tryRefresh();
+  return tryRefresh();
 }
 
 async function performRefresh() {
@@ -117,10 +118,7 @@ function tryRefresh(): Promise<boolean> {
 }
 
 function errorIsFromAuthEndpoint(error: unknown) {
-  if (!(error instanceof Error)) return false;
-  // oxlint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-  const cause = error.cause as { response?: Response } | undefined;
-  const url = cause?.response?.url ?? "";
+  const url = getErrorResponse(error)?.url ?? "";
 
   return AUTH_ENDPOINT_PATHS.some((path) => url.includes(path));
 }

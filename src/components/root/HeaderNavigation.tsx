@@ -1,4 +1,9 @@
 import { useGlobalSearch } from "@/providers/search/globalSearchProvider";
+import type { BBPermission } from "@/types/api";
+
+const SITE_ADMIN_PERMISSION = [
+  "ZFGC_SITE_ADMIN",
+] as const satisfies readonly BBPermission[];
 
 export default function HeaderNavigation() {
   const { open } = useGlobalSearch();
@@ -32,7 +37,7 @@ export default function HeaderNavigation() {
         to="/content/resources"
         active={isActive("/content/resources")}
       />
-      <BBHasPermission requiredPermissions={["ZFGC_SITE_ADMIN"]}>
+      <BBHasPermission requiredPermissions={SITE_ADMIN_PERMISSION}>
         <BBNavTab title="Admin" to="/admin" active={isActive("/admin")} />
       </BBHasPermission>
       <button

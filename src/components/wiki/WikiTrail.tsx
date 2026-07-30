@@ -18,10 +18,7 @@ export default function WikiTrail({
         <span key={segment.label} className="flex items-baseline gap-x-2">
           {index > 0 && <BBIcon name="nav" />}
           {segment.to ? (
-            <BBLink
-              to={segment.to as RoutePaths}
-              className="hover:text-highlighted"
-            >
+            <BBLink to={segment.to} className="hover:text-highlighted">
               {segment.label}
             </BBLink>
           ) : (

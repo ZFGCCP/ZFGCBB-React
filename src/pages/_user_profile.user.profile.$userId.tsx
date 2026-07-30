@@ -2,6 +2,11 @@ import type { Route } from "./+types/_user_profile.user.profile.$userId";
 import { getQueryClient } from "@/providers/query/queryProvider";
 import megadethThemeUrl from "../../public/music/megadeth - washington is next.mp3?url";
 
+const PROFILE_ADMIN_PERMISSIONS = [
+  "ZFGC_SITE_ADMIN",
+  "ZFGC_PROFILE_ADMIN",
+] as const;
+
 export const loader = ({ request, params }: Route.LoaderArgs) =>
   prefetchQueryDehydrated(
     request,
@@ -153,7 +158,6 @@ function UserProfileContent() {
                     className="w-full p-2 bg-default border border-default flex-1/2"
                     value={String(user?.bioInfo?.genderId ?? "")}
                     disabled={true}
-                    onChange={() => {}}
                   >
                     <option value="1">Male</option>
                     <option value="2">Female</option>
@@ -275,9 +279,7 @@ function UserProfileContent() {
               </form>
             </BBAccordionWidget>
 
-            <BBHasPermission
-              requiredPermissions={["ZFGC_SITE_ADMIN", "ZFGC_PROFILE_ADMIN"]}
-            >
+            <BBHasPermission requiredPermissions={PROFILE_ADMIN_PERMISSIONS}>
               <UserAwardGrantPanel userId={Number(userId)} />
             </BBHasPermission>
           </div>

@@ -1,7 +1,10 @@
 import parse, {
+  Comment,
   domToReact,
+  Element,
+  ProcessingInstruction,
+  Text,
   type DOMNode,
-  type Element,
   type HTMLReactParserOptions,
 } from "html-react-parser/lib/index";
 
@@ -20,19 +23,29 @@ const HANDLERS = Object.entries(
     { eager: true },
   ),
 )
-  .sort(([left], [right]) => left.localeCompare(right))
+  .toSorted(([left], [right]) => left.localeCompare(right))
   .map(([, module]) => module.default);
+
+function isDOMNode(node: Element["children"][number]): node is DOMNode {
+  return (
+    node instanceof Comment ||
+    node instanceof Element ||
+    node instanceof ProcessingInstruction ||
+    node instanceof Text
+  );
+}
 
 const PARSE_OPTIONS: HTMLReactParserOptions = {
   replace(node) {
-    if (node.type !== "tag") return;
-    const element = node as Element;
+    if (!(node instanceof Element)) return undefined;
+    const element = node;
     const renderChildren = () =>
-      domToReact((element.children as DOMNode[]) ?? [], PARSE_OPTIONS);
+      domToReact(element.children.filter(isDOMNode), PARSE_OPTIONS);
     for (const handler of HANDLERS) {
       const result = handler(element, { renderChildren });
       if (result !== undefined) return result;
     }
+    return undefined;
   },
 };
 

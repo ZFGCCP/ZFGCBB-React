@@ -2,9 +2,9 @@ import { attributesToProps } from "html-react-parser/lib/index";
 import type { BBHtmlHandler } from "@/components/ZFGBBMarkup/BBHtml";
 
 const handler: BBHtmlHandler = (element) => {
-  if (element.name !== "img") return;
+  if (element.name !== "img") return undefined;
   const rawSrc = element.attribs?.["src"];
-  if (!rawSrc) return;
+  if (!rawSrc) return undefined;
   const src = rawSrc.startsWith("/content/")
     ? `${getPublicApiBaseUrl()}${rawSrc}`
     : rawSrc;
@@ -19,7 +19,7 @@ const handler: BBHtmlHandler = (element) => {
   return (
     <BBImage
       {...rest}
-      src={src as BBImageProps["src"]}
+      dynamicSrc={src}
       alt={typeof rest.alt === "string" ? rest.alt : ""}
       crossOrigin={undefined}
       className={[

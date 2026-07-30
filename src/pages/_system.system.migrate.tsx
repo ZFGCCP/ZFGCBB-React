@@ -1,11 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
+import * as v from "valibot";
+import BBToggle from "@/components/common/forms/BBToggle";
 import { UserContext } from "@/providers/user/userProvider";
 import {
   SmfMemberGroupListSchema,
   PermissionCodeListSchema,
+  type ConflictCandidate,
+  type MigrationConflict,
   type SmfMemberGroup,
 } from "@/schemas/system";
+
+const EMPTY_PERMISSION_CODES: { permissionCode: string }[] = [];
 
 function stateClass(state: Job["state"]): string {
   switch (state) {
@@ -34,8 +40,10 @@ function JobRow({
       url: `/system/migrate/jobs/${job.id}`,
       method: "DELETE",
     }),
+    schema: v.undefined(),
     onSuccess: onCancelSuccess,
   });
+  const cancel = useCallback(() => cancelMutation.mutate(), [cancelMutation]);
 
   const canCancel = job.state === "QUEUED" || job.state === "RUNNING";
 
@@ -62,7 +70,7 @@ function JobRow({
           type="button"
           className="ml-auto px-2 py-1 border border-default text-sm"
           disabled={cancelMutation.isPending}
-          onClick={() => cancelMutation.mutate()}
+          onClick={cancel}
         >
           {cancelMutation.isPending ? "Cancelling..." : "Cancel"}
         </button>
@@ -75,6 +83,102 @@ const JOB_TYPE_OPTIONS = JOB_TYPES.map((type) => ({
   value: type,
   label: type,
 }));
+
+const DEFAULT_MIGRATE_JOB_FORM: MigrateJobForm = {
+  type: "MIGRATE_SMF_INSTALLATION",
+  smfHost: "",
+  smfPort: "3306",
+  smfDatabase: "",
+  smfUser: "",
+  smfPassword: "",
+  smfTablePrefix: "",
+  smfLegacyHost: "",
+  attachmentsSourcePath: "",
+  attachmentsTargetPath: "",
+  cmsFilesSourcePath: "",
+  wikiImagesSourcePath: "",
+  force: false,
+};
+
+function ConflictCandidateButton({
+  candidate,
+  conflictId,
+  disabled,
+  onResolve,
+}: {
+  candidate: ConflictCandidate;
+  conflictId: number;
+  disabled: boolean;
+  onResolve: (variables: { id: number; sourceType: string }) => void;
+}) {
+  const resolve = useCallback(
+    () =>
+      onResolve({
+        id: conflictId,
+        sourceType: candidate.sourceType,
+      }),
+    [candidate.sourceType, conflictId, onResolve],
+  );
+
+  return (
+    <BBButton title={candidate.label} disabled={disabled} onClick={resolve}>
+      <span className="text-[10px] font-bold tracking-widest text-dimmed">
+        {candidate.sourceType}
+      </span>
+      <span className="ml-1.5 text-default">{candidate.value}</span>
+    </BBButton>
+  );
+}
+
+function ConflictRow({
+  conflict,
+  resolving,
+  onDismiss,
+  onResolve,
+}: {
+  conflict: MigrationConflict;
+  resolving: boolean;
+  onDismiss: (id: number) => void;
+  onResolve: (variables: { id: number; sourceType: string }) => void;
+}) {
+  const dismiss = useCallback(
+    () => onDismiss(conflict.id),
+    [conflict.id, onDismiss],
+  );
+
+  return (
+    <BBPanel as="li" className="p-2.5">
+      <div className="flex flex-wrap items-baseline gap-2">
+        <span className="font-bold text-highlighted">
+          {conflict.entityLabel ??
+            `${conflict.entityType} ${conflict.entityId}`}
+        </span>
+        <span className="text-xs text-dimmed">
+          · conflicting {conflict.fieldName.replace(/_/g, " ")} — pick the
+          source to keep:
+        </span>
+        <button
+          type="button"
+          onClick={dismiss}
+          className="ml-auto text-xs text-dimmed hover:text-highlighted cursor-pointer"
+        >
+          dismiss
+        </button>
+      </div>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {conflict.candidates.map((candidate) => (
+          <ConflictCandidateButton
+            key={candidate.sourceRef}
+            candidate={candidate}
+            conflictId={conflict.id}
+            disabled={resolving}
+            onResolve={onResolve}
+          />
+        ))}
+      </div>
+    </BBPanel>
+  );
+}
 
 function ConflictsPanel() {
   const { data: conflicts, refetch } = useBBQuery(
@@ -109,7 +213,7 @@ function ConflictsPanel() {
           body: JSON.stringify({ sourceType }),
         },
       );
-      return handleResponseWithJason<unknown>(response);
+      return handleResponseWithJason(response, v.unknown());
     },
     onSuccess: () => refetch(),
   });
@@ -120,16 +224,26 @@ function ConflictsPanel() {
         `${getApiBaseUrl()}/system/migrate/conflicts/${id}/dismiss`,
         { method: "POST", credentials: "include" },
       );
-      return handleResponseWithJason<unknown>(response);
+      return handleResponseWithJason(response, v.unknown());
     },
     onSuccess: () => refetch(),
   });
+  const scanForConflicts = useCallback(() => scan.mutate(), [scan]);
+  const dismissConflict = useCallback(
+    (id: number) => dismiss.mutate(id),
+    [dismiss],
+  );
+  const resolveConflict = useCallback(
+    (variables: { id: number; sourceType: string }) =>
+      resolve.mutate(variables),
+    [resolve],
+  );
 
   return (
     <BBWidget widgetTitle="Data Conflicts">
       <div className="space-y-3 p-3">
         <div className="flex flex-wrap items-center gap-3">
-          <BBButton onClick={() => scan.mutate()} disabled={scan.isPending}>
+          <BBButton onClick={scanForConflicts} disabled={scan.isPending}>
             {scan.isPending ? "Scanning…" : "Scan for conflicts"}
           </BBButton>
           {scan.data && (
@@ -149,47 +263,13 @@ function ConflictsPanel() {
         ) : (
           <ul className="space-y-2">
             {conflicts.map((conflict) => (
-              <BBPanel as="li" key={conflict.id} className="p-2.5">
-                <div className="flex flex-wrap items-baseline gap-2">
-                  <span className="font-bold text-highlighted">
-                    {conflict.entityLabel ??
-                      `${conflict.entityType} ${conflict.entityId}`}
-                  </span>
-                  <span className="text-xs text-dimmed">
-                    · conflicting {conflict.fieldName.replace(/_/g, " ")} — pick
-                    the source to keep:
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => dismiss.mutate(conflict.id)}
-                    className="ml-auto text-xs text-dimmed hover:text-highlighted cursor-pointer"
-                  >
-                    dismiss
-                  </button>
-                </div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {conflict.candidates.map((candidate) => (
-                    <BBButton
-                      key={candidate.sourceRef}
-                      title={candidate.label}
-                      disabled={resolve.isPending}
-                      onClick={() =>
-                        resolve.mutate({
-                          id: conflict.id,
-                          sourceType: candidate.sourceType,
-                        })
-                      }
-                    >
-                      <span className="text-[10px] font-bold tracking-widest text-dimmed">
-                        {candidate.sourceType}
-                      </span>
-                      <span className="ml-1.5 text-default">
-                        {candidate.value}
-                      </span>
-                    </BBButton>
-                  ))}
-                </div>
-              </BBPanel>
+              <ConflictRow
+                key={conflict.id}
+                conflict={conflict}
+                resolving={resolve.isPending}
+                onDismiss={dismissConflict}
+                onResolve={resolveConflict}
+              />
             ))}
           </ul>
         )}
@@ -209,6 +289,14 @@ function SmfConnectionFields({
   uploadError: Error | null;
   onUpload: (file: File) => void;
 }) {
+  const upload = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) onUpload(file);
+    },
+    [onUpload],
+  );
+
   return (
     <BBWidget widgetTitle="SMF Database Connection">
       <div className="p-4 space-y-3">
@@ -245,10 +333,7 @@ function SmfConnectionFields({
               aria-label="Upload migration zip"
               className="text-sm"
               disabled={isUploading}
-              onChange={(event) => {
-                const file = event.target.files?.[0];
-                if (file) onUpload(file);
-              }}
+              onChange={upload}
             />
             {isUploading && (
               <span className="text-sm text-dimmed">Uploading...</span>
@@ -359,28 +444,13 @@ function GroupPermissionMapping({
                         permission.permissionCode,
                       );
                       return (
-                        <label
+                        <GroupPermissionToggle
                           key={permission.permissionCode}
-                          className={`inline-flex cursor-pointer items-center gap-1 rounded border px-2 py-0.5 text-xs ${
-                            checked
-                              ? "border-highlighted bg-accented text-highlighted"
-                              : "border-default hover:bg-muted"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            className="sr-only"
-                            checked={checked}
-                            onChange={() =>
-                              onToggle(
-                                group.id,
-                                permission.permissionCode,
-                                checked,
-                              )
-                            }
-                          />
-                          {permission.permissionCode}
-                        </label>
+                          groupId={group.id}
+                          code={permission.permissionCode}
+                          checked={checked}
+                          onToggle={onToggle}
+                        />
                       );
                     })}
                   </div>
@@ -391,6 +461,29 @@ function GroupPermissionMapping({
         )}
       </div>
     </BBWidget>
+  );
+}
+
+function GroupPermissionToggle({
+  groupId,
+  code,
+  checked,
+  onToggle,
+}: {
+  groupId: number;
+  code: string;
+  checked: boolean;
+  onToggle: (groupId: number, code: string, checked: boolean) => void;
+}) {
+  const toggle = useCallback(
+    (nextChecked: boolean) => onToggle(groupId, code, nextChecked),
+    [code, groupId, onToggle],
+  );
+
+  return (
+    <BBToggle checked={checked} onCheckedChange={toggle}>
+      {code}
+    </BBToggle>
   );
 }
 
@@ -461,7 +554,6 @@ export default function SystemMigrate() {
     schema: JobListSchema,
   });
 
-  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation
   const uploadMutation = useMutation<MigrateUploadResponse, Error, File>({
     mutationFn: async (file) => {
       const formData = new FormData();
@@ -490,29 +582,15 @@ export default function SystemMigrate() {
           body: JSON.stringify(body),
         },
       );
-      return handleResponseWithJason<unknown>(response);
+      return handleResponseWithJason(response, v.unknown());
     },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["migrate-jobs"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["migrate-jobs"] });
     },
   });
 
   const form = useForm({
-    defaultValues: {
-      type: "MIGRATE_SMF_INSTALLATION",
-      smfHost: "",
-      smfPort: "3306",
-      smfDatabase: "",
-      smfUser: "",
-      smfPassword: "",
-      smfTablePrefix: "",
-      smfLegacyHost: "",
-      attachmentsSourcePath: "",
-      attachmentsTargetPath: "",
-      cmsFilesSourcePath: "",
-      wikiImagesSourcePath: "",
-      force: false,
-    } as MigrateJobForm,
+    defaultValues: DEFAULT_MIGRATE_JOB_FORM,
     validators: {
       onBlur: MigrateJobFormSchema,
       onSubmit: MigrateJobFormSchema,
@@ -573,6 +651,29 @@ export default function SystemMigrate() {
       );
     },
   });
+  const uploadArchive = useCallback(
+    (file: File) => uploadMutation.mutate(file),
+    [uploadMutation],
+  );
+  const loadGroups = useCallback(
+    () => loadGroupsMutation.mutate(),
+    [loadGroupsMutation],
+  );
+  const togglePermission = useCallback(
+    (groupId: number, code: string, checked: boolean) => {
+      setGroupPermissionMap((previous) => {
+        const current = previous[groupId] ?? [];
+        const next = checked
+          ? [...current, code]
+          : current.filter((existing) => existing !== code);
+        return { ...previous, [groupId]: next };
+      });
+    },
+    [],
+  );
+  const refreshJobs = useCallback(async () => {
+    await refetch();
+  }, [refetch]);
 
   if (!isSiteAdmin) {
     return (
@@ -591,8 +692,7 @@ export default function SystemMigrate() {
         className="space-y-4"
         errorMessage={
           startJobMutation.isError
-            ? ((startJobMutation.error as Error)?.message ??
-              "Failed to start job.")
+            ? (startJobMutation.error?.message ?? "Failed to start job.")
             : null
         }
       >
@@ -600,25 +700,17 @@ export default function SystemMigrate() {
           uploadResult={uploadResult}
           isUploading={uploadMutation.isPending}
           uploadError={uploadMutation.error}
-          onUpload={(file) => uploadMutation.mutate(file)}
+          onUpload={uploadArchive}
         />
 
         <GroupPermissionMapping
           isLoading={loadGroupsMutation.isPending}
-          loadError={loadGroupsMutation.error as Error | null}
-          onLoad={() => loadGroupsMutation.mutate(undefined)}
+          loadError={loadGroupsMutation.error}
+          onLoad={loadGroups}
           smfGroups={smfGroups}
-          permissionCodes={permissionCodes ?? []}
+          permissionCodes={permissionCodes ?? EMPTY_PERMISSION_CODES}
           groupPermissionMap={groupPermissionMap}
-          onToggle={(groupId, code, checked) =>
-            setGroupPermissionMap((previous) => {
-              const current = previous[groupId] ?? [];
-              const next = checked
-                ? current.filter((existing) => existing !== code)
-                : [...current, code];
-              return { ...previous, [groupId]: next };
-            })
-          }
+          onToggle={togglePermission}
         />
 
         <BBWidget widgetTitle="Start Migration Job">
@@ -647,7 +739,7 @@ export default function SystemMigrate() {
         </BBWidget>
       </BBForm>
 
-      <MigrationJobsList jobs={jobs} onRefetch={() => refetch()} />
+      <MigrationJobsList jobs={jobs} onRefetch={refreshJobs} />
 
       <ConflictsPanel />
     </div>

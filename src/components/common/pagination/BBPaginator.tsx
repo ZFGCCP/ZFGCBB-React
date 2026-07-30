@@ -64,6 +64,35 @@ const activePage =
   `${cellBase} bg-elevated font-bold text-highlighted tabular-nums cursor-default ` +
   "shadow-[inset_0_-3px_0_var(--text-color-highlighted)]";
 
+function PaginatorPageButton({
+  page,
+  current,
+  onPageChange,
+}: {
+  page: number;
+  current: number;
+  onPageChange: (page: number) => void;
+}) {
+  const isCurrent = page === current;
+  const selectPage = useCallback(
+    () => onPageChange(page),
+    [onPageChange, page],
+  );
+
+  return (
+    <button
+      type="button"
+      aria-label={`Page ${page}`}
+      aria-current={isCurrent ? "page" : undefined}
+      disabled={isCurrent}
+      className={isCurrent ? activePage : inactivePage}
+      onClick={selectPage}
+    >
+      {page}
+    </button>
+  );
+}
+
 export default function BBPaginator({
   numPages,
   currentPage,
@@ -77,10 +106,17 @@ export default function BBPaginator({
 
   const items = useMemo(() => buildPageItems(current, total), [current, total]);
 
-  const goTo = (page: number) => {
-    const clamped = Math.min(Math.max(page, 1), total);
-    if (clamped !== current) onPageChange(clamped);
-  };
+  const goTo = useCallback(
+    (page: number) => {
+      const clamped = Math.min(Math.max(page, 1), total);
+      if (clamped !== current) onPageChange(clamped);
+    },
+    [current, onPageChange, total],
+  );
+  const goToFirst = useCallback(() => goTo(1), [goTo]);
+  const goToPrevious = useCallback(() => goTo(current - 1), [current, goTo]);
+  const goToNext = useCallback(() => goTo(current + 1), [current, goTo]);
+  const goToLast = useCallback(() => goTo(total), [goTo, total]);
 
   return (
     <nav
@@ -92,7 +128,7 @@ export default function BBPaginator({
         aria-label="First page"
         className={navButton}
         disabled={isFirst}
-        onClick={() => goTo(1)}
+        onClick={goToFirst}
       >
         <span className="inline-flex items-center transition-transform group-hover:-translate-x-0.5">
           <BBIcon name="arrow" className="-scale-x-100" />
@@ -104,7 +140,7 @@ export default function BBPaginator({
         aria-label="Previous page"
         className={navButton}
         disabled={isFirst}
-        onClick={() => goTo(current - 1)}
+        onClick={goToPrevious}
       >
         <span className="inline-flex items-center transition-transform group-hover:-translate-x-0.5">
           <BBIcon name="arrow" className="-scale-x-100" />
@@ -124,19 +160,13 @@ export default function BBPaginator({
               </span>
             );
           }
-          const isCurrent = item.page === current;
           return (
-            <button
+            <PaginatorPageButton
               key={item.page}
-              type="button"
-              aria-label={`Page ${item.page}`}
-              aria-current={isCurrent ? "page" : undefined}
-              disabled={isCurrent}
-              className={isCurrent ? activePage : inactivePage}
-              onClick={() => goTo(item.page)}
-            >
-              {item.page}
-            </button>
+              page={item.page}
+              current={current}
+              onPageChange={goTo}
+            />
           );
         })}
       </div>
@@ -150,7 +180,7 @@ export default function BBPaginator({
         aria-label="Next page"
         className={navButton}
         disabled={isLast}
-        onClick={() => goTo(current + 1)}
+        onClick={goToNext}
       >
         <span className="inline-flex items-center transition-transform group-hover:translate-x-0.5">
           <BBIcon name="arrow" />
@@ -161,7 +191,7 @@ export default function BBPaginator({
         aria-label="Last page"
         className={navButton}
         disabled={isLast}
-        onClick={() => goTo(total)}
+        onClick={goToLast}
       >
         <span className="inline-flex items-center transition-transform group-hover:translate-x-0.5">
           <BBIcon name="arrow" />

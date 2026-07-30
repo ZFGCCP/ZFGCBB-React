@@ -1,3 +1,5 @@
+const ADMIN_PERMISSION = ["ZFGC_SITE_ADMIN"] as const;
+
 interface AdminCardProps {
   title: string;
   description: string;
@@ -55,6 +57,13 @@ export default function AdminDashboard() {
             description="Enable or disable special bbcodes, like the [you] April Fools prank."
             to="/admin/bbcodes"
           />
+          <BBHasPermission requiredPermissions={ADMIN_PERMISSION}>
+            <AdminCard
+              title="Backups"
+              description="Create and download a one-time full application backup."
+              to="/admin/backups"
+            />
+          </BBHasPermission>
           <AdminCard
             title="Board Management"
             description="Create and configure forum categories and boards."

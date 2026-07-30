@@ -2,7 +2,6 @@ import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { NavigateFunction } from "react-router";
 import type { Message, Thread } from "@/types/forum";
 import type { MessageDeletionResponse, RestoreResponse } from "@/schemas/forum";
-import type { RoutePaths } from "@/components/common/BBLink";
 import { useAllowedActions } from "@/hooks/data/useAllowedActions";
 
 export interface ForumThreadProps {
@@ -13,6 +12,7 @@ const MSG_ADMIN: BBPermission[] = ["ZFGC_MESSAGE_ADMIN"];
 const MSG_EDITOR: BBPermission[] = ["ZFGC_MESSAGE_EDITOR"];
 const MSG_VIEWER: BBPermission[] = ["ZFGC_MESSAGE_VIEWER"];
 const THREAD_PAGE_SIZE = 10;
+const EMPTY_ATTACHMENTS: Message["fileAttachments"] = [];
 
 const threadIsRecycledContent = (thread: Thread) =>
   thread.recycledFromBoardId != null || thread.recycledFromThreadId != null;
@@ -127,6 +127,10 @@ function MessageRemovalConfirm({
         ? "You are not allowed to remove this post."
         : "Failed to remove the post."
       : null;
+  const handleRemove = useCallback(
+    () => removeMutation.mutate(),
+    [removeMutation],
+  );
 
   return (
     <div className="border-b border-default bg-accented p-3 text-sm space-y-2">
@@ -153,7 +157,7 @@ function MessageRemovalConfirm({
         <BBButton
           variant={isPermanent ? "destructive" : "default"}
           disabled={removeMutation.isPending}
-          onClick={() => removeMutation.mutate()}
+          onClick={handleRemove}
         >
           {removeMutation.isPending
             ? isPermanent
@@ -189,6 +193,10 @@ function RecycledThreadNotice({ thread }: { thread: Thread }) {
       invalidateForumContent(queryClient, [thread.id]);
     },
   });
+  const handleRestore = useCallback(
+    () => restoreThreadMutation.mutate(),
+    [restoreThreadMutation],
+  );
 
   return (
     <div className="border-2 border-default bg-accented p-3 text-sm space-y-2">
@@ -201,7 +209,7 @@ function RecycledThreadNotice({ thread }: { thread: Thread }) {
       {restoreNotice && <p className="text-error">{restoreNotice}</p>}
       <BBButton
         disabled={restoreThreadMutation.isPending}
-        onClick={() => restoreThreadMutation.mutate()}
+        onClick={handleRestore}
       >
         {restoreThreadMutation.isPending
           ? "Restoring..."
@@ -283,6 +291,23 @@ const ThreadMessage = memo(function ThreadMessage({
 
   const restorePending =
     restoreMessageMutation.isPending || restoreThreadMutation.isPending;
+  const handleQuote = useCallback(() => onQuote(message), [message, onQuote]);
+  const handleModify = useCallback(
+    () => onModify(message),
+    [message, onModify],
+  );
+  const handleRestore = useCallback(
+    () => restoreMessageMutation.mutate(),
+    [restoreMessageMutation],
+  );
+  const handleRemovalToggle = useCallback(() => {
+    setRestoreNotice(null);
+    setShowRemovalConfirm((current) => !current);
+  }, []);
+  const handleRemovalClose = useCallback(
+    () => setShowRemovalConfirm(false),
+    [],
+  );
 
   return (
     <div id={`msg${message.id}`} className="flex flex-col min-h-75 scroll-mt-4">
@@ -305,7 +330,7 @@ const ThreadMessage = memo(function ThreadMessage({
             <div className="text-sm min-w-0">
               <div>
                 <BBLink
-                  to={permalink as RoutePaths}
+                  to={permalink}
                   className="hover:underline"
                   title="Link to this post"
                 >
@@ -333,7 +358,7 @@ const ThreadMessage = memo(function ThreadMessage({
                   <button
                     type="button"
                     className="text-toned hover:transition-colors"
-                    onClick={() => onQuote(message)}
+                    onClick={handleQuote}
                   >
                     <Fa6SolidReply className="mr-1" />
                     <span className="hidden sm:inline">Reply</span>
@@ -343,7 +368,7 @@ const ThreadMessage = memo(function ThreadMessage({
                   <button
                     type="button"
                     className="text-toned hover:transition-colors"
-                    onClick={() => onModify(message)}
+                    onClick={handleModify}
                   >
                     <BBIcon name="modify" className="mr-1" />
                     <span className="hidden sm:inline">Edit</span>
@@ -354,7 +379,7 @@ const ThreadMessage = memo(function ThreadMessage({
                     type="button"
                     className="text-toned hover:transition-colors"
                     disabled={restorePending}
-                    onClick={() => restoreMessageMutation.mutate()}
+                    onClick={handleRestore}
                   >
                     <BBIcon name="approve" className="mr-1" />
                     <span className="hidden sm:inline">
@@ -403,10 +428,7 @@ const ThreadMessage = memo(function ThreadMessage({
                 <button
                   type="button"
                   className="text-toned hover:transition-colors shrink-0"
-                  onClick={() => {
-                    setRestoreNotice(null);
-                    setShowRemovalConfirm((current) => !current);
-                  }}
+                  onClick={handleRemovalToggle}
                 >
                   <BBIcon name="delete" className="mr-1" />
                   <span className="hidden sm:inline">Remove</span>
@@ -427,7 +449,7 @@ const ThreadMessage = memo(function ThreadMessage({
           message={message}
           thread={thread}
           currentPage={currentPage}
-          onClose={() => setShowRemovalConfirm(false)}
+          onClose={handleRemovalClose}
         />
       )}
 
@@ -443,7 +465,7 @@ const ThreadMessage = memo(function ThreadMessage({
             isEven={isEven}
           />
           <MessageAttachments
-            attachments={message.fileAttachments ?? []}
+            attachments={message.fileAttachments ?? EMPTY_ATTACHMENTS}
             isEven={isEven}
           />
           <ReactionBar
@@ -460,10 +482,97 @@ const ThreadMessage = memo(function ThreadMessage({
   );
 });
 
+function ThreadView({
+  thread,
+  currentPage,
+  canReply,
+  canRestoreThread,
+  showReplyBox,
+  quoteSeed,
+  quoteSeedNonce,
+  onQuote,
+  onModify,
+}: {
+  thread: Thread;
+  currentPage: number;
+  canReply: boolean;
+  canRestoreThread: boolean;
+  showReplyBox: boolean;
+  quoteSeed?: string;
+  quoteSeedNonce: number;
+  onQuote: (message: Message) => void;
+  onModify: () => void;
+}) {
+  const navigate = useNavigate();
+  const threadId = thread.id;
+  const reactableIds = useMemo(
+    () => (thread.messages ?? []).map((message) => message.id),
+    [thread.messages],
+  );
+  const loadNewPage = useCallback(
+    (nextPage: number) => {
+      void navigate(`/forum/thread/${threadId}/${nextPage}`);
+    },
+    [navigate, threadId],
+  );
+
+  return (
+    <>
+      <div className="space-y-4">
+        {canRestoreThread && threadIsRecycledContent(thread) && (
+          <RecycledThreadNotice thread={thread} />
+        )}
+        <PaginatorBar
+          numPages={thread.pageCount ?? currentPage}
+          currentPage={currentPage}
+          onPageChange={loadNewPage}
+        />
+
+        {thread.pollInfo && <PollResults poll={thread.pollInfo} />}
+        <BBWidget widgetTitle={thread.threadName}>
+          <ReactionsProvider
+            reactableType="MESSAGE"
+            reactableIds={reactableIds}
+          >
+            <div className="divide-y divide-default">
+              {thread.messages?.map((message, index) => (
+                <ThreadMessage
+                  key={message.id}
+                  message={message}
+                  thread={thread}
+                  currentPage={currentPage}
+                  isEven={index % 2 === 0}
+                  onQuote={onQuote}
+                  onModify={onModify}
+                  permalink={`/forum/thread/${threadId}/${currentPage}#msg${message.id}`}
+                  canReply={canReply}
+                />
+              ))}
+            </div>
+          </ReactionsProvider>
+
+          <PaginatorBar
+            numPages={thread.pageCount ?? currentPage}
+            currentPage={currentPage}
+            onPageChange={loadNewPage}
+          />
+        </BBWidget>
+      </div>
+
+      {canReply && showReplyBox && threadId && (
+        <MessageEditor
+          key={quoteSeedNonce}
+          threadId={threadId}
+          initialBody={quoteSeed}
+        />
+      )}
+    </>
+  );
+}
+
 export default function ForumThread({
   pageNumber: paramsPageNo,
 }: ForumThreadProps) {
-  const navigate = useNavigate();
   const { threadId: threadIdParam } = useParams();
   const currentPage = parsePage(paramsPageNo ?? null);
   const { actions: threadActions, isLoaded: threadActionsLoaded } =
@@ -505,69 +614,31 @@ export default function ForumThread({
     if (!/^#msg\d+$/.test(hash)) return;
     document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" });
   }, [messagesLoaded]);
-
-  return (
-    <BBQueryBoundary query={query}>
-      {(thread) => {
-        const threadId = thread.id;
-        const loadNewPage = (pageNumber: number) => {
-          navigate(`/forum/thread/${threadId}/${pageNumber}`);
-        };
-        return (
-          <>
-            <div className="space-y-4">
-              {canRestoreThread && threadIsRecycledContent(thread) && (
-                <RecycledThreadNotice thread={thread} />
-              )}
-              <PaginatorBar
-                numPages={thread.pageCount ?? currentPage}
-                currentPage={currentPage}
-                onPageChange={loadNewPage}
-              />
-
-              {thread.pollInfo && <PollResults poll={thread.pollInfo} />}
-              <BBWidget widgetTitle={thread.threadName}>
-                <ReactionsProvider
-                  reactableType="MESSAGE"
-                  reactableIds={(thread.messages ?? []).map(
-                    (message) => message.id,
-                  )}
-                >
-                  <div className="divide-y divide-default">
-                    {thread.messages?.map((message, index) => (
-                      <ThreadMessage
-                        key={message.id}
-                        message={message}
-                        thread={thread}
-                        currentPage={currentPage}
-                        isEven={index % 2 === 0}
-                        onQuote={seedReplyEditor}
-                        onModify={openReplyEditor}
-                        permalink={`/forum/thread/${threadId}/${currentPage}#msg${message.id}`}
-                        canReply={canReply}
-                      />
-                    ))}
-                  </div>
-                </ReactionsProvider>
-
-                <PaginatorBar
-                  numPages={thread.pageCount ?? currentPage}
-                  currentPage={currentPage}
-                  onPageChange={loadNewPage}
-                />
-              </BBWidget>
-            </div>
-
-            {canReply && showReplyBox && threadId && (
-              <MessageEditor
-                key={quoteSeedNonce}
-                threadId={threadId}
-                initialBody={quoteSeed}
-              />
-            )}
-          </>
-        );
-      }}
-    </BBQueryBoundary>
+  const renderThread = useCallback(
+    (thread: Thread) => (
+      <ThreadView
+        thread={thread}
+        currentPage={currentPage}
+        canReply={canReply}
+        canRestoreThread={canRestoreThread}
+        showReplyBox={showReplyBox}
+        quoteSeed={quoteSeed}
+        quoteSeedNonce={quoteSeedNonce}
+        onQuote={seedReplyEditor}
+        onModify={openReplyEditor}
+      />
+    ),
+    [
+      canReply,
+      canRestoreThread,
+      currentPage,
+      openReplyEditor,
+      quoteSeed,
+      quoteSeedNonce,
+      seedReplyEditor,
+      showReplyBox,
+    ],
   );
+
+  return <BBQueryBoundary query={query}>{renderThread}</BBQueryBoundary>;
 }

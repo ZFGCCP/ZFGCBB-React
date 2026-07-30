@@ -29,20 +29,24 @@ export default function BBForm({
   role,
   onSubmit,
 }: BBFormProps) {
+  const handleSubmit = useCallback(
+    (event: React.SubmitEvent<HTMLFormElement>) => {
+      if (form) {
+        event.preventDefault();
+        event.stopPropagation();
+        void form.handleSubmit();
+        return;
+      }
+      onSubmit?.(event);
+    },
+    [form, onSubmit],
+  );
   const formElement = (
     <form
       className={className ?? "space-y-3"}
       role={role ?? "form"}
       noValidate
-      onSubmit={(event) => {
-        if (form) {
-          event.preventDefault();
-          event.stopPropagation();
-          void form.handleSubmit();
-          return;
-        }
-        onSubmit?.(event);
-      }}
+      onSubmit={handleSubmit}
     >
       {errorMessage && (
         <div

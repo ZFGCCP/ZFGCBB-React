@@ -15,7 +15,7 @@ function WikiSidebar() {
           <ul className="space-y-1 text-sm">
             {section.items.map((item) => (
               <li key={item.label}>
-                <BBLink to={item.to as RoutePaths} className="text-highlighted">
+                <BBLink to={item.to} className="text-highlighted">
                   {item.label}
                 </BBLink>
               </li>

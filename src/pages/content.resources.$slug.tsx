@@ -8,9 +8,10 @@ import { entityRoute } from "@/shared/http/entityLoaders";
 const route = entityRoute({
   url: (params: Route.LoaderArgs["params"]) => `/resources/${params.slug}`,
   schema: ResourceSchema,
-  prefetch: (resource, headers) => [
-    reactionBatchQueryOptions("RESOURCE", [resource.id], headers),
-  ],
+  prefetch: (resource, queryClient, headers) =>
+    queryClient.prefetchQuery(
+      reactionBatchQueryOptions("RESOURCE", [resource.id], headers),
+    ),
 });
 
 export const loader = route.loader;
@@ -74,88 +75,96 @@ function ResourceDetail({ slug }: { slug: string }) {
     schema: ResourceSchema,
   });
 
-  return (
-    <BBQueryBoundary query={query}>
-      {(resource) => {
-        const externalUrl =
-          resource.downloadUrl && /^https?:\/\//i.test(resource.downloadUrl)
-            ? resource.downloadUrl
-            : null;
+  const renderResource = useCallback(
+    (resource: Resource) => <ResourceView resource={resource} slug={slug} />,
+    [slug],
+  );
 
-        return (
-          <CmsDetailShell entityPath={`/resources/${slug}`}>
-            <div>
-              <Masthead resource={resource} />
-              <section className="border-2 border-default bg-accented p-4 space-y-4">
-                <div className="flex flex-wrap items-center gap-3">
-                  {resource.downloadContentResourceId ? (
-                    <>
-                      <BBDownloadLink
-                        contentResourceId={resource.downloadContentResourceId}
-                        filename={resource.downloadFilename}
-                        className="inline-flex items-center gap-2 border-2 border-default bg-elevated px-4 py-2 font-bold text-highlighted hover:bg-muted"
-                      >
-                        Download{" "}
-                        {resource.downloadFilename && (
-                          <span className="font-normal">
-                            {resource.downloadFilename}
-                          </span>
-                        )}
-                        {resource.fileSize != null && resource.fileSize > 0 && (
-                          <span className="text-xs font-normal text-dimmed">
-                            ({formatFileSize(resource.fileSize)})
-                          </span>
-                        )}
-                      </BBDownloadLink>
-                      {resource.downloadFilename
-                        ?.toLowerCase()
-                        .endsWith(".zip") && (
-                        <BBArchiveContents
-                          contentResourceId={resource.downloadContentResourceId}
-                          filename={resource.downloadFilename}
-                        />
-                      )}
-                    </>
-                  ) : externalUrl ? (
-                    <a
-                      href={externalUrl}
-                      className="theme-chest inline-flex items-center gap-2 border-2 border-default bg-elevated px-4 py-2 font-bold text-highlighted hover:bg-muted"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <BBIcon name="download" /> Download (external)
-                    </a>
-                  ) : (
-                    <BBPanel as="p" className="px-3 py-2 text-sm text-dimmed">
-                      The original file for this resource was lost during ZFGC's
-                      history and could not be migrated.
-                    </BBPanel>
+  return <BBQueryBoundary query={query}>{renderResource}</BBQueryBoundary>;
+}
+
+function ResourceView({
+  resource,
+  slug,
+}: {
+  resource: Resource;
+  slug: string;
+}) {
+  const externalUrl =
+    resource.downloadUrl && /^https?:\/\//i.test(resource.downloadUrl)
+      ? resource.downloadUrl
+      : null;
+  const reactableIds = useMemo(() => [resource.id], [resource.id]);
+
+  return (
+    <CmsDetailShell entityPath={`/resources/${slug}`}>
+      <div>
+        <Masthead resource={resource} />
+        <section className="border-2 border-default bg-accented p-4 space-y-4">
+          <div className="flex flex-wrap items-center gap-3">
+            {resource.downloadContentResourceId ? (
+              <>
+                <BBDownloadLink
+                  contentResourceId={resource.downloadContentResourceId}
+                  filename={resource.downloadFilename}
+                  className="inline-flex items-center gap-2 border-2 border-default bg-elevated px-4 py-2 font-bold text-highlighted hover:bg-muted"
+                >
+                  Download{" "}
+                  {resource.downloadFilename && (
+                    <span className="font-normal">
+                      {resource.downloadFilename}
+                    </span>
                   )}
-                </div>
-                {resource.page?.contentParsed && (
-                  <BBHtml
-                    html={resource.page.contentParsed}
-                    className="whitespace-pre-wrap border-t-2 border-default pt-3 text-sm"
+                  {resource.fileSize != null && resource.fileSize > 0 && (
+                    <span className="text-xs font-normal text-dimmed">
+                      ({formatFileSize(resource.fileSize)})
+                    </span>
+                  )}
+                </BBDownloadLink>
+                {resource.downloadFilename?.toLowerCase().endsWith(".zip") && (
+                  <BBArchiveContents
+                    contentResourceId={resource.downloadContentResourceId}
+                    filename={resource.downloadFilename}
                   />
                 )}
-                <ReactionsProvider
-                  reactableType="RESOURCE"
-                  reactableIds={[resource.id]}
-                >
-                  <ReactionBar
-                    reactableId={resource.id}
-                    className="border-t-2 border-default pt-3"
-                  />
-                </ReactionsProvider>
-              </section>
-            </div>
-          </CmsDetailShell>
-        );
-      }}
-    </BBQueryBoundary>
+              </>
+            ) : externalUrl ? (
+              <a
+                href={externalUrl}
+                className="theme-chest inline-flex items-center gap-2 border-2 border-default bg-elevated px-4 py-2 font-bold text-highlighted hover:bg-muted"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <BBIcon name="download" /> Download (external)
+              </a>
+            ) : (
+              <BBPanel as="p" className="px-3 py-2 text-sm text-dimmed">
+                The original file for this resource was lost during ZFGC's
+                history and could not be migrated.
+              </BBPanel>
+            )}
+          </div>
+          {resource.page?.contentParsed && (
+            <BBHtml
+              html={resource.page.contentParsed}
+              className="whitespace-pre-wrap border-t-2 border-default pt-3 text-sm"
+            />
+          )}
+          <ReactionsProvider
+            reactableType="RESOURCE"
+            reactableIds={reactableIds}
+          >
+            <ReactionBar
+              reactableId={resource.id}
+              className="border-t-2 border-default pt-3"
+            />
+          </ReactionsProvider>
+        </section>
+      </div>
+    </CmsDetailShell>
   );
 }
 
 export default function ResourcePage({ params }: Route.ComponentProps) {
-  return <ResourceDetail slug={params.slug!} />;
+  return <ResourceDetail slug={params.slug} />;
 }

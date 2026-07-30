@@ -18,6 +18,11 @@ export default function BBCheckboxField({
   const field = useField({ form, name });
   const error = firstError(field.state.meta.errors);
   const showError = field.state.meta.isTouched && !!error;
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) =>
+      field.handleChange(event.target.checked),
+    [field],
+  );
 
   return (
     <div className="space-y-1">
@@ -27,7 +32,7 @@ export default function BBCheckboxField({
           name={name}
           type="checkbox"
           checked={Boolean(field.state.value)}
-          onChange={(event) => field.handleChange(event.target.checked)}
+          onChange={handleChange}
           onBlur={field.handleBlur}
         />
         <label

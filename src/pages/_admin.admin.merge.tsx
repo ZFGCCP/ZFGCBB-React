@@ -1,6 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 
+const ADMIN_PERMISSION = ["ZFGC_SITE_ADMIN"] as const;
+const MERGE_EMPTY_STATE = <BBEmpty message="No merge candidates" />;
+const isMergeListEmpty = (list: MergeCandidate[]) => list.length === 0;
+
 function candidateTargetLink(candidate: MergeCandidate) {
   if (candidate.targetType === "WIKI_PAGE" && candidate.targetSlug) {
     return `/wiki/${candidate.targetSlug}`;
@@ -38,7 +42,7 @@ function CmsSettings({ config }: { config: CmsConfig }) {
   const form = useForm({
     defaultValues: {
       discussionBoardId: config.discussionBoardId ?? "",
-    } as CmsConfigForm,
+    },
     validators: {
       onBlur: CmsConfigFormSchema,
       onSubmit: CmsConfigFormSchema,
@@ -55,8 +59,7 @@ function CmsSettings({ config }: { config: CmsConfig }) {
         className="p-4 space-y-3"
         errorMessage={
           configMutation.isError
-            ? ((configMutation.error as Error)?.message ??
-              "Failed to save settings.")
+            ? (configMutation.error?.message ?? "Failed to save settings.")
             : null
         }
       >
@@ -81,6 +84,57 @@ function CmsSettings({ config }: { config: CmsConfig }) {
         </div>
       </BBForm>
     </BBWidget>
+  );
+}
+
+function MergeCandidateRow({
+  candidate,
+  pending,
+  onApply,
+  onDismiss,
+}: {
+  candidate: MergeCandidate;
+  pending: boolean;
+  onApply: (candidate: MergeCandidate) => void;
+  onDismiss: (candidate: MergeCandidate) => void;
+}) {
+  const handleApply = useCallback(
+    () => onApply(candidate),
+    [candidate, onApply],
+  );
+  const handleDismiss = useCallback(
+    () => onDismiss(candidate),
+    [candidate, onDismiss],
+  );
+  const link = candidateTargetLink(candidate);
+
+  return (
+    <tr className="border-b border-muted align-top">
+      <td className="py-1 pr-2">
+        <span className="text-xs text-dimmed">{candidate.sourceType}</span>{" "}
+        {candidate.sourceTitle}
+      </td>
+      <td className="py-1 pr-2">
+        <span className="text-xs text-dimmed">{candidate.targetType}</span>{" "}
+        {link ? (
+          <BBLink to={link} className="text-highlighted">
+            {candidate.targetTitle}
+          </BBLink>
+        ) : (
+          candidate.targetTitle
+        )}
+      </td>
+      <td className="py-1 pr-2">{candidate.confidence}%</td>
+      <td className="py-1 pr-2 text-dimmed">{candidate.reason}</td>
+      <td className="py-1 whitespace-nowrap">
+        <BBButton size="xs" disabled={pending} onClick={handleApply}>
+          Apply
+        </BBButton>{" "}
+        <BBButton size="xs" onClick={handleDismiss}>
+          Dismiss
+        </BBButton>
+      </td>
+    </tr>
   );
 }
 
@@ -115,8 +169,57 @@ function MergeCenter() {
     },
   });
 
-  const visible = (candidatesQuery.data ?? []).filter(
-    (candidate) => !dismissed.has(candidateKey(candidate)),
+  const visible = useMemo(
+    () =>
+      (candidatesQuery.data ?? []).filter(
+        (candidate) => !dismissed.has(candidateKey(candidate)),
+      ),
+    [candidatesQuery.data, dismissed],
+  );
+  const handleApply = useCallback(
+    (candidate: MergeCandidate) => applyMutation.mutate(candidate),
+    [applyMutation],
+  );
+  const handleDismiss = useCallback((candidate: MergeCandidate) => {
+    setDismissed((current) => {
+      const next = new Set(current);
+      next.add(candidateKey(candidate));
+      return next;
+    });
+  }, []);
+  const renderCandidates = useCallback(
+    () =>
+      visible.length === 0 ? (
+        <p className="text-dimmed text-sm">
+          No merge suggestions — everything is linked up.
+        </p>
+      ) : (
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left border-b-2 border-default">
+              <th className="py-1 pr-2">Source</th>
+              <th className="py-1 pr-2">Suggestion</th>
+              <th className="py-1 pr-2">Confidence</th>
+              <th className="py-1 pr-2">Reason</th>
+              <th className="py-1">
+                <span className="sr-only">Actions</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {visible.map((candidate) => (
+              <MergeCandidateRow
+                key={candidateKey(candidate)}
+                candidate={candidate}
+                pending={applyMutation.isPending}
+                onApply={handleApply}
+                onDismiss={handleDismiss}
+              />
+            ))}
+          </tbody>
+        </table>
+      ),
+    [applyMutation.isPending, handleApply, handleDismiss, visible],
   );
 
   return (
@@ -127,89 +230,14 @@ function MergeCenter() {
         <div className="p-4">
           <BBQueryBoundary
             query={candidatesQuery}
-            isEmpty={(list) => list.length === 0}
-            empty={<BBEmpty message="No merge candidates" />}
+            isEmpty={isMergeListEmpty}
+            empty={MERGE_EMPTY_STATE}
           >
-            {() =>
-              visible.length === 0 ? (
-                <p className="text-dimmed text-sm">
-                  No merge suggestions — everything is linked up.
-                </p>
-              ) : (
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-left border-b-2 border-default">
-                      <th className="py-1 pr-2">Source</th>
-                      <th className="py-1 pr-2">Suggestion</th>
-                      <th className="py-1 pr-2">Confidence</th>
-                      <th className="py-1 pr-2">Reason</th>
-                      <th className="py-1">
-                        <span className="sr-only">Actions</span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {visible.map((candidate) => {
-                      const link = candidateTargetLink(candidate);
-                      return (
-                        <tr
-                          key={candidateKey(candidate)}
-                          className="border-b border-muted align-top"
-                        >
-                          <td className="py-1 pr-2">
-                            <span className="text-xs text-dimmed">
-                              {candidate.sourceType}
-                            </span>{" "}
-                            {candidate.sourceTitle}
-                          </td>
-                          <td className="py-1 pr-2">
-                            <span className="text-xs text-dimmed">
-                              {candidate.targetType}
-                            </span>{" "}
-                            {link ? (
-                              <BBLink to={link} className="text-highlighted">
-                                {candidate.targetTitle}
-                              </BBLink>
-                            ) : (
-                              candidate.targetTitle
-                            )}
-                          </td>
-                          <td className="py-1 pr-2">{candidate.confidence}%</td>
-                          <td className="py-1 pr-2 text-dimmed">
-                            {candidate.reason}
-                          </td>
-                          <td className="py-1 whitespace-nowrap">
-                            <BBButton
-                              size="xs"
-                              disabled={applyMutation.isPending}
-                              onClick={() => applyMutation.mutate(candidate)}
-                            >
-                              Apply
-                            </BBButton>{" "}
-                            <BBButton
-                              size="xs"
-                              onClick={() =>
-                                setDismissed(
-                                  new Set(dismissed).add(
-                                    candidateKey(candidate),
-                                  ),
-                                )
-                              }
-                            >
-                              Dismiss
-                            </BBButton>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              )
-            }
+            {renderCandidates}
           </BBQueryBoundary>
           {applyMutation.isError && (
             <p className="text-sm text-error mt-2">
-              {(applyMutation.error as Error).message}
+              {applyMutation.error.message}
             </p>
           )}
         </div>
@@ -220,7 +248,7 @@ function MergeCenter() {
 
 export default function AdminMergePage() {
   return (
-    <BBHasPermission requiredPermissions={["ZFGC_SITE_ADMIN"]}>
+    <BBHasPermission requiredPermissions={ADMIN_PERMISSION}>
       <MergeCenter />
     </BBHasPermission>
   );

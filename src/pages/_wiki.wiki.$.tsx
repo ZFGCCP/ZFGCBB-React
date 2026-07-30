@@ -14,9 +14,10 @@ const route = entityRoute({
   url: (params: Route.LoaderArgs["params"], request) =>
     wikiPageUrl(request, params["*"]),
   schema: WikiPageSchema,
-  prefetch: (page, headers) => [
-    reactionBatchQueryOptions("WIKI_PAGE", [page.id], headers),
-  ],
+  prefetch: (page, queryClient, headers) =>
+    queryClient.prefetchQuery(
+      reactionBatchQueryOptions("WIKI_PAGE", [page.id], headers),
+    ),
 });
 
 export const loader = route.loader;

@@ -8,7 +8,7 @@ import { getQueryClient } from "@/providers/query/queryProvider";
 
 export type PrefetchTarget = {
   url: `/${string}`;
-  schema?: v.GenericSchema<unknown, object>;
+  schema: v.GenericSchema<unknown, object>;
   meta?: Record<string, unknown>;
 };
 
@@ -58,16 +58,34 @@ export async function prefetchQueries(
   return { dehydratedState: dehydrate(queryClient), queryClient };
 }
 
-export async function prefetchQueryDehydrated<TData extends object = object>(
+type DehydratedExtraPrefetch = (
+  queryClient: QueryClient,
+  requestHeaders?: Record<string, string>,
+) => Promise<void>;
+
+export function prefetchQueryDehydrated<TData extends object>(
   request: Request,
-  target: `/${string}` | PrefetchTarget[],
+  target: `/${string}`,
+  schema: v.GenericSchema<unknown, TData>,
+  extra?: DehydratedExtraPrefetch,
+): Promise<{ dehydratedState: DehydratedState }>;
+export function prefetchQueryDehydrated(
+  request: Request,
+  target: readonly PrefetchTarget[],
+): Promise<{ dehydratedState: DehydratedState }>;
+export async function prefetchQueryDehydrated<TData extends object>(
+  request: Request,
+  target: `/${string}` | readonly PrefetchTarget[],
   schema?: v.GenericSchema<unknown, TData>,
-  extra?: (
-    queryClient: QueryClient,
-    requestHeaders?: Record<string, string>,
-  ) => Promise<void>,
+  extra?: DehydratedExtraPrefetch,
 ): Promise<{ dehydratedState: DehydratedState }> {
-  const targets = Array.isArray(target) ? target : [{ url: target, schema }];
+  let targets: PrefetchTarget[];
+  if (typeof target !== "string") {
+    targets = [...target];
+  } else {
+    if (!schema) throw new Error("A schema is required to prefetch a URL.");
+    targets = [{ url: target, schema }];
+  }
   const { dehydratedState, queryClient } = await prefetchQueries(
     request,
     targets,

@@ -7,10 +7,14 @@ export default function ProjectCardBodyCatalog({
 }) {
   const location = useLocation();
   const year = wireYear(project.publishedTs);
+  const navigationState = useMemo(
+    () => ({ from: `${location.pathname}${location.search}` }),
+    [location.pathname, location.search],
+  );
   return (
     <BBLink
       to={`/content/projects/${project.slug}`}
-      state={{ from: `${location.pathname}${location.search}` }}
+      state={navigationState}
       aria-label={`${project.title}, ${project.status}, by ${project.author ?? "unknown author"}`}
       className="group flex w-full flex-col border-2 border-default bg-muted transition-colors hover:bg-elevated focus-visible:outline-2 focus-visible:outline-offset-2"
     >

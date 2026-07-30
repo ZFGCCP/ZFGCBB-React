@@ -6,14 +6,9 @@ export interface BBTableColumn<TRow> {
   className?: string;
   hideOnMobile?: boolean;
   hideOnTablet?: boolean;
-  render?: (
-    value: TRow[keyof TRow],
-    row: TRow,
-    index: number,
-  ) => React.ReactNode;
+  render?: (value: unknown, row: TRow, index: number) => React.ReactNode;
 }
 
-// oxlint-disable-next-line no-unused-vars
 export interface BBTableProps<TRow> {
   columns: BBTableColumn<TRow>[];
   data: TRow[];
@@ -37,6 +32,110 @@ function getColumnVisibilityClass<TRow>(column: BBTableColumn<TRow>): string {
   return classes.trim();
 }
 
+function getColumnValue<TRow extends object>(
+  row: TRow,
+  column: BBTableColumn<TRow>,
+): unknown {
+  return isRowKey(row, column.key) ? row[column.key] : undefined;
+}
+
+function isRowKey<TRow extends object>(
+  row: TRow,
+  key: PropertyKey,
+): key is keyof TRow {
+  return key in row;
+}
+
+function displayColumnValue(value: unknown): string {
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "bigint" ||
+    typeof value === "boolean"
+  ) {
+    return String(value);
+  }
+  return "";
+}
+
+function getRowClassName<TRow>(
+  row: TRow,
+  index: number,
+  rowClassName: BBTableProps<TRow>["rowClassName"],
+  clickable: boolean,
+): string {
+  const baseClass = "transition-colors px-4";
+  const stripeClass =
+    index % 2 === 0
+      ? "bg-muted hover:bg-muted/60"
+      : "bg-elevated hover:bg-elevated/40";
+  const customClass =
+    typeof rowClassName === "function"
+      ? rowClassName(row, index)
+      : rowClassName;
+  const clickableClass = clickable ? "cursor-pointer" : "";
+
+  return `${baseClass} ${stripeClass} ${customClass ?? ""} ${clickableClass}`.trim();
+}
+
+function BBTableDataRow<TRow extends object>({
+  row,
+  index,
+  columns,
+  rowClassName,
+  rowOuterFlexOptions,
+  onRowClick,
+}: {
+  row: TRow;
+  index: number;
+  columns: BBTableColumn<TRow>[];
+  rowClassName: BBTableProps<TRow>["rowClassName"];
+  rowOuterFlexOptions: Omit<BBFlexProps, "children">;
+  onRowClick?: (row: TRow, index: number) => void;
+}) {
+  const handleClick = useCallback(
+    () => onRowClick?.(row, index),
+    [index, onRowClick, row],
+  );
+  const className = getRowClassName(
+    row,
+    index,
+    rowClassName,
+    onRowClick != null,
+  );
+  const rowContent = (
+    <BBFlex align="center" justify="center" {...rowOuterFlexOptions}>
+      {columns.map((column) => {
+        const value = getColumnValue(row, column);
+        return (
+          <div
+            key={String(column.key)}
+            className={`${column.className || ""} ${getColumnVisibilityClass(column)}`}
+          >
+            {column.render
+              ? column.render(value, row, index)
+              : displayColumnValue(value)}
+          </div>
+        );
+      })}
+    </BBFlex>
+  );
+
+  if (!onRowClick) {
+    return <div className={className}>{rowContent}</div>;
+  }
+
+  return (
+    <button
+      type="button"
+      className={`${className} block w-full text-left`}
+      onClick={handleClick}
+    >
+      {rowContent}
+    </button>
+  );
+}
+
 export default function BBTable<TRow extends object>({
   columns,
   data,
@@ -50,21 +149,6 @@ export default function BBTable<TRow extends object>({
   emptyMessage = "No data available",
   showHeader = true,
 }: BBTableProps<TRow>) {
-  const getRowClassName = (row: TRow, index: number): string => {
-    const baseClass = "transition-colors px-4";
-    const stripeClass =
-      index % 2 === 0
-        ? "bg-muted hover:bg-muted/60"
-        : "bg-elevated hover:bg-elevated/40";
-    const customClass =
-      typeof rowClassName === "function"
-        ? rowClassName(row, index)
-        : rowClassName;
-    const clickableClass = onRowClick ? "cursor-pointer" : "";
-
-    return `${baseClass} ${stripeClass} ${customClass} ${clickableClass}`.trim();
-  };
-
   return (
     <div className={`border border-default ${className}`}>
       {showHeader && (
@@ -96,38 +180,16 @@ export default function BBTable<TRow extends object>({
         ) : (
           data.map((row, index) => {
             const rowKey = getRowKey(row);
-            const rowContent = (
-              <BBFlex align="center" justify="center" {...rowOuterFlexOptions}>
-                {columns.map((column) => (
-                  <div
-                    key={String(column.key)}
-                    className={`${column.className || ""} ${getColumnVisibilityClass(column)}`}
-                  >
-                    {column.render
-                      ? column.render(row[column.key as keyof TRow], row, index)
-                      : String(row[column.key as keyof TRow] || "")}
-                  </div>
-                ))}
-              </BBFlex>
-            );
-
-            if (!onRowClick) {
-              return (
-                <div key={rowKey} className={getRowClassName(row, index)}>
-                  {rowContent}
-                </div>
-              );
-            }
-
             return (
-              <button
-                type="button"
+              <BBTableDataRow
                 key={rowKey}
-                className={`${getRowClassName(row, index)} block w-full text-left`}
-                onClick={() => onRowClick(row, index)}
-              >
-                {rowContent}
-              </button>
+                row={row}
+                index={index}
+                columns={columns}
+                rowClassName={rowClassName}
+                rowOuterFlexOptions={rowOuterFlexOptions}
+                onRowClick={onRowClick}
+              />
             );
           })
         )}

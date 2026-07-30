@@ -14,7 +14,7 @@ type UseBBMutationOptions<TSchema extends v.GenericSchema, TVariables> = Omit<
   "mutationFn"
 > & {
   request: (variables: TVariables) => BBMutationRequest;
-  schema?: TSchema;
+  schema: TSchema;
   invalidateKeys?: QueryKey[];
 };
 

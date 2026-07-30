@@ -1,8 +1,3 @@
-import "./assets/App.css";
-import UserProvider from "./providers/user/userProvider";
-import QueryProvider from "./providers/query/queryProvider";
-import RootLayout from "./root.layout";
-import GlobalSearchProvider from "./providers/search/globalSearchProvider";
 import {
   data,
   isRouteErrorResponse,
@@ -10,25 +5,22 @@ import {
   useRouteError,
   useRouteLoaderData,
 } from "react-router";
-import { getResponseStatus } from "./shared/http/response.handler";
-import {
-  prefetchQueries,
-  requestIsAuthenticated,
-  type PrefetchTarget,
-} from "./shared/http/ssrPrefetch";
-import { useTheme, userUiPrefs } from "./hooks/ui/useTheme";
-import BBForbidden from "./components/common/BBForbidden";
-import ThemePicker from "./components/common/ThemePicker";
-import BBProdOnly from "./components/common/BBProdOnly";
+
 import { HydrationBoundary } from "@tanstack/react-query";
 import type { DehydratedState } from "@tanstack/react-query";
-import type { User } from "./types/user";
+
+import "./assets/App.css";
+
+import UserProvider from "./providers/user/userProvider";
+import QueryProvider from "./providers/query/queryProvider";
+import GlobalSearchProvider from "./providers/search/globalSearchProvider";
+import RootLayout from "./root.layout";
 import type { Route } from "./+types/root";
 
 const GLOBAL_QUERIES: PrefetchTarget[] = [
   {
     url: "/users/loggedInUser",
-    schema: UserSchema,
+    schema: LoggedInUserResponseSchema,
     meta: { userScoped: true },
   },
   { url: "/system/site", schema: SiteInfoSchema },
@@ -108,7 +100,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         {children}
         {showThemePicker && (
-          <ThemePicker
+          <BBThemePicker
             theme={theme}
             setTheme={setTheme}
             smileySet={smileySet}
@@ -122,14 +114,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+function isDehydratedState(value: unknown): value is DehydratedState {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "mutations" in value &&
+    Array.isArray(value.mutations) &&
+    "queries" in value &&
+    Array.isArray(value.queries)
+  );
+}
+
 function getDehydratedState(loaderData: unknown): DehydratedState | undefined {
   if (
     typeof loaderData === "object" &&
     loaderData !== null &&
     "dehydratedState" in loaderData
   ) {
-    // oxlint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-    return (loaderData as { dehydratedState: DehydratedState }).dehydratedState;
+    const { dehydratedState } = loaderData;
+    return isDehydratedState(dehydratedState) ? dehydratedState : undefined;
   }
   return undefined;
 }
