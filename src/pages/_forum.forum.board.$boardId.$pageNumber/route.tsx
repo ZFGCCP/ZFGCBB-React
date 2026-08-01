@@ -59,11 +59,7 @@ function ThreadSubject({
   return (
     <div className="space-y-2 p-1">
       <h6 className="font-semibold flex items-center gap-2">
-        <BBLink
-          to={`/forum/thread/${thread.id}/1`}
-          state={navState}
-          prefetch="intent"
-        >
+        <BBLink to={`/forum/thread/${thread.id}/1`} state={navState}>
           {thread.threadName}
         </BBLink>
       </h6>
@@ -73,10 +69,7 @@ function ThreadSubject({
         {thread.createdUserId !== null &&
         thread.createdUserId !== undefined &&
         thread.createdUserId > 0 ? (
-          <BBLink
-            to={`/user/profile/${thread.createdUser?.id}`}
-            prefetch="intent"
-          >
+          <BBLink to={`/user/profile/${thread.createdUser?.id}`}>
             {thread.createdUser?.displayName}
           </BBLink>
         ) : (
@@ -91,10 +84,7 @@ function ThreadSubject({
 
       <div className="md:hidden text-sm text-highlighted">
         Latest Post by:{" "}
-        <BBLink
-          to={`/user/profile/${thread.latestMessage?.ownerId}`}
-          prefetch="intent"
-        >
+        <BBLink to={`/user/profile/${thread.latestMessage?.ownerId}`}>
           {thread.latestMessage?.ownerName}
         </BBLink>
       </div>
@@ -157,10 +147,7 @@ function BoardTableComponent({
           thread.createdUserId !== null &&
           thread.createdUserId !== undefined &&
           thread.createdUserId > 0 ? (
-            <BBLink
-              to={`/user/profile/${thread.createdUser?.id}`}
-              prefetch="intent"
-            >
+            <BBLink to={`/user/profile/${thread.createdUser?.id}`}>
               {thread.createdUser?.displayName}
             </BBLink>
           ) : (
@@ -213,10 +200,7 @@ function BoardTableComponent({
               <span>by </span>
               {thread.latestMessage?.ownerId &&
               thread.latestMessage.ownerId > 0 ? (
-                <BBLink
-                  to={`/user/profile/${thread.latestMessage?.ownerId}`}
-                  prefetch="intent"
-                >
+                <BBLink to={`/user/profile/${thread.latestMessage?.ownerId}`}>
                   {thread.latestMessage?.ownerName}
                 </BBLink>
               ) : (
@@ -290,7 +274,11 @@ function BoardContainer() {
             onPageChange={loadNewPage}
           />
 
-          <BBWidget widgetTitle={board.boardName} className="shadow-panel">
+          <BBWidget
+            widgetTitle={board.boardName}
+            className="shadow-panel"
+            contentContainerClassName="border-default border-1 border-t-0"
+          >
             <BoardTableComponent
               board={board}
               fromUrl={`/forum/board/${boardId}/${pageNumber}`}

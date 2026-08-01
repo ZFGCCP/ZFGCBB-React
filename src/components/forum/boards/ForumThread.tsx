@@ -67,14 +67,24 @@ const navigateAfterRestore = (
   void navigate(`/forum/thread/${response.threadId}/1`);
 };
 
+type RestoreTarget = "message" | "thread";
+
+const shouldRestoreThreadInstead = (error: unknown) =>
+  getResponseStatus(error) === 409 &&
+  getProblemDetail(error) === "RESTORE_THREAD_INSTEAD";
+
 const restoreFailureText = (error: unknown) => {
   if (getResponseStatus(error) === 409) {
-    const reason = getResponseBodyText(error);
+    const reason = getProblemDetail(error);
     if (reason === "NOT_RECYCLED")
       return "This content is no longer in the recycle bin.";
     if (reason === "RESTORE_TARGET_MISSING")
       return "The original board no longer exists. Move the thread manually instead.";
+    if (reason === "RESTORE_STATE_CHANGED")
+      return "Someone else changed this content while you were viewing it. Refresh and try again.";
   }
+  if (getResponseStatus(error) === 403)
+    return "You are not allowed to restore this into its original board.";
   return "Failed to restore.";
 };
 
@@ -210,6 +220,7 @@ function RecycledThreadNotice({ thread }: { thread: Thread }) {
     },
   });
   const handleRestore = useCallback(() => {
+    setRestoreNotice(null);
     restoreThreadMutation.mutate();
   }, [restoreThreadMutation]);
 
@@ -245,6 +256,7 @@ const ThreadMessage = memo(function ThreadMessage({
   onModify,
   permalink,
   canReply,
+  isTargeted,
 }: {
   message: Message;
   thread: Thread;
@@ -254,7 +266,9 @@ const ThreadMessage = memo(function ThreadMessage({
   onModify: (message: Message) => void;
   permalink: string;
   canReply: boolean;
+  isTargeted: boolean;
 }) {
+  const messageRef = useScrollIntoViewWhen<HTMLDivElement>(isTargeted);
   const rowBackground = isEven ? "bg-elevated" : "bg-muted";
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -271,32 +285,25 @@ const ThreadMessage = memo(function ThreadMessage({
   const canRestore =
     messageActionsLoaded && messageActions.has("message.restore");
 
-  const restoreThreadMutation = useBBMutation({
-    request: () => ({ url: `/thread/${thread.id}/restore`, method: "PUT" }),
+  const restoreMutation = useBBMutation<
+    RestoreTarget,
+    typeof RestoreResponseSchema
+  >({
+    request: (target) => ({
+      url:
+        target === "thread"
+          ? `/thread/${thread.id}/restore`
+          : `/message/${message.id}/restore`,
+      method: "PUT",
+    }),
     schema: RestoreResponseSchema,
     onSuccess: (response) => {
       invalidateForumContent(queryClient, [thread.id, response.threadId]);
       navigateAfterRestore(navigate, response, message.id);
     },
-    onError: (error) => {
-      setRestoreNotice(restoreFailureText(error));
-      invalidateForumContent(queryClient, [thread.id]);
-    },
-  });
-
-  const restoreMessageMutation = useBBMutation({
-    request: () => ({ url: `/message/${message.id}/restore`, method: "PUT" }),
-    schema: RestoreResponseSchema,
-    onSuccess: (response) => {
-      invalidateForumContent(queryClient, [thread.id, response.threadId]);
-      navigateAfterRestore(navigate, response, message.id);
-    },
-    onError: (error) => {
-      if (
-        getResponseStatus(error) === 409 &&
-        getResponseBodyText(error) === "RESTORE_THREAD_INSTEAD"
-      ) {
-        restoreThreadMutation.mutate();
+    onError: (error, target) => {
+      if (target === "message" && shouldRestoreThreadInstead(error)) {
+        restoreMutation.mutate("thread");
         return;
       }
       setRestoreNotice(restoreFailureText(error));
@@ -304,8 +311,7 @@ const ThreadMessage = memo(function ThreadMessage({
     },
   });
 
-  const restorePending =
-    restoreMessageMutation.isPending || restoreThreadMutation.isPending;
+  const restorePending = restoreMutation.isPending;
   const handleQuote = useCallback(() => {
     onQuote(message);
   }, [message, onQuote]);
@@ -313,8 +319,9 @@ const ThreadMessage = memo(function ThreadMessage({
     onModify(message);
   }, [message, onModify]);
   const handleRestore = useCallback(() => {
-    restoreMessageMutation.mutate();
-  }, [restoreMessageMutation]);
+    setRestoreNotice(null);
+    restoreMutation.mutate("message");
+  }, [restoreMutation]);
   const handleRemovalToggle = useCallback(() => {
     setRestoreNotice(null);
     setShowRemovalConfirm((current) => !current);
@@ -324,7 +331,11 @@ const ThreadMessage = memo(function ThreadMessage({
   }, []);
 
   return (
-    <div id={`msg${message.id}`} className="flex flex-col min-h-75 scroll-mt-4">
+    <div
+      ref={messageRef}
+      id={`msg${message.id}`}
+      className="flex flex-col min-h-75 scroll-mt-4"
+    >
       <div className="flex flex-row items-stretch min-h-16">
         <div
           className={`w-28 md:w-34 lg:w-64 shrink-0 border-r border-b border-default p-3 ${rowBackground}`}
@@ -506,6 +517,7 @@ function ThreadView({
   quoteSeedNonce,
   onQuote,
   onModify,
+  targetedMessageId,
 }: {
   thread: Thread;
   currentPage: number;
@@ -516,6 +528,7 @@ function ThreadView({
   quoteSeedNonce: number;
   onQuote: (message: Message) => void;
   onModify: () => void;
+  targetedMessageId: number | null;
 }) {
   const navigate = useNavigate();
   const threadId = thread.id;
@@ -543,7 +556,11 @@ function ThreadView({
         />
 
         {thread.pollInfo && <PollResults poll={thread.pollInfo} />}
-        <BBWidget widgetTitle={thread.threadName} className="shadow-panel">
+        <BBWidget
+          widgetTitle={thread.threadName}
+          className="shadow-panel"
+          contentContainerClassName="border-default border-1 border-t-0"
+        >
           <ReactionsProvider
             reactableType="MESSAGE"
             reactableIds={reactableIds}
@@ -560,6 +577,7 @@ function ThreadView({
                   onModify={onModify}
                   permalink={`/forum/thread/${threadId}/${currentPage}#msg${message.id}`}
                   canReply={canReply}
+                  isTargeted={message.id === targetedMessageId}
                 />
               ))}
             </div>
@@ -621,13 +639,11 @@ export default function ForumThread({
     setShowReplyBox(true);
   }, []);
 
-  const messagesLoaded = Boolean(query.data);
-  useEffect(() => {
-    if (!messagesLoaded) return;
-    const hash = window.location.hash;
-    if (!/^#msg\d+$/u.test(hash)) return;
-    document.querySelector(hash)?.scrollIntoView({ block: "start" });
-  }, [messagesLoaded]);
+  const { hash } = useLocation();
+  const targetedMessageId = useMemo(() => {
+    const targeted = /^#msg(\d+)$/u.exec(hash);
+    return targeted ? Number(targeted[1]) : null;
+  }, [hash]);
   const renderThread = useCallback(
     (thread: Thread) => (
       <ThreadView
@@ -640,6 +656,7 @@ export default function ForumThread({
         quoteSeedNonce={quoteSeedNonce}
         onQuote={seedReplyEditor}
         onModify={openReplyEditor}
+        targetedMessageId={targetedMessageId}
       />
     ),
     [
@@ -651,6 +668,7 @@ export default function ForumThread({
       quoteSeedNonce,
       seedReplyEditor,
       showReplyBox,
+      targetedMessageId,
     ],
   );
 

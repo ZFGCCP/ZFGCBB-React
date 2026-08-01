@@ -9,7 +9,7 @@ const isNamespaceListEmpty = (namespaces: WikiImportNamespace[]) =>
   namespaces.length === 0;
 
 export function WikiNamespaceManagement() {
-  const namespacesQuery = useBBQuery("/system/wiki/import-namespaces", {
+  const namespacesQuery = useBBQuery("/admin/wiki/import-namespaces", {
     schema: WikiImportNamespaceListSchema,
     queryKey: "admin-wiki-import-namespaces",
   });
@@ -17,7 +17,7 @@ export function WikiNamespaceManagement() {
   const saveNamespace = useBBMutation({
     schema: v.unknown(),
     request: (variables: { sourceNamespaceId: number; name: string }) => ({
-      url: `/system/wiki/import-namespaces/${String(variables.sourceNamespaceId)}`,
+      url: `/admin/wiki/import-namespaces/${String(variables.sourceNamespaceId)}`,
       method: "PUT",
       body: { namespaceName: variables.name },
     }),

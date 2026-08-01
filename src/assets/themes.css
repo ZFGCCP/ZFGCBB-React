@@ -59,7 +59,7 @@
   --highlight-color-inverted: #000000;
 
   --shadow-panel-strength: 100%;
-  --shadow-panel-opacity: 70%;
+  --shadow-panel-opacity: 40%;
   --shadow-panel-color: color-mix(
     in srgb,
     color-mix(
@@ -70,7 +70,7 @@
       var(--shadow-panel-opacity),
     transparent
   );
-  --shadow-panel: 6px 6px 0 var(--shadow-panel-color);
+  --shadow-panel: 8px 8px 0 var(--shadow-panel-color);
   --shadow-toast: 4px 4px 0 var(--shadow-panel-color);
 
   --sprite-icons: url("/themes/midnight/images/sprites/icons.webp");

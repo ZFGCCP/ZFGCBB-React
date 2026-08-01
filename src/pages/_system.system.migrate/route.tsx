@@ -39,7 +39,7 @@ function JobRow({
 }) {
   const cancelMutation = useBBMutation({
     request: () => ({
-      url: `/system/migrate/jobs/${job.id}`,
+      url: `/admin/migrate/jobs/${job.id}`,
       method: "DELETE",
     }),
     schema: v.undefined(),
@@ -183,7 +183,7 @@ function ConflictRow({
 
 function ConflictsPanel() {
   const { data: conflicts, refetch } = useBBQuery(
-    "/system/migrate/conflicts?status=OPEN",
+    "/admin/migrate/conflicts?status=OPEN",
     {
       retry: 0,
       gcTime: 0,
@@ -194,7 +194,7 @@ function ConflictsPanel() {
   );
 
   const scan = useBBMutation({
-    request: () => ({ url: "/system/migrate/conflicts/scan" }),
+    request: () => ({ url: "/admin/migrate/conflicts/scan" }),
     schema: MigrateDetectResponseSchema,
     onSuccess: () => refetch(),
   });
@@ -539,7 +539,7 @@ export default function SystemMigrate() {
   const queryClient = useQueryClient();
 
   const { data: permissionCodes } = useBBQuery(
-    "/system/migrate/permission-codes",
+    "/admin/migrate/permission-codes",
     {
       schema: PermissionCodeListSchema,
       enabled: isSiteAdmin ?? false,
@@ -547,7 +547,7 @@ export default function SystemMigrate() {
     },
   );
 
-  const { data: jobs, refetch } = useBBQuery("/system/migrate/jobs", {
+  const { data: jobs, refetch } = useBBQuery("/admin/migrate/jobs", {
     retry: 0,
     gcTime: 0,
     staleTime: 0,
@@ -642,7 +642,7 @@ export default function SystemMigrate() {
   const loadGroupsMutation = useBBMutation({
     schema: SmfMemberGroupListSchema,
     request: () => ({
-      url: "/system/migrate/membergroups",
+      url: "/admin/migrate/membergroups",
       method: "POST",
       body: {
         smfHost: form.state.values.smfHost,

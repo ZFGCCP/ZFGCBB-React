@@ -14,7 +14,6 @@ export default function UserLeftPaneHeader({
         <BBLink
           to={`/user/profile/${user.id}`}
           className="font-medium truncate w-full"
-          prefetch="intent"
         >
           {user?.displayName}
         </BBLink>

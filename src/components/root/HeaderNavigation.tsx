@@ -14,11 +14,17 @@ export default function HeaderNavigation() {
       : pathname === base || pathname.startsWith(`${base}/`);
   return (
     <nav className="hidden md:flex items-end gap-1">
-      <BBNavTab title="Home" to="/" active={isActive("/")} raiseOnHover />
+      <BBNavTab
+        title="Home"
+        to="/"
+        active={isActive("/")}
+        raiseOnHover
+        prefetch="render"
+      />
       <BBNavTab
         title="Forum"
         to="/forum"
-        prefetch="intent"
+        prefetch="render"
         active={isActive("/forum")}
         raiseOnHover
       />

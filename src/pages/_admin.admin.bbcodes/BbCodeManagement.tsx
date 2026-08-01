@@ -6,7 +6,7 @@ const BBCODE_EMPTY_STATE = <BBEmpty message="No bbcodes found." />;
 const isBbCodeListEmpty = (bbCodes: BbCodeToggle[]) => bbCodes.length === 0;
 
 export function BbCodeManagement() {
-  const bbCodesQuery = useBBQuery("/system/bbcodes", {
+  const bbCodesQuery = useBBQuery("/admin/bbcodes", {
     schema: BbCodeToggleListSchema,
     queryKey: "admin-bbcodes",
   });
@@ -14,7 +14,7 @@ export function BbCodeManagement() {
   const toggleBbCode = useBBMutation({
     schema: v.undefined(),
     request: (variables: { code: string; enabled: boolean }) => ({
-      url: `/system/bbcodes/${variables.code}`,
+      url: `/admin/bbcodes/${variables.code}`,
       method: "PUT",
       body: { enabled: variables.enabled },
     }),

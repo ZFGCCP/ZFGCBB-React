@@ -10,7 +10,7 @@ const USERS_EMPTY_STATE = <BBEmpty message="No users found." />;
 const isUserListEmpty = (users: UserSummary[]) => users.length === 0;
 
 export function UserManagement() {
-  const usersQuery = useBBQuery("/system/users", {
+  const usersQuery = useBBQuery("/admin/users", {
     schema: UserSummaryListSchema,
     queryKey: "admin-users",
   });
@@ -20,7 +20,7 @@ export function UserManagement() {
   const deleteUser = useBBMutation({
     schema: v.undefined(),
     request: (variables: { userId: number; mode: DeletionMode }) => ({
-      url: "/system/users/delete",
+      url: "/admin/users/delete",
       method: "POST",
       body: variables,
     }),

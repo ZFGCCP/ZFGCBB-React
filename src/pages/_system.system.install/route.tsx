@@ -11,24 +11,9 @@ const POST_INSTALL_LOGIN_STATE = { installationComplete: true } as const;
 function safeProblemDetail(error: unknown): string | undefined {
   const status = getResponseStatus(error);
   if (status !== 400 && status !== 409 && status !== 422) return undefined;
-  const body = getResponseBodyText(error);
-  if (!body) return undefined;
-  try {
-    const problem: unknown = JSON.parse(body);
-    if (
-      typeof problem !== "object" ||
-      problem === null ||
-      !("detail" in problem) ||
-      typeof problem.detail !== "string"
-    ) {
-      return undefined;
-    }
-    const detail = problem.detail.replaceAll(/\s+/gu, " ").trim();
-    if (!detail) return undefined;
-    return detail.length > 240 ? `${detail.slice(0, 237)}...` : detail;
-  } catch {
-    return undefined;
-  }
+  const detail = getProblemDetail(error);
+  if (!detail) return undefined;
+  return detail.length > 240 ? `${detail.slice(0, 237)}...` : detail;
 }
 
 function withSafeDetail(message: string, error: unknown) {

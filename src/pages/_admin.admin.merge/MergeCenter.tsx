@@ -13,10 +13,10 @@ const isMergeListEmpty = (list: MergeCandidate[]) => list.length === 0;
 export function MergeCenter() {
   const queryClient = useQueryClient();
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
-  const candidatesQuery = useBBQuery("/system/cms/merge-candidates", {
+  const candidatesQuery = useBBQuery("/admin/cms/merge-candidates", {
     schema: MergeCandidateListSchema,
   });
-  const { data: config } = useBBQuery("/system/cms/config", {
+  const { data: config } = useBBQuery("/admin/cms/config", {
     schema: CmsConfigSchema,
   });
 
@@ -36,7 +36,7 @@ export function MergeCenter() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({
-        queryKey: ["/system/cms/merge-candidates"],
+        queryKey: ["/admin/cms/merge-candidates"],
       });
     },
   });

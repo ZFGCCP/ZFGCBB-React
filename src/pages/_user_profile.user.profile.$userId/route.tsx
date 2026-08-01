@@ -10,13 +10,13 @@ const PROFILE_ADMIN_PERMISSIONS = [
 export const loader = ({ request, params }: Route.LoaderArgs) =>
   prefetchQueryDehydrated(
     request,
-    `/user-profile/${params.userId}`,
+    `/users/${params.userId}`,
     UserSchema,
   );
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   await getQueryClient().prefetchQuery(
-    bbQueryOptions(`/user-profile/${params.userId}`, {
+    bbQueryOptions(`/users/${params.userId}`, {
       schema: UserSchema,
       meta: { userScoped: true },
     }),
@@ -45,7 +45,7 @@ const MG_ZERO_EASTER_EGG = <MgZeroEasterEgg />;
 
 function UserProfileContent() {
   const { userId } = useParams();
-  const query = useBBQuery(`/user-profile/${userId}`, {
+  const query = useBBQuery(`/users/${userId}`, {
     schema: UserSchema,
     meta: { userScoped: true },
   });

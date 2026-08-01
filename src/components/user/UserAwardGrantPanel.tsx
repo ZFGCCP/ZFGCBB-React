@@ -7,7 +7,7 @@ interface UserAwardGrantPanelProps {
 export default function UserAwardGrantPanel({
   userId,
 }: UserAwardGrantPanelProps) {
-  const catalog = useBBQuery("/user-profile/awards/catalog", {
+  const catalog = useBBQuery("/users/awards/catalog", {
     schema: AwardCatalogSchema,
   });
   const [selectedAwardId, setSelectedAwardId] = useState<number | null>(null);
@@ -16,11 +16,11 @@ export default function UserAwardGrantPanel({
   const grant = useBBMutation({
     schema: UserSchema,
     request: (variables: { awardId: number; reason: string }) => ({
-      url: `/user-profile/${userId}/awards`,
+      url: `/users/${userId}/awards`,
       method: "POST",
       body: { awardId: variables.awardId, reason: variables.reason },
     }),
-    invalidateKeys: [[`/user-profile/${userId}`]],
+    invalidateKeys: [[`/users/${userId}`]],
     onSuccess: () => {
       setReason("");
     },

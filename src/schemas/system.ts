@@ -96,7 +96,6 @@ export const AdminBackupSchema = v.object({
   expiresAt: v.string(),
   archiveBytes: v.optional(v.number()),
   archiveSha256: v.optional(v.string()),
-  generationId: v.optional(v.string()),
   installerCompatible: v.optional(v.boolean()),
   installerAnchorAdministratorId: v.optional(v.number()),
   downloadReady: v.boolean(),

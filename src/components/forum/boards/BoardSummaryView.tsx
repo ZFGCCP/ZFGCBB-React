@@ -24,7 +24,7 @@ export default function BoardSummaryView({ subBoards }: BoardSummaryViewProps) {
         render: (_, board) => (
           <section>
             <h6 className="font-semibold text-left">
-              <BBLink to={`/forum/board/${board.boardId}/1`} prefetch="intent">
+              <BBLink to={`/forum/board/${board.boardId}/1`}>
                 {board.boardName}
               </BBLink>
             </h6>
@@ -36,10 +36,7 @@ export default function BoardSummaryView({ subBoards }: BoardSummaryViewProps) {
                 <span className="font-medium">Child boards: </span>
                 {board.childBoards.map((childBoard, index) => (
                   <span key={childBoard.boardId}>
-                    <BBLink
-                      to={`/forum/board/${childBoard.boardId}/1`}
-                      prefetch="intent"
-                    >
+                    <BBLink to={`/forum/board/${childBoard.boardId}/1`}>
                       {childBoard.boardName}
                     </BBLink>
                     {index < board.childBoards!.length - 1 && ", "}
@@ -63,10 +60,7 @@ export default function BoardSummaryView({ subBoards }: BoardSummaryViewProps) {
                   <>
                     <span className="grow text-left">Last post by: </span>
 
-                    <BBLink
-                      to={`/user/profile/${board.latestMessageOwnerId}`}
-                      prefetch="intent"
-                    >
+                    <BBLink to={`/user/profile/${board.latestMessageOwnerId}`}>
                       {board.latestMessageUserName}
                     </BBLink>
                   </>
@@ -123,10 +117,7 @@ export default function BoardSummaryView({ subBoards }: BoardSummaryViewProps) {
               {board.latestMessageOwnerId && board.latestMessageOwnerId > 0 ? (
                 <>
                   <span>Last post by: </span>
-                  <BBLink
-                    to={`/user/profile/${board.latestMessageOwnerId}`}
-                    prefetch="intent"
-                  >
+                  <BBLink to={`/user/profile/${board.latestMessageOwnerId}`}>
                     {board.latestMessageUserName}
                   </BBLink>
                 </>

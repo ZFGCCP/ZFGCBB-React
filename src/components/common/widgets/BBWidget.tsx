@@ -1,12 +1,14 @@
 export interface BBWidgetProps {
   widgetTitle?: React.ReactNode;
   className?: string;
+  contentContainerClassName?: string;
   children: React.ReactNode;
 }
 
 export default function BBWidget({
   widgetTitle,
   className = "",
+  contentContainerClassName = "",
   children,
 }: BBWidgetProps) {
   return (
@@ -18,7 +20,7 @@ export default function BBWidget({
           {widgetTitle}
         </h6>
       )}
-      <div>{children}</div>
+      <div className={contentContainerClassName ?? ""}>{children}</div>
     </section>
   );
 }

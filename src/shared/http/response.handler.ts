@@ -65,7 +65,27 @@ export function getResponseStatus(error: unknown): number | undefined {
   return getErrorResponse(error)?.status;
 }
 
-export function getResponseBodyText(error: unknown): string | undefined {
+function getResponseBodyText(error: unknown): string | undefined {
   const responseText = getErrorCauseProperty(error, "responseText");
   return typeof responseText === "string" ? responseText : undefined;
+}
+
+export function getProblemDetail(error: unknown): string | undefined {
+  const body = getResponseBodyText(error);
+  if (!body) return undefined;
+  try {
+    const problem: unknown = JSON.parse(body);
+    if (
+      typeof problem !== "object" ||
+      problem === null ||
+      !("detail" in problem) ||
+      typeof problem.detail !== "string"
+    ) {
+      return undefined;
+    }
+    const detail = problem.detail.replaceAll(/\s+/gu, " ").trim();
+    return detail || undefined;
+  } catch {
+    return undefined;
+  }
 }

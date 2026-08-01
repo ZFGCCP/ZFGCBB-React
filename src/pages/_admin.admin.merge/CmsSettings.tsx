@@ -9,14 +9,14 @@ export function CmsSettings({ config }: { config: CmsConfig }) {
 
   const configMutation = useBBMutation({
     request: (discussionBoardId: string) => ({
-      url: "/system/cms/config",
+      url: "/admin/cms/config",
       method: "PUT",
       body: { discussionBoardId },
     }),
     schema: CmsConfigSchema,
     onSuccess: () => {
       void queryClient.invalidateQueries({
-        queryKey: ["/system/cms/config"],
+        queryKey: ["/admin/cms/config"],
       });
     },
   });

@@ -39,7 +39,7 @@ export default function ThemePicker({
   const persist = useCallback(
     (nextTheme: string, nextSmileySet: string) => {
       if (!user.id) return;
-      void apiFetch(`${getApiBaseUrl()}/user-profile/${user.id}/settings`, {
+      void apiFetch(`${getApiBaseUrl()}/users/${user.id}/settings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
