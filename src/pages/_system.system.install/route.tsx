@@ -8,6 +8,25 @@ import {
 
 const POST_INSTALL_LOGIN_STATE = { installationComplete: true } as const;
 
+const CONTENT_FORMAT_OPTIONS = ContentFormatSchema.options.map(
+  (contentFormat) => ({
+    value: contentFormat,
+    label: contentFormatLabel(contentFormat),
+  }),
+);
+
+const INSTALL_FORM_DEFAULTS: InstallForm = {
+  installToken: "",
+  adminUserName: "",
+  adminDisplayName: "",
+  adminEmail: "",
+  adminPassword: "",
+  siteName: "ZFGBB",
+  defaultContentFormat: "BBCODE",
+  applySampleData: false,
+  provisionRecycleBin: true,
+};
+
 function safeProblemDetail(error: unknown): string | undefined {
   const status = getResponseStatus(error);
   if (status !== 400 && status !== 409 && status !== 422) return undefined;
@@ -88,16 +107,7 @@ export default function SystemInstall() {
   });
 
   const form = useForm({
-    defaultValues: {
-      installToken: "",
-      adminUserName: "",
-      adminDisplayName: "",
-      adminEmail: "",
-      adminPassword: "",
-      siteName: "ZFGBB",
-      applySampleData: false,
-      provisionRecycleBin: true,
-    },
+    defaultValues: INSTALL_FORM_DEFAULTS,
     validators: {
       onBlur: InstallFormSchema,
       onSubmit: InstallFormSchema,
@@ -175,6 +185,12 @@ export default function SystemInstall() {
             type="password"
           />
           <BBField label="Site Name" name="siteName" />
+          <BBSelectField
+            name="defaultContentFormat"
+            label="Default Content Format"
+            options={CONTENT_FORMAT_OPTIONS}
+            helperText="Which format new posts and wiki pages start in. Authors can switch per post, and you can change this later in the admin panel."
+          />
           <BBCheckboxField
             name="applySampleData"
             label="Install complete anonymized ZFGC preview fixture"

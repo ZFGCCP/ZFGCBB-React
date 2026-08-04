@@ -1,5 +1,7 @@
-import { useForm } from "@tanstack/react-form";
+import { useField, useForm } from "@tanstack/react-form";
 import * as v from "valibot";
+import { useBBFormContext } from "./BBForm";
+import type { ContentConversion, ContentFormat } from "@/types/content";
 
 const ContentFormSchema = v.object({
   body: v.pipe(
@@ -10,8 +12,15 @@ const ContentFormSchema = v.object({
   summary: v.pipe(v.string(), v.maxLength(255, "Summary is too long.")),
 });
 
-export type ContentEditorValue = v.InferOutput<typeof ContentFormSchema>;
+export type ContentEditorValue = v.InferOutput<typeof ContentFormSchema> & {
+  contentFormat: ContentFormat;
+};
 type Bbcode = v.InferOutput<typeof BbcodeListSchema>[number];
+
+type ContentConversionState = ContentConversion & {
+  previousBody: string;
+  previousContentFormat: ContentFormat;
+};
 
 const TOOLBAR_PRIORITY = [
   "b",
@@ -32,6 +41,7 @@ const TOOLBAR_PRIORITY = [
 
 interface BBContentEditorProps {
   initialBody?: string | undefined;
+  initialContentFormat?: ContentFormat | undefined;
   rows?: number | undefined;
   submitLabel: string;
   pendingLabel: string;
@@ -65,8 +75,86 @@ function ToolbarButton({
   );
 }
 
+function ContentFormatButton({
+  contentFormat,
+  selected,
+  disabled,
+  onSelect,
+}: {
+  contentFormat: ContentFormat;
+  selected: boolean;
+  disabled: boolean;
+  onSelect: (contentFormat: ContentFormat) => void;
+}) {
+  const select = useCallback(() => {
+    onSelect(contentFormat);
+  }, [contentFormat, onSelect]);
+
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      disabled={disabled}
+      onClick={select}
+      className={`cursor-pointer border px-2 py-0.5 text-xs disabled:cursor-progress disabled:opacity-50 ${
+        selected
+          ? "border-default bg-accented font-bold text-highlighted"
+          : "border-muted text-dimmed hover:text-highlighted"
+      }`}
+    >
+      {contentFormatLabel(contentFormat)}
+    </button>
+  );
+}
+
+function ContentConversionNotice({
+  conversion,
+  contentFormat,
+  onUndo,
+}: {
+  conversion: ContentConversionState;
+  contentFormat: ContentFormat;
+  onUndo: () => void;
+}) {
+  const form = useBBFormContext();
+  const bodyField = useField({ form, name: "body" });
+  if (String(bodyField.state.value ?? "") !== conversion.content) return null;
+
+  const hasNotes = conversion.notes.length > 0;
+  return (
+    <output
+      className={`block space-y-2 border-2 p-3 text-sm ${
+        hasNotes ? "border-error bg-accented" : "border-default bg-muted"
+      }`}
+    >
+      <div className="flex items-start gap-3">
+        <p className={hasNotes ? "font-bold text-error" : "text-dimmed"}>
+          {hasNotes
+            ? `Converted to ${contentFormatLabel(contentFormat)}, but some markup did not survive:`
+            : `Converted to ${contentFormatLabel(contentFormat)}.`}
+        </p>
+        <button
+          type="button"
+          onClick={onUndo}
+          className="ml-auto shrink-0 cursor-pointer border border-default bg-muted px-2 py-0.5 text-xs hover:bg-elevated"
+        >
+          Undo conversion
+        </button>
+      </div>
+      {hasNotes && (
+        <ul className="list-disc space-y-1 pl-5 text-error">
+          {conversion.notes.map((note) => (
+            <li key={note}>{note}</li>
+          ))}
+        </ul>
+      )}
+    </output>
+  );
+}
+
 export default function BBContentEditor({
   initialBody,
+  initialContentFormat,
   rows = 15,
   submitLabel,
   pendingLabel,
@@ -77,9 +165,27 @@ export default function BBContentEditor({
   onSubmit,
 }: BBContentEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const conversionInFlightRef = useRef(false);
   const [mode, setMode] = useState<"write" | "preview">("write");
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
   const [previewError, setPreviewError] = useState(false);
+  const [chosenContentFormat, setChosenContentFormat] =
+    useState<ContentFormat | null>(null);
+  const [conversion, setConversion] = useState<ContentConversionState | null>(
+    null,
+  );
+  const [conversionFailure, setConversionFailure] = useState<string | null>(
+    null,
+  );
+
+  const { data: siteInfo } = useSiteInfo();
+  const contentFormat =
+    chosenContentFormat ??
+    initialContentFormat ??
+    siteInfo?.defaultContentFormat ??
+    "BBCODE";
+  const contentFormatOptions =
+    siteInfo?.contentFormats ?? ContentFormatSchema.options;
 
   const bbcodesQuery = useBBQuery("/content/bbcodes", {
     schema: BbcodeListSchema,
@@ -111,9 +217,72 @@ export default function BBContentEditor({
       onSubmit: ContentFormSchema,
     },
     onSubmit: async ({ value }) => {
-      await onSubmit(value);
+      await onSubmit({ ...value, contentFormat });
     },
   });
+
+  const convertContent = useBBMutation({
+    schema: ContentConversionSchema,
+    request: (variables: {
+      content: string;
+      fromContentFormat: ContentFormat;
+      toContentFormat: ContentFormat;
+    }) => ({
+      url: "/content/convert",
+      body: { ...variables, scope: previewScope },
+    }),
+  });
+
+  const selectContentFormat = useCallback(
+    (nextContentFormat: ContentFormat) => {
+      if (nextContentFormat === contentFormat || conversionInFlightRef.current)
+        return;
+      setConversion(null);
+      setConversionFailure(null);
+      const bodyBeforeConversion = form.getFieldValue("body");
+      if (bodyBeforeConversion.trim().length === 0) {
+        setChosenContentFormat(nextContentFormat);
+        return;
+      }
+      conversionInFlightRef.current = true;
+      convertContent.mutate(
+        {
+          content: bodyBeforeConversion,
+          fromContentFormat: contentFormat,
+          toContentFormat: nextContentFormat,
+        },
+        {
+          onSuccess: (converted) => {
+            form.setFieldValue("body", converted.content);
+            setChosenContentFormat(nextContentFormat);
+            setConversion({
+              ...converted,
+              previousBody: bodyBeforeConversion,
+              previousContentFormat: contentFormat,
+            });
+            setMode("write");
+          },
+          onError: () => {
+            setConversionFailure(
+              `Could not convert this ${contentFormatLabel(contentFormat)} to ${contentFormatLabel(nextContentFormat)}. Your text and its format are unchanged — try again in a moment.`,
+            );
+          },
+          onSettled: () => {
+            conversionInFlightRef.current = false;
+          },
+        },
+      );
+    },
+    [contentFormat, convertContent, form],
+  );
+
+  const undoConversion = useCallback(() => {
+    if (!conversion) return;
+    form.setFieldValue("body", conversion.previousBody);
+    setChosenContentFormat(conversion.previousContentFormat);
+    setConversion(null);
+    setConversionFailure(null);
+  }, [conversion, form]);
 
   const insertTag = useCallback(
     (code: string, selfClosing: boolean) => {
@@ -157,6 +326,7 @@ export default function BBContentEditor({
           content: form.getFieldValue("body"),
           scope: previewScope,
           slug: previewSlug,
+          contentFormat,
         }),
       });
       const data = await handleResponseWithJason(response, WikiPreviewSchema);
@@ -164,7 +334,7 @@ export default function BBContentEditor({
     } catch {
       setPreviewError(true);
     }
-  }, [form, previewScope, previewSlug]);
+  }, [contentFormat, form, previewScope, previewSlug]);
   const showWriteMode = useCallback(() => {
     setMode("write");
   }, []);
@@ -200,7 +370,40 @@ export default function BBContentEditor({
           >
             Preview
           </button>
+          <fieldset
+            aria-label="Content format"
+            className="ml-auto flex items-center gap-1 pb-1 self-end"
+          >
+            <span className="text-xs text-dimmed">
+              {convertContent.isPending ? "Converting…" : "Format"}
+            </span>
+            {contentFormatOptions.map((option) => (
+              <ContentFormatButton
+                key={option}
+                contentFormat={option}
+                selected={option === contentFormat}
+                disabled={convertContent.isPending}
+                onSelect={selectContentFormat}
+              />
+            ))}
+          </fieldset>
         </div>
+
+        {conversionFailure && (
+          <div
+            role="alert"
+            className="border-2 border-error bg-accented p-3 text-sm text-error"
+          >
+            {conversionFailure}
+          </div>
+        )}
+        {conversion && (
+          <ContentConversionNotice
+            conversion={conversion}
+            contentFormat={contentFormat}
+            onUndo={undoConversion}
+          />
+        )}
 
         {mode === "write" ? (
           <>

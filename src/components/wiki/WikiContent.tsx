@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { TrailSegment } from "./WikiShell";
 import { UserContext } from "@/providers/user/userProvider";
 import type { WikiRevisionRef } from "@/types/content";
+import type { ContentEditorValue } from "@/components/common/forms/BBContentEditor";
 
 const TOC_INDENT = ["", "pl-3", "pl-6", "pl-9", "pl-12", "pl-15"];
 
@@ -34,13 +35,14 @@ function WikiEditor({
 
   const submitRevision = useBBMutation({
     schema: WikiRevisionSubmitSchema,
-    request: (value: { body: string; summary: string }) => ({
+    request: (value: ContentEditorValue) => ({
       url: "/wiki/meta/revisions",
       method: "POST",
       body: {
         slug,
         content: value.body,
         summary: value.summary || undefined,
+        contentFormat: value.contentFormat,
       },
     }),
     onSuccess: async (ref) => {
@@ -67,8 +69,7 @@ function WikiEditor({
     },
   });
   const handleSubmit = useCallback(
-    (value: { body: string; summary: string }) =>
-      submitRevision.mutateAsync(value),
+    (value: ContentEditorValue) => submitRevision.mutateAsync(value),
     [submitRevision],
   );
 
@@ -84,6 +85,7 @@ function WikiEditor({
   return (
     <BBContentEditor
       initialBody={page.content ?? ""}
+      initialContentFormat={page.contentFormat}
       showSummary
       previewScope="WIKI"
       previewSlug={page.slug}

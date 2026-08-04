@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./themes.css";
+@import "./bbcode.css";
 @import "./sprites.css";
 @import "./smileys.css";
 

@@ -1,5 +1,7 @@
 import * as v from "valibot";
 
+export const ContentFormatSchema = v.picklist(["BBCODE", "MARKDOWN"]);
+
 export const WikiPageRefSchema = v.object({
   namespace: v.string(),
   title: v.string(),
@@ -58,7 +60,7 @@ export const WikiPageSchema = v.object({
   redirectTo: v.optional(v.string()),
   content: v.optional(v.string()),
   contentParsed: v.optional(v.string()),
-  contentFormat: v.optional(v.string()),
+  contentFormat: v.optional(ContentFormatSchema),
   categories: v.array(v.string()),
   categoryMembers: v.array(WikiPageRefSchema),
   revision: v.optional(WikiRevisionRefSchema),
@@ -235,6 +237,11 @@ export const ResourceShowcaseSchema = v.object({
 
 export const WikiPreviewSchema = v.object({
   contentParsed: v.string(),
+});
+
+export const ContentConversionSchema = v.object({
+  content: v.string(),
+  notes: v.optional(v.array(v.string()), []),
 });
 
 export const BbcodeListSchema = v.array(

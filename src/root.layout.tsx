@@ -1,10 +1,15 @@
 import { Navigate } from "react-router";
 
 import { useInstallStatus } from "./hooks/data/useInstallStatus";
+import { useSiteInfo } from "./hooks/data/useSiteInfo";
 import { useGlobalSearch } from "./providers/search/globalSearchProvider";
 import { UserContext } from "./providers/user/userProvider";
 
 const ADMIN_PERMISSIONS = ["ZFGC_SITE_ADMIN"] as const;
+
+const SHOW_BUILD_VERSION =
+  import.meta.env.DEV ||
+  import.meta.env.REACT_ZFGBB_FEATURE_FLAG_ENABLE_BUILD_VERSION === "true";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -15,6 +20,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { pathname } = useLocation();
   const { data: installStatus } = useInstallStatus();
+  const { data: siteInfo } = useSiteInfo();
   const { open: openSearch } = useGlobalSearch();
   const isNavigating = useNavigation().state === "loading";
 
@@ -90,6 +96,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <BBBreadcrumb />
           <div className="flex-1">{children}</div>
           <BBBreadcrumb decorative />
+          {SHOW_BUILD_VERSION && (
+            <p className="text-dimmed text-xs pt-1 text-center">
+              build {import.meta.env.REACT_ZFGBB_VERSION}
+              {siteInfo?.buildVersion ? ` · api ${siteInfo.buildVersion}` : ""}
+            </p>
+          )}
         </div>
       </main>
 

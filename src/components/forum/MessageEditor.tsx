@@ -1,15 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as v from "valibot";
 import type { ContentEditorValue } from "@/components/common/forms/BBContentEditor";
+import type { ContentFormat } from "@/types/content";
 
 interface MessageEditorProps {
   threadId: number;
   initialBody?: string | undefined;
+  initialContentFormat?: ContentFormat | undefined;
 }
 
 export default function MessageEditor({
   threadId,
   initialBody,
+  initialContentFormat,
 }: MessageEditorProps) {
   const queryClient = useQueryClient();
   const newPostMutator = useMutation<unknown, Error, ContentEditorValue>({
@@ -20,7 +23,10 @@ export default function MessageEditor({
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ body: values.body }),
+          body: JSON.stringify({
+            body: values.body,
+            contentFormat: values.contentFormat,
+          }),
         },
       );
       return handleResponseWithJason(response, v.unknown());
@@ -48,6 +54,7 @@ export default function MessageEditor({
 
       <BBContentEditor
         initialBody={initialBody}
+        initialContentFormat={initialContentFormat}
         submitLabel="Submit Post"
         pendingLabel="Posting..."
         errorMessage={newPostMutator.isError ? "Failed to post message." : null}

@@ -8,11 +8,7 @@ const PROFILE_ADMIN_PERMISSIONS = [
 ] as const;
 
 export const loader = ({ request, params }: Route.LoaderArgs) =>
-  prefetchQueryDehydrated(
-    request,
-    `/users/${params.userId}`,
-    UserSchema,
-  );
+  prefetchQueryDehydrated(request, `/users/${params.userId}`, UserSchema);
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   await getQueryClient().prefetchQuery(

@@ -1,5 +1,7 @@
 import type * as v from "valibot";
 
+export type ContentFormat = v.InferOutput<typeof ContentFormatSchema>;
+export type ContentConversion = v.InferOutput<typeof ContentConversionSchema>;
 export type WikiPageRef = v.InferOutput<typeof WikiPageRefSchema>;
 export type WikiCategoryCount = v.InferOutput<typeof WikiCategoryCountSchema>;
 export type WikiNavItem = v.InferOutput<typeof WikiNavItemSchema>;

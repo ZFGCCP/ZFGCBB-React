@@ -66,8 +66,19 @@ export type InstallStatusResponse = v.InferOutput<
 export const SiteInfoSchema = v.object({
   siteName: v.optional(v.string()),
   registrationEnabled: v.boolean(),
+  defaultContentFormat: ContentFormatSchema,
+  contentFormats: v.array(ContentFormatSchema),
+  buildVersion: v.nullish(v.string()),
 });
 export type SiteInfo = v.InferOutput<typeof SiteInfoSchema>;
+
+export const SiteAuthoringConfigSchema = v.object({
+  defaultContentFormat: ContentFormatSchema,
+  contentFormats: v.array(ContentFormatSchema),
+});
+export type SiteAuthoringConfig = v.InferOutput<
+  typeof SiteAuthoringConfigSchema
+>;
 
 export const InstallResponseSchema = v.object({
   installed: v.literal(true),
@@ -220,6 +231,7 @@ export const InstallFormSchema = v.object({
     v.minLength(8, "Password must be at least 8 characters."),
   ),
   siteName: v.pipe(v.string(), v.nonEmpty("Site name is required.")),
+  defaultContentFormat: ContentFormatSchema,
   applySampleData: v.boolean(),
   provisionRecycleBin: v.boolean(),
 });

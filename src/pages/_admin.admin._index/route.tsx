@@ -23,6 +23,11 @@ export default function AdminDashboard() {
             to="/admin/users"
           />
           <AdminCard
+            title="Content Authoring"
+            description="Pick the format new posts and wiki pages are authored in. Existing content is never converted."
+            to="/admin/authoring"
+          />
+          <AdminCard
             title="BBCode Management"
             description="Enable or disable special bbcodes, like the [you] April Fools prank."
             to="/admin/bbcodes"

@@ -43,6 +43,7 @@ export const MessageHistorySchema = v.object({
   id: baseIdSchema,
   messageId: v.number(),
   messageText: v.string(),
+  contentFormat: v.optional(ContentFormatSchema),
   currentFlag: v.optional(v.boolean()),
   createdTs: v.optional(v.string()),
   updatedTs: v.optional(v.string()),
