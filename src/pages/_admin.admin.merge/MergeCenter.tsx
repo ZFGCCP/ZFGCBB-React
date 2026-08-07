@@ -96,7 +96,7 @@ export function MergeCenter() {
     <div className="space-y-4">
       {config && <CmsSettings config={config} />}
 
-      <BBWidget widgetTitle={`Merge Center (${visible.length} suggestions)`}>
+      <BBWidget widgetTitle={`Merge (${visible.length} suggestions)`}>
         <div className="p-4">
           <BBQueryBoundary
             query={candidatesQuery}

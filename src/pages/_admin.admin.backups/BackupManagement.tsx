@@ -84,16 +84,12 @@ export function BackupManagement() {
         <div className="border-2 border-highlighted p-3 space-y-2">
           <p className="font-bold">Sensitive full-application backup</p>
           <p className="text-sm">
-            Archives include private messages, authentication state,
-            configuration, and private content. They are not encrypted.
-            Browsers, proxies, snapshots, and copy-on-write storage may retain
-            downloaded bytes.
+            Archives hold everything, private messages and credentials included,
+            and are not encrypted. Guard the downloaded file.
           </p>
         </div>
         <p className="text-sm text-dimmed">
-          Each completed archive can be downloaded once before it expires. The
-          browser prepares an authenticated download window, then streams the
-          archive directly instead of buffering it in this page.
+          Each archive can be downloaded once before it expires.
         </p>
         <BBButton disabled={createBackup.isPending} onClick={handleCreate}>
           {createBackup.isPending ? "Starting..." : "Create backup"}

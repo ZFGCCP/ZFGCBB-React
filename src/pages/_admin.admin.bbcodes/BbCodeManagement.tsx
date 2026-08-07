@@ -1,5 +1,5 @@
-import * as v from "valibot";
 import type { BbCodeToggle } from "@/schemas/forum";
+import type { ContentScope } from "@/types/content";
 import { BbCodeRow } from "./BbCodeRow";
 
 const BBCODE_EMPTY_STATE = <BBEmpty message="No bbcodes found." />;
@@ -12,7 +12,7 @@ export function BbCodeManagement() {
   });
 
   const toggleBbCode = useBBMutation({
-    schema: v.undefined(),
+    schema: BbCodeToggleSchema,
     request: (variables: { code: string; enabled: boolean }) => ({
       url: `/admin/bbcodes/${variables.code}`,
       method: "PUT",
@@ -20,6 +20,25 @@ export function BbCodeManagement() {
     }),
     invalidateKeys: [["admin-bbcodes"]],
   });
+  const toggleSurface = useBBMutation({
+    schema: BbCodeToggleSchema,
+    request: (variables: {
+      code: string;
+      surface: ContentScope;
+      honoured: boolean;
+    }) => ({
+      url: `/admin/bbcodes/${variables.code}/surfaces`,
+      method: "PUT",
+      body: { surface: variables.surface, honoured: variables.honoured },
+    }),
+    invalidateKeys: [["admin-bbcodes"]],
+  });
+  const handleToggleSurface = useCallback(
+    (bbCode: BbCodeToggle, surface: ContentScope, honoured: boolean) => {
+      toggleSurface.mutate({ code: bbCode.code, surface, honoured });
+    },
+    [toggleSurface],
+  );
   const handleToggle = useCallback(
     (bbCode: BbCodeToggle) => {
       toggleBbCode.mutate({
@@ -32,17 +51,14 @@ export function BbCodeManagement() {
   const renderBbCodes = useCallback(
     (bbCodes: BbCodeToggle[]) => (
       <div>
-        <p className="p-2 text-sm text-dimmed border-b-2 border-default">
-          Disabled bbcodes render as literal text in posts and wiki pages.
-          Changes take effect immediately.
-        </p>
         <div className="grid grid-cols-1 md:grid-cols-2">
           {bbCodes.map((bbCode) => (
             <BbCodeRow
               key={bbCode.code}
               bbCode={bbCode}
-              pending={toggleBbCode.isPending}
+              pending={toggleBbCode.isPending || toggleSurface.isPending}
               onToggle={handleToggle}
+              onToggleSurface={handleToggleSurface}
             />
           ))}
         </div>
@@ -51,18 +67,27 @@ export function BbCodeManagement() {
             {toggleBbCode.error?.message}
           </p>
         )}
+        {toggleSurface.isError && (
+          <p className="p-2 text-xs text-error">
+            {toggleSurface.error?.message}
+          </p>
+        )}
       </div>
     ),
     [
       handleToggle,
+      handleToggleSurface,
       toggleBbCode.error?.message,
       toggleBbCode.isError,
       toggleBbCode.isPending,
+      toggleSurface.error?.message,
+      toggleSurface.isError,
+      toggleSurface.isPending,
     ],
   );
 
   return (
-    <BBWidget widgetTitle="BBCode Management">
+    <BBWidget widgetTitle="BBCodes">
       <BBQueryBoundary
         query={bbCodesQuery}
         isEmpty={isBbCodeListEmpty}

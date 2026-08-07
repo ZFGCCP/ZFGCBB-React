@@ -119,10 +119,8 @@ export default function AccountDeleteConfirmRoute() {
           <>
             <p className="font-bold">This confirmation link did not work.</p>
             <p className="text-sm text-dimmed">
-              It may have expired, been replaced by a newer email, or been
-              cancelled — or the connection may have dropped mid-request. If the
-              deletion already went through, trying again will simply complete
-              it.
+              The link may have expired, been replaced, or been cancelled. If
+              the deletion already went through, trying again completes it.
             </p>
             <div className="flex items-center gap-3">
               <BBButton

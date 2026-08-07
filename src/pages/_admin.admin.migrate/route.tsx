@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import * as v from "valibot";
+import { WikiNamespaceManagement } from "./WikiNamespaceManagement";
 import BBToggle from "@/components/common/forms/BBToggle";
 import { UserContext } from "@/providers/user/userProvider";
 import {
@@ -524,7 +525,11 @@ function MigrationJobsList({
   );
 }
 
-export default function SystemMigrate() {
+export const handle = {
+  breadcrumb: "SMF Import",
+} satisfies BreadcrumbHandle;
+
+export default function AdminMigratePage() {
   const user = useContext(UserContext);
   const isSiteAdmin = user.permissions?.some(
     (permission) => permission.permissionCode === "ZFGC_SITE_ADMIN",
@@ -703,9 +708,7 @@ export default function SystemMigrate() {
         form={form}
         className="space-y-4"
         errorMessage={
-          startJobMutation.isError
-            ? (startJobMutation.error?.message ?? "Failed to start job.")
-            : null
+          startJobMutation.isError ? startJobMutation.error.message : null
         }
       >
         <SmfConnectionFields
@@ -724,6 +727,8 @@ export default function SystemMigrate() {
           groupPermissionMap={groupPermissionMap}
           onToggle={togglePermission}
         />
+
+        <WikiNamespaceManagement />
 
         <BBWidget widgetTitle="Start Migration Job">
           <div className="p-4 space-y-3">
@@ -745,7 +750,7 @@ export default function SystemMigrate() {
             <BBCheckboxField
               name="force"
               label="Force re-migration"
-              helperText="Re-update existing rows even when migration_hash hasn't changed. Use when re-running after a config change (legacy host, table prefix) so already-migrated entities get refreshed."
+              helperText="Re-update rows even when migration_hash hasn't changed — for re-runs after changing the legacy host or table prefix."
             />
           </div>
         </BBWidget>

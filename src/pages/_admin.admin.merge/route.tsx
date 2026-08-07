@@ -1,7 +1,7 @@
 import { MergeCenter } from "./MergeCenter";
 
 export const handle = {
-  breadcrumb: "CMS Merge Center",
+  breadcrumb: "Merge",
 } satisfies BreadcrumbHandle;
 
 const ADMIN_PERMISSION = ["ZFGC_SITE_ADMIN"] as const;

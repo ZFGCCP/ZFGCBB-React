@@ -40,9 +40,7 @@ export function CmsSettings({ config }: { config: CmsConfig }) {
         form={form}
         className="p-4 space-y-3"
         errorMessage={
-          configMutation.isError
-            ? (configMutation.error?.message ?? "Failed to save settings.")
-            : null
+          configMutation.isError ? configMutation.error.message : null
         }
       >
         <div className="flex items-end gap-3">

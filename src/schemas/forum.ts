@@ -193,6 +193,12 @@ export const EntityThreadRefSchema = v.object({
 export const BbCodeToggleSchema = v.object({
   code: v.string(),
   enabled: v.boolean(),
+  honouredInForum: v.boolean(),
+  honouredInWiki: v.boolean(),
+  honouredInProject: v.boolean(),
+  honouredInResource: v.boolean(),
+  honouredInSignature: v.boolean(),
+  scopable: v.boolean(),
 });
 export const BbCodeToggleListSchema = v.array(BbCodeToggleSchema);
 export type BbCodeToggle = v.InferOutput<typeof BbCodeToggleSchema>;

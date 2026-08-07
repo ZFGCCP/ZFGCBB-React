@@ -2,6 +2,14 @@ import * as v from "valibot";
 
 export const ContentFormatSchema = v.picklist(["BBCODE", "MARKDOWN"]);
 
+export const ContentScopeSchema = v.picklist([
+  "WIKI",
+  "FORUM",
+  "PROJECT",
+  "RESOURCE",
+  "SIGNATURE",
+]);
+
 export const WikiPageRefSchema = v.object({
   namespace: v.string(),
   title: v.string(),

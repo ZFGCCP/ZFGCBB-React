@@ -82,8 +82,8 @@ export default function AccountDeletionChoice({
       </p>
       {preview?.adminReplacementRequired && (
         <p className="text-sm border-l-2 border-error pl-2 text-error">
-          An administrator replacement is required before this account can be
-          deleted. Please arrange that first.
+          Appoint another administrator first &mdash; the last one can&apos;t be
+          deleted.
         </p>
       )}
       <fieldset className="space-y-3">
@@ -106,9 +106,7 @@ export default function AccountDeletionChoice({
             email, and personal info.
           </span>
           <span className="block text-sm text-dimmed">
-            Discussions stay intact for everyone else, so threads other members
-            follow are unaffected. Choose this if you want to disappear without
-            leaving holes in conversations.
+            Discussions stay intact for everyone else.
           </span>
           {preview && (
             <span className="block text-sm">

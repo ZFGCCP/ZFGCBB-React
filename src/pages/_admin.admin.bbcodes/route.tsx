@@ -1,7 +1,7 @@
 import { BbCodeManagement } from "./BbCodeManagement";
 
 export const handle = {
-  breadcrumb: "BBCode Management",
+  breadcrumb: "BBCodes",
 } satisfies BreadcrumbHandle;
 
 const ADMIN_PERMISSION = ["ZFGC_SITE_ADMIN"] as const;

@@ -1,7 +1,7 @@
 import { UserManagement } from "./UserManagement";
 
 export const handle = {
-  breadcrumb: "User Management",
+  breadcrumb: "Users",
 } satisfies BreadcrumbHandle;
 
 const ADMIN_PERMISSION = ["ZFGC_SITE_ADMIN"] as const;

@@ -18,7 +18,7 @@ export default function Home() {
       {(page) => (
         <BBHtml
           html={page.contentParsed ?? ""}
-          className="whitespace-pre-wrap [&_.bb-widget]:shadow-panel"
+          className="whitespace-pre-wrap [&_.bb-widget]:bg-muted [&_.bb-widget]:shadow-panel"
         />
       )}
     </BBQueryBoundary>

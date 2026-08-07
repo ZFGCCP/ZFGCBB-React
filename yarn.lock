@@ -3693,6 +3693,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@zfgc/vite-config-base@workspace:core/vite/config"
   dependencies:
+    "@zfgc/vite-plugin-generate-image-paths": "workspace:*"
     "@zfgc/vite-plugin-preprocess-twmerge": "workspace:*"
     vite: "npm:^8.1.5"
   languageName: unknown

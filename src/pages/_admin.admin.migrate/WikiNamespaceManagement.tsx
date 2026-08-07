@@ -35,11 +35,8 @@ export function WikiNamespaceManagement() {
     (namespaces: WikiImportNamespace[]) => (
       <div>
         <p className="p-2 text-sm text-dimmed border-b-2 border-default">
-          Maps a source MediaWiki namespace id to the name it takes in this
-          wiki. Ids 0&ndash;15 are MediaWiki&apos;s standard namespaces; add
-          your own for anything declared in <code>$wgExtraNamespaces</code>.
-          Changes apply to the next migration &mdash; renaming a namespace that
-          already holds pages is rejected.
+          Ids 0&ndash;15 are MediaWiki&apos;s standard namespaces; add rows for
+          anything in <code>$wgExtraNamespaces</code>.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2">
           {namespaces.map((namespace) => (
@@ -67,7 +64,7 @@ export function WikiNamespaceManagement() {
   );
 
   return (
-    <BBWidget widgetTitle="Wiki Import Namespaces">
+    <BBWidget widgetTitle="Wiki Namespace Mapping">
       <BBQueryBoundary
         query={namespacesQuery}
         isEmpty={isNamespaceListEmpty}

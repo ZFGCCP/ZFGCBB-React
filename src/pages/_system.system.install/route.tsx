@@ -23,22 +23,9 @@ const INSTALL_FORM_DEFAULTS: InstallForm = {
   adminPassword: "",
   siteName: "ZFGBB",
   defaultContentFormat: "BBCODE",
-  applySampleData: false,
+  installSampleData: false,
   provisionRecycleBin: true,
 };
-
-function safeProblemDetail(error: unknown): string | undefined {
-  const status = getResponseStatus(error);
-  if (status !== 400 && status !== 409 && status !== 422) return undefined;
-  const detail = getProblemDetail(error);
-  if (!detail) return undefined;
-  return detail.length > 240 ? `${detail.slice(0, 237)}...` : detail;
-}
-
-function withSafeDetail(message: string, error: unknown) {
-  const detail = safeProblemDetail(error);
-  return detail ? `${message} ${detail}` : message;
-}
 
 function installErrorMessage(error: unknown) {
   const status = getResponseStatus(error);
@@ -49,19 +36,13 @@ function installErrorMessage(error: unknown) {
     return `The setup API is temporarily unavailable through the proxy (HTTP ${status}). Check the backend service and try again.`;
   }
   if (status === 404) {
-    return "Installation is unavailable (HTTP 404). The install token may be missing or invalid, or this site may already be installed.";
+    return "Install is unavailable. The token may be missing, or the site is already installed.";
   }
   if (status === 409) {
-    return withSafeDetail(
-      "This request conflicts with installation work already in progress.",
-      error,
-    );
+    return withSafeDetail("An install is already in progress.", error);
   }
   if (status === 400 || status === 422) {
-    return withSafeDetail(
-      "The backend rejected the submitted setup values or content selection.",
-      error,
-    );
+    return withSafeDetail("The backend rejected these settings.", error);
   }
   if (status >= 500) {
     return `The backend failed while installing the site (HTTP ${status}). Check the server logs, correct the failure, and retry the same request.`;
@@ -72,13 +53,13 @@ function installErrorMessage(error: unknown) {
 function statusErrorMessage(error: unknown) {
   const status = getResponseStatus(error);
   if (status === undefined) {
-    return "The backend could not be reached. Setup is hidden until installation status can be verified.";
+    return "The backend could not be reached.";
   }
   if (status === 502 || status === 503 || status === 504) {
     return `The setup API is unavailable through the proxy (HTTP ${status}). Setup is hidden until the backend is reachable.`;
   }
   if (status === 404) {
-    return "This backend does not expose installation status (HTTP 404). Verify that the frontend and backend versions match.";
+    return "The backend didn't answer the install status check. The frontend and backend versions may not match.";
   }
   return `Installation status could not be verified (HTTP ${status}). Setup is hidden to prevent an unsafe duplicate installation attempt.`;
 }
@@ -98,9 +79,9 @@ export default function SystemInstall() {
   const queryClient = useQueryClient();
 
   const installMutation = useBBMutation({
-    request: ({ installToken, applySampleData, ...body }: InstallForm) => ({
+    request: ({ installToken, ...body }: InstallForm) => ({
       url: "/system/install",
-      body: { ...body, contentPack: applySampleData ? "zfgc" : undefined },
+      body,
       headers: { "X-Install-Token": installToken },
     }),
     schema: InstallResponseSchema,
@@ -189,17 +170,17 @@ export default function SystemInstall() {
             name="defaultContentFormat"
             label="Default Content Format"
             options={CONTENT_FORMAT_OPTIONS}
-            helperText="Which format new posts and wiki pages start in. Authors can switch per post, and you can change this later in the admin panel."
+            helperText="What new posts and wiki pages start in. Authors can switch per post."
           />
           <BBCheckboxField
-            name="applySampleData"
-            label="Install complete anonymized ZFGC preview fixture"
-            helperText="Adds the preview forum, wiki, projects, resources, users, messages, moderation scenarios, awards, and files to this new installation."
+            name="installSampleData"
+            label="Install sample data"
+            helperText="Fills the site with example boards, posts, wiki pages and projects."
           />
           <BBCheckboxField
             name="provisionRecycleBin"
             label="Recycle bin for deleted posts"
-            helperText="Deleted posts move to a hidden staff-only board where moderators can restore them. When disabled, deleting a post removes it permanently."
+            helperText="Deleted posts go to a staff-only board instead of being erased."
           />
           <BBSubmit pendingChildren="Installing...">Install</BBSubmit>
         </BBForm>

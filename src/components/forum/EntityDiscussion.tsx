@@ -63,10 +63,7 @@ export default function EntityDiscussion({
           </div>
         )}
         {startDiscussion.isError && (
-          <p className="text-sm text-error">
-            {startDiscussion.error?.message ??
-              "Could not start the discussion."}
-          </p>
+          <p className="text-sm text-error">{startDiscussion.error.message}</p>
         )}
         {threadId !== null &&
           threadId !== undefined &&

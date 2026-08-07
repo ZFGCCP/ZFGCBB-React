@@ -82,7 +82,7 @@ export function UserManagement() {
   );
 
   return (
-    <BBWidget widgetTitle="User Management">
+    <BBWidget widgetTitle="Users">
       <BBQueryBoundary
         query={usersQuery}
         isEmpty={isUserListEmpty}

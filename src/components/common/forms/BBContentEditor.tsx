@@ -1,7 +1,11 @@
 import { useField, useForm } from "@tanstack/react-form";
 import * as v from "valibot";
 import { useBBFormContext } from "./BBForm";
-import type { ContentConversion, ContentFormat } from "@/types/content";
+import type {
+  ContentConversion,
+  ContentFormat,
+  ContentScope,
+} from "@/types/content";
 
 const ContentFormSchema = v.object({
   body: v.pipe(
@@ -47,7 +51,7 @@ interface BBContentEditorProps {
   pendingLabel: string;
   errorMessage?: string | null | undefined;
   showSummary?: boolean | undefined;
-  previewScope?: "WIKI" | "FORUM" | undefined;
+  previewScope?: ContentScope | undefined;
   previewSlug?: string | undefined;
   onSubmit: (value: ContentEditorValue) => Promise<unknown>;
 }
@@ -187,9 +191,13 @@ export default function BBContentEditor({
   const contentFormatOptions =
     siteInfo?.contentFormats ?? ContentFormatSchema.options;
 
-  const bbcodesQuery = useBBQuery("/content/bbcodes", {
-    schema: BbcodeListSchema,
-  });
+  const bbcodesQuery = useBBQuery(
+    `/content/bbcodes?scope=${previewScope}` as const,
+    {
+      schema: BbcodeListSchema,
+      queryKey: `content-bbcodes-${previewScope}`,
+    },
+  );
   const toolbar = useMemo(() => {
     const codes = bbcodesQuery.data ?? [];
     const prioritySet = new Set(TOOLBAR_PRIORITY);

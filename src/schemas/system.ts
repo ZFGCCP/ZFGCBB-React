@@ -84,7 +84,7 @@ export const InstallResponseSchema = v.object({
   installed: v.literal(true),
   adminUserId: v.number(),
   siteName: v.string(),
-  contentPack: v.optional(v.string()),
+  installSampleData: v.boolean(),
   accessToken: v.optional(v.string()),
   refreshToken: v.optional(v.string()),
 });
@@ -232,7 +232,7 @@ export const InstallFormSchema = v.object({
   ),
   siteName: v.pipe(v.string(), v.nonEmpty("Site name is required.")),
   defaultContentFormat: ContentFormatSchema,
-  applySampleData: v.boolean(),
+  installSampleData: v.boolean(),
   provisionRecycleBin: v.boolean(),
 });
 

@@ -3,7 +3,7 @@ import type { SiteAuthoringConfig } from "@/schemas/system";
 import type { ContentFormat } from "@/types/content";
 
 export const handle = {
-  breadcrumb: "Content Authoring",
+  breadcrumb: "Site Settings",
 } satisfies BreadcrumbHandle;
 
 const ADMIN_PERMISSION = ["ZFGC_SITE_ADMIN"] as const;
@@ -44,9 +44,7 @@ function AuthoringDefaultForm({ config }: { config: SiteAuthoringConfig }) {
   return (
     <div className="p-4 space-y-3">
       <p className="text-sm text-dimmed">
-        New posts and wiki pages start in this format. Authors can switch on any
-        individual post, and everything already written keeps the format it was
-        written in.
+        Applies to new posts and wiki pages. Authors can switch per post.
       </p>
       <label
         htmlFor="defaultContentFormat"
@@ -102,7 +100,7 @@ function AuthoringSettings() {
   );
 
   return (
-    <BBWidget widgetTitle="Content Authoring">
+    <BBWidget widgetTitle="Site Settings">
       <BBQueryBoundary query={authoringQuery}>
         {renderAuthoring}
       </BBQueryBoundary>
@@ -110,7 +108,7 @@ function AuthoringSettings() {
   );
 }
 
-export default function AdminAuthoringPage() {
+export default function AdminSettingsPage() {
   return (
     <BBHasPermission requiredPermissions={ADMIN_PERMISSION}>
       <AuthoringSettings />

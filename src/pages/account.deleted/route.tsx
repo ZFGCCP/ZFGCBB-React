@@ -20,8 +20,7 @@ export default function AccountDeletedRoute() {
           chose. You have been signed out everywhere.
         </p>
         <p className="text-sm text-dimmed">
-          If any page still shows you as logged in, it will sign itself out on
-          its next request.
+          Any page still showing you logged in will sign out on its own.
         </p>
         <p className="text-sm">Thanks for being part of ZFGC. Take care.</p>
         <BBLink to="/">Return to home</BBLink>
