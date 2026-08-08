@@ -1,6 +1,6 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.sortOrder": "filesFirst",
@@ -15,6 +15,7 @@
     "*.tsx": "${basename}*.tsx, ${capture}.*.tsx",
     "_index.tsx": "$.tsx"
   },
+  "eslint.enable": false,
   "prettier.enable": false,
   "oxc.enable": true,
   "editor.defaultFormatter": "oxc.oxc-vscode",
@@ -34,5 +35,11 @@
   },
   "[markdown]": {
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
   }
 }

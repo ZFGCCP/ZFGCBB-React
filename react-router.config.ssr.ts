@@ -11,6 +11,7 @@ export function presetSsr(): Preset {
       splitRouteModules: false,
       future: {
         unstable_optimizeDeps: true,
+        unstable_enableNodeReadableStream: true,
       },
     }),
   };

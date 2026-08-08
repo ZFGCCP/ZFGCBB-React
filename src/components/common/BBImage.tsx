@@ -2,23 +2,29 @@ import type { ReactElement, ComponentType, JSX } from "react";
 
 type ImageProps = JSX.IntrinsicElements["img"];
 type AsComponent = ("img" | "image") | ComponentType<Partial<ImageProps>>;
-type SrcPath = ImagesPath | ThemesPath | `${string}://${string}/${string}`;
+type SrcPath =
+  | ImagesPath
+  | ThemesPath
+  | `${string}://${string}/${string}`
+  | `${string}/content/${number}`;
+
+type BBImageBaseProps = Omit<ImageProps, "src"> & {
+  fallback?: ReactElement;
+  as?: AsComponent;
+};
 
 /**
  * This type represents the props of the {@link BBImage} component.
  */
-export type BBImageProps = Partial<ImageProps> & {
-  src: SrcPath;
-  fallback?: ReactElement;
-  as?: AsComponent;
-};
+export type BBImageProps = BBImageBaseProps &
+  ({ src: SrcPath; dynamicSrc?: never } | { src?: never; dynamicSrc: string });
 
 /**
  * Resolves a path or URL into a usable image source.
  * @param path - Relative path or full URL to the image.
  * @returns A resolved image path or undefined if not found.
  */
-function resolveSrc(path: string) {
+function resolveSrc(path: string): string | undefined {
   if (URL.canParse(path)) return path;
   if (path) return path.startsWith("/") ? path : `/${path}`;
   if (import.meta.env.DEV)
@@ -42,21 +48,26 @@ function resolveSrc(path: string) {
  * @param as - Optional component type to render (defaults to `<img>`).
  * @param rest - Other props passed to the rendered component.
  */
-export default function BBImage({
-  src,
-  fallback,
-  as: ass = "img",
-  ...rest
-}: BBImageProps) {
+export default function BBImage(props: BBImageProps) {
+  const { fallback, as: ass = "img" } = props;
+  const source =
+    typeof props.dynamicSrc === "string" ? props.dynamicSrc : props.src;
+  const rest =
+    typeof props.dynamicSrc === "string"
+      ? (({ dynamicSrc: _, fallback: _fallback, as: _as, ...imageProps }) =>
+          imageProps)(props)
+      : (({ src: _, fallback: _fallback, as: _as, ...imageProps }) =>
+          imageProps)(props);
+
   if (import.meta.env.DEV && !("alt" in rest))
     console.warn(
-      `BBImage component for ${src} is missing an alt prop. This will cause a11y issue.`,
+      `BBImage component for ${source} is missing an alt prop. This will cause a11y issue.`,
     );
 
-  const resolvedSrc = resolveSrc(src);
+  const resolvedSrc = resolveSrc(source);
   if (!resolvedSrc) return fallback ?? null;
 
-  const props: Partial<ImageProps> =
+  const componentProps: Partial<ImageProps> =
     ass === "img"
       ? {
           decoding: "async",
@@ -68,5 +79,5 @@ export default function BBImage({
       : rest;
 
   const Component = ass;
-  return <Component {...(props as object)} src={resolvedSrc} />;
+  return <Component {...(componentProps as object)} src={resolvedSrc} />;
 }

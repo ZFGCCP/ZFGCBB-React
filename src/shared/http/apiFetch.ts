@@ -11,7 +11,7 @@ function readCookie(name: string): string | undefined {
 // gm112 note: This is just a helper wrapper around fetch to handle XSRF-TOKEN
 // We actually might be able to remove this piece of code later on - its really
 // just for intercepting one header.
-export async function apiFetch(
+export function apiFetch(
   input: RequestInfo | URL,
   init: RequestInit = {},
 ): Promise<Response> {

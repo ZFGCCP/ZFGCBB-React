@@ -1,5 +1,3 @@
-import { firstError } from "./utils";
-
 import { useField } from "@tanstack/react-form";
 import { useBBFormContext } from "./BBForm";
 
@@ -22,6 +20,12 @@ export default function BBTextareaField({
   const field = useField({ form, name });
   const error = firstError(field.state.meta.errors);
   const showError = field.state.meta.isTouched && !!error;
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      field.handleChange(event.target.value);
+    },
+    [field],
+  );
 
   return (
     <div className="space-y-1">
@@ -39,7 +43,7 @@ export default function BBTextareaField({
           showError ? "border-highlighted" : "border-default"
         } resize-y focus:outline-none focus:ring-2 focus:ring-accented`}
         value={String(field.state.value ?? "")}
-        onChange={(e) => field.handleChange(e.target.value)}
+        onChange={handleChange}
         onBlur={field.handleBlur}
       />
       {showError ? (

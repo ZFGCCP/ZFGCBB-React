@@ -4,14 +4,15 @@ export interface BBAccordionProps {
   startExpanded?: boolean;
 }
 
-const BBAccordion: React.FC<BBAccordionProps> = ({
+export default function BBAccordion({
   title,
   children,
   startExpanded,
-}) => {
-  const [expanded, setExpanded] = useState(
-    startExpanded !== undefined ? startExpanded : false,
-  );
+}: BBAccordionProps) {
+  const [expanded, setExpanded] = useState(startExpanded ?? false);
+  const toggleExpanded = useCallback(() => {
+    setExpanded((previous) => !previous);
+  }, []);
 
   return (
     <div className="m-8">
@@ -20,7 +21,7 @@ const BBAccordion: React.FC<BBAccordionProps> = ({
           <button
             type="button"
             className="cursor-pointer w-full text-left align-items-center"
-            onClick={() => setExpanded((prev) => !prev)}
+            onClick={toggleExpanded}
             aria-expanded={expanded}
           >
             <span className="inline-block">
@@ -33,6 +34,4 @@ const BBAccordion: React.FC<BBAccordionProps> = ({
       {expanded && <div className="m-2">{children}</div>}
     </div>
   );
-};
-
-export default BBAccordion;
+}

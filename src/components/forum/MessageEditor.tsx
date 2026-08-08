@@ -1,53 +1,36 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "@tanstack/react-form";
-import { MessageEditorSchema, type MessageEditor } from "@/schemas/forum";
-import type { Message } from "../../types/forum";
+import * as v from "valibot";
+import type { ContentEditorValue } from "@/components/common/forms/BBContentEditor";
+import type { ContentFormat } from "@/types/content";
 
 interface MessageEditorProps {
   threadId: number;
+  initialBody?: string | undefined;
+  initialContentFormat?: ContentFormat | undefined;
 }
 
-const MessageEditor: React.FC<MessageEditorProps> = ({ threadId }) => {
-  const { data: currentMsg, isLoading } = useBBQuery<Message>(
-    `/message/template?threadId=${threadId}`,
-  );
-
-  if (isLoading || !currentMsg) {
-    return null;
-  }
-
-  return <MessageEditorForm threadId={threadId} template={currentMsg} />;
-};
-
-function MessageEditorForm({
+export default function MessageEditor({
   threadId,
-  template,
-}: {
-  threadId: number;
-  template: Message;
-}) {
+  initialBody,
+  initialContentFormat,
+}: MessageEditorProps) {
   const queryClient = useQueryClient();
-  const newPostMutator = useMutation<unknown, Error, MessageEditor>({
+  const newPostMutator = useMutation<unknown, Error, ContentEditorValue>({
     mutationFn: async (values) => {
-      const body: Message = {
-        ...template,
-        currentMessage: {
-          ...template.currentMessage,
-          unparsedText: values.body,
-        },
-      };
       const response = await apiFetch(
         `${getApiBaseUrl()}/message/${threadId}`,
         {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
+          body: JSON.stringify({
+            body: values.body,
+            contentFormat: values.contentFormat,
+          }),
         },
       );
-      return handleResponseWithJason<unknown>(response);
+      return handleResponseWithJason(response, v.unknown());
     },
-    // Refresh the thread (any page) so the newly posted message shows.
     onSuccess: () => {
       void queryClient.invalidateQueries({
         predicate: (query) =>
@@ -56,69 +39,27 @@ function MessageEditorForm({
       });
     },
   });
-
-  const form = useForm({
-    defaultValues: {
-      body: template.currentMessage.unparsedText ?? "",
-    } as MessageEditor,
-    validators: {
-      onBlur: MessageEditorSchema,
-      onSubmit: MessageEditorSchema,
-    },
-    onSubmit: async ({ value }) => {
-      await newPostMutator.mutateAsync(value);
-    },
-  });
+  const handleSubmit = useCallback(
+    (value: ContentEditorValue) => newPostMutator.mutateAsync(value),
+    [newPostMutator],
+  );
 
   return (
     <div className="mt-3">
-      <div className="p-4 mb-4 border-2 border-red-500 text-red-600 bg-red-50">
+      <div className="p-4 mb-4 border-2 border-error text-error bg-accented">
         Warning: this topic has not been posted in for at least 14 days. Unless
-        you're sure you want to reply, please consider starting a new topic.
+        you&apos;re sure you want to reply, please consider starting a new
+        topic.
       </div>
 
-      <BBForm
-        form={form}
-        className="space-y-4"
+      <BBContentEditor
+        initialBody={initialBody}
+        initialContentFormat={initialContentFormat}
+        submitLabel="Submit Post"
+        pendingLabel="Posting..."
         errorMessage={newPostMutator.isError ? "Failed to post message." : null}
-      >
-        <div className="flex gap-2">
-          <button
-            type="button"
-            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
-          >
-            B
-          </button>
-          <button
-            type="button"
-            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
-          >
-            I
-          </button>
-          <button
-            type="button"
-            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
-          >
-            U
-          </button>
-          <button
-            type="button"
-            className="px-3 py-1 bg-muted border border-default  hover:bg-elevated"
-          >
-            S
-          </button>
-          <span className="text-muted">|</span>
-        </div>
-        <BBTextareaField name="body" rows={15} />
-        <BBSubmit
-          pendingChildren="Posting..."
-          className="px-4 py-2 bg-accented border border-default hover:bg-elevated disabled:opacity-50"
-        >
-          Submit Post
-        </BBSubmit>
-      </BBForm>
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 }
-
-export default MessageEditor;

@@ -25,9 +25,13 @@ jobs:
       GITHUB_PAGES: "true"
     steps:
       - uses: actions/checkout@v7
+      - uses: ZeldaFanGameCentral/github-common/actions/resolve-version@main
+        id: version
       - uses: ZeldaFanGameCentral/github-common/actions/setup-node-yarn@main
       - run: rm -rf build
       - run: yarn build --mode=github-pages
+        env:
+          REACT_ZFGBB_VERSION: ${{ steps.version.outputs.version }}
       - run: cp build/client/__spa-fallback.html build/client/404.html
       - run: yarn check
       - uses: actions/upload-pages-artifact@v5

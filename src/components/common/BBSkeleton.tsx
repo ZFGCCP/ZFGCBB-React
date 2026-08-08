@@ -1,12 +1,16 @@
-export default function BBSkeleton<
-  PropsType extends React.HTMLAttributes<HTMLDivElement> &
-    React.PropsWithChildren,
->({ className = "", style, ...rest }: PropsType) {
+type BBSkeletonProps = React.HTMLAttributes<HTMLDivElement> &
+  React.PropsWithChildren;
+
+export default function BBSkeleton({
+  className = "",
+  style,
+  ...rest
+}: BBSkeletonProps) {
   return (
     <div
       {...rest}
       className={`
-        inline-block rounded-lg animate-pulse bg-gradient-to-r from-muted to-elevated
+        inline-block rounded-lg animate-pulse bg-linear-to-r from-muted to-elevated
         ${className}
       `}
       style={style}

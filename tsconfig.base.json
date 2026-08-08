@@ -13,19 +13,22 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
-    "noEmit": true,
     "erasableSyntaxOnly": true,
     "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "composite": true,
-    "jsx": "react-jsx",
-    "plugins": [{ "name": "@dxup/unimport" }]
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "jsx": "react-jsx"
   },
   "exclude": ["node_modules"]
 }

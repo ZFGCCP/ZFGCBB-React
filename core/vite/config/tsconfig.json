@@ -1,9 +1,13 @@
 {
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "noEmit": false,
-    "allowImportingTsExtensions": false
+    "declarationDir": "../../../dist/tsc/core-vite-config",
+    "tsBuildInfoFile": "../../../dist/tsc/core-vite-config.tsbuildinfo"
   },
+  "references": [
+    { "path": "../plugins/generate-image-paths" },
+    { "path": "../plugins/preprocess-twmerge" }
+  ],
   "include": ["vite.config.base.ts"],
   "exclude": ["node_modules"]
 }

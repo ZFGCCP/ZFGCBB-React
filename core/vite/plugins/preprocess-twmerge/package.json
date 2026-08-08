@@ -28,11 +28,11 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "vite": "^8.0.16"
+    "vite": "^8.1.5"
   },
   "devDependencies": {
-    "oxc-parser": "^0.139.0",
-    "oxc-transform": "^0.139.0",
+    "oxc-parser": "^0.142.0",
+    "oxc-transform": "^0.142.0",
     "tailwind-merge": "^3.6.0"
   },
   "engines": {

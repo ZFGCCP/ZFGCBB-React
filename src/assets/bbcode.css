@@ -1,0 +1,267 @@
+@layer base {
+  /* BBCode styles */
+  .bb-code-table {
+    border-collapse: separate;
+    border-spacing: 6px;
+  }
+
+  .bb-table-full {
+    width: 100%;
+  }
+
+  .bb-table-infobox {
+    float: right;
+    width: 256px;
+    margin: 0 0 1em 1em;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid var(--border-color-default);
+    background: var(--background-color-muted);
+    font-size: 11px;
+  }
+
+  .bb-table-infobox > tbody > tr > td,
+  .bb-table-infobox > tr > td {
+    border: 1px solid var(--border-color-default);
+    padding: 2px 6px;
+  }
+
+  .bb-table-infobox > tbody > tr:first-child > td,
+  .bb-table-infobox > tr:first-child > td {
+    background: var(--background-color-accented);
+    color: var(--text-color-highlighted);
+    text-align: center;
+    font-style: italic;
+    letter-spacing: 0.05em;
+  }
+
+  .bb-table-infobox img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .bb-code-table > tbody > tr > td,
+  .bb-code-table > tr > td {
+    vertical-align: top;
+  }
+
+  .bb-code-th {
+    background: var(--background-color-accented);
+    border: 1px dashed var(--text-color-dimmed);
+    text-align: left;
+    font-weight: bold;
+    padding: 0.2em 0.5em;
+  }
+
+  .bb-code-h1 {
+    @apply text-3xl font-bold;
+  }
+
+  .bb-code-h2 {
+    @apply text-2xl font-bold;
+  }
+
+  .bb-code-h3 {
+    @apply text-xl font-bold;
+  }
+
+  .bb-code-h4 {
+    @apply text-lg font-bold;
+  }
+
+  .bb-code-h5 {
+    @apply text-base font-bold;
+  }
+
+  .bb-code-h6 {
+    @apply text-sm font-bold;
+  }
+
+  .bb-code-b {
+    font-weight: bold;
+  }
+
+  .bb-code-me {
+    font-style: italic;
+  }
+
+  .bb-toc,
+  .bb-notoc {
+    display: none;
+  }
+
+  .bb-code-youtube iframe,
+  .bb-code-img img,
+  .bb-code-screenshot img {
+    max-width: 100%;
+  }
+
+  .bb-code-i {
+    font-style: italic;
+  }
+
+  .bb-code-u {
+    text-decoration: underline;
+  }
+
+  .bb-code-s {
+    text-decoration: line-through;
+  }
+
+  .bb-code-i.bb-code-u,
+  .bb-code-u.bb-code-s,
+  .bb-code-i.bb-code-s {
+    text-decoration: underline line-through;
+  }
+
+  .bb-code-align {
+    display: block;
+  }
+
+  .bb-align-left {
+    text-align: left;
+  }
+
+  .bb-align-center {
+    text-align: center;
+  }
+
+  .bb-align-right {
+    text-align: right;
+  }
+
+  .bb-code-tt {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .bb-code-code {
+    display: block;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color-default);
+    border-radius: 0.25rem;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    white-space: pre;
+    @apply bg-default/64;
+  }
+
+  .bb-code-spoiler {
+    background-color: var(--text-color-default);
+    color: transparent;
+    transition: color 0.15s ease-out;
+  }
+
+  .bb-code-spoiler:hover,
+  .bb-code-spoiler:focus {
+    color: var(--background-color-default);
+  }
+
+  .bb-code-quote .bb-code-quote-header {
+    @apply text-sm text-dimmed;
+  }
+
+  .bb-code-quote .bb-code-quote-body {
+    border: 0.2rem solid var(--border-color-default);
+    padding: 1rem;
+    @apply size-full overflow-auto bg-default/64; /* hi im steve, nintendo sixty-fouuuuuurrr LOLOL */
+  }
+
+  .bb-color {
+    color: var(--bb-color);
+  }
+
+  .bb-size {
+    font-size: var(--bb-size);
+  }
+
+  .bb-code-font {
+    font-family: var(--bb-font);
+  }
+
+  .bb-code-glow {
+    color: var(--bb-glow-color);
+    text-shadow:
+      0 0 var(--bb-glow-radius) var(--bb-glow-color),
+      0 0 var(--bb-glow-radius) var(--bb-glow-color);
+  }
+
+  .bb-code-shadow {
+    text-shadow: 0.15rem 0.15rem 0.25rem var(--bb-shadow-color);
+  }
+
+  .bb-list-decimal {
+    list-style-type: decimal;
+  }
+
+  .bb-list-lower-roman {
+    list-style-type: lower-roman;
+  }
+
+  .bb-list-upper-roman {
+    list-style-type: upper-roman;
+  }
+
+  .bb-list-lower-alpha {
+    list-style-type: lower-alpha;
+  }
+
+  .bb-list-upper-alpha {
+    list-style-type: upper-alpha;
+  }
+
+  .bb-list-disc {
+    list-style-type: disc;
+  }
+
+  .bb-list-circle {
+    list-style-type: circle;
+  }
+
+  .bb-list-square {
+    list-style-type: square;
+  }
+
+  .bb-list-none {
+    list-style-type: none;
+  }
+
+  .bb-template-panel {
+    @apply p-4;
+  }
+
+  .bb-template-stacked {
+    @apply space-y-2;
+  }
+
+  .bb-template-title {
+    @apply text-highlighted;
+  }
+
+  .bb-template-byline {
+    @apply text-dimmed;
+  }
+
+  .bb-template-entry {
+    @apply text-sm;
+  }
+
+  .bb-template-action {
+    @apply text-sm text-highlighted;
+  }
+
+  .bb-template-list {
+    @apply mt-4 space-y-1 border-t border-default pt-3;
+  }
+
+  .bb-template-lead-title {
+    @apply text-4xl text-highlighted;
+  }
+
+  .bb-template-lead-byline {
+    @apply text-base text-muted italic;
+  }
+
+  .bb-template-lead-body {
+    @apply mt-4;
+  }
+}

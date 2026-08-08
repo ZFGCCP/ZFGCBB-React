@@ -1,4 +1,4 @@
-import type { Node } from "@oxc-project/types";
+import type { Node } from "oxc-parser";
 import type { PreprocessTwMergeOptions } from "../options.ts";
 import type { SourceEdit } from "./apply-source-edits.ts";
 import { evaluateExpression } from "./evaluate-expression.ts";

@@ -1,33 +1,35 @@
 import type { PollInfo } from "../../../types/forum";
 
-const PollResults: React.FC<{
-  poll: PollInfo;
-  updateResults: (poll: PollInfo) => void;
-}> = ({ poll }) => {
-  const pollAnswers = useMemo(() => {
-    return poll.answers.filter((answer) => isFinite(answer?.percentage));
-  }, [poll]);
-  // Stevegetable - a brand new take on baseball hotdogs
-  const totalVotes = poll.votes;
-  const pollData = pollAnswers.map((answer) => {
-    const dec = answer.votes / totalVotes;
-    const percent = dec * 100.0;
-    return (
-      <BBFlex key={answer.seqno} direction="col" className="md:flex-row">
-        <div className="md:w-sm lg:w-lg">
-          {answer.seqno + 1}. {answer.choiceText}: {answer.votes}
-        </div>
-        <div>
+type PollAnswer = PollInfo["answers"][number];
+
+function PollAnswerResult({ answer }: { answer: PollAnswer }) {
+  const percent = answer.percentage ?? 0;
+  const widthStyle = useMemo(
+    () => ({ width: `${Math.min(percent, 100)}%` }),
+    [percent],
+  );
+
+  return (
+    <BBFlex direction="col" className="md:flex-row">
+      <div className="md:w-sm lg:w-lg">
+        {answer.seqno + 1}. {answer.choiceText}: {answer.votes}
+      </div>
+      <div className="flex items-center">
+        <div className="mx-3 h-4 w-40 rounded-xs bg-muted">
           <div
-            className={`mx-3 rounded-xs bg-(--text-color-dimmed) h-4 inline-block w-[${~~(
-              percent * 2
-            )}px]`}
-            // style={{ width: `${(answer.percentage * 2).toFixed(0)}px` }}
+            className="h-full rounded-xs bg-(--text-color-dimmed)"
+            style={widthStyle}
           ></div>
-          &nbsp;{~~percent}%
         </div>
-      </BBFlex>
-    );
+        {Math.trunc(percent)}%
+      </div>
+    </BBFlex>
+  );
+}
+
+export default function PollResults({ poll }: { poll: PollInfo }) {
+  const pollData = poll.answers.map((answer) => {
+    return <PollAnswerResult key={answer.seqno} answer={answer} />;
   });
 
   return (
@@ -35,9 +37,7 @@ const PollResults: React.FC<{
       <div className="mb-2">
         <b>Poll: {poll.pollQuestion}</b>
       </div>
-      <div className="ms-2 mb-1">{...pollData}</div>
+      <div className="ms-2 mb-1">{pollData}</div>
     </BBWidget>
   );
-};
-
-export default PollResults;
+}

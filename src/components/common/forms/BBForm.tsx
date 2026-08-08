@@ -1,25 +1,24 @@
-import { createContext } from "react";
 import type { AnyFormApi } from "@tanstack/react-form";
 
 const BBFormContext = createContext<AnyFormApi | null>(null);
 
 export function useBBFormContext(): AnyFormApi {
-  const ctx = use(BBFormContext);
-  if (!ctx) {
+  const formContext = use(BBFormContext);
+  if (!formContext) {
     throw new Error(
       "BB form components must be rendered inside a <BBForm> with a `form` prop.",
     );
   }
-  return ctx;
+  return formContext;
 }
 
 type BBFormProps = {
-  form?: AnyFormApi;
+  form?: AnyFormApi | undefined;
   children: React.ReactNode;
-  errorMessage?: string | null;
-  className?: string;
-  role?: React.AriaRole;
-  onSubmit?: React.SubmitEventHandler<HTMLFormElement>;
+  errorMessage?: string | null | undefined;
+  className?: string | undefined;
+  role?: React.AriaRole | undefined;
+  onSubmit?: React.SubmitEventHandler<HTMLFormElement> | undefined;
 };
 
 export default function BBForm({
@@ -30,20 +29,24 @@ export default function BBForm({
   role,
   onSubmit,
 }: BBFormProps) {
+  const handleSubmit = useCallback(
+    (event: React.SubmitEvent<HTMLFormElement>) => {
+      if (form) {
+        event.preventDefault();
+        event.stopPropagation();
+        void form.handleSubmit();
+        return;
+      }
+      onSubmit?.(event);
+    },
+    [form, onSubmit],
+  );
   const formElement = (
     <form
       className={className ?? "space-y-3"}
       role={role ?? "form"}
       noValidate
-      onSubmit={(e) => {
-        if (form) {
-          e.preventDefault();
-          e.stopPropagation();
-          void form.handleSubmit();
-          return;
-        }
-        onSubmit?.(e);
-      }}
+      onSubmit={handleSubmit}
     >
       {errorMessage && (
         <div

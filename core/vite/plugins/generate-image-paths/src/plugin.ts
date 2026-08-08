@@ -29,7 +29,7 @@ async function walk(dir: string): Promise<string[]> {
   const files = await Promise.all(
     entries.map((entry) => {
       const fullPath = path.join(dir, entry.name);
-      return entry.isDirectory() ? walk(fullPath) : fullPath;
+      return entry.isDirectory() ? walk(fullPath) : Promise.resolve([fullPath]);
     }),
   );
   return files.flat();
@@ -37,8 +37,8 @@ async function walk(dir: string): Promise<string[]> {
 
 function toPascalCase(input: string) {
   return (
-    input.replace(/(^\w|-\w|_\w)/g, (fragment) =>
-      fragment.replace(/[-_]/, "").toUpperCase(),
+    input.replaceAll(/(^\w|-\w|_\w)/gu, (fragment) =>
+      fragment.replace(/[-_]/u, "").toUpperCase(),
     ) + "Path"
   );
 }
@@ -107,7 +107,7 @@ async function initFileCache(options: Required<ImagePathPluginOptions>) {
       const fullDir = path.join(assetsAbsPath, subDir);
       const files = await walk(fullDir);
       const relativeFiles = files.map((filePath) =>
-        path.relative(assetsAbsPath, filePath).replace(/\\/g, "/"),
+        path.relative(assetsAbsPath, filePath).replaceAll("\\", "/"),
       );
       cache.set(subDir, new Set(relativeFiles));
     }),
@@ -172,10 +172,15 @@ export function generateImagePaths(
   let fileCache: Map<string, Set<string>> = new Map();
   let debounceTimer: NodeJS.Timeout | null = null;
 
-  const triggerRegeneration = async () => {
+  const triggerRegeneration = () => {
     if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(async () => {
-      await writeTypeFile(options, fileCache);
+    debounceTimer = setTimeout(() => {
+      writeTypeFile(options, fileCache).catch((error: unknown) => {
+        console.error(
+          "[vite-plugin-generate-image-paths] failed to write type file",
+          error,
+        );
+      });
     }, 100);
   };
 

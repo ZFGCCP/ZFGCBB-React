@@ -29,11 +29,16 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - uses: ZeldaFanGameCentral/github-common/actions/resolve-version@main
+        id: version
+
       - name: Resolve API URL
         id: api
+        env:
+          API_URL_OVERRIDE: ${{ inputs.api_url }}
         run: |
-          if [[ -n "${{ inputs.api_url }}" ]]; then
-            echo "url=${{ inputs.api_url }}" >> "$GITHUB_OUTPUT"
+          if [[ -n "$API_URL_OVERRIDE" ]]; then
+            echo "url=$API_URL_OVERRIDE" >> "$GITHUB_OUTPUT"
           elif [[ "$GITHUB_REF_NAME" == "development" ]]; then
             echo "url=https://api-dev.zfgc.com/zfgbb" >> "$GITHUB_OUTPUT"
           else
@@ -46,7 +51,10 @@ jobs:
           image_name: zfgbb-react
           docker_target: app
           tag: ${{ inputs.tag }}
-          build_args: REACT_ZFGBB_API_URL=${{ steps.api.outputs.url }}
+          build_args: |
+            REACT_ZFGBB_API_URL=${{ steps.api.outputs.url }}
+            REACT_ZFGBB_VERSION=${{ github.ref_name != 'main' && steps.version.outputs.version || '' }}
+            REACT_ZFGBB_FEATURE_FLAG_ENABLE_BUILD_VERSION=${{ github.ref_name != 'main' }}
           registry_token: ${{ secrets.GITHUB_TOKEN }}
 
   bump-argo:

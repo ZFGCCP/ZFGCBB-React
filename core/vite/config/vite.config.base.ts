@@ -57,7 +57,13 @@ export default defineConfig(({ isSsrBuild, command }) => {
       dts: "build/types/auto-import.d.ts",
       dtsMode: command === "build" ? "overwrite" : "append",
       include: ["**/*.{ts,tsx,js,jsx}"],
-      dirs: ["src/components/**", "src/types/**", "src/hooks", "src/shared/**"],
+      dirs: [
+        "src/components/**",
+        "src/types/**",
+        "src/schemas/**",
+        "src/hooks/**",
+        "src/shared/**",
+      ],
       viteOptimizeDeps: true,
       resolvers: [
         iconsResolver({
@@ -72,7 +78,6 @@ export default defineConfig(({ isSsrBuild, command }) => {
       injectRegister: "inline",
       strategies: "generateSW",
       registerType: "autoUpdate",
-      selfDestroying: true,
       devOptions: {
         enabled: false,
         type: "module",
@@ -82,8 +87,9 @@ export default defineConfig(({ isSsrBuild, command }) => {
         name: "ZFGC.com",
         short_name: "ZFGC.com",
         theme_color: "#000000",
+        background_color: "#000000",
         start_url: "/",
-        display: "browser",
+        display: "standalone",
         icons: [
           {
             src: "pwa-192x192.png",
@@ -104,8 +110,42 @@ export default defineConfig(({ isSsrBuild, command }) => {
         ],
       },
       workbox: {
-        navigateFallback: "/index.html",
+        navigateFallback: "",
         cleanupOutdatedCaches: true,
+        additionalManifestEntries: [
+          { url: "/index.html", revision: `${Date.now()}` },
+        ],
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === "navigate",
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "pages",
+              networkTimeoutSeconds: 3,
+              plugins: [
+                {
+                  fetchDidSucceed: ({ response }) => {
+                    if (response.status >= 400)
+                      throw new Error(`navigation ${response.status}`);
+                    return Promise.resolve(response);
+                  },
+                  handlerDidError: async () =>
+                    (await caches.match("/index.html", {
+                      ignoreSearch: true,
+                    })) ?? Response.error(),
+                },
+              ],
+            },
+          },
+          {
+            urlPattern: ({ url }) =>
+              url.pathname.startsWith("/images/") ||
+              url.pathname.startsWith("/themes/") ||
+              url.pathname.startsWith("/fonts/"),
+            handler: "StaleWhileRevalidate",
+            options: { cacheName: "static-assets" },
+          },
+        ],
       },
     }),
   ];
@@ -115,8 +155,8 @@ export default defineConfig(({ isSsrBuild, command }) => {
   plugins.push(
     icons({ compiler: "jsx", jsx: "react", autoInstall: true }),
     generateImagePaths(),
+    preprocessTwMerge(),
   );
-  plugins.push(preprocessTwMerge());
 
   return {
     plugins,

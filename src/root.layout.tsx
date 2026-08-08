@@ -1,16 +1,36 @@
 import { Navigate } from "react-router";
+
+import { useInstallStatus } from "./hooks/data/useInstallStatus";
+import { useSiteInfo } from "./hooks/data/useSiteInfo";
+import { useGlobalSearch } from "./providers/search/globalSearchProvider";
 import { UserContext } from "./providers/user/userProvider";
-import { useInstallStatus } from "./hooks/useInstallStatus";
+
+const ADMIN_PERMISSIONS = ["ZFGC_SITE_ADMIN"] as const;
+
+const SHOW_BUILD_VERSION =
+  import.meta.env.DEV ||
+  import.meta.env.REACT_ZFGBB_FEATURE_FLAG_ENABLE_BUILD_VERSION === "true";
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
+export default function RootLayout({ children }: RootLayoutProps) {
   const { displayName, id } = useContext(UserContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { pathname } = useLocation();
   const { data: installStatus } = useInstallStatus();
+  const { data: siteInfo } = useSiteInfo();
+  const { open: openSearch } = useGlobalSearch();
+  const isNavigating = useNavigation().state === "loading";
+
+  const handleCloseMenu = useCallback(() => {
+    setIsMenuOpen(false);
+  }, []);
+
+  const handleToggleMenu = useCallback(() => {
+    setIsMenuOpen((isOpen) => !isOpen);
+  }, []);
 
   if (installStatus?.installed === false && !pathname.startsWith("/system")) {
     return <Navigate to="/system/install" replace />;
@@ -18,11 +38,14 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
 
   return (
     <div className="grid grid-rows-[1fr_auto] md:grid-rows-[1fr] size-full overflow-hidden">
-      <main className="overflow-auto bg-default min-h-0 size-full scrollbar-color-default scrollbar-gutter-stable px-1.5 mr-1">
-        <header className="hidden md:flex justify-between items-end border-b-2 border-default bg-default px-2">
+      <main
+        aria-busy={isNavigating}
+        className="flex flex-col overflow-auto bg-default min-h-0 size-full scrollbar-color-default scrollbar-gutter-stable px-1.5 mr-1"
+      >
+        <header className="hidden md:flex shrink-0 justify-between items-end border-b-2 border-default bg-default px-2">
           <div className="z-10">
             <div className="relative -z-10 md:-mb-6 min-h-25 min-w-120">
-              <BBImage src="images/logo.png" alt="Logo" loading="eager" />
+              <BBImage src="images/logo.webp" alt="Logo" loading="eager" />
             </div>
             <HeaderNavigation />
           </div>
@@ -41,24 +64,45 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
             ) : (
               <>
                 <span>Welcome, {displayName}! </span>
+                <BBLink to="/user/settings/account">Account Settings</BBLink>
+                <span> · </span>
                 <BBLink to="/user/auth/logout">Logout</BBLink>
               </>
             )}
           </div>
         </header>
 
-        <header className="md:hidden bg-default border-b-2 border-default">
+        <header className="md:hidden shrink-0 bg-default border-b-2 border-default">
           <div className="flex justify-center pt-2 m-h-18 min-w-full items-center">
             <BBImage
               className="h-16 w-auto"
-              src="images/logo.png"
+              src="images/logo.webp"
               alt="Logo"
               loading="eager"
             />
           </div>
         </header>
 
-        <div className="p-2 sm:p-3.5">{children}</div>
+        <div
+          aria-hidden
+          className={`h-1 shrink-0 transition-opacity motion-reduce:transition-none ${
+            isNavigating ? "opacity-100 duration-75" : "opacity-0 duration-500"
+          }`}
+        >
+          <div className="h-full animate-pulse bg-hatch" />
+        </div>
+
+        <div className="flex flex-1 flex-col p-2 sm:p-3.5">
+          <BBBreadcrumb />
+          <div className="flex-1">{children}</div>
+          <BBBreadcrumb decorative />
+          {SHOW_BUILD_VERSION && (
+            <p className="text-dimmed text-xs pt-1 text-center">
+              build {import.meta.env.REACT_ZFGBB_VERSION}
+              {siteInfo?.buildVersion ? ` · api ${siteInfo.buildVersion}` : ""}
+            </p>
+          )}
+        </div>
       </main>
 
       {isMenuOpen && (
@@ -67,13 +111,13 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
             type="button"
             aria-label="Close menu"
             className="fixed inset-0 z-40"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={handleCloseMenu}
           />
           <nav className="fixed bottom-12 left-0 right-0 z-50 bg-elevated border-t-2 border-default md:hidden">
-            <BBHasPermission perms={["ZFGC_SITE_ADMIN"]}>
+            <BBHasPermission requiredPermissions={ADMIN_PERMISSIONS}>
               <BBLink
                 to="/admin"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={handleCloseMenu}
                 className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
               >
                 <span className="text-sm">Admin Dashboard</span>
@@ -83,27 +127,36 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
               <>
                 <BBLink
                   to="/user/auth/login"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={handleCloseMenu}
                   className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
                 >
                   <span className="text-sm">Login</span>
                 </BBLink>
                 <BBLink
                   to="/user/auth/registration"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={handleCloseMenu}
                   className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
                 >
                   <span className="text-sm">Register</span>
                 </BBLink>
               </>
             ) : (
-              <BBLink
-                to="/user/auth/logout"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
-              >
-                <span className="text-sm">Logout</span>
-              </BBLink>
+              <>
+                <BBLink
+                  to="/user/settings/account"
+                  onClick={handleCloseMenu}
+                  className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
+                >
+                  <span className="text-sm">Account Settings</span>
+                </BBLink>
+                <BBLink
+                  to="/user/auth/logout"
+                  onClick={handleCloseMenu}
+                  className="flex items-center px-4 py-3 hover:bg-muted transition-colors border-b border-default"
+                >
+                  <span className="text-sm">Logout</span>
+                </BBLink>
+              </>
             )}
           </nav>
         </>
@@ -124,16 +177,16 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           >
             <span className="text-xs">Forum</span>
           </BBLink>
-          <BBLink
-            to="https://discord.gg/NP2nNKjun6"
-            target="_blank"
+          <button
+            type="button"
+            onClick={openSearch}
+            aria-label="Search"
             className="flex items-center justify-center hover:bg-muted transition-colors"
           >
-            <span className="text-xs">Chat</span>
-          </BBLink>
+            <BBIcon name="search" />
+          </button>
           <BBLink
-            to="http://wiki.zfgc.com"
-            target="_blank"
+            to="/wiki/Main_Page"
             className="flex items-center justify-center hover:bg-muted transition-colors"
           >
             <span className="text-xs">Wiki</span>
@@ -141,7 +194,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           <button
             type="button"
             className="flex items-center justify-center hover:bg-muted transition-colors"
-            onClick={() => setIsMenuOpen((o) => !o)}
+            onClick={handleToggleMenu}
           >
             <Fa6SolidBars />
           </button>
@@ -149,6 +202,4 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
       </nav>
     </div>
   );
-};
-
-export default RootLayout;
+}

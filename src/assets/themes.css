@@ -11,17 +11,22 @@
   --text-color-default: #ffffff;
   --text-color-highlighted: #f3f4f6;
   --text-color-inverted: #1f2937;
+  --text-color-error: #f87171;
+  --text-color-success: #4ade80;
 
   --background-color-default: #374151;
   --background-color-muted: #1f2937;
   --background-color-elevated: #4b5563;
   --background-color-accented: #111827;
   --background-color-inverted: #ffffff;
+  --background-color-error: #f87171;
+  --background-color-success: #4ade80;
 
   --border-color-default: #000000;
   --border-color-muted: #374151;
   --border-color-accented: #1f2937;
   --border-color-inverted: #ffffff;
+  --border-color-error: #f87171;
 
   --ring-color-default: #000000;
   --ring-color-muted: #374151;
@@ -47,107 +52,181 @@
   --fill-color-default: #000000;
   --fill-color-inverted: #ffffff;
 
-  --image-board-status-off: url("/themes/midnight/images/board-summary/off.gif");
-  --image-post-indicator: url("/themes/midnight/images/post/xx.gif");
-  --image-topic-normal: url("/themes/midnight/images/topic/normal_post.gif");
+  --shadow-color-default: #000000;
+  --shadow-color-inverted: #ffffff;
+
+  --highlight-color-default: #ffffff;
+  --highlight-color-inverted: #000000;
+
+  --shadow-panel-strength: 100%;
+  --shadow-panel-opacity: 40%;
+  --shadow-panel-color: color-mix(
+    in srgb,
+    color-mix(
+        in srgb,
+        var(--shadow-color-default) var(--shadow-panel-strength),
+        var(--highlight-color-default)
+      )
+      var(--shadow-panel-opacity),
+    transparent
+  );
+  --shadow-panel: 8px 8px 0 var(--shadow-panel-color);
+  --shadow-toast: 4px 4px 0 var(--shadow-panel-color);
+
+  --sprite-icons: url("/themes/midnight/images/sprites/icons.webp");
+  --sprite-badges: url("/themes/midnight/images/sprites/badges.webp");
+
+  --color-zelda-alttp-triforce-gold: oklch(88.805% 0.18375 98.426);
+  --color-zelda-alttp-triforce-gold-50: oklch(96.262% 0.08423 100.53);
+  --color-zelda-alttp-triforce-gold-100: oklch(95.496% 0.10611 101.23);
+  --color-zelda-alttp-triforce-gold-200: oklch(93.726% 0.14167 100.89);
+  --color-zelda-alttp-triforce-gold-300: oklch(92.35% 0.16808 100.65);
+  --color-zelda-alttp-triforce-gold-400: oklch(91.137% 0.18324 99.835);
+  --color-zelda-alttp-triforce-gold-500: oklch(88.805% 0.18375 98.426);
+  --color-zelda-alttp-triforce-gold-600: oklch(73.431% 0.15199 98.538);
+  --color-zelda-alttp-triforce-gold-700: oklch(57.198% 0.11845 98.731);
+  --color-zelda-alttp-triforce-gold-800: oklch(39.696% 0.08231 99.146);
+  --color-zelda-alttp-triforce-gold-900: oklch(19.883% 0.04143 100.69);
+  --color-zelda-alttp-triforce-gold-950: oklch(0% 0 none);
 }
 
-@layer base {
-  /* BBCode styles */
-  .bb-code-b {
-    font-weight: bold;
+@utility bg-hatch-* {
+  --hatch-color: --value(
+    --color-*,
+    --background-color-*,
+    [color],
+    --default(var(--text-color-highlighted))
+  );
+  --hatch-opacity: calc(--modifier(integer, --default(100)) * 1%);
+  background-image: repeating-linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--hatch-color) var(--hatch-opacity), transparent) 0
+      4px,
+    transparent 4px 8px
+  );
+}
+
+@utility bg-placeholder {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--background-color-muted) 0 10px,
+    var(--background-color-accented) 10px 20px
+  );
+}
+
+@utility bg-progress-hatch {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--background-color-elevated) 0 5px,
+    var(--text-color-dimmed) 5px 10px
+  );
+}
+
+@utility bg-steve-fade {
+  background: linear-gradient(
+    to top,
+    var(--background-color-accented) 8%,
+    color-mix(in srgb, var(--background-color-accented) 45%, transparent) 55%,
+    transparent 100%
+  );
+}
+
+@utility text-shadow-steve {
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+@utility mask-fade-b {
+  -webkit-mask-image: linear-gradient(to bottom, black 62%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 62%, transparent 100%);
+}
+
+@utility chip {
+  @apply cursor-pointer border-2 border-default bg-muted px-2.5 py-1 text-xs tracking-wide transition-colors;
+
+  &:focus-visible {
+    @apply outline-2 outline-offset-2;
   }
 
-  .bb-code-i {
-    font-style: italic;
+  &[aria-pressed="true"],
+  &[data-state="include"] {
+    @apply bg-accented font-bold text-highlighted;
   }
 
-  .bb-code-u {
-    text-decoration: underline;
+  &[data-state="exclude"] {
+    @apply bg-accented text-dimmed line-through decoration-2;
   }
 
-  .bb-code-s {
-    text-decoration: line-through;
+  &[aria-pressed="false"]:hover,
+  &[data-state="off"]:hover {
+    @apply bg-elevated;
   }
+}
 
-  .bb-code-i.bb-code-u,
-  .bb-code-u.bb-code-s,
-  .bb-code-i.bb-code-s {
-    text-decoration: underline line-through;
+@utility reload-prompt {
+  @apply fixed right-0 bottom-0 z-50 m-4 flex flex-wrap items-center gap-2 border-2 border-default bg-elevated p-3 text-sm shadow-toast;
+
+  & button {
+    @apply cursor-pointer border-2 border-default bg-muted px-2.5 py-1 transition-colors hover:bg-elevated;
   }
+}
 
-  .bb-code-left {
-    display: block;
-    text-align: left;
+@keyframes searchFade {
+  from {
+    opacity: 0;
   }
-
-  .bb-code-center {
-    display: block;
-    text-align: center;
+  to {
+    opacity: 1;
   }
+}
 
-  .bb-code-right {
-    display: block;
-    text-align: right;
+@keyframes searchRise {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
   }
-
-  .bb-code-tt {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
+}
 
-  .bb-code-code {
-    display: block;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--color-default, #888);
-    border-radius: 0.25rem;
-    overflow-x: auto;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    white-space: pre;
-    @apply bg-default/64;
+@keyframes showcaseSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
-
-  .bb-code-spoiler {
-    background-color: currentColor;
-    color: currentColor;
-    transition: color 0.15s ease-out;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}
 
-  .bb-code-spoiler:hover,
-  .bb-code-spoiler:focus {
-    color: var(--color-default, #fff);
+@utility showcase-stagger {
+  & > * {
+    animation: showcaseSlideIn 320ms both;
   }
-
-  .bb-code-quote .bb-code-quote-body {
-    border: 0.2rem solid black;
-    padding: 1rem;
-    @apply size-full overflow-auto bg-default/64; /* hi im steve, nintendo sixty-fouuuuuurrr LOLOL */
+  & > *:nth-child(2) {
+    animation-delay: 40ms;
   }
-
-  /* Theme Image Classes */
-  .theme-board-status {
-    background-image: var(--image-board-status-off);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 1.5rem;
-    height: 1.5rem;
+  & > *:nth-child(3) {
+    animation-delay: 80ms;
   }
-
-  .theme-post-indicator {
-    background-image: var(--image-post-indicator);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 1rem;
-    height: 1rem;
+  & > *:nth-child(4) {
+    animation-delay: 120ms;
   }
-
-  .theme-topic-normal {
-    background-image: var(--image-topic-normal);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 1.5rem;
-    height: 1.5rem;
+  & > *:nth-child(5) {
+    animation-delay: 160ms;
+  }
+  & > *:nth-child(6) {
+    animation-delay: 200ms;
+  }
+  & > *:nth-child(7) {
+    animation-delay: 240ms;
+  }
+  & > *:nth-child(8) {
+    animation-delay: 280ms;
+  }
+  & > *:nth-child(n + 9) {
+    animation-delay: 320ms;
   }
 }

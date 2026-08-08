@@ -1,4 +1,4 @@
-import type { Node } from "@oxc-project/types";
+import type { Node } from "oxc-parser";
 import type { PreprocessTwMergeOptions } from "../options.ts";
 
 /**
@@ -13,7 +13,7 @@ export function evaluateExpression(
   constantBindings: Map<string, string>,
   options: PreprocessTwMergeOptions,
 ): string | undefined {
-  if (!expression?.type) return;
+  if (!expression?.type) return undefined;
 
   // FIXME: This code could inject the {className} expression back into the JSX attribute, rather than returning undefined or empty string.
   // This would make the ergonomics of the plugins behavior better, since it could do safer deep evaluation of the template expressions.
@@ -41,12 +41,12 @@ export function evaluateExpression(
         classNames.push(evaluated);
       }
 
-      if (classNames.length === 0) return;
+      if (classNames.length === 0) return undefined;
       return classNames.join(" ");
     }
 
     case "BinaryExpression": {
-      if (expression.operator !== "+") return;
+      if (expression.operator !== "+") return undefined;
       const left = evaluateExpression(
         expression.left,
         constantBindings,
@@ -57,7 +57,7 @@ export function evaluateExpression(
         constantBindings,
         options,
       );
-      if (!left || !right) return;
+      if (!left || !right) return undefined;
       return `${left} ${right}`.trim();
     }
     case "LogicalExpression": {
@@ -73,11 +73,14 @@ export function evaluateExpression(
       );
       if (expression.operator === "&&") return right ?? "";
       if (expression.operator === "||") return left ?? right;
-      return;
+      return undefined;
+    }
+    default: {
+      break;
     }
   }
 
-  if (!options.handleDynamicClassName) return;
+  if (!options.handleDynamicClassName) return undefined;
 
   // Try to expand additional expressions to strings.
   switch (expression.type) {
@@ -89,7 +92,7 @@ export function evaluateExpression(
         .join(" ");
 
       if (classNames.trim()) return classNames;
-      return;
+      return undefined;
     }
     case "ObjectExpression": {
       const classNames = expression.properties
@@ -100,18 +103,18 @@ export function evaluateExpression(
               constantBindings,
               options,
             );
-          } else {
-            return evaluateExpression(
-              property.value,
-              constantBindings,
-              options,
-            );
           }
+          return evaluateExpression(property.value, constantBindings, options);
         })
         .join(" ");
 
       if (classNames.trim()) return classNames;
-      return;
+      return undefined;
+    }
+    default: {
+      break;
     }
   }
+
+  return undefined;
 }

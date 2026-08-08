@@ -1,11 +1,8 @@
 {
   "extends": "../../../../tsconfig.base.json",
   "compilerOptions": {
-    "emitDeclarationOnly": true,
-    "allowImportingTsExtensions": true,
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "declarationDir": "../../../../dist/tsc/core-vite-plugin-preprocess-twmerge",
+    "tsBuildInfoFile": "../../../../dist/tsc/core-vite-plugin-preprocess-twmerge.tsbuildinfo"
   },
   "include": ["src"],
   "exclude": ["node_modules"]

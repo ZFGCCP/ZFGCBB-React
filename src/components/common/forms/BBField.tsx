@@ -1,5 +1,3 @@
-import { firstError } from "./utils";
-
 import { useField } from "@tanstack/react-form";
 import { useBBFormContext } from "./BBForm";
 import BBInput from "./BBInput";
@@ -7,10 +5,10 @@ import BBInput from "./BBInput";
 type BBFieldProps = {
   name: string;
   label: string;
-  type?: React.HTMLInputTypeAttribute;
-  helperText?: string;
-  autoComplete?: string;
-  placeholder?: string;
+  type?: React.HTMLInputTypeAttribute | undefined;
+  helperText?: string | undefined;
+  autoComplete?: string | undefined;
+  placeholder?: string | undefined;
 };
 
 export default function BBField({
@@ -25,18 +23,29 @@ export default function BBField({
   const field = useField({ form, name });
   const error = firstError(field.state.meta.errors);
   const showError = field.state.meta.isTouched && !!error;
+  const fieldValue: unknown = field.state.value;
+  const value =
+    typeof fieldValue === "string" || typeof fieldValue === "number"
+      ? fieldValue
+      : "";
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      field.handleChange(event.target.value);
+    },
+    [field],
+  );
 
   return (
     <BBInput
       label={label}
       name={name}
       type={type}
-      autoComplete={autoComplete}
-      placeholder={placeholder}
-      helperText={helperText}
-      error={showError ? error : undefined}
-      value={(field.state.value as string | number | undefined) ?? ""}
-      onChange={(e) => field.handleChange(e.target.value)}
+      autoComplete={autoComplete ?? undefined}
+      placeholder={placeholder ?? undefined}
+      helperText={helperText ?? undefined}
+      error={showError ? (error ?? undefined) : undefined}
+      value={value}
+      onChange={handleChange}
       onBlur={field.handleBlur}
     />
   );

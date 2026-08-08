@@ -1,35 +1,11 @@
-// import { Intl, Temporal } from "@js-temporal/polyfill";
-
-const { Intl, Temporal } = (
-  !!globalThis.Temporal && !!globalThis.Intl?.DateTimeFormat
-    ? globalThis
-    : await import("@js-temporal/polyfill")
-) as {
-  Intl: typeof globalThis.Intl;
-  Temporal: typeof globalThis.Temporal;
-};
-
 interface BBDateProps {
   dateStr: string | null | undefined;
   fallback?: string;
-}
-
-type Parsed =
-  | { kind: "datetime"; value: Temporal.PlainDateTime }
-  | { kind: "date"; value: Temporal.PlainDate };
-
-function parse(dateStr: string): Parsed | null {
-  try {
-    return { kind: "datetime", value: Temporal.PlainDateTime.from(dateStr) };
-  } catch {}
-  try {
-    return { kind: "date", value: Temporal.PlainDate.from(dateStr) };
-  } catch {}
-  return null;
+  long?: boolean;
 }
 
 const locale =
-  typeof navigator !== "undefined" ? navigator.language : undefined;
+  typeof navigator === "undefined" ? undefined : navigator.language;
 
 const dateTimeFormatter = new Intl.DateTimeFormat(locale, {
   dateStyle: "short",
@@ -40,20 +16,61 @@ const dateFormatter = new Intl.DateTimeFormat(locale, {
   dateStyle: "short",
 });
 
-function format(parsed: Parsed): string {
-  return parsed.kind === "datetime"
-    ? dateTimeFormatter.format(parsed.value)
-    : dateFormatter.format(parsed.value);
+const longDateTimeFormatter = new Intl.DateTimeFormat(locale, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  second: "2-digit",
+});
+
+const longDateFormatter = new Intl.DateTimeFormat(locale, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const TIME_PART_TYPES = new Set(["hour", "minute", "second", "dayPeriod"]);
+
+function formatLongDateTime(epochMilliseconds: number): string {
+  const parts = longDateTimeFormatter.formatToParts(epochMilliseconds);
+  const firstTimePartIndex = parts.findIndex((part) =>
+    TIME_PART_TYPES.has(part.type),
+  );
+  return parts
+    .map((part, index) =>
+      part.type === "literal" && index === firstTimePartIndex - 1
+        ? ", "
+        : part.value,
+    )
+    .join("");
 }
 
-export default function BBDate({ dateStr, fallback = "—" }: BBDateProps) {
-  const parsed = dateStr ? parse(dateStr) : null;
+export default function BBDate({
+  dateStr,
+  fallback = "—",
+  long = false,
+}: BBDateProps) {
+  const parsed = parseWireDate(dateStr);
+  let formatted = fallback;
+  if (parsed) {
+    const epochMilliseconds = wireDateEpochMilliseconds(parsed);
+    if (parsed.kind === "datetime")
+      formatted = long
+        ? formatLongDateTime(epochMilliseconds)
+        : dateTimeFormatter.format(epochMilliseconds);
+    else
+      formatted = (long ? longDateFormatter : dateFormatter).format(
+        epochMilliseconds,
+      );
+  }
   return (
     <time
       dateTime={parsed ? parsed.value.toString() : undefined}
       suppressHydrationWarning
     >
-      {parsed ? format(parsed) : fallback}
+      {formatted}
     </time>
   );
 }

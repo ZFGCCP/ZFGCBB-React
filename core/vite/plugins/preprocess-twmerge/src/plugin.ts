@@ -29,8 +29,8 @@ function hasTwMergeImport({ module }: ParseResult, importName: string) {
 }
 
 const defaults: Required<PreprocessTwMergeOptions> = {
-  include: /\.(jsx|tsx)$/,
-  exclude: /node_modules/,
+  include: /\.(jsx|tsx)$/u,
+  exclude: /node_modules/u,
   handleDynamicClassName: false,
   twMergeImportSpecifier: "",
   oxcParserOptions: {},
@@ -78,15 +78,23 @@ export function preprocessTwMerge(
     name: "vite-plugin-preprocess-twmerge",
     enforce: "pre",
     async transform(sourceCode: string, fileId: string) {
-      if (!options.include.test(fileId) || options.exclude.test(fileId)) return;
+      if (!options.include.test(fileId) || options.exclude.test(fileId))
+        return null;
 
       const edits: SourceEdit[] = [];
-      const computedLanguage = fileId.split(".").pop() as ParserOptions["lang"];
+      const cleanFileId = fileId.split("?")[0] ?? fileId;
+      const ext = cleanFileId.split(".").pop();
+
+      const validLangs: ParserOptions["lang"][] = [
+        "js",
+        "jsx",
+        "ts",
+        "tsx",
+        "dts",
+      ];
+      const computedLanguage = validLangs.find((lang) => lang === ext);
       const language =
-        (options.oxcParserOptions?.lang ??
-        ["js", "jsx", "ts", "tsx", "dts"].includes(computedLanguage ?? ""))
-          ? computedLanguage
-          : "js";
+        options.oxcParserOptions?.lang ?? computedLanguage ?? "js";
 
       const parsedFile = parseSync(fileId, sourceCode, {
         lang: language,
@@ -95,10 +103,10 @@ export function preprocessTwMerge(
       const { program, module: moduleInfo } = parsedFile;
       const constants = collectConstantBindings(program, options);
 
-      traverseAST(program, (node) =>
-        onVisitNode({ node, options, constants, edits, fileId, sourceCode }),
-      );
-      if (!edits.length) return;
+      traverseAST(program, (node) => {
+        onVisitNode({ node, options, constants, edits, fileId, sourceCode });
+      });
+      if (edits.length === 0) return null;
       if (
         options.twMergeImportSpecifier &&
         !hasTwMergeImport(parsedFile, options.twMergeImportSpecifier)

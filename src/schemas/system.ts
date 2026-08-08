@@ -17,7 +17,17 @@ export const JOB_TYPES = [
   "POLLS",
   "POLL_CHOICES",
   "USER_POLL_CHOICES",
-  "KARMA",
+  "REACTIONS",
+  "MEMBER_GROUPS",
+  "PERSONAL_MESSAGES",
+  "SUBSCRIPTIONS",
+  "MODERATION_LOGS",
+  "WIKI_PAGES",
+  "PROJECTS",
+  "RESOURCES",
+  "CMS_COMMENTS",
+  "MIGRATE_CMS_INSTALLATION",
+  "SMF_INSTALLATION_PIPELINE",
 ] as const;
 
 export const JobTypeSchema = v.picklist(JOB_TYPES);
@@ -29,7 +39,7 @@ export const JobStateSchema = v.picklist([
   "COMPLETED",
   "FAILED",
   "CANCELLED",
-] as const);
+]);
 export type JobState = v.InferOutput<typeof JobStateSchema>;
 
 export const JobSchema = v.object({
@@ -37,9 +47,9 @@ export const JobSchema = v.object({
   type: JobTypeSchema,
   state: JobStateSchema,
   submittedAt: v.string(),
-  startedAt: v.nullable(v.string()),
-  finishedAt: v.nullable(v.string()),
-  error: v.nullable(v.string()),
+  startedAt: v.optional(v.string()),
+  finishedAt: v.optional(v.string()),
+  error: v.optional(v.string()),
 });
 export type Job = v.InferOutput<typeof JobSchema>;
 
@@ -47,21 +57,63 @@ export const JobListSchema = v.array(JobSchema);
 
 export const InstallStatusResponseSchema = v.object({
   installed: v.boolean(),
-  siteName: v.nullable(v.string()),
+  siteName: v.optional(v.string()),
 });
 export type InstallStatusResponse = v.InferOutput<
   typeof InstallStatusResponseSchema
 >;
 
+export const SiteInfoSchema = v.object({
+  siteName: v.optional(v.string()),
+  registrationEnabled: v.boolean(),
+  defaultContentFormat: ContentFormatSchema,
+  contentFormats: v.array(ContentFormatSchema),
+  buildVersion: v.nullish(v.string()),
+});
+export type SiteInfo = v.InferOutput<typeof SiteInfoSchema>;
+
+export const SiteAuthoringConfigSchema = v.object({
+  defaultContentFormat: ContentFormatSchema,
+  contentFormats: v.array(ContentFormatSchema),
+});
+export type SiteAuthoringConfig = v.InferOutput<
+  typeof SiteAuthoringConfigSchema
+>;
+
 export const InstallResponseSchema = v.object({
-  installed: v.boolean(),
+  installed: v.literal(true),
   adminUserId: v.number(),
   siteName: v.string(),
-  sampleDataApplied: v.boolean(),
-  accessToken: v.optional(v.nullable(v.string())),
-  refreshToken: v.optional(v.nullable(v.string())),
+  installSampleData: v.boolean(),
+  accessToken: v.optional(v.string()),
+  refreshToken: v.optional(v.string()),
 });
 export type InstallResponse = v.InferOutput<typeof InstallResponseSchema>;
+
+export const BackupStateSchema = v.picklist([
+  "CREATING",
+  "READY",
+  "DOWNLOADING",
+  "CONSUMED",
+  "EXPIRED",
+  "FAILED",
+]);
+export type BackupState = v.InferOutput<typeof BackupStateSchema>;
+
+export const AdminBackupSchema = v.object({
+  id: v.string(),
+  state: BackupStateSchema,
+  createdAt: v.string(),
+  expiresAt: v.string(),
+  archiveBytes: v.optional(v.number()),
+  archiveSha256: v.optional(v.string()),
+  installerCompatible: v.optional(v.boolean()),
+  installerAnchorAdministratorId: v.optional(v.number()),
+  downloadReady: v.boolean(),
+  error: v.optional(v.string()),
+});
+export const AdminBackupListSchema = v.array(AdminBackupSchema);
+export type AdminBackup = v.InferOutput<typeof AdminBackupSchema>;
 
 export const MigrateJobFormSchema = v.object({
   type: JobTypeSchema,
@@ -69,7 +121,7 @@ export const MigrateJobFormSchema = v.object({
   smfPort: v.pipe(
     v.string(),
     v.nonEmpty("Port is required."),
-    v.regex(/^\d+$/, "Port must be a positive integer."),
+    v.regex(/^\d+$/u, "Port must be a positive integer."),
   ),
   smfDatabase: v.pipe(v.string(), v.nonEmpty("Database is required.")),
   smfUser: v.pipe(v.string(), v.nonEmpty("Username is required.")),
@@ -78,6 +130,8 @@ export const MigrateJobFormSchema = v.object({
   smfLegacyHost: v.string(),
   attachmentsSourcePath: v.string(),
   attachmentsTargetPath: v.string(),
+  cmsFilesSourcePath: v.string(),
+  wikiImagesSourcePath: v.string(),
   force: v.boolean(),
 });
 
@@ -86,24 +140,78 @@ export type MigrateJobForm = v.InferOutput<typeof MigrateJobFormSchema>;
 export type MigrateJobRequest = {
   type: JobType;
   smfHost: string;
-  smfPort?: number;
+  smfPort?: number | undefined;
   smfDatabase: string;
   smfUser: string;
   smfPassword: string;
-  smfTablePrefix?: string;
-  smfLegacyHost?: string;
-  appBaseUrl?: string;
-  attachmentsSourcePath?: string;
-  attachmentsTargetPath?: string;
-  avatarsSourcePath?: string;
-  force?: boolean;
+  smfTablePrefix?: string | undefined;
+  smfLegacyHost?: string | undefined;
+  attachmentsSourcePath?: string | undefined;
+  attachmentsTargetPath?: string | undefined;
+  avatarsSourcePath?: string | undefined;
+  cmsFilesSourcePath?: string | undefined;
+  wikiImagesSourcePath?: string | undefined;
+  force?: boolean | undefined;
+  groupPermissionMap?: Record<number, string[]> | undefined;
 };
 
-export type MigrateUploadResponse = {
-  uploadId: string;
-  attachmentsSourcePath: string | null;
-  avatarsSourcePath: string | null;
-};
+export const SmfMemberGroupSchema = v.object({
+  id: v.number(),
+  name: v.string(),
+  suggestedCodes: v.array(v.string()),
+});
+export const SmfMemberGroupListSchema = v.array(SmfMemberGroupSchema);
+export type SmfMemberGroup = v.InferOutput<typeof SmfMemberGroupSchema>;
+
+export const PermissionCodeSchema = v.object({
+  permissionCode: v.string(),
+  permissionName: v.optional(v.string()),
+});
+export const PermissionCodeListSchema = v.array(PermissionCodeSchema);
+export type PermissionCode = v.InferOutput<typeof PermissionCodeSchema>;
+
+export const MigrateUploadResponseSchema = v.object({
+  uploadId: v.string(),
+  attachmentsSourcePath: v.optional(v.string()),
+  avatarsSourcePath: v.optional(v.string()),
+});
+export type MigrateUploadResponse = v.InferOutput<
+  typeof MigrateUploadResponseSchema
+>;
+
+export const MigrateDetectResponseSchema = v.object({
+  detected: v.number(),
+});
+
+export const ConflictCandidateSchema = v.object({
+  sourceType: v.string(),
+  sourceRef: v.string(),
+  value: v.string(),
+  label: v.string(),
+});
+export type ConflictCandidate = v.InferOutput<typeof ConflictCandidateSchema>;
+
+export const MigrationConflictSchema = v.object({
+  id: v.number(),
+  entityType: v.string(),
+  entityId: v.number(),
+  entityLabel: v.optional(v.string()),
+  fieldName: v.string(),
+  candidates: v.array(ConflictCandidateSchema),
+  status: v.string(),
+});
+export type MigrationConflict = v.InferOutput<typeof MigrationConflictSchema>;
+
+export const MigrationConflictListSchema = v.array(MigrationConflictSchema);
+
+export const CmsConfigFormSchema = v.object({
+  discussionBoardId: v.pipe(
+    v.string(),
+    v.nonEmpty("Discussion board id is required."),
+    v.regex(/^\d+$/u, "Discussion board id must be a number."),
+  ),
+});
+export type CmsConfigForm = v.InferOutput<typeof CmsConfigFormSchema>;
 
 export const InstallFormSchema = v.object({
   installToken: v.pipe(v.string(), v.nonEmpty("Install token is required.")),
@@ -123,7 +231,18 @@ export const InstallFormSchema = v.object({
     v.minLength(8, "Password must be at least 8 characters."),
   ),
   siteName: v.pipe(v.string(), v.nonEmpty("Site name is required.")),
-  applySampleData: v.boolean(),
+  defaultContentFormat: ContentFormatSchema,
+  installSampleData: v.boolean(),
+  provisionRecycleBin: v.boolean(),
 });
 
 export type InstallForm = v.InferOutput<typeof InstallFormSchema>;
+
+export const WikiImportNamespaceSchema = v.object({
+  sourceNamespaceId: v.number(),
+  namespaceName: v.string(),
+});
+export const WikiImportNamespaceListSchema = v.array(WikiImportNamespaceSchema);
+export type WikiImportNamespace = v.InferOutput<
+  typeof WikiImportNamespaceSchema
+>;

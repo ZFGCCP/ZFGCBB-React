@@ -3,6 +3,8 @@
     --text-color-dimmed: #bfc3ce;
     --text-color-muted: #d8dce6;
     --text-color-highlighted: #e5e7eb;
+    --text-color-error: #ffb4c2;
+    --text-color-success: #b4f0cf;
 
     --background-color-default: #7371d8;
     --background-color-muted: #5a59b3;
@@ -10,6 +12,7 @@
     --background-color-accented: #3c3a8f;
 
     --border-color-accented: #5a59b3;
+    --border-color-error: #ffb4c2;
 
     --ring-color-accented: var(--text-color-highlighted);
 

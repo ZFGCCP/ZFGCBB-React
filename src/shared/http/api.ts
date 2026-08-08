@@ -8,3 +8,7 @@ export function getApiBaseUrl() {
 export function getPublicApiBaseUrl() {
   return import.meta.env.REACT_ZFGBB_API_URL;
 }
+
+export function contentUrl(contentResourceId: number) {
+  return `${getPublicApiBaseUrl()}/content/${contentResourceId}` as `${string}/content/${number}`;
+}

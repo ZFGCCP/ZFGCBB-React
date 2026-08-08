@@ -1,0 +1,45 @@
+import type { ReactNode } from "react";
+import type { GenericSchema } from "valibot";
+import type { FeaturedItem } from "@/components/cms/showcase/showcaseTypes";
+import type { CatalogParamMap } from "@/hooks/data/useCatalog";
+import type {
+  CatalogFilterOption,
+  CatalogLanguageOption,
+  CatalogSortOption,
+} from "@/components/common/BBCatalogToolbar";
+
+export type RailSource = {
+  previewContentResourceId?: number | undefined;
+  title: string;
+  slug: string;
+};
+
+export type CmsCatalogDescriptor<
+  TItem extends RailSource,
+  TShowcase,
+  TFacets,
+> = {
+  heading: string;
+  crumb: string;
+  api: `/${string}`;
+  basePath: `/${string}`;
+  params: CatalogParamMap;
+  itemSchema: GenericSchema<unknown, TItem>;
+  showcaseSchema: GenericSchema<unknown, TShowcase>;
+  facetsSchema: GenericSchema<unknown, TFacets>;
+  searchPlaceholder: string;
+  sortOptions: readonly CatalogSortOption[];
+  kicker: string;
+  carouselTitle: string;
+  viewAllLabel: string;
+  total: (showcase: TShowcase) => number;
+  card: (item: TItem) => ReactNode;
+  featured: (item: TItem) => FeaturedItem;
+  randomSub: (item: TItem) => ReactNode;
+  topRatedSub: (item: TItem) => ReactNode;
+  downloadsSub: (item: TItem) => ReactNode;
+  facetOptions: (facets: TFacets | undefined) => {
+    filterOptions: CatalogFilterOption[];
+    languageOptions?: CatalogLanguageOption[] | undefined;
+  };
+};
